@@ -504,43 +504,60 @@ that so we need to convert all those -1 to 1 so that they can be better
 dealt with in R.</p>
 <pre class="r"><code>complete_traits &lt;- complete_traits_90
 
-# Calculate the estimated weight with the following columns.
-complete_traits$weight &lt;- complete_traits$a * complete_traits$MaxLengthTL^complete_traits$b
-
-# Calculate the estimated caudal fin length with the following columns.
-complete_traits$CaudalFinLength &lt;- complete_traits$MaxLengthTL - complete_traits$MaxLengthSL
+# # Calculate the estimated Weight with the following columns.
+# complete_traits$Weight &lt;- complete_traits$a * complete_traits$MaxLengthTL^complete_traits$b
+# 
+# # Calculate the estimated caudal fin length with the following columns.
+# complete_traits$CaudalFinLength &lt;- complete_traits$MaxLengthTL - complete_traits$MaxLengthSL
 
 # Get rid of unnecessary or irrelevant traits
-complete_traits &lt;- complete_traits[, c(1,3,10,13:16,21,55,57,59:62,68,70:71,73:76,83,84,87:91,93,95,97,98)]
+keep &lt;- c(&quot;Species&quot;, &quot;Genus&quot;, &quot;BodyShapeI.x&quot;, &quot;Fresh&quot;, &quot;Brack&quot;, &quot;Saltwater&quot;, &quot;DemersPelag&quot;, &quot;OperculumPresent&quot;, &quot;DorsalSpinesMax&quot;, &quot;MaxLengthTL&quot;, &quot;Troph&quot;, &quot;DepthMin&quot;, &quot;DepthMax&quot;, &quot;TempPrefMin&quot;, &quot;TempPrefMax&quot;, &quot;FeedingPath&quot;)
+complete_traits &lt;- complete_traits[,keep]
 # Traits we are looking to keep:
-# Species   Family  Genus   BodyShapeI.x    Fresh   Brack   Saltwater   DemersPelag Vulnerability   OperculumPresent    DorsalSpinesMin DorsalSpinesMax DorsalSoftRaysMin   DorsalSoftRaysMax   Araymin Araymax MaxLengthTL Troph   seTroph a   sd_log10a   b   sd_b    DepthMin    DepthMax    PredPreyRatioMin    PredPreyRatioMax    TempPrefMin TempPrefMean    TempPrefMax FeedingPath MaxLengthSL weight  CaudalFinLength RepGuild1   RepGuild2   ParentalCare
+# Species   Genus   BodyShapeI.x Fresh Brack Saltwater  DemersPelag OperculumPresent DorsalSpinesMax MaxLengthTL Troph  DepthMin DepthMax TempPrefMin TempPrefMax   FeedingPath
+
+# complete_traits &lt;- complete_traits[, c(1,3,10,13:16,21,55,57,59:62,68,70:71,73:76,83,84,87:91,93,95,97,98)]
+# Traits we are looking to keep:
+# Species   Family  Genus   BodyShapeI.x    Fresh   Brack   Saltwater   DemersPelag Vulnerability   OperculumPresent    DorsalSpinesMin DorsalSpinesMax DorsalSoftRaysMin   DorsalSoftRaysMax   Araymin Araymax MaxLengthTL Troph   seTroph a   sd_log10a   b   sd_b    DepthMin    DepthMax    PredPreyRatioMin    PredPreyRatioMax    TempPrefMin TempPrefMean    TempPrefMax FeedingPath MaxLengthSL Weight  CaudalFinLength RepGuild1   RepGuild2   ParentalCare
 
 # Make -1 in 1 by multiplication
 complete_traits$OperculumPresent &lt;- complete_traits$OperculumPresent*-1
 
-repro &lt;- reproduction[,c(1,17:19)]
+# RepGuild1 RepGuild2   ParentalCare
+keep &lt;- c(&quot;Species&quot;, &quot;RepGuild1&quot;, &quot;RepGuild2&quot;, &quot;ParentalCare&quot;)
+repro &lt;- reproduction[,keep]
+
+# DorsalSpinesMin
+keep &lt;- c(&quot;Species&quot;, &quot;DorsalSpinesMin&quot;)
+dorsal &lt;- morphology[,keep]
 
 complete_traits &lt;- full_join(complete_traits, repro, by = &quot;Species&quot;)
+complete_traits &lt;- full_join(complete_traits, dorsal, by = &quot;Species&quot;)
 
 # Make integer fields numeric
-complete_traits[,c(8, 10:28, 30:32)] &lt;- sapply(complete_traits[,c(8, 10:28, 30:32)], as.numeric)
+numerical &lt;- c(&quot;DorsalSpinesMax&quot;, &quot;MaxLengthTL&quot;, &quot;Troph&quot;, &quot;DepthMin&quot;, &quot;DepthMax&quot;, &quot;TempPrefMin&quot;, &quot;TempPrefMax&quot;, &quot;DorsalSpinesMin&quot;)
+complete_traits[,numerical] &lt;- sapply(complete_traits[,numerical], as.numeric)
 
 # Make character fields into factors to use in trait analyses
-complete_traits$BodyShapeI.x &lt;- as.factor(complete_traits$BodyShapeI.x)
-complete_traits$Fresh &lt;- as.factor(complete_traits$Fresh)
-complete_traits$Brack &lt;- as.factor(complete_traits$Brack)
-complete_traits$Saltwater &lt;- as.factor(complete_traits$Saltwater)
-complete_traits$DemersPelag &lt;- as.factor(complete_traits$DemersPelag)
-complete_traits$OperculumPresent &lt;- as.factor(complete_traits$OperculumPresent)
-complete_traits$FeedingPath &lt;- as.factor(complete_traits$FeedingPath)
-complete_traits$RepGuild1 &lt;- as.factor(complete_traits$RepGuild1)
-complete_traits$RepGuild2 &lt;- as.factor(complete_traits$RepGuild2)
-complete_traits$ParentalCare &lt;- as.factor(complete_traits$ParentalCare)
+factor &lt;- c(&quot;BodyShapeI.x&quot;, &quot;Fresh&quot;, &quot;Brack&quot;, &quot;Saltwater&quot;, &quot;DemersPelag&quot;, &quot;OperculumPresent&quot;, &quot;FeedingPath&quot;, &quot;RepGuild1&quot;, &quot;RepGuild2&quot;, &quot;ParentalCare&quot;)
+# Convert to lowercase and then to factors
+complete_traits[,factor] &lt;- lapply(complete_traits[,factor], function(x) as.factor(tolower(trimws(x))))
+# complete_traits$BodyShapeI.x &lt;- as.factor(complete_traits$BodyShapeI.x)
+# complete_traits$Fresh &lt;- as.factor(complete_traits$Fresh)
+# complete_traits$Brack &lt;- as.factor(complete_traits$Brack)
+# complete_traits$Saltwater &lt;- as.factor(complete_traits$Saltwater)
+# complete_traits$DemersPelag &lt;- as.factor(complete_traits$DemersPelag)
+# complete_traits$OperculumPresent &lt;- as.factor(complete_traits$OperculumPresent)
+# complete_traits$FeedingPath &lt;- as.factor(complete_traits$FeedingPath)
+# complete_traits$RepGuild1 &lt;- as.factor(complete_traits$RepGuild1)
+# complete_traits$RepGuild2 &lt;- as.factor(complete_traits$RepGuild2)
+# complete_traits$ParentalCare &lt;- as.factor(complete_traits$ParentalCare)
 
 # Identify which rows have NAs and will be filled in with Genus level data
 fromGenus &lt;- apply(complete_traits, 1, function(x){any(is.na(x))})
-
-complete_traits &lt;-  cbind(complete_traits, fromGenus)</code></pre>
+sum(fromGenus) </code></pre>
+<pre><code>## [1] 1083</code></pre>
+<pre class="r"><code>complete_traits &lt;-  cbind(complete_traits, fromGenus)</code></pre>
 </div>
 <div id="find-and-fill-in-missing-data-using-genera-averages" class="section level1">
 <h1>Find and fill in missing data using genera averages</h1>
@@ -2218,30 +2235,6 @@ species_incomplete_genus &lt;- unlist(lapply(species_incomplete_genus, function(
 ## Joining with `by = join_by(Subfamily, GenCode, FamCode)`
 ## Joining with `by = join_by(FamCode)`
 ## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
-## Joining with `by = join_by(Class, ClassNum)`
-## Joining with `by = join_by(Subfamily, GenCode, FamCode)`
-## Joining with `by = join_by(FamCode)`
-## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
-## Joining with `by = join_by(Class, ClassNum)`
-## Joining with `by = join_by(Subfamily, GenCode, FamCode)`
-## Joining with `by = join_by(FamCode)`
-## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
-## Joining with `by = join_by(Class, ClassNum)`
-## Joining with `by = join_by(Subfamily, GenCode, FamCode)`
-## Joining with `by = join_by(FamCode)`
-## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
-## Joining with `by = join_by(Class, ClassNum)`
-## Joining with `by = join_by(Subfamily, GenCode, FamCode)`
-## Joining with `by = join_by(FamCode)`
-## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
-## Joining with `by = join_by(Class, ClassNum)`
-## Joining with `by = join_by(Subfamily, GenCode, FamCode)`
-## Joining with `by = join_by(FamCode)`
-## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
-## Joining with `by = join_by(Class, ClassNum)`
-## Joining with `by = join_by(Subfamily, GenCode, FamCode)`
-## Joining with `by = join_by(FamCode)`
-## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
 ## Joining with `by = join_by(Class, ClassNum)`</code></pre>
 <pre class="r"><code>## Extract traits from fishbase
 # Main traits
@@ -2253,9 +2246,10 @@ morphology_incomplete_genus &lt;- morphology(species_incomplete_genus)</code></p
 <pre class="r"><code># Used to determine duplicates of Species in a column
 duplicates_check &lt;- which(duplicated(morphology_incomplete_genus$Species))
 duplicates_check </code></pre>
-<pre><code>## [1] 1608 1609</code></pre>
+<pre><code>## [1] 1585 1586</code></pre>
 <pre class="r"><code># Removed duplicates
-morphology_incomplete_genus &lt;- morphology_incomplete_genus[-c(1608,1609),]
+morphology_incomplete_genus &lt;- morphology_incomplete_genus %&gt;%
+  distinct(Species, .keep_all = TRUE)
 
 # Estimates
 estimate_incomplete_genus &lt;- estimate(species_incomplete_genus)</code></pre>
@@ -2266,9 +2260,10 @@ ecology_incomplete_genus &lt;- ecology(species_incomplete_genus)</code></pre>
 <pre class="r"><code># Used to determine duplicates of Species in a column
 duplicates_check &lt;- which(duplicated(ecology_incomplete_genus$Species))
 duplicates_check </code></pre>
-<pre><code>## [1]   29 2344</code></pre>
+<pre><code>## [1]   29 2323</code></pre>
 <pre class="r"><code># Removed duplicates
-ecology_incomplete_genus &lt;- ecology_incomplete_genus[-c(29,2344),]
+ecology_incomplete_genus &lt;- ecology_incomplete_genus %&gt;%
+  distinct(Species, .keep_all = TRUE)
 
 # Reproduction
 reproduction_incomplete_genus &lt;- reproduction(species_incomplete_genus)</code></pre>
@@ -2282,11 +2277,11 @@ traits_incomplete_genus &lt;- full_join(traits_incomplete_genus, reproduction_in
 # Get rid of duplicated columns
 traits_incomplete_genus &lt;- traits_incomplete_genus[,!duplicated(colnames(traits_incomplete_genus))]
 
-# Calculate the estimated weight with the following columns.
-traits_incomplete_genus$weight &lt;- traits_incomplete_genus$a * traits_incomplete_genus$MaxLengthTL^traits_incomplete_genus$b
-
-# Calculate the estimated caudal fin length with the following columns.
-traits_incomplete_genus$CaudalFinLength &lt;- traits_incomplete_genus$MaxLengthTL - traits_incomplete_genus$MaxLengthSL
+# # Calculate the estimated Weight with the following columns.
+# traits_incomplete_genus$Weight &lt;- traits_incomplete_genus$a * traits_incomplete_genus$MaxLengthTL^traits_incomplete_genus$b
+# 
+# # Calculate the estimated caudal fin length with the following columns.
+# traits_incomplete_genus$CaudalFinLength &lt;- traits_incomplete_genus$MaxLengthTL - traits_incomplete_genus$MaxLengthSL
 
 # Make -1 in 1 by multiplication
 traits_incomplete_genus$OperculumPresent &lt;- traits_incomplete_genus$OperculumPresent*-1
@@ -2296,42 +2291,27 @@ traits_incomplete_genus &lt;- traits_incomplete_genus[names(complete_traits)[-nc
 
 # Check columns to see data types
 str(traits_incomplete_genus)</code></pre>
-<pre><code>## tibble [5,510 × 35] (S3: tbl_df/tbl/data.frame)
-##  $ Species          : chr [1:5510] &quot;Abalistes filamentosus&quot; &quot;Abalistes stellatus&quot; &quot;Ablabys binotatus&quot; &quot;Ablabys gymnothorax&quot; ...
-##  $ Genus            : chr [1:5510] &quot;Abalistes&quot; &quot;Abalistes&quot; &quot;Ablabys&quot; &quot;Ablabys&quot; ...
-##  $ BodyShapeI.x     : chr [1:5510] &quot;short and / or deep&quot; &quot;short and / or deep&quot; &quot;short and / or deep&quot; &quot;short and / or deep&quot; ...
-##  $ Fresh            : int [1:5510] 0 0 0 0 0 0 0 0 0 0 ...
-##  $ Brack            : int [1:5510] 0 0 0 0 0 0 0 0 0 0 ...
-##  $ Saltwater        : int [1:5510] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ DemersPelag      : chr [1:5510] &quot;pelagic-neritic&quot; &quot;demersal&quot; &quot;benthopelagic&quot; &quot;benthopelagic&quot; ...
-##  $ Vulnerability    : num [1:5510] 29.6 44 10 10 10 ...
-##  $ OperculumPresent : num [1:5510] 0 1 0 0 0 0 0 0 0 0 ...
-##  $ DorsalSpinesMax  : int [1:5510] 3 3 15 16 16 17 18 2 2 2 ...
-##  $ DorsalSoftRaysMin: int [1:5510] 25 25 8 9 8 5 6 36 45 32 ...
-##  $ DorsalSoftRaysMax: int [1:5510] 27 27 9 9 10 6 7 41 52 39 ...
-##  $ Araymin          : int [1:5510] 22 24 5 8 7 4 4 39 47 35 ...
-##  $ Araymax          : int [1:5510] 25 26 5 9 8 5 5 44 53 41 ...
-##  $ MaxLengthTL      : num [1:5510] 39.7 60 15 10.1 20 ...
-##  $ Troph            : num [1:5510] 3.38 3.43 3.22 3.17 3.25 ...
-##  $ seTroph          : num [1:5510] 0.41 0.41 0.29 0.29 0.29 ...
-##  $ a                : num [1:5510] 0.0257 0.0269 0.0186 0.0186 0.0186 ...
-##  $ sd_log10a        : num [1:5510] 0.163 0.0964 0.203 0.203 0.203 ...
-##  $ b                : num [1:5510] 2.93 2.87 3.01 3.01 3.01 ...
-##  $ sd_b             : num [1:5510] 0.0886 0.0642 0.109 0.109 0.109 ...
-##  $ DepthMin         : int [1:5510] 61 7 NA NA 1 44 1 3 1 3 ...
-##  $ DepthMax         : int [1:5510] 180 350 NA 27 20 65 78 2000 80 900 ...
-##  $ PredPreyRatioMin : num [1:5510] 5.92 5.67 3.5 NA 3.41 ...
-##  $ PredPreyRatioMax : num [1:5510] 406 349 734 NA 690 ...
-##  $ TempPrefMin      : num [1:5510] 18.8 22.9 NA NA 25.1 NA 23.5 19.2 22.8 20 ...
-##  $ TempPrefMean     : num [1:5510] 23.9 27.1 NA NA 28.2 NA 28.1 24.8 27.6 25.6 ...
-##  $ TempPrefMax      : num [1:5510] 26.9 28.3 NA NA 28.9 NA 29 27.9 29 28 ...
-##  $ FeedingPath      : chr [1:5510] &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; ...
-##  $ MaxLengthSL      : num [1:5510] 32.5 50.62 12.3 8.28 16.4 ...
-##  $ weight           : num [1:5510] 1238.4 3414.2 64.6 19.6 153.5 ...
-##  $ CaudalFinLength  : num [1:5510] 7.15 9.38 2.7 1.82 3.6 ...
-##  $ RepGuild1        : chr [1:5510] NA &quot;guarders&quot; NA NA ...
-##  $ RepGuild2        : chr [1:5510] NA &quot;nesters&quot; NA NA ...
-##  $ ParentalCare     : chr [1:5510] NA NA NA NA ...</code></pre>
+<pre><code>## tibble [5,450 × 20] (S3: tbl_df/tbl/data.frame)
+##  $ Species         : chr [1:5450] &quot;Abalistes filamentosus&quot; &quot;Abalistes stellatus&quot; &quot;Ablabys binotatus&quot; &quot;Ablabys gymnothorax&quot; ...
+##  $ Genus           : chr [1:5450] &quot;Abalistes&quot; &quot;Abalistes&quot; &quot;Ablabys&quot; &quot;Ablabys&quot; ...
+##  $ BodyShapeI.x    : chr [1:5450] &quot;short and / or deep&quot; &quot;short and / or deep&quot; &quot;short and / or deep&quot; &quot;short and / or deep&quot; ...
+##  $ Fresh           : int [1:5450] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ Brack           : int [1:5450] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ Saltwater       : int [1:5450] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ DemersPelag     : chr [1:5450] &quot;pelagic-neritic&quot; &quot;demersal&quot; &quot;benthopelagic&quot; &quot;benthopelagic&quot; ...
+##  $ OperculumPresent: num [1:5450] 0 1 0 0 0 0 0 0 0 0 ...
+##  $ DorsalSpinesMax : int [1:5450] 3 3 15 16 16 17 18 2 2 2 ...
+##  $ MaxLengthTL     : num [1:5450] 39.7 60 15 10.1 20 ...
+##  $ Troph           : num [1:5450] 3.38 3.43 3.22 3.17 3.25 ...
+##  $ DepthMin        : int [1:5450] 61 7 NA NA 1 44 1 3 1 3 ...
+##  $ DepthMax        : int [1:5450] 180 350 NA 27 20 65 78 2000 80 900 ...
+##  $ TempPrefMin     : num [1:5450] 18.8 22.9 NA NA 25.1 NA 23.5 19.2 22.8 20 ...
+##  $ TempPrefMax     : num [1:5450] 26.9 28.3 NA NA 28.9 NA 29 27.9 29 28 ...
+##  $ FeedingPath     : chr [1:5450] &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; ...
+##  $ RepGuild1       : chr [1:5450] NA &quot;guarders&quot; NA NA ...
+##  $ RepGuild2       : chr [1:5450] NA &quot;nesters&quot; NA NA ...
+##  $ ParentalCare    : chr [1:5450] NA NA NA NA ...
+##  $ DorsalSpinesMin : int [1:5450] 3 3 15 16 15 16 17 2 2 2 ...</code></pre>
 <pre class="r"><code>## Calculate genus-level summary traits
 # Split species by genera
 traits_incomplete_genus_list &lt;- split(traits_incomplete_genus, as.factor(traits_incomplete_genus$Genus))
@@ -2340,11 +2320,11 @@ traits_incomplete_genus_list &lt;- split(traits_incomplete_genus, as.factor(trai
 traits_incomplete_genus_summary &lt;- lapply(traits_incomplete_genus_list, function(x){
   c(
   unlist(c(
-    sapply(x[, c(2:7, 9, 29, 33:35)], function(y){
+    sapply(x[,factor], function(y){
       out_y &lt;- table(y)
       ifelse(length(out_y) &gt; 0, names(which.max(out_y)), NA)
     }))),    
-  apply(x[, c(8, 10:28, 30:32)], 2, mean, na.rm=T)
+  apply(x[,numerical], 2, mean, na.rm=T)
     )
 })
 
@@ -2353,136 +2333,131 @@ complete_traits_incomplete_genus_summary &lt;- data.frame(do.call(&quot;rbind&qu
 
 ## Check order of columns because they most likely shifted
 str(complete_traits_incomplete_genus_summary)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    420 obs. of  34 variables:
-##  $ Genus            : chr  &quot;Abalistes&quot; &quot;Ablabys&quot; &quot;Acentrogobius&quot; &quot;Acentronura&quot; ...
-##  $ BodyShapeI.x     : chr  &quot;short and / or deep&quot; &quot;short and / or deep&quot; &quot;elongated&quot; &quot;elongated&quot; ...
-##  $ Fresh            : chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
-##  $ Brack            : chr  &quot;0&quot; &quot;0&quot; &quot;1&quot; &quot;0&quot; ...
-##  $ Saltwater        : chr  &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; ...
-##  $ DemersPelag      : chr  &quot;demersal&quot; &quot;benthopelagic&quot; &quot;demersal&quot; &quot;reef-associated&quot; ...
-##  $ OperculumPresent : chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
-##  $ FeedingPath      : chr  &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; ...
-##  $ RepGuild1        : chr  &quot;guarders&quot; NA NA &quot;bearers&quot; ...
-##  $ RepGuild2        : chr  &quot;nesters&quot; NA NA &quot;external brooders&quot; ...
-##  $ ParentalCare     : chr  NA NA NA &quot;paternal&quot; ...
-##  $ Vulnerability    : chr  &quot;36.825&quot; &quot;10&quot; &quot;10.3737037037037&quot; &quot;10&quot; ...
-##  $ DorsalSpinesMax  : chr  &quot;3&quot; &quot;16.4&quot; &quot;6.8&quot; &quot;0&quot; ...
-##  $ DorsalSoftRaysMin: chr  &quot;25&quot; &quot;7.2&quot; &quot;9.6&quot; &quot;16&quot; ...
-##  $ DorsalSoftRaysMax: chr  &quot;27&quot; &quot;8.2&quot; &quot;9.8&quot; &quot;16.6666666666667&quot; ...
-##  $ Araymin          : chr  &quot;23&quot; &quot;5.6&quot; &quot;9.4&quot; &quot;4&quot; ...
-##  $ Araymax          : chr  &quot;25.5&quot; &quot;6.4&quot; &quot;9.4&quot; &quot;4&quot; ...
-##  $ MaxLengthTL      : chr  &quot;49.8250007629395&quot; &quot;13.2980000495911&quot; &quot;10.0370369663945&quot; &quot;5.65000009536743&quot; ...
-##  $ Troph            : chr  &quot;3.40500009059906&quot; &quot;3.1960000038147&quot; &quot;3.36296295236658&quot; &quot;3.35666672388713&quot; ...
-##  $ seTroph          : chr  &quot;0.409999996423721&quot; &quot;0.287999993562698&quot; &quot;0.373703706595633&quot; &quot;0.439999997615814&quot; ...
-##  $ a                : chr  &quot;0.0263096503913403&quot; &quot;0.0186209008097649&quot; &quot;0.00810629207020005&quot; &quot;0.00389045011252165&quot; ...
-##  $ sd_log10a        : chr  &quot;0.129700001329184&quot; &quot;0.202999994158745&quot; &quot;0.191925926892846&quot; &quot;0.171000003814697&quot; ...
-##  $ b                : chr  &quot;2.89999997615814&quot; &quot;3.00999999046326&quot; &quot;3.05999996044018&quot; &quot;3.11999988555908&quot; ...
-##  $ sd_b             : chr  &quot;0.0764000006020069&quot; &quot;0.108999997377396&quot; &quot;0.097788886891471&quot; &quot;0.0900000035762787&quot; ...
-##  $ DepthMin         : chr  &quot;34&quot; &quot;15.3333333333333&quot; &quot;2.35714285714286&quot; &quot;1&quot; ...
-##  $ DepthMax         : chr  &quot;265&quot; &quot;47.5&quot; &quot;22.625&quot; &quot;33.5&quot; ...
-##  $ PredPreyRatioMin : chr  &quot;5.79374311511521&quot; &quot;3.46694676112999&quot; &quot;7.91442133711227&quot; &quot;6.29432921706159&quot; ...
-##  $ PredPreyRatioMax : chr  &quot;377.430653754262&quot; &quot;719.58083160212&quot; &quot;113.260344311732&quot; &quot;554.524611151254&quot; ...
-##  $ TempPrefMin      : chr  &quot;20.85&quot; &quot;24.3&quot; &quot;25.1636363636364&quot; &quot;24.8&quot; ...
-##  $ TempPrefMean     : chr  &quot;25.5&quot; &quot;28.15&quot; &quot;28.3363636363636&quot; &quot;28.35&quot; ...
-##  $ TempPrefMax      : chr  &quot;27.6&quot; &quot;28.95&quot; &quot;29.0909090909091&quot; &quot;29.15&quot; ...
-##  $ MaxLengthSL      : chr  &quot;41.5599994659424&quot; &quot;10.723999786377&quot; &quot;8.15407397128918&quot; &quot;4.63333336512248&quot; ...
-##  $ weight           : chr  &quot;2326.30563755348&quot; &quot;61.4444342928808&quot; &quot;16.273579928726&quot; &quot;0.888964669032789&quot; ...
-##  $ CaudalFinLength  : chr  &quot;8.26500129699707&quot; &quot;2.57400026321411&quot; &quot;1.88296299510532&quot; &quot;1.01666673024495&quot; ...</code></pre>
+<pre><code>## &#39;data.frame&#39;:    414 obs. of  18 variables:
+##  $ BodyShapeI.x    : chr  &quot;short and / or deep&quot; &quot;short and / or deep&quot; &quot;elongated&quot; &quot;elongated&quot; ...
+##  $ Fresh           : chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
+##  $ Brack           : chr  &quot;0&quot; &quot;0&quot; &quot;1&quot; &quot;0&quot; ...
+##  $ Saltwater       : chr  &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; ...
+##  $ DemersPelag     : chr  &quot;demersal&quot; &quot;benthopelagic&quot; &quot;demersal&quot; &quot;reef-associated&quot; ...
+##  $ OperculumPresent: chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
+##  $ FeedingPath     : chr  &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; ...
+##  $ RepGuild1       : chr  &quot;guarders&quot; NA NA &quot;bearers&quot; ...
+##  $ RepGuild2       : chr  &quot;nesters&quot; NA NA &quot;external brooders&quot; ...
+##  $ ParentalCare    : chr  NA NA NA &quot;paternal&quot; ...
+##  $ DorsalSpinesMax : chr  &quot;3&quot; &quot;16.4&quot; &quot;6.8&quot; &quot;0&quot; ...
+##  $ MaxLengthTL     : chr  &quot;49.8250007629395&quot; &quot;13.2980000495911&quot; &quot;10.0370369663945&quot; &quot;5.65000009536743&quot; ...
+##  $ Troph           : chr  &quot;3.40500009059906&quot; &quot;3.1960000038147&quot; &quot;3.36296295236658&quot; &quot;3.35666672388713&quot; ...
+##  $ DepthMin        : chr  &quot;34&quot; &quot;15.3333333333333&quot; &quot;2.35714285714286&quot; &quot;1&quot; ...
+##  $ DepthMax        : chr  &quot;265&quot; &quot;47.5&quot; &quot;22.625&quot; &quot;33.5&quot; ...
+##  $ TempPrefMin     : chr  &quot;20.85&quot; &quot;24.3&quot; &quot;25.1636363636364&quot; &quot;24.8&quot; ...
+##  $ TempPrefMax     : chr  &quot;27.6&quot; &quot;28.95&quot; &quot;29.0909090909091&quot; &quot;29.15&quot; ...
+##  $ DorsalSpinesMin : chr  &quot;3&quot; &quot;15.8&quot; &quot;6.4&quot; &quot;0&quot; ...</code></pre>
 <pre class="r"><code># Make integer fields numeric
-complete_traits_incomplete_genus_summary[,c(12:34)] &lt;- apply(complete_traits_incomplete_genus_summary[,c(12:34)], 2, as.numeric)
+complete_traits_incomplete_genus_summary[,numerical] &lt;- apply(complete_traits_incomplete_genus_summary[,numerical], 2, as.numeric)
 
 # Edit fields
-complete_traits_incomplete_genus_summary$BodyShapeI.x &lt;- as.factor(complete_traits_incomplete_genus_summary$BodyShapeI.x)
-complete_traits_incomplete_genus_summary$Fresh &lt;- as.factor(complete_traits_incomplete_genus_summary$Fresh)
-complete_traits_incomplete_genus_summary$Brack &lt;- as.factor(complete_traits_incomplete_genus_summary$Brack)
-complete_traits_incomplete_genus_summary$Saltwater &lt;- as.factor(complete_traits_incomplete_genus_summary$Saltwater)
-complete_traits_incomplete_genus_summary$DemersPelag &lt;- as.factor(complete_traits_incomplete_genus_summary$DemersPelag)
-complete_traits_incomplete_genus_summary$OperculumPresent &lt;- as.factor(complete_traits_incomplete_genus_summary$OperculumPresent)
-complete_traits_incomplete_genus_summary$FeedingPath &lt;- as.factor(complete_traits_incomplete_genus_summary$FeedingPath)
-complete_traits_incomplete_genus_summary$RepGuild1 &lt;- as.factor(complete_traits_incomplete_genus_summary$RepGuild1)
-complete_traits_incomplete_genus_summary$RepGuild2 &lt;- as.factor(complete_traits_incomplete_genus_summary$RepGuild2)
-complete_traits_incomplete_genus_summary$ParentalCare &lt;- as.factor(complete_traits_incomplete_genus_summary$ParentalCare)
+complete_traits_incomplete_genus_summary[,factor] &lt;- lapply(complete_traits_incomplete_genus_summary[,factor], function(x) as.factor(tolower(trimws(x))))
+# complete_traits_incomplete_genus_summary$BodyShapeI.x &lt;- as.factor(complete_traits_incomplete_genus_summary$BodyShapeI.x)
+# complete_traits_incomplete_genus_summary$Fresh &lt;- as.factor(complete_traits_incomplete_genus_summary$Fresh)
+# complete_traits_incomplete_genus_summary$Brack &lt;- as.factor(complete_traits_incomplete_genus_summary$Brack)
+# complete_traits_incomplete_genus_summary$Saltwater &lt;- as.factor(complete_traits_incomplete_genus_summary$Saltwater)
+# complete_traits_incomplete_genus_summary$DemersPelag &lt;- as.factor(complete_traits_incomplete_genus_summary$DemersPelag)
+# complete_traits_incomplete_genus_summary$OperculumPresent &lt;- as.factor(complete_traits_incomplete_genus_summary$OperculumPresent)
+# complete_traits_incomplete_genus_summary$FeedingPath &lt;- as.factor(complete_traits_incomplete_genus_summary$FeedingPath)
+# complete_traits_incomplete_genus_summary$RepGuild1 &lt;- as.factor(complete_traits_incomplete_genus_summary$RepGuild1)
+# complete_traits_incomplete_genus_summary$RepGuild2 &lt;- as.factor(complete_traits_incomplete_genus_summary$RepGuild2)
+# complete_traits_incomplete_genus_summary$ParentalCare &lt;- as.factor(complete_traits_incomplete_genus_summary$ParentalCare)
+
+# Remake Genus column
+complete_traits_incomplete_genus_summary$Genus &lt;- row.names(complete_traits_incomplete_genus_summary)
 
 # Make new file just in case code doesn&#39;t work so you don&#39;t have to go back
 complete_imputed &lt;- complete_traits
 
 ## Fill in NAs in trait data set &quot;complete_imputed&quot; with genus-level summaries
+complete_imputed &lt;- complete_imputed %&gt;%
+  mutate(across(everything(), ~ ifelse(is.na(.), complete_traits_incomplete_genus_summary[[cur_column()]][match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)], .)))
+
 # Have to do it individually for each column, need to find a way to reduce the replication to one single command.
-complete_imputed$BodyShapeI.x[is.na(complete_imputed$BodyShapeI.x)] &lt;- complete_traits_incomplete_genus_summary$BodyShapeI.x[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$BodyShapeI.x))]
-
-complete_imputed$Fresh[is.na(complete_imputed$Fresh)] &lt;- complete_traits_incomplete_genus_summary$Fresh[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Fresh))]
-
-complete_imputed$Brack[is.na(complete_imputed$Brack)] &lt;- complete_traits_incomplete_genus_summary$Brack[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Brack))]
-
-complete_imputed$Saltwater[is.na(complete_imputed$Saltwater)] &lt;- complete_traits_incomplete_genus_summary$Saltwater[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Saltwater))]
-
-complete_imputed$DemersPelag[is.na(complete_imputed$DemersPelag)] &lt;- complete_traits_incomplete_genus_summary$DemersPelag[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DemersPelag))]
-
-complete_imputed$OperculumPresent[is.na(complete_imputed$OperculumPresent)] &lt;- complete_traits_incomplete_genus_summary$OperculumPresent[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$OperculumPresent))]
-
-complete_imputed$FeedingPath[is.na(complete_imputed$FeedingPath)] &lt;- complete_traits_incomplete_genus_summary$FeedingPath[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$FeedingPath))]
-
-complete_imputed$RepGuild1[is.na(complete_imputed$RepGuild1)] &lt;- complete_traits_incomplete_genus_summary$RepGuild1[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$RepGuild1))]
-
-complete_imputed$RepGuild2[is.na(complete_imputed$RepGuild2)] &lt;- complete_traits_incomplete_genus_summary$RepGuild2[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$RepGuild2))]
-
-complete_imputed$ParentalCare[is.na(complete_imputed$ParentalCare)] &lt;- complete_traits_incomplete_genus_summary$ParentalCare[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$ParentalCare))]
-
-complete_imputed$Vulnerability[is.na(complete_imputed$Vulnerability)] &lt;- complete_traits_incomplete_genus_summary$Vulnerability[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Vulnerability))]
-
-# complete_imputed$DorsalSpinesMin[is.na(complete_imputed$DorsalSpinesMin)] &lt;- complete_traits_incomplete_genus_summary$DorsalSpinesMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DorsalSpinesMin))]
-
-complete_imputed$DorsalSpinesMax[is.na(complete_imputed$DorsalSpinesMax)] &lt;- complete_traits_incomplete_genus_summary$DorsalSpinesMax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DorsalSpinesMax))]
-
-complete_imputed$DorsalSoftRaysMin[is.na(complete_imputed$DorsalSoftRaysMin)] &lt;- complete_traits_incomplete_genus_summary$DorsalSoftRaysMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DorsalSoftRaysMin))]
-
-complete_imputed$DorsalSoftRaysMax[is.na(complete_imputed$DorsalSoftRaysMax)] &lt;- complete_traits_incomplete_genus_summary$DorsalSoftRaysMax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DorsalSoftRaysMax))]
-
-# complete_imputed$AnalFinSpinesMin[is.na(complete_imputed$AnalFinSpinesMin)] &lt;- complete_traits_incomplete_genus_summary$AnalFinSpinesMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$AnalFinSpinesMin))]
-
-# complete_imputed$AnalFinSpinesMax[is.na(complete_imputed$AnalFinSpinesMax)] &lt;- complete_traits_incomplete_genus_summary$AnalFinSpinesMax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$AnalFinSpinesMax))]
-
-complete_imputed$Araymin[is.na(complete_imputed$Araymin)] &lt;- complete_traits_incomplete_genus_summary$Araymin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Araymin))]
-
-complete_imputed$Araymax[is.na(complete_imputed$Araymax)] &lt;- complete_traits_incomplete_genus_summary$Araymax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Araymax))]
-
-# complete_imputed$Praymin[is.na(complete_imputed$Praymin)] &lt;- complete_traits_incomplete_genus_summary$Praymin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Praymin))]
-
-# complete_imputed$Praymax[is.na(complete_imputed$Praymax)] &lt;- complete_traits_incomplete_genus_summary$Praymax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Praymax))]
-
-complete_imputed$MaxLengthTL[is.na(complete_imputed$MaxLengthTL)] &lt;- complete_traits_incomplete_genus_summary$MaxLengthTL[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$MaxLengthTL))]
-
-complete_imputed$Troph[is.na(complete_imputed$Troph)] &lt;- complete_traits_incomplete_genus_summary$Troph[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Troph))]
-
-complete_imputed$seTroph[is.na(complete_imputed$seTroph)] &lt;- complete_traits_incomplete_genus_summary$seTroph[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$seTroph))]
-
-complete_imputed$a[is.na(complete_imputed$a)] &lt;- complete_traits_incomplete_genus_summary$a[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$a))]
-
-complete_imputed$sd_log10a[is.na(complete_imputed$sd_log10a)] &lt;- complete_traits_incomplete_genus_summary$sd_log10a[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$sd_log10a))]
-
-complete_imputed$b[is.na(complete_imputed$b)] &lt;- complete_traits_incomplete_genus_summary$b[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$b))]
-
-complete_imputed$sd_b[is.na(complete_imputed$sd_b)] &lt;- complete_traits_incomplete_genus_summary$sd_b[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$sd_b))]
-
-complete_imputed$DepthMin[is.na(complete_imputed$DepthMin)] &lt;- complete_traits_incomplete_genus_summary$DepthMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DepthMin))]
-
-complete_imputed$DepthMax[is.na(complete_imputed$DepthMax)] &lt;- complete_traits_incomplete_genus_summary$DepthMax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DepthMax))]
-
-complete_imputed$PredPreyRatioMin[is.na(complete_imputed$PredPreyRatioMin)] &lt;- complete_traits_incomplete_genus_summary$PredPreyRatioMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$PredPreyRatioMin))]
-
-complete_imputed$PredPreyRatioMax[is.na(complete_imputed$PredPreyRatioMax)] &lt;- complete_traits_incomplete_genus_summary$PredPreyRatioMax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$PredPreyRatioMax))]
-
-complete_imputed$TempPrefMin[is.na(complete_imputed$TempPrefMin)] &lt;- complete_traits_incomplete_genus_summary$TempPrefMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$TempPrefMin))]
-
-complete_imputed$TempPrefMean[is.na(complete_imputed$TempPrefMean)] &lt;- complete_traits_incomplete_genus_summary$TempPrefMean[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$TempPrefMean))]
-
-complete_imputed$TempPrefMax[is.na(complete_imputed$TempPrefMax)] &lt;- complete_traits_incomplete_genus_summary$TempPrefMax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$TempPrefMax))]
-
-complete_imputed$MaxLengthSL[is.na(complete_imputed$MaxLengthSL)] &lt;- complete_traits_incomplete_genus_summary$MaxLengthSL[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$MaxLengthSL))]
-
-complete_imputed$weight[is.na(complete_imputed$weight)] &lt;- complete_traits_incomplete_genus_summary$weight[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$weight))]
-
-complete_imputed$CaudalFinLength[is.na(complete_imputed$CaudalFinLength)] &lt;- complete_traits_incomplete_genus_summary$CaudalFinLength[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$CaudalFinLength))]</code></pre>
+# complete_imputed$BodyShapeI.x[is.na(complete_imputed$BodyShapeI.x)] &lt;- complete_traits_incomplete_genus_summary$BodyShapeI.x[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$BodyShapeI.x))]
+# 
+# complete_imputed$Fresh[is.na(complete_imputed$Fresh)] &lt;- complete_traits_incomplete_genus_summary$Fresh[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Fresh))]
+# 
+# complete_imputed$Brack[is.na(complete_imputed$Brack)] &lt;- complete_traits_incomplete_genus_summary$Brack[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Brack))]
+# 
+# complete_imputed$Saltwater[is.na(complete_imputed$Saltwater)] &lt;- complete_traits_incomplete_genus_summary$Saltwater[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Saltwater))]
+# 
+# complete_imputed$DemersPelag[is.na(complete_imputed$DemersPelag)] &lt;- complete_traits_incomplete_genus_summary$DemersPelag[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DemersPelag))]
+# 
+# complete_imputed$OperculumPresent[is.na(complete_imputed$OperculumPresent)] &lt;- complete_traits_incomplete_genus_summary$OperculumPresent[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$OperculumPresent))]
+# 
+# complete_imputed$FeedingPath[is.na(complete_imputed$FeedingPath)] &lt;- complete_traits_incomplete_genus_summary$FeedingPath[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$FeedingPath))]
+# 
+# complete_imputed$RepGuild1[is.na(complete_imputed$RepGuild1)] &lt;- complete_traits_incomplete_genus_summary$RepGuild1[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$RepGuild1))]
+# 
+# complete_imputed$RepGuild2[is.na(complete_imputed$RepGuild2)] &lt;- complete_traits_incomplete_genus_summary$RepGuild2[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$RepGuild2))]
+# 
+# complete_imputed$ParentalCare[is.na(complete_imputed$ParentalCare)] &lt;- complete_traits_incomplete_genus_summary$ParentalCare[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$ParentalCare))]
+# 
+# # complete_imputed$Vulnerability[is.na(complete_imputed$Vulnerability)] &lt;- complete_traits_incomplete_genus_summary$Vulnerability[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Vulnerability))]
+# 
+# # complete_imputed$DorsalSpinesMin[is.na(complete_imputed$DorsalSpinesMin)] &lt;- complete_traits_incomplete_genus_summary$DorsalSpinesMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DorsalSpinesMin))]
+# 
+# complete_imputed$DorsalSpinesMax[is.na(complete_imputed$DorsalSpinesMax)] &lt;- complete_traits_incomplete_genus_summary$DorsalSpinesMax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DorsalSpinesMax))]
+# 
+# # complete_imputed$DorsalSoftRaysMin[is.na(complete_imputed$DorsalSoftRaysMin)] &lt;- complete_traits_incomplete_genus_summary$DorsalSoftRaysMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DorsalSoftRaysMin))]
+# 
+# # complete_imputed$DorsalSoftRaysMax[is.na(complete_imputed$DorsalSoftRaysMax)] &lt;- complete_traits_incomplete_genus_summary$DorsalSoftRaysMax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DorsalSoftRaysMax))]
+# 
+# # complete_imputed$AnalFinSpinesMin[is.na(complete_imputed$AnalFinSpinesMin)] &lt;- complete_traits_incomplete_genus_summary$AnalFinSpinesMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$AnalFinSpinesMin))]
+# 
+# # complete_imputed$AnalFinSpinesMax[is.na(complete_imputed$AnalFinSpinesMax)] &lt;- complete_traits_incomplete_genus_summary$AnalFinSpinesMax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$AnalFinSpinesMax))]
+# 
+# # complete_imputed$Araymin[is.na(complete_imputed$Araymin)] &lt;- complete_traits_incomplete_genus_summary$Araymin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Araymin))]
+# 
+# # complete_imputed$Araymax[is.na(complete_imputed$Araymax)] &lt;- complete_traits_incomplete_genus_summary$Araymax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Araymax))]
+# 
+# # complete_imputed$Praymin[is.na(complete_imputed$Praymin)] &lt;- complete_traits_incomplete_genus_summary$Praymin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Praymin))]
+# 
+# # complete_imputed$Praymax[is.na(complete_imputed$Praymax)] &lt;- complete_traits_incomplete_genus_summary$Praymax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Praymax))]
+# 
+# complete_imputed$MaxLengthTL[is.na(complete_imputed$MaxLengthTL)] &lt;- complete_traits_incomplete_genus_summary$MaxLengthTL[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$MaxLengthTL))]
+# 
+# complete_imputed$Troph[is.na(complete_imputed$Troph)] &lt;- complete_traits_incomplete_genus_summary$Troph[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Troph))]
+# 
+# # complete_imputed$seTroph[is.na(complete_imputed$seTroph)] &lt;- complete_traits_incomplete_genus_summary$seTroph[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$seTroph))]
+# 
+# # complete_imputed$a[is.na(complete_imputed$a)] &lt;- complete_traits_incomplete_genus_summary$a[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$a))]
+# 
+# # complete_imputed$sd_log10a[is.na(complete_imputed$sd_log10a)] &lt;- complete_traits_incomplete_genus_summary$sd_log10a[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$sd_log10a))]
+# 
+# # complete_imputed$b[is.na(complete_imputed$b)] &lt;- complete_traits_incomplete_genus_summary$b[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$b))]
+# 
+# # complete_imputed$sd_b[is.na(complete_imputed$sd_b)] &lt;- complete_traits_incomplete_genus_summary$sd_b[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$sd_b))]
+# 
+# complete_imputed$DepthMin[is.na(complete_imputed$DepthMin)] &lt;- complete_traits_incomplete_genus_summary$DepthMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DepthMin))]
+# 
+# complete_imputed$DepthMax[is.na(complete_imputed$DepthMax)] &lt;- complete_traits_incomplete_genus_summary$DepthMax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DepthMax))]
+# 
+# # complete_imputed$PredPreyRatioMin[is.na(complete_imputed$PredPreyRatioMin)] &lt;- complete_traits_incomplete_genus_summary$PredPreyRatioMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$PredPreyRatioMin))]
+# 
+# # complete_imputed$PredPreyRatioMax[is.na(complete_imputed$PredPreyRatioMax)] &lt;- complete_traits_incomplete_genus_summary$PredPreyRatioMax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$PredPreyRatioMax))]
+# 
+# complete_imputed$TempPrefMin[is.na(complete_imputed$TempPrefMin)] &lt;- complete_traits_incomplete_genus_summary$TempPrefMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$TempPrefMin))]
+# 
+# # complete_imputed$TempPrefMean[is.na(complete_imputed$TempPrefMean)] &lt;- complete_traits_incomplete_genus_summary$TempPrefMean[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$TempPrefMean))]
+# 
+# complete_imputed$TempPrefMax[is.na(complete_imputed$TempPrefMax)] &lt;- complete_traits_incomplete_genus_summary$TempPrefMax[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$TempPrefMax))]
+# 
+# # complete_imputed$MaxLengthSL[is.na(complete_imputed$MaxLengthSL)] &lt;- complete_traits_incomplete_genus_summary$MaxLengthSL[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$MaxLengthSL))]
+#  
+# # complete_imputed$Weight[is.na(complete_imputed$Weight)] &lt;- complete_traits_incomplete_genus_summary$Weight[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Weight))]
+# 
+# # complete_imputed$CaudalFinLength[is.na(complete_imputed$CaudalFinLength)] &lt;- complete_traits_incomplete_genus_summary$CaudalFinLength[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$CaudalFinLength))]
+# 
+# # complete_imputed$Length[is.na(complete_imputed$Length)] &lt;- complete_traits_incomplete_genus_summary$Length[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$Length))]
+# 
+# complete_imputed$DorsalSpinesMin[is.na(complete_imputed$DorsalSpinesMin)] &lt;- complete_traits_incomplete_genus_summary$DorsalSpinesMin[match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)][which(is.na(complete_imputed$DorsalSpinesMin))]</code></pre>
 </div>
 <div id="trait-data-for-incomplete-species" class="section level1">
 <h1>Trait data for incomplete species</h1>
@@ -2710,12 +2685,13 @@ trait_missing_genus_added &lt;- species(species_missing_genus_added)</code></pre
 <pre class="r"><code># Morphology
 morphology_missing_genus_added &lt;- morphology(species_missing_genus_added)</code></pre>
 <pre><code>## Joining with `by = join_by(SpecCode)`</code></pre>
-<pre class="r"><code># Check if there are duplicated genomes
+<pre class="r"><code># Check if there are duplicated morphologies
 duplicates_check &lt;- which(duplicated(morphology_missing_genus_added$Species))
 duplicates_check</code></pre>
 <pre><code>## [1] 160</code></pre>
 <pre class="r"><code># Deleted duplicates
-morphology_missing_genus_added &lt;- morphology_missing_genus_added[-160,]
+morphology_missing_genus_added &lt;- morphology_missing_genus_added %&gt;%
+  distinct(Species, .keep_all = TRUE)
 
 # Estimates
 estimate_missing_genus_added &lt;- estimate(species_missing_genus_added)</code></pre>
@@ -2735,11 +2711,11 @@ traits_missing_genus_added &lt;- full_join(traits_missing_genus_added, reproduct
 # Get rid of duplicated columns
 traits_missing_genus_added &lt;- traits_missing_genus_added[,!duplicated(colnames(traits_missing_genus_added))]
 
-# Calculate the estimated weight with the following columns.
-traits_missing_genus_added$weight &lt;- traits_missing_genus_added$a * traits_missing_genus_added$MaxLengthTL^traits_missing_genus_added$b
-
-# Calculate the estimated caudal fin length with the following columns.
-traits_missing_genus_added$CaudalFinLength &lt;- traits_missing_genus_added$MaxLengthTL - traits_missing_genus_added$MaxLengthSL
+# # Calculate the estimated Weight with the following columns.
+# traits_missing_genus_added$Weight &lt;- traits_missing_genus_added$a * traits_missing_genus_added$MaxLengthTL^traits_missing_genus_added$b
+# 
+# # Calculate the estimated caudal fin length with the following columns.
+# traits_missing_genus_added$CaudalFinLength &lt;- traits_missing_genus_added$MaxLengthTL - traits_missing_genus_added$MaxLengthSL
 
 # Make -1 in 1 by multiplication
 traits_missing_genus_added$OperculumPresent &lt;- traits_missing_genus_added$OperculumPresent*-1
@@ -2749,42 +2725,27 @@ traits_missing_genus_added &lt;- traits_missing_genus_added[names(complete_trait
 
 # Check columns to see data types
 str(traits_missing_genus_added)</code></pre>
-<pre><code>## tibble [1,299 × 35] (S3: tbl_df/tbl/data.frame)
-##  $ Species          : chr [1:1299] &quot;Acanthurus achilles&quot; &quot;Acanthurus albimento&quot; &quot;Acanthurus albipectoralis&quot; &quot;Acanthurus auranticavus&quot; ...
-##  $ Genus            : chr [1:1299] &quot;Acanthurus&quot; &quot;Acanthurus&quot; &quot;Acanthurus&quot; &quot;Acanthurus&quot; ...
-##  $ BodyShapeI.x     : chr [1:1299] &quot;short and / or deep&quot; &quot;short and / or deep&quot; &quot;fusiform / normal&quot; &quot;short and / or deep&quot; ...
-##  $ Fresh            : int [1:1299] 0 0 0 0 0 0 0 0 0 0 ...
-##  $ Brack            : int [1:1299] 0 0 0 0 0 0 0 0 0 0 ...
-##  $ Saltwater        : int [1:1299] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ DemersPelag      : chr [1:1299] &quot;reef-associated&quot; &quot;reef-associated&quot; &quot;reef-associated&quot; &quot;reef-associated&quot; ...
-##  $ Vulnerability    : num [1:1299] 14 20.8 23 25.7 27.7 ...
-##  $ OperculumPresent : num [1:1299] 1 0 0 1 NA 1 1 1 0 1 ...
-##  $ DorsalSpinesMax  : int [1:1299] 9 9 9 9 NA 9 9 9 8 9 ...
-##  $ DorsalSoftRaysMin: int [1:1299] 29 26 22 25 NA 26 25 24 26 26 ...
-##  $ DorsalSoftRaysMax: int [1:1299] 33 28 33 26 NA 28 27 25 26 28 ...
-##  $ Araymin          : int [1:1299] 26 25 18 23 NA 25 24 22 24 24 ...
-##  $ Araymax          : int [1:1299] 29 27 31 24 NA 26 25 23 24 26 ...
-##  $ MaxLengthTL      : num [1:1299] 24 30.8 33 54.9 37.7 ...
-##  $ Troph            : num [1:1299] 2 2.16 3.4 2 2.1 ...
-##  $ seTroph          : num [1:1299] 0 0.06 0.45 0.06 0.06 ...
-##  $ a                : num [1:1299] 0.0229 0.0229 0.0145 0.0229 0.0191 ...
-##  $ sd_log10a        : num [1:1299] 0.165 0.165 0.177 0.165 0.119 ...
-##  $ b                : num [1:1299] 2.96 2.96 2.99 2.96 2.92 ...
-##  $ sd_b             : num [1:1299] 0.0858 0.0858 0.101 0.0858 0.0739 ...
-##  $ DepthMin         : int [1:1299] 0 NA 5 1 2 6 2 2 0 2 ...
-##  $ DepthMax         : int [1:1299] 10 NA 20 20 80 50 15 25 6 50 ...
-##  $ PredPreyRatioMin : num [1:1299] 134.48 91.96 7.19 116.19 NA ...
-##  $ PredPreyRatioMax : num [1:1299] 7174 4608 110 7174 NA ...
-##  $ TempPrefMin      : num [1:1299] 25.8 NA 24.7 25.6 NA 24.5 24.9 26.1 NA 23.7 ...
-##  $ TempPrefMean     : num [1:1299] 27.4 NA 26.3 28.5 NA 27.5 27.8 27.4 NA 27.4 ...
-##  $ TempPrefMax      : num [1:1299] 28.3 NA 28.4 29.3 NA 28.4 28.8 28 NA 28.1 ...
-##  $ FeedingPath      : chr [1:1299] &quot;benthic&quot; &quot;benthic&quot; &quot;pelagic&quot; &quot;benthic&quot; ...
-##  $ MaxLengthSL      : num [1:1299] 20.1 25.2 27.1 45 30.9 ...
-##  $ weight           : num [1:1299] 279 583 502 3229 764 ...
-##  $ CaudalFinLength  : num [1:1299] 3.94 5.55 5.94 9.9 6.79 ...
-##  $ RepGuild1        : chr [1:1299] &quot;nonguarders&quot; NA &quot;nonguarders&quot; &quot;nonguarders&quot; ...
-##  $ RepGuild2        : chr [1:1299] &quot;open water/substratum egg scatterers&quot; NA &quot;open water/substratum egg scatterers&quot; &quot;open water/substratum egg scatterers&quot; ...
-##  $ ParentalCare     : chr [1:1299] &quot;none&quot; NA &quot;none&quot; &quot;none&quot; ...</code></pre>
+<pre><code>## tibble [1,299 × 20] (S3: tbl_df/tbl/data.frame)
+##  $ Species         : chr [1:1299] &quot;Acanthurus achilles&quot; &quot;Acanthurus albimento&quot; &quot;Acanthurus albipectoralis&quot; &quot;Acanthurus auranticavus&quot; ...
+##  $ Genus           : chr [1:1299] &quot;Acanthurus&quot; &quot;Acanthurus&quot; &quot;Acanthurus&quot; &quot;Acanthurus&quot; ...
+##  $ BodyShapeI.x    : chr [1:1299] &quot;short and / or deep&quot; &quot;short and / or deep&quot; &quot;fusiform / normal&quot; &quot;short and / or deep&quot; ...
+##  $ Fresh           : int [1:1299] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ Brack           : int [1:1299] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ Saltwater       : int [1:1299] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ DemersPelag     : chr [1:1299] &quot;reef-associated&quot; &quot;reef-associated&quot; &quot;reef-associated&quot; &quot;reef-associated&quot; ...
+##  $ OperculumPresent: num [1:1299] 1 0 0 1 NA 1 1 1 0 1 ...
+##  $ DorsalSpinesMax : int [1:1299] 9 9 9 9 NA 9 9 9 8 9 ...
+##  $ MaxLengthTL     : num [1:1299] 24 30.8 33 54.9 37.7 ...
+##  $ Troph           : num [1:1299] 2 2.16 3.4 2 2.1 ...
+##  $ DepthMin        : int [1:1299] 0 NA 5 1 2 6 2 2 0 2 ...
+##  $ DepthMax        : int [1:1299] 10 NA 20 20 80 50 15 25 6 50 ...
+##  $ TempPrefMin     : num [1:1299] 25.8 NA 24.7 25.6 NA 24.5 24.9 26.1 NA 23.7 ...
+##  $ TempPrefMax     : num [1:1299] 28.3 NA 28.4 29.3 NA 28.4 28.8 28 NA 28.1 ...
+##  $ FeedingPath     : chr [1:1299] &quot;benthic&quot; &quot;benthic&quot; &quot;pelagic&quot; &quot;benthic&quot; ...
+##  $ RepGuild1       : chr [1:1299] &quot;nonguarders&quot; NA &quot;nonguarders&quot; &quot;nonguarders&quot; ...
+##  $ RepGuild2       : chr [1:1299] &quot;open water/substratum egg scatterers&quot; NA &quot;open water/substratum egg scatterers&quot; &quot;open water/substratum egg scatterers&quot; ...
+##  $ ParentalCare    : chr [1:1299] &quot;none&quot; NA &quot;none&quot; &quot;none&quot; ...
+##  $ DorsalSpinesMin : int [1:1299] 9 9 8 9 NA 9 9 9 8 9 ...</code></pre>
 <pre class="r"><code>#### Calculate genus-level summary traits
 ### Split species by genera
 traits_missing_genus_added_list &lt;- split(traits_missing_genus_added, as.factor(traits_missing_genus_added$Genus))
@@ -2793,76 +2754,60 @@ traits_missing_genus_added_list &lt;- split(traits_missing_genus_added, as.facto
 traits_missing_genus_added_summary &lt;- lapply(traits_missing_genus_added_list, function(x){
   c(
   unlist(c(
-    sapply(x[, c(2:7, 9, 29, 33:35)], function(y){
+    sapply(x[,factor], function(y){
       out_y &lt;- table(y)
       ifelse(length(out_y) &gt; 0, names(which.max(out_y)), NA)
     }))),    
-  apply(x[, c(8, 10:28, 30:32)], 2, mean, na.rm=T)
+  apply(x[,numerical], 2, mean, na.rm=T)
     )
 })
 
 ### Bind rows into data.frame
 complete_traits_missing_genus_added_summary &lt;- data.frame(do.call(&quot;rbind&quot;, traits_missing_genus_added_summary))
 
-## Check order of columns because they most likely shifted
-str(complete_traits_missing_genus_added_summary)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    40 obs. of  34 variables:
-##  $ Genus            : chr  &quot;Acanthurus&quot; &quot;Apogon&quot; &quot;Asterropteryx&quot; &quot;Bathygobius&quot; ...
-##  $ BodyShapeI.x     : chr  &quot;short and / or deep&quot; &quot;fusiform / normal&quot; &quot;elongated&quot; &quot;elongated&quot; ...
-##  $ Fresh            : chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
-##  $ Brack            : chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
-##  $ Saltwater        : chr  &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; ...
-##  $ DemersPelag      : chr  &quot;reef-associated&quot; &quot;reef-associated&quot; &quot;reef-associated&quot; &quot;demersal&quot; ...
-##  $ OperculumPresent : chr  &quot;1&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
-##  $ FeedingPath      : chr  &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; ...
-##  $ RepGuild1        : chr  &quot;nonguarders&quot; &quot;bearers&quot; &quot;guarders&quot; &quot;guarders&quot; ...
-##  $ RepGuild2        : chr  &quot;open water/substratum egg scatterers&quot; &quot;external brooders&quot; NA NA ...
-##  $ ParentalCare     : chr  &quot;none&quot; &quot;paternal&quot; NA NA ...
-##  $ Vulnerability    : chr  &quot;26.286&quot; &quot;10.0996078431373&quot; &quot;10&quot; &quot;10.4396428571429&quot; ...
-##  $ DorsalSpinesMax  : chr  &quot;8.86111111111111&quot; &quot;7.08333333333333&quot; &quot;7&quot; &quot;7&quot; ...
-##  $ DorsalSoftRaysMin: chr  &quot;24.9722222222222&quot; &quot;8.91666666666667&quot; &quot;9.44444444444444&quot; &quot;9.05263157894737&quot; ...
-##  $ DorsalSoftRaysMax: chr  &quot;27.6666666666667&quot; &quot;9.08333333333333&quot; &quot;10.1111111111111&quot; &quot;9.26315789473684&quot; ...
-##  $ Araymin          : chr  &quot;23.1666666666667&quot; &quot;8&quot; &quot;8.66666666666667&quot; &quot;7.94736842105263&quot; ...
-##  $ Araymax          : chr  &quot;25.5277777777778&quot; &quot;8.08333333333333&quot; &quot;9.11111111111111&quot; &quot;8.21052631578947&quot; ...
-##  $ MaxLengthTL      : chr  &quot;37.7007501602173&quot; &quot;8.60000001682955&quot; &quot;3.81333332591587&quot; &quot;9.90178564616612&quot; ...
-##  $ Troph            : chr  &quot;2.27575000524521&quot; &quot;3.44549020131429&quot; &quot;3.25777779685126&quot; &quot;3.45285714524133&quot; ...
-##  $ seTroph          : chr  &quot;0.102824999392033&quot; &quot;0.457254897730023&quot; &quot;0.391111105680466&quot; &quot;0.536428570747375&quot; ...
-##  $ a                : chr  &quot;0.0226714551448822&quot; &quot;0.0116984586907076&quot; &quot;0.00768939137924463&quot; &quot;0.00790081878325769&quot; ...
-##  $ sd_log10a        : chr  &quot;0.129552503116429&quot; &quot;0.199882353199463&quot; &quot;0.164250002242625&quot; &quot;0.165178571694664&quot; ...
-##  $ b                : chr  &quot;2.96075003743172&quot; &quot;3.08058815843919&quot; &quot;3.09874993562698&quot; &quot;3.07607135602406&quot; ...
-##  $ sd_b             : chr  &quot;0.0720100000035018&quot; &quot;0.0949588233933729&quot; &quot;0.0887374989688396&quot; &quot;0.0883321416165147&quot; ...
-##  $ DepthMin         : chr  &quot;2.66666666666667&quot; &quot;5.86&quot; &quot;12.3333333333333&quot; &quot;0.105263157894737&quot; ...
-##  $ DepthMax         : chr  &quot;51.3589743589744&quot; &quot;46.48&quot; &quot;39.2222222222222&quot; &quot;15&quot; ...
-##  $ PredPreyRatioMin : chr  &quot;89.8445404875986&quot; &quot;7.86975672173427&quot; &quot;14.6857974915647&quot; &quot;7.86316620308579&quot; ...
-##  $ PredPreyRatioMax : chr  &quot;4931.88027960332&quot; &quot;102.931847725607&quot; &quot;407.980560195565&quot; &quot;104.199775376983&quot; ...
-##  $ TempPrefMin      : chr  &quot;24.725&quot; &quot;23.9840909090909&quot; &quot;25.8125&quot; &quot;24.1705882352941&quot; ...
-##  $ TempPrefMean     : chr  &quot;27.6805555555556&quot; &quot;26.8340909090909&quot; &quot;28.2625&quot; &quot;27.6117647058824&quot; ...
-##  $ TempPrefMax      : chr  &quot;28.8027777777778&quot; &quot;28.3363636363636&quot; &quot;29.125&quot; &quot;28.9294117647059&quot; ...
-##  $ MaxLengthSL      : chr  &quot;29.9152497529984&quot; &quot;7.00196080581815&quot; &quot;3.06888892915514&quot; &quot;8.12071426425661&quot; ...
-##  $ weight           : chr  &quot;1413.99680739455&quot; &quot;14.0037006377346&quot; &quot;0.853981726185677&quot; &quot;12.8510863641909&quot; ...
-##  $ CaudalFinLength  : chr  &quot;7.78550040721893&quot; &quot;1.5980392110114&quot; &quot;0.744444396760729&quot; &quot;1.78107138190951&quot; ...</code></pre>
-<pre class="r"><code># Make integer fields numeric
-complete_traits_missing_genus_added_summary[,c(12:34)] &lt;- sapply(complete_traits_missing_genus_added_summary[,c(12:34)], as.numeric)
+# Make integer fields numeric
+complete_traits_missing_genus_added_summary[,numerical] &lt;- sapply(complete_traits_missing_genus_added_summary[,numerical], as.numeric)
 
 # Edit fields
-complete_traits_missing_genus_added_summary$BodyShapeI.x &lt;- as.factor(complete_traits_missing_genus_added_summary$BodyShapeI.x)
-complete_traits_missing_genus_added_summary$Fresh &lt;- as.factor(complete_traits_missing_genus_added_summary$Fresh)
-complete_traits_missing_genus_added_summary$Brack &lt;- as.factor(complete_traits_missing_genus_added_summary$Brack)
-complete_traits_missing_genus_added_summary$Saltwater &lt;- as.factor(complete_traits_missing_genus_added_summary$Saltwater)
-complete_traits_missing_genus_added_summary$DemersPelag &lt;- as.factor(complete_traits_missing_genus_added_summary$DemersPelag)
-complete_traits_missing_genus_added_summary$OperculumPresent &lt;- as.factor(complete_traits_missing_genus_added_summary$OperculumPresent)
-complete_traits_missing_genus_added_summary$FeedingPath &lt;- as.factor(complete_traits_missing_genus_added_summary$FeedingPath)
-complete_traits_missing_genus_added_summary$RepGuild1 &lt;- as.factor(complete_traits_missing_genus_added_summary$RepGuild1)
-complete_traits_missing_genus_added_summary$RepGuild2 &lt;- as.factor(complete_traits_missing_genus_added_summary$RepGuild2)
-complete_traits_missing_genus_added_summary$ParentalCare &lt;- as.factor(complete_traits_missing_genus_added_summary$ParentalCare)
+complete_traits_missing_genus_added_summary[,factor] &lt;- lapply(complete_traits_missing_genus_added_summary[,factor], function(x) as.factor(tolower(trimws(x))))
+# complete_traits_missing_genus_added_summary$BodyShapeI.x &lt;- as.factor(complete_traits_missing_genus_added_summary$BodyShapeI.x)
+# complete_traits_missing_genus_added_summary$Fresh &lt;- as.factor(complete_traits_missing_genus_added_summary$Fresh)
+# complete_traits_missing_genus_added_summary$Brack &lt;- as.factor(complete_traits_missing_genus_added_summary$Brack)
+# complete_traits_missing_genus_added_summary$Saltwater &lt;- as.factor(complete_traits_missing_genus_added_summary$Saltwater)
+# complete_traits_missing_genus_added_summary$DemersPelag &lt;- as.factor(complete_traits_missing_genus_added_summary$DemersPelag)
+# complete_traits_missing_genus_added_summary$OperculumPresent &lt;- as.factor(complete_traits_missing_genus_added_summary$OperculumPresent)
+# complete_traits_missing_genus_added_summary$FeedingPath &lt;- as.factor(complete_traits_missing_genus_added_summary$FeedingPath)
+# complete_traits_missing_genus_added_summary$RepGuild1 &lt;- as.factor(complete_traits_missing_genus_added_summary$RepGuild1)
+# complete_traits_missing_genus_added_summary$RepGuild2 &lt;- as.factor(complete_traits_missing_genus_added_summary$RepGuild2)
+# complete_traits_missing_genus_added_summary$ParentalCare &lt;- as.factor(complete_traits_missing_genus_added_summary$ParentalCare)
 
-# complete_traits_missing_genus_added_summary &lt;- merge(missing_genera, complete_traits_missing_genus_added_summary, by = &quot;Genus&quot;, all.x = F)
+## Check order of columns because they most likely shifted
+str(complete_traits_missing_genus_added_summary)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    40 obs. of  18 variables:
+##  $ BodyShapeI.x    : Factor w/ 5 levels &quot;eel-like&quot;,&quot;elongated&quot;,..: 5 3 2 2 2 2 5 5 3 3 ...
+##  $ Fresh           : Factor w/ 2 levels &quot;0&quot;,&quot;1&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Brack           : Factor w/ 2 levels &quot;0&quot;,&quot;1&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Saltwater       : Factor w/ 2 levels &quot;0&quot;,&quot;1&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ DemersPelag     : Factor w/ 4 levels &quot;benthopelagic&quot;,..: 4 4 4 2 4 4 4 4 4 4 ...
+##  $ OperculumPresent: Factor w/ 2 levels &quot;0&quot;,&quot;1&quot;: 2 1 1 1 1 1 1 2 2 1 ...
+##  $ FeedingPath     : Factor w/ 2 levels &quot;benthic&quot;,&quot;pelagic&quot;: 1 1 1 1 2 1 1 2 1 2 ...
+##  $ RepGuild1       : Factor w/ 3 levels &quot;bearers&quot;,&quot;guarders&quot;,..: 3 1 2 2 NA NA 1 2 2 3 ...
+##  $ RepGuild2       : Factor w/ 5 levels &quot;clutch tenders&quot;,..: 5 2 NA NA NA NA NA 4 4 NA ...
+##  $ ParentalCare    : Factor w/ 2 levels &quot;none&quot;,&quot;paternal&quot;: 1 2 NA NA NA NA NA 2 2 NA ...
+##  $ DorsalSpinesMax : num  8.86 7.08 7 7 6.79 ...
+##  $ MaxLengthTL     : num  37.7 8.6 3.81 9.9 3.03 ...
+##  $ Troph           : num  2.28 3.45 3.26 3.45 3.09 ...
+##  $ DepthMin        : num  2.667 5.86 12.333 0.105 4.429 ...
+##  $ DepthMax        : num  51.4 46.5 39.2 15 27.5 ...
+##  $ TempPrefMin     : num  24.7 24 25.8 24.2 25.5 ...
+##  $ TempPrefMax     : num  28.8 28.3 29.1 28.9 29.1 ...
+##  $ DorsalSpinesMin : num  8.78 7.08 6.89 6.89 6.29 ...</code></pre>
+<pre class="r"><code># complete_traits_missing_genus_added_summary &lt;- merge(missing_genera, complete_traits_missing_genus_added_summary, by = &quot;Genus&quot;, all.x = F)
 
+complete_traits_missing_genus_added_summary$Genus &lt;- row.names(complete_traits_missing_genus_added_summary)
 complete_traits_missing_genus_added_summary &lt;- complete_traits_missing_genus_added_summary[!duplicated(complete_traits_missing_genus_added_summary[c(&#39;Genus&#39;)]), ]
 
 # complete_traits_missing_genus_added_summary &lt;- complete_traits_missing_genus_added_summary %&gt;% relocate(Family, .before = Genus)
-
-row.names(complete_traits_missing_genus_added_summary) &lt;- complete_traits_missing_genus_added_summary$Genus
 
 # Duplicate the missing Genus rows that were deleted earlier
 complete_traits_missing_genus_added_summary &lt;- rbind(complete_traits_missing_genus_added_summary, complete_traits_missing_genus_added_summary[c(&quot;Callogobius&quot;, &quot;Chromis&quot;, &quot;Eviota&quot;, &quot;Eviota&quot;, &quot;Gobiodon&quot;, &quot;Liopropoma&quot;, &quot;Trimma&quot;, &quot;Xenisthmus&quot;), ])
@@ -2879,8 +2824,9 @@ complete_imputed &lt;- data.frame(rbind(complete_imputed, complete_traits_missin
 
 # Identify which rows have NAs and will be filled in with Genus level data
 fromFamily &lt;- apply(complete_imputed, 1, function(x){any(is.na(x))})
-
-complete_imputed_genus &lt;-  cbind(complete_imputed, fromFamily)</code></pre>
+sum(fromFamily)</code></pre>
+<pre><code>## [1] 722</code></pre>
+<pre class="r"><code>complete_imputed_genus &lt;-  cbind(complete_imputed, fromFamily)</code></pre>
 </div>
 <div id="higher-taxonomic-classifications" class="section level1">
 <h1>Higher taxonomic classifications</h1>
@@ -2899,7 +2845,8 @@ genera &lt;- rfishbase::load_taxa() %&gt;%
 ## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
 ## Joining with `by = join_by(Class, ClassNum)`</code></pre>
 <pre class="r"><code># Choose which classification levels you want to keep
-genera &lt;- genera[,-c(1:2,4,8)]
+keep &lt;- c(&quot;Genus&quot;, &quot;Family&quot;, &quot;Order&quot;, &quot;Class&quot;)
+genera &lt;- genera[,keep]
 
 # Merge dataframes together
 complete_imputed_genus &lt;- merge(genera, complete_imputed_genus, by = &quot;Genus&quot;, all.x = F, all.y = F)
@@ -2908,11 +2855,9 @@ complete_imputed_genus &lt;- merge(genera, complete_imputed_genus, by = &quot;Ge
 complete_imputed_genus &lt;- complete_imputed_genus[!duplicated(complete_imputed_genus[c(&#39;Species&#39;)]), ]
 
 # Move family column to the first column of the dataframe
-complete_imputed_genus &lt;- complete_imputed_genus %&gt;% relocate(Family, .before = Genus)
-
-complete_imputed_genus &lt;- complete_imputed_genus %&gt;% relocate(Order, .before = Family)
-
-complete_imputed_genus &lt;- complete_imputed_genus %&gt;% relocate(Class, .before = Order)</code></pre>
+complete_imputed_genus &lt;- complete_imputed_genus %&gt;% relocate(Family, .before = Genus) %&gt;% 
+  relocate(Order, .before = Family) %&gt;% 
+  relocate(Class, .before = Order)</code></pre>
 </div>
 <div id="find-and-fill-in-missing-data-using-family-averages" class="section level1">
 <h1>Find and fill in missing data using family averages</h1>
@@ -3302,10 +3247,6 @@ species_incomplete_family &lt;- unlist(lapply(species_incomplete_family, functio
 ## Joining with `by = join_by(Subfamily, GenCode, FamCode)`
 ## Joining with `by = join_by(FamCode)`
 ## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
-## Joining with `by = join_by(Class, ClassNum)`
-## Joining with `by = join_by(Subfamily, GenCode, FamCode)`
-## Joining with `by = join_by(FamCode)`
-## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
 ## Joining with `by = join_by(Class, ClassNum)`</code></pre>
 <pre class="r"><code># Get rid of everything after the space to get genera only
 species_names_family &lt;- str_extract(species_incomplete_family, &quot;[^ ]+&quot;)
@@ -3319,7 +3260,8 @@ species_names_family &lt;- rfishbase::load_taxa() %&gt;%
 ## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
 ## Joining with `by = join_by(Class, ClassNum)`</code></pre>
 <pre class="r"><code># Choose which classification levels you want to keep
-species_names_family &lt;- species_names_family[,-c(1,3:4,6:8)]
+keep &lt;- c(&quot;Species&quot;, &quot;Family&quot;)
+species_names_family &lt;- species_names_family[,keep]
 
 ## Extract traits from fishbase
 # Main traits
@@ -3331,9 +3273,10 @@ morphology_incomplete_family &lt;- morphology(species_incomplete_family)</code><
 <pre class="r"><code># Used to determine duplicates of Species in a column
 duplicates_check &lt;- which(duplicated(morphology_incomplete_family$Species))
 duplicates_check </code></pre>
-<pre><code>## [1] 2548 2549</code></pre>
+<pre><code>## [1] 2465 2466</code></pre>
 <pre class="r"><code># Removed duplicates
-morphology_incomplete_family &lt;- morphology_incomplete_family[-c(2548:2549),]
+morphology_incomplete_family &lt;- morphology_incomplete_family %&gt;%
+  distinct(Species, .keep_all = TRUE)
 
 # Estimates
 estimate_incomplete_family &lt;- estimate(species_incomplete_family)</code></pre>
@@ -3344,9 +3287,10 @@ ecology_incomplete_family &lt;- ecology(species_incomplete_family)</code></pre>
 <pre class="r"><code># Used to determine duplicates of Species in a column
 duplicates_check &lt;- which(duplicated(ecology_incomplete_family$Species))
 duplicates_check </code></pre>
-<pre><code>## [1] 3319</code></pre>
+<pre><code>## [1] 3245</code></pre>
 <pre class="r"><code># Removed duplicates
-ecology_incomplete_family &lt;- ecology_incomplete_family[-c(3308),]
+ecology_incomplete_family &lt;- ecology_incomplete_family %&gt;%
+  distinct(Species, .keep_all = TRUE)
 
 # Reproduction
 reproduction_incomplete_family &lt;- reproduction(species_incomplete_family)</code></pre>
@@ -3360,11 +3304,11 @@ traits_incomplete_family &lt;- full_join(traits_incomplete_family, reproduction_
 # Get rid of duplicated columns
 traits_incomplete_family &lt;- traits_incomplete_family[,!duplicated(colnames(traits_incomplete_family))]
 
-# Calculate the estimated weight with the following columns.
-traits_incomplete_family$weight &lt;- traits_incomplete_family$a * traits_incomplete_family$MaxLengthTL^traits_incomplete_family$b
-
-# Calculate the estimated caudal fin length with the following columns.
-traits_incomplete_family$CaudalFinLength &lt;- traits_incomplete_family$MaxLengthTL - traits_incomplete_family$MaxLengthSL
+# # Calculate the estimated Weight with the following columns.
+# traits_incomplete_family$Weight &lt;- traits_incomplete_family$a * traits_incomplete_family$MaxLengthTL^traits_incomplete_family$b
+# 
+# # Calculate the estimated caudal fin length with the following columns.
+# traits_incomplete_family$CaudalFinLength &lt;- traits_incomplete_family$MaxLengthTL - traits_incomplete_family$MaxLengthSL
 
 # Make -1 in 1 by multiplication
 traits_incomplete_family$OperculumPresent &lt;- traits_incomplete_family$OperculumPresent*-1
@@ -3374,42 +3318,27 @@ traits_incomplete_family &lt;- traits_incomplete_family[names(complete_traits)[-
 
 # Check columns to see data types
 str(traits_incomplete_family)</code></pre>
-<pre><code>## tibble [9,042 × 35] (S3: tbl_df/tbl/data.frame)
-##  $ Species          : chr [1:9042] &quot;Abalistes filamentosus&quot; &quot;Abalistes stellatus&quot; &quot;Ablabys binotatus&quot; &quot;Ablabys gymnothorax&quot; ...
-##  $ Genus            : chr [1:9042] &quot;Abalistes&quot; &quot;Abalistes&quot; &quot;Ablabys&quot; &quot;Ablabys&quot; ...
-##  $ BodyShapeI.x     : chr [1:9042] &quot;short and / or deep&quot; &quot;short and / or deep&quot; &quot;short and / or deep&quot; &quot;short and / or deep&quot; ...
-##  $ Fresh            : int [1:9042] 0 0 0 0 0 0 0 0 0 0 ...
-##  $ Brack            : int [1:9042] 0 0 0 0 0 0 0 0 0 1 ...
-##  $ Saltwater        : int [1:9042] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ DemersPelag      : chr [1:9042] &quot;pelagic-neritic&quot; &quot;demersal&quot; &quot;benthopelagic&quot; &quot;benthopelagic&quot; ...
-##  $ Vulnerability    : num [1:9042] 29.6 44 10 10 10 ...
-##  $ OperculumPresent : num [1:9042] 0 1 0 0 0 0 0 0 NA 0 ...
-##  $ DorsalSpinesMax  : int [1:9042] 3 3 15 16 16 17 18 NA NA 2 ...
-##  $ DorsalSoftRaysMin: int [1:9042] 25 25 8 9 8 5 6 NA NA 27 ...
-##  $ DorsalSoftRaysMax: int [1:9042] 27 27 9 9 10 6 7 NA NA 34 ...
-##  $ Araymin          : int [1:9042] 22 24 5 8 7 4 4 NA NA 26 ...
-##  $ Araymax          : int [1:9042] 25 26 5 9 8 5 5 NA NA 32 ...
-##  $ MaxLengthTL      : num [1:9042] 39.7 60 15 10.1 20 ...
-##  $ Troph            : num [1:9042] 3.38 3.43 3.22 3.17 3.25 ...
-##  $ seTroph          : num [1:9042] 0.41 0.41 0.29 0.29 0.29 ...
-##  $ a                : num [1:9042] 0.0257 0.0269 0.0186 0.0186 0.0186 ...
-##  $ sd_log10a        : num [1:9042] 0.163 0.0964 0.203 0.203 0.203 ...
-##  $ b                : num [1:9042] 2.93 2.87 3.01 3.01 3.01 ...
-##  $ sd_b             : num [1:9042] 0.0886 0.0642 0.109 0.109 0.109 ...
-##  $ DepthMin         : int [1:9042] 61 7 NA NA 1 44 1 NA 1 1 ...
-##  $ DepthMax         : int [1:9042] 180 350 NA 27 20 65 78 NA 50 50 ...
-##  $ PredPreyRatioMin : num [1:9042] 5.92 5.67 3.5 NA 3.41 ...
-##  $ PredPreyRatioMax : num [1:9042] 406 349 734 NA 690 ...
-##  $ TempPrefMin      : num [1:9042] 18.8 22.9 NA NA 25.1 NA 23.5 NA 15.2 14.3 ...
-##  $ TempPrefMean     : num [1:9042] 23.9 27.1 NA NA 28.2 NA 28.1 NA 17.1 17.5 ...
-##  $ TempPrefMax      : num [1:9042] 26.9 28.3 NA NA 28.9 NA 29 NA 18.4 21 ...
-##  $ FeedingPath      : chr [1:9042] &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; ...
-##  $ MaxLengthSL      : num [1:9042] 32.5 50.62 12.3 8.28 16.4 ...
-##  $ weight           : num [1:9042] 1238.4 3414.2 64.6 19.6 153.5 ...
-##  $ CaudalFinLength  : num [1:9042] 7.15 9.38 2.7 1.82 3.6 ...
-##  $ RepGuild1        : chr [1:9042] NA &quot;guarders&quot; NA NA ...
-##  $ RepGuild2        : chr [1:9042] NA &quot;nesters&quot; NA NA ...
-##  $ ParentalCare     : chr [1:9042] NA NA NA NA ...</code></pre>
+<pre><code>## tibble [8,861 × 20] (S3: tbl_df/tbl/data.frame)
+##  $ Species         : chr [1:8861] &quot;Abalistes filamentosus&quot; &quot;Abalistes stellatus&quot; &quot;Ablabys binotatus&quot; &quot;Ablabys gymnothorax&quot; ...
+##  $ Genus           : chr [1:8861] &quot;Abalistes&quot; &quot;Abalistes&quot; &quot;Ablabys&quot; &quot;Ablabys&quot; ...
+##  $ BodyShapeI.x    : chr [1:8861] &quot;short and / or deep&quot; &quot;short and / or deep&quot; &quot;short and / or deep&quot; &quot;short and / or deep&quot; ...
+##  $ Fresh           : int [1:8861] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ Brack           : int [1:8861] 0 0 0 0 0 0 0 0 0 1 ...
+##  $ Saltwater       : int [1:8861] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ DemersPelag     : chr [1:8861] &quot;pelagic-neritic&quot; &quot;demersal&quot; &quot;benthopelagic&quot; &quot;benthopelagic&quot; ...
+##  $ OperculumPresent: num [1:8861] 0 1 0 0 0 0 0 0 NA 0 ...
+##  $ DorsalSpinesMax : int [1:8861] 3 3 15 16 16 17 18 NA NA 2 ...
+##  $ MaxLengthTL     : num [1:8861] 39.7 60 15 10.1 20 ...
+##  $ Troph           : num [1:8861] 3.38 3.43 3.22 3.17 3.25 ...
+##  $ DepthMin        : int [1:8861] 61 7 NA NA 1 44 1 NA 1 1 ...
+##  $ DepthMax        : int [1:8861] 180 350 NA 27 20 65 78 NA 50 50 ...
+##  $ TempPrefMin     : num [1:8861] 18.8 22.9 NA NA 25.1 NA 23.5 NA 15.2 14.3 ...
+##  $ TempPrefMax     : num [1:8861] 26.9 28.3 NA NA 28.9 NA 29 NA 18.4 21 ...
+##  $ FeedingPath     : chr [1:8861] &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; &quot;benthic&quot; ...
+##  $ RepGuild1       : chr [1:8861] NA &quot;guarders&quot; NA NA ...
+##  $ RepGuild2       : chr [1:8861] NA &quot;nesters&quot; NA NA ...
+##  $ ParentalCare    : chr [1:8861] NA NA NA NA ...
+##  $ DorsalSpinesMin : int [1:8861] 3 3 15 16 15 16 17 NA NA 2 ...</code></pre>
 <pre class="r"><code># Add the family column into the dataframe
 traits_incomplete_family &lt;- merge(species_names_family, traits_incomplete_family, by = &quot;Species&quot;, all.x = F)
 
@@ -3421,11 +3350,11 @@ traits_incomplete_family_list &lt;- split(traits_incomplete_family, as.factor(tr
 traits_incomplete_family_summary &lt;- lapply(traits_incomplete_family_list, function(x){
   c(
   unlist(c(
-    sapply(x[, c(2, 4:8, 10, 30, 34:36)], function(y){
+    sapply(x[,factor], function(y){
       out_y &lt;- table(y)
       ifelse(length(out_y) &gt; 0, names(which.max(out_y)), NA)
     }))),    
-  apply(x[, c(9, 11:29, 31:33)], 2, mean, na.rm=T)
+  apply(x[,numerical], 2, mean, na.rm=T)
     )
 })
 
@@ -3434,136 +3363,131 @@ complete_traits_incomplete_family_summary &lt;- data.frame(do.call(&quot;rbind&q
 
 ## Check order of columns because they most likely shifted
 str(complete_traits_incomplete_family_summary)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    93 obs. of  34 variables:
-##  $ Family           : chr  &quot;Aetobatidae&quot; &quot;Anomalopidae&quot; &quot;Anthiadidae&quot; &quot;Aploactinidae&quot; ...
-##  $ BodyShapeI.x     : chr  &quot;other&quot; &quot;fusiform / normal&quot; &quot;fusiform / normal&quot; &quot;Elongated&quot; ...
-##  $ Fresh            : chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
-##  $ Brack            : chr  &quot;1&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
-##  $ Saltwater        : chr  &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; ...
-##  $ DemersPelag      : chr  &quot;benthopelagic&quot; &quot;demersal&quot; &quot;reef-associated&quot; &quot;demersal&quot; ...
-##  $ OperculumPresent : chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
-##  $ FeedingPath      : chr  &quot;benthic&quot; &quot;pelagic&quot; &quot;pelagic&quot; &quot;pelagic&quot; ...
-##  $ RepGuild1        : chr  &quot;bearers&quot; NA &quot;nonguarders&quot; NA ...
-##  $ RepGuild2        : chr  &quot;internal live bearers&quot; NA &quot;open water/substratum egg scatterers&quot; NA ...
-##  $ ParentalCare     : chr  NA NA &quot;none&quot; NA ...
-##  $ Vulnerability    : chr  &quot;84.006&quot; &quot;14.3388888888889&quot; &quot;13.7657446808511&quot; &quot;10.0612244897959&quot; ...
-##  $ DorsalSpinesMax  : chr  &quot;0&quot; &quot;5.14285714285714&quot; &quot;10.1307692307692&quot; &quot;12.6875&quot; ...
-##  $ DorsalSoftRaysMin: chr  &quot;0&quot; &quot;14.5714285714286&quot; &quot;15.7737226277372&quot; &quot;9.03225806451613&quot; ...
-##  $ DorsalSoftRaysMax: chr  &quot;0&quot; &quot;15.5714285714286&quot; &quot;16.5766423357664&quot; &quot;9.8125&quot; ...
-##  $ Araymin          : chr  &quot;0&quot; &quot;11&quot; &quot;7.18181818181818&quot; &quot;7.64705882352941&quot; ...
-##  $ Araymax          : chr  &quot;0&quot; &quot;11.7142857142857&quot; &quot;7.43939393939394&quot; &quot;8.44117647058824&quot; ...
-##  $ MaxLengthTL      : chr  &quot;143.910003662109&quot; &quot;17.1455554962158&quot; &quot;17.2376595659459&quot; &quot;6.99795919048543&quot; ...
-##  $ Troph            : chr  &quot;3.72999992370605&quot; &quot;3.45000002119276&quot; &quot;3.53719149447502&quot; &quot;3.31448981713276&quot; ...
-##  $ seTroph          : chr  &quot;0.457600018382072&quot; &quot;0.509999997085995&quot; &quot;0.493659571637499&quot; &quot;0.0391836727836302&quot; ...
-##  $ a                : chr  &quot;0.00999999977648258&quot; &quot;0.0112201999872923&quot; &quot;0.013483773395098&quot; &quot;0.0114581133619103&quot; ...
-##  $ sd_log10a        : chr  &quot;0.312999993562698&quot; &quot;0.172999992966652&quot; &quot;0.201504309822259&quot; &quot;0.218551017496051&quot; ...
-##  $ b                : chr  &quot;3.03999996185303&quot; &quot;3.03999996185303&quot; &quot;3.01418102095867&quot; &quot;3.0622449115831&quot; ...
-##  $ sd_b             : chr  &quot;0.119000002741814&quot; &quot;0.0856999978423119&quot; &quot;0.101527154445648&quot; &quot;0.114663262604451&quot; ...
-##  $ DepthMin         : chr  &quot;0.666666666666667&quot; &quot;32.375&quot; &quot;56.3097826086956&quot; &quot;10.8085106382979&quot; ...
-##  $ DepthMax         : chr  &quot;76.6666666666667&quot; &quot;235.333333333333&quot; &quot;160.490476190476&quot; &quot;56.8541666666667&quot; ...
-##  $ PredPreyRatioMin : chr  &quot;0.711921088495116&quot; &quot;5.72601786139238&quot; &quot;7.38641241831362&quot; &quot;3.63162850211797&quot; ...
-##  $ PredPreyRatioMax : chr  &quot;125.265386045527&quot; &quot;377.678389977682&quot; &quot;97.0505724197725&quot; &quot;709.062321174275&quot; ...
-##  $ TempPrefMin      : chr  &quot;23.7666666666667&quot; &quot;21.7333333333333&quot; &quot;18.6956204379562&quot; &quot;23.1911764705882&quot; ...
-##  $ TempPrefMean     : chr  &quot;27.9&quot; &quot;25.15&quot; &quot;21.7919708029197&quot; &quot;26.3617647058824&quot; ...
-##  $ TempPrefMax      : chr  &quot;29.0666666666667&quot; &quot;27.8333333333333&quot; &quot;24.4510948905109&quot; &quot;27.6529411764706&quot; ...
-##  $ MaxLengthSL      : chr  &quot;118.01000213623&quot; &quot;13.9844445652432&quot; &quot;14.012012762719&quot; &quot;5.73653057156777&quot; ...
-##  $ weight           : chr  &quot;36357.7082244305&quot; &quot;171.480280581825&quot; &quot;241.916553284662&quot; &quot;7.33281872797151&quot; ...
-##  $ CaudalFinLength  : chr  &quot;25.9000015258789&quot; &quot;3.16111093097263&quot; &quot;3.22564680322687&quot; &quot;1.26142861891766&quot; ...</code></pre>
+<pre><code>## &#39;data.frame&#39;:    92 obs. of  18 variables:
+##  $ BodyShapeI.x    : chr  &quot;other&quot; &quot;fusiform / normal&quot; &quot;fusiform / normal&quot; &quot;Elongated&quot; ...
+##  $ Fresh           : chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
+##  $ Brack           : chr  &quot;1&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
+##  $ Saltwater       : chr  &quot;1&quot; &quot;1&quot; &quot;1&quot; &quot;1&quot; ...
+##  $ DemersPelag     : chr  &quot;benthopelagic&quot; &quot;demersal&quot; &quot;reef-associated&quot; &quot;demersal&quot; ...
+##  $ OperculumPresent: chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
+##  $ FeedingPath     : chr  &quot;benthic&quot; &quot;pelagic&quot; &quot;pelagic&quot; &quot;pelagic&quot; ...
+##  $ RepGuild1       : chr  &quot;bearers&quot; NA &quot;nonguarders&quot; NA ...
+##  $ RepGuild2       : chr  &quot;internal live bearers&quot; NA &quot;open water/substratum egg scatterers&quot; NA ...
+##  $ ParentalCare    : chr  NA NA &quot;none&quot; NA ...
+##  $ DorsalSpinesMax : chr  &quot;0&quot; &quot;5.14285714285714&quot; &quot;10.1307692307692&quot; &quot;12.6875&quot; ...
+##  $ MaxLengthTL     : chr  &quot;143.910003662109&quot; &quot;17.1455554962158&quot; &quot;17.2376595659459&quot; &quot;6.99795919048543&quot; ...
+##  $ Troph           : chr  &quot;3.72999992370605&quot; &quot;3.45000002119276&quot; &quot;3.53719149447502&quot; &quot;3.31448981713276&quot; ...
+##  $ DepthMin        : chr  &quot;0.666666666666667&quot; &quot;32.375&quot; &quot;56.3097826086956&quot; &quot;10.8085106382979&quot; ...
+##  $ DepthMax        : chr  &quot;76.6666666666667&quot; &quot;235.333333333333&quot; &quot;160.490476190476&quot; &quot;56.8541666666667&quot; ...
+##  $ TempPrefMin     : chr  &quot;23.7666666666667&quot; &quot;21.7333333333333&quot; &quot;18.6956204379562&quot; &quot;23.1911764705882&quot; ...
+##  $ TempPrefMax     : chr  &quot;29.0666666666667&quot; &quot;27.8333333333333&quot; &quot;24.4510948905109&quot; &quot;27.6529411764706&quot; ...
+##  $ DorsalSpinesMin : chr  &quot;0&quot; &quot;4.42857142857143&quot; &quot;10.0923076923077&quot; &quot;11.90625&quot; ...</code></pre>
 <pre class="r"><code># Make integer fields numeric
-complete_traits_incomplete_family_summary[,c(12:34)] &lt;- apply(complete_traits_incomplete_family_summary[,c(12:34)], 2, as.numeric)
+complete_traits_incomplete_family_summary[,numerical] &lt;- apply(complete_traits_incomplete_family_summary[,numerical], 2, as.numeric)
 
 # Edit fields
-complete_traits_incomplete_family_summary$BodyShapeI.x &lt;- as.factor(complete_traits_incomplete_family_summary$BodyShapeI.x)
-complete_traits_incomplete_family_summary$Fresh &lt;- as.factor(complete_traits_incomplete_family_summary$Fresh)
-complete_traits_incomplete_family_summary$Brack &lt;- as.factor(complete_traits_incomplete_family_summary$Brack)
-complete_traits_incomplete_family_summary$Saltwater &lt;- as.factor(complete_traits_incomplete_family_summary$Saltwater)
-complete_traits_incomplete_family_summary$DemersPelag &lt;- as.factor(complete_traits_incomplete_family_summary$DemersPelag)
-complete_traits_incomplete_family_summary$OperculumPresent &lt;- as.factor(complete_traits_incomplete_family_summary$OperculumPresent)
-complete_traits_incomplete_family_summary$FeedingPath &lt;- as.factor(complete_traits_incomplete_family_summary$FeedingPath)
-complete_traits_incomplete_family_summary$RepGuild1 &lt;- as.factor(complete_traits_incomplete_family_summary$RepGuild1)
-complete_traits_incomplete_family_summary$RepGuild2 &lt;- as.factor(complete_traits_incomplete_family_summary$RepGuild2)
-complete_traits_incomplete_family_summary$ParentalCare &lt;- as.factor(complete_traits_incomplete_family_summary$ParentalCare)
+complete_traits_incomplete_family_summary[,factor] &lt;- lapply(complete_traits_incomplete_family_summary[,factor], function(x) as.factor(tolower(trimws(x))))
+# complete_traits_incomplete_family_summary$BodyShapeI.x &lt;- as.factor(complete_traits_incomplete_family_summary$BodyShapeI.x)
+# complete_traits_incomplete_family_summary$Fresh &lt;- as.factor(complete_traits_incomplete_family_summary$Fresh)
+# complete_traits_incomplete_family_summary$Brack &lt;- as.factor(complete_traits_incomplete_family_summary$Brack)
+# complete_traits_incomplete_family_summary$Saltwater &lt;- as.factor(complete_traits_incomplete_family_summary$Saltwater)
+# complete_traits_incomplete_family_summary$DemersPelag &lt;- as.factor(complete_traits_incomplete_family_summary$DemersPelag)
+# complete_traits_incomplete_family_summary$OperculumPresent &lt;- as.factor(complete_traits_incomplete_family_summary$OperculumPresent)
+# complete_traits_incomplete_family_summary$FeedingPath &lt;- as.factor(complete_traits_incomplete_family_summary$FeedingPath)
+# complete_traits_incomplete_family_summary$RepGuild1 &lt;- as.factor(complete_traits_incomplete_family_summary$RepGuild1)
+# complete_traits_incomplete_family_summary$RepGuild2 &lt;- as.factor(complete_traits_incomplete_family_summary$RepGuild2)
+# complete_traits_incomplete_family_summary$ParentalCare &lt;- as.factor(complete_traits_incomplete_family_summary$ParentalCare)
+
+# Remake Family column
+complete_traits_incomplete_family_summary$Family &lt;- row.names(complete_traits_incomplete_family_summary)
 
 # Make new file just in case code doesn&#39;t work so you don&#39;t have to go back
 complete_imputed_family &lt;- complete_imputed_genus
 
-## Fill in NAs in trait data set &quot;complete_traits&quot; with Family-level summaries
+## Fill in NAs in trait data set &quot;complete_imputed&quot; with genus-level summaries
+complete_imputed_family &lt;- complete_imputed_family %&gt;%
+  mutate(across(everything(), ~ ifelse(is.na(.), complete_traits_incomplete_family_summary[[cur_column()]][match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Genus)], .)))
+
 # Have to do it individually for each column, need to find a way to reduce the replication to one single command.
-complete_imputed_family$BodyShapeI.x[is.na(complete_imputed_family$BodyShapeI.x)] &lt;- complete_traits_incomplete_family_summary$BodyShapeI.x[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$BodyShapeI.x))]
-
-complete_imputed_family$Fresh[is.na(complete_imputed_family$Fresh)] &lt;- complete_traits_incomplete_family_summary$Fresh[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Fresh))]
-
-complete_imputed_family$Brack[is.na(complete_imputed_family$Brack)] &lt;- complete_traits_incomplete_family_summary$Brack[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Brack))]
-
-complete_imputed_family$Saltwater[is.na(complete_imputed_family$Saltwater)] &lt;- complete_traits_incomplete_family_summary$Saltwater[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Saltwater))]
-
-complete_imputed_family$DemersPelag[is.na(complete_imputed_family$DemersPelag)] &lt;- complete_traits_incomplete_family_summary$DemersPelag[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DemersPelag))]
-
-complete_imputed_family$OperculumPresent[is.na(complete_imputed_family$OperculumPresent)] &lt;- complete_traits_incomplete_family_summary$OperculumPresent[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$OperculumPresent))]
-
-complete_imputed_family$FeedingPath[is.na(complete_imputed_family$FeedingPath)] &lt;- complete_traits_incomplete_family_summary$FeedingPath[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$FeedingPath))]
-
-complete_imputed_family$RepGuild1[is.na(complete_imputed_family$RepGuild1)] &lt;- complete_traits_incomplete_family_summary$RepGuild1[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$RepGuild1))]
-
-complete_imputed_family$RepGuild2[is.na(complete_imputed_family$RepGuild2)] &lt;- complete_traits_incomplete_family_summary$RepGuild2[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$RepGuild2))]
-
-complete_imputed_family$ParentalCare[is.na(complete_imputed_family$ParentalCare)] &lt;- complete_traits_incomplete_family_summary$ParentalCare[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$ParentalCare))]
-
-complete_imputed_family$Vulnerability[is.na(complete_imputed_family$Vulnerability)] &lt;- complete_traits_incomplete_family_summary$Vulnerability[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Vulnerability))]
-
-# complete_imputed_family$DorsalSpinesMin[is.na(complete_imputed_family$DorsalSpinesMin)] &lt;- complete_traits_incomplete_family_summary$DorsalSpinesMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DorsalSpinesMin))]
-
-complete_imputed_family$DorsalSpinesMax[is.na(complete_imputed_family$DorsalSpinesMax)] &lt;- complete_traits_incomplete_family_summary$DorsalSpinesMax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DorsalSpinesMax))]
-
-complete_imputed_family$DorsalSoftRaysMin[is.na(complete_imputed_family$DorsalSoftRaysMin)] &lt;- complete_traits_incomplete_family_summary$DorsalSoftRaysMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DorsalSoftRaysMin))]
-
-complete_imputed_family$DorsalSoftRaysMax[is.na(complete_imputed_family$DorsalSoftRaysMax)] &lt;- complete_traits_incomplete_family_summary$DorsalSoftRaysMax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DorsalSoftRaysMax))]
-
-# complete_imputed_family$AnalFinSpinesMin[is.na(complete_imputed_family$AnalFinSpinesMin)] &lt;- complete_traits_incomplete_family_summary$AnalFinSpinesMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$AnalFinSpinesMin))]
-
-# complete_imputed_family$AnalFinSpinesMax[is.na(complete_imputed_family$AnalFinSpinesMax)] &lt;- complete_traits_incomplete_family_summary$AnalFinSpinesMax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$AnalFinSpinesMax))]
-
-complete_imputed_family$Araymin[is.na(complete_imputed_family$Araymin)] &lt;- complete_traits_incomplete_family_summary$Araymin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Araymin))]
-
-complete_imputed_family$Araymax[is.na(complete_imputed_family$Araymax)] &lt;- complete_traits_incomplete_family_summary$Araymax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Araymax))]
-
-# complete_imputed_family$Praymin[is.na(complete_imputed_family$Praymin)] &lt;- complete_traits_incomplete_family_summary$Praymin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Praymin))]
-
-# complete_imputed_family$Praymax[is.na(complete_imputed_family$Praymax)] &lt;- complete_traits_incomplete_family_summary$Praymax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Praymax))]
-
-complete_imputed_family$MaxLengthTL[is.na(complete_imputed_family$MaxLengthTL)] &lt;- complete_traits_incomplete_family_summary$MaxLengthTL[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$MaxLengthTL))]
-
-complete_imputed_family$Troph[is.na(complete_imputed_family$Troph)] &lt;- complete_traits_incomplete_family_summary$Troph[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Troph))]
-
-complete_imputed_family$seTroph[is.na(complete_imputed_family$seTroph)] &lt;- complete_traits_incomplete_family_summary$seTroph[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$seTroph))]
-
-complete_imputed_family$a[is.na(complete_imputed_family$a)] &lt;- complete_traits_incomplete_family_summary$a[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$a))]
-
-complete_imputed_family$sd_log10a[is.na(complete_imputed_family$sd_log10a)] &lt;- complete_traits_incomplete_family_summary$sd_log10a[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$sd_log10a))]
-
-complete_imputed_family$b[is.na(complete_imputed_family$b)] &lt;- complete_traits_incomplete_family_summary$b[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$b))]
-
-complete_imputed_family$sd_b[is.na(complete_imputed_family$sd_b)] &lt;- complete_traits_incomplete_family_summary$sd_b[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$sd_b))]
-
-complete_imputed_family$DepthMin[is.na(complete_imputed_family$DepthMin)] &lt;- complete_traits_incomplete_family_summary$DepthMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DepthMin))]
-
-complete_imputed_family$DepthMax[is.na(complete_imputed_family$DepthMax)] &lt;- complete_traits_incomplete_family_summary$DepthMax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DepthMax))]
-
-complete_imputed_family$PredPreyRatioMin[is.na(complete_imputed_family$PredPreyRatioMin)] &lt;- complete_traits_incomplete_family_summary$PredPreyRatioMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$PredPreyRatioMin))]
-
-complete_imputed_family$PredPreyRatioMax[is.na(complete_imputed_family$PredPreyRatioMax)] &lt;- complete_traits_incomplete_family_summary$PredPreyRatioMax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$PredPreyRatioMax))]
-
-complete_imputed_family$TempPrefMin[is.na(complete_imputed_family$TempPrefMin)] &lt;- complete_traits_incomplete_family_summary$TempPrefMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$TempPrefMin))]
-
-complete_imputed_family$TempPrefMean[is.na(complete_imputed_family$TempPrefMean)] &lt;- complete_traits_incomplete_family_summary$TempPrefMean[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$TempPrefMean))]
-
-complete_imputed_family$TempPrefMax[is.na(complete_imputed_family$TempPrefMax)] &lt;- complete_traits_incomplete_family_summary$TempPrefMax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$TempPrefMax))]
-
-complete_imputed_family$MaxLengthSL[is.na(complete_imputed_family$MaxLengthSL)] &lt;- complete_traits_incomplete_family_summary$MaxLengthSL[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$MaxLengthSL))]
-
-complete_imputed_family$weight[is.na(complete_imputed_family$weight)] &lt;- complete_traits_incomplete_family_summary$weight[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$weight))]
-
-complete_imputed_family$CaudalFinLength[is.na(complete_imputed_family$CaudalFinLength)] &lt;- complete_traits_incomplete_family_summary$CaudalFinLength[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$CaudalFinLength))]</code></pre>
+# complete_imputed_family$BodyShapeI.x[is.na(complete_imputed_family$BodyShapeI.x)] &lt;- complete_traits_incomplete_family_summary$BodyShapeI.x[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$BodyShapeI.x))]
+# 
+# complete_imputed_family$Fresh[is.na(complete_imputed_family$Fresh)] &lt;- complete_traits_incomplete_family_summary$Fresh[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Fresh))]
+# 
+# complete_imputed_family$Brack[is.na(complete_imputed_family$Brack)] &lt;- complete_traits_incomplete_family_summary$Brack[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Brack))]
+# 
+# complete_imputed_family$Saltwater[is.na(complete_imputed_family$Saltwater)] &lt;- complete_traits_incomplete_family_summary$Saltwater[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Saltwater))]
+# 
+# complete_imputed_family$DemersPelag[is.na(complete_imputed_family$DemersPelag)] &lt;- complete_traits_incomplete_family_summary$DemersPelag[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DemersPelag))]
+# 
+# complete_imputed_family$OperculumPresent[is.na(complete_imputed_family$OperculumPresent)] &lt;- complete_traits_incomplete_family_summary$OperculumPresent[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$OperculumPresent))]
+# 
+# complete_imputed_family$FeedingPath[is.na(complete_imputed_family$FeedingPath)] &lt;- complete_traits_incomplete_family_summary$FeedingPath[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$FeedingPath))]
+# 
+# complete_imputed_family$RepGuild1[is.na(complete_imputed_family$RepGuild1)] &lt;- complete_traits_incomplete_family_summary$RepGuild1[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$RepGuild1))]
+# 
+# complete_imputed_family$RepGuild2[is.na(complete_imputed_family$RepGuild2)] &lt;- complete_traits_incomplete_family_summary$RepGuild2[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$RepGuild2))]
+# 
+# complete_imputed_family$ParentalCare[is.na(complete_imputed_family$ParentalCare)] &lt;- complete_traits_incomplete_family_summary$ParentalCare[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$ParentalCare))]
+# 
+# complete_imputed_family$Vulnerability[is.na(complete_imputed_family$Vulnerability)] &lt;- complete_traits_incomplete_family_summary$Vulnerability[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Vulnerability))]
+# 
+# # complete_imputed_family$DorsalSpinesMin[is.na(complete_imputed_family$DorsalSpinesMin)] &lt;- complete_traits_incomplete_family_summary$DorsalSpinesMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DorsalSpinesMin))]
+# 
+# complete_imputed_family$DorsalSpinesMax[is.na(complete_imputed_family$DorsalSpinesMax)] &lt;- complete_traits_incomplete_family_summary$DorsalSpinesMax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DorsalSpinesMax))]
+# 
+# complete_imputed_family$DorsalSoftRaysMin[is.na(complete_imputed_family$DorsalSoftRaysMin)] &lt;- complete_traits_incomplete_family_summary$DorsalSoftRaysMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DorsalSoftRaysMin))]
+# 
+# complete_imputed_family$DorsalSoftRaysMax[is.na(complete_imputed_family$DorsalSoftRaysMax)] &lt;- complete_traits_incomplete_family_summary$DorsalSoftRaysMax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DorsalSoftRaysMax))]
+# 
+# # complete_imputed_family$AnalFinSpinesMin[is.na(complete_imputed_family$AnalFinSpinesMin)] &lt;- complete_traits_incomplete_family_summary$AnalFinSpinesMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$AnalFinSpinesMin))]
+# 
+# # complete_imputed_family$AnalFinSpinesMax[is.na(complete_imputed_family$AnalFinSpinesMax)] &lt;- complete_traits_incomplete_family_summary$AnalFinSpinesMax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$AnalFinSpinesMax))]
+# 
+# complete_imputed_family$Araymin[is.na(complete_imputed_family$Araymin)] &lt;- complete_traits_incomplete_family_summary$Araymin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Araymin))]
+# 
+# complete_imputed_family$Araymax[is.na(complete_imputed_family$Araymax)] &lt;- complete_traits_incomplete_family_summary$Araymax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Araymax))]
+# 
+# # complete_imputed_family$Praymin[is.na(complete_imputed_family$Praymin)] &lt;- complete_traits_incomplete_family_summary$Praymin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Praymin))]
+# 
+# # complete_imputed_family$Praymax[is.na(complete_imputed_family$Praymax)] &lt;- complete_traits_incomplete_family_summary$Praymax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Praymax))]
+# 
+# complete_imputed_family$MaxLengthTL[is.na(complete_imputed_family$MaxLengthTL)] &lt;- complete_traits_incomplete_family_summary$MaxLengthTL[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$MaxLengthTL))]
+# 
+# complete_imputed_family$Troph[is.na(complete_imputed_family$Troph)] &lt;- complete_traits_incomplete_family_summary$Troph[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Troph))]
+# 
+# complete_imputed_family$seTroph[is.na(complete_imputed_family$seTroph)] &lt;- complete_traits_incomplete_family_summary$seTroph[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$seTroph))]
+# 
+# complete_imputed_family$a[is.na(complete_imputed_family$a)] &lt;- complete_traits_incomplete_family_summary$a[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$a))]
+# 
+# complete_imputed_family$sd_log10a[is.na(complete_imputed_family$sd_log10a)] &lt;- complete_traits_incomplete_family_summary$sd_log10a[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$sd_log10a))]
+# 
+# complete_imputed_family$b[is.na(complete_imputed_family$b)] &lt;- complete_traits_incomplete_family_summary$b[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$b))]
+# 
+# complete_imputed_family$sd_b[is.na(complete_imputed_family$sd_b)] &lt;- complete_traits_incomplete_family_summary$sd_b[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$sd_b))]
+# 
+# complete_imputed_family$DepthMin[is.na(complete_imputed_family$DepthMin)] &lt;- complete_traits_incomplete_family_summary$DepthMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DepthMin))]
+# 
+# complete_imputed_family$DepthMax[is.na(complete_imputed_family$DepthMax)] &lt;- complete_traits_incomplete_family_summary$DepthMax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DepthMax))]
+# 
+# complete_imputed_family$PredPreyRatioMin[is.na(complete_imputed_family$PredPreyRatioMin)] &lt;- complete_traits_incomplete_family_summary$PredPreyRatioMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$PredPreyRatioMin))]
+# 
+# complete_imputed_family$PredPreyRatioMax[is.na(complete_imputed_family$PredPreyRatioMax)] &lt;- complete_traits_incomplete_family_summary$PredPreyRatioMax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$PredPreyRatioMax))]
+# 
+# complete_imputed_family$TempPrefMin[is.na(complete_imputed_family$TempPrefMin)] &lt;- complete_traits_incomplete_family_summary$TempPrefMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$TempPrefMin))]
+# 
+# complete_imputed_family$TempPrefMean[is.na(complete_imputed_family$TempPrefMean)] &lt;- complete_traits_incomplete_family_summary$TempPrefMean[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$TempPrefMean))]
+# 
+# complete_imputed_family$TempPrefMax[is.na(complete_imputed_family$TempPrefMax)] &lt;- complete_traits_incomplete_family_summary$TempPrefMax[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$TempPrefMax))]
+# 
+# complete_imputed_family$MaxLengthSL[is.na(complete_imputed_family$MaxLengthSL)] &lt;- complete_traits_incomplete_family_summary$MaxLengthSL[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$MaxLengthSL))]
+# 
+# complete_imputed_family$Weight[is.na(complete_imputed_family$Weight)] &lt;- complete_traits_incomplete_family_summary$Weight[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Weight))]
+# 
+# complete_imputed_family$CaudalFinLength[is.na(complete_imputed_family$CaudalFinLength)] &lt;- complete_traits_incomplete_family_summary$CaudalFinLength[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$CaudalFinLength))]
+# 
+# complete_imputed_family$Length[is.na(complete_imputed_family$Length)] &lt;- complete_traits_incomplete_family_summary$Length[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$Length))]
+# 
+# complete_imputed_family$DorsalSpinesMin[is.na(complete_imputed_family$DorsalSpinesMin)] &lt;- complete_traits_incomplete_family_summary$DorsalSpinesMin[match(complete_imputed_family$Family, complete_traits_incomplete_family_summary$Family)][which(is.na(complete_imputed_family$DorsalSpinesMin))]</code></pre>
 </div>
 <div id="last-file-checks" class="section level1">
 <h1>Last file checks</h1>
@@ -3632,29 +3556,55 @@ sessionInfo()</code></pre>
 ## locale:
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
-## time zone: America/Denver
+## time zone: America/Los_Angeles
 ## tzcode source: internal
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] stringr_1.5.0   dplyr_1.1.3     tidyr_1.3.0     rfishbase_4.1.2
+## [1] stringr_1.5.1   dplyr_1.1.4     tidyr_1.3.0     rfishbase_4.1.2
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] jsonlite_1.8.7    compiler_4.3.1    crayon_1.5.2      tidyselect_1.2.0 
-##  [5] jquerylib_0.1.4   progress_1.2.2    yaml_2.3.7        fastmap_1.1.1    
-##  [9] readr_2.1.4       R6_2.5.1          generics_0.1.3    curl_5.0.2       
-## [13] knitr_1.43        tibble_3.2.1      openssl_2.1.0     DBI_1.1.3        
-## [17] bslib_0.5.1       pillar_1.9.0      tzdb_0.4.0        rlang_1.1.1      
-## [21] utf8_1.2.3        stringi_1.7.12    cachem_1.0.8      xfun_0.40        
-## [25] fs_1.6.3          sass_0.4.7        memoise_2.0.1     cli_3.6.1        
-## [29] withr_2.5.0       magrittr_2.0.3    digest_0.6.33     rstudioapi_0.15.0
-## [33] dbplyr_2.3.3      askpass_1.2.0     hms_1.1.3         lifecycle_1.0.3  
-## [37] prettyunits_1.1.1 vctrs_0.6.3       evaluate_0.21     glue_1.6.2       
-## [41] duckdb_0.8.1-3    contentid_0.0.17  fansi_1.0.4       httr_1.4.7       
-## [45] rmarkdown_2.24    purrr_1.0.2       tools_4.3.1       pkgconfig_2.0.3  
-## [49] htmltools_0.5.6</code></pre>
+##  [1] jsonlite_1.8.8    compiler_4.3.1    crayon_1.5.2      tidyselect_1.2.0 
+##  [5] jquerylib_0.1.4   progress_1.2.3    yaml_2.3.7        fastmap_1.1.1    
+##  [9] readr_2.1.4       R6_2.5.1          generics_0.1.3    curl_5.2.0       
+## [13] knitr_1.45        tibble_3.2.1      openssl_2.1.1     DBI_1.1.3        
+## [17] bslib_0.6.1       pillar_1.9.0      tzdb_0.4.0        rlang_1.1.2      
+## [21] utf8_1.2.4        stringi_1.8.2     cachem_1.0.8      xfun_0.41        
+## [25] fs_1.6.3          sass_0.4.8        memoise_2.0.1     cli_3.6.1        
+## [29] withr_2.5.2       magrittr_2.0.3    digest_0.6.33     rstudioapi_0.15.0
+## [33] dbplyr_2.4.0      askpass_1.2.0     hms_1.1.3         lifecycle_1.0.4  
+## [37] prettyunits_1.2.0 vctrs_0.6.5       evaluate_0.23     glue_1.6.2       
+## [41] duckdb_0.9.2-1    contentid_0.0.18  fansi_1.0.6       httr_1.4.7       
+## [45] rmarkdown_2.25    purrr_1.0.2       tools_4.3.1       pkgconfig_2.0.3  
+## [49] htmltools_0.5.7</code></pre>
+</div>
+<div id="post-r-processing" class="section level1">
+<h1>Post R processing</h1>
+<p>Before proceeding to analyses with your trait file
+complete_traits_gnathostomata.csv you need to do some additional work
+with the reproductive traits. Review the current traits NA values and
+use FishBase to see if the family page for the species contains any
+information you can use to fill in these NA values. Sometimes the R
+package rfishbase is not able to see some of the family information on
+the website. You find the family page for species by searching the
+species name (<a href="https://www.fishbase.us/" class="uri">https://www.fishbase.us/</a>) and then clicking the family
+name under the “Classification / Names” section on the page which should
+be the first section. After using FishBase to complete the reproductive
+information your file will be named
+complete_traits_gnathostomata_with_FishBase_corrections.csv</p>
+<p>Then you use the book Fish Reproduction by Rocha et al. (2008) and
+use chapter 9, Reproductive Strategies of Fish by Patzner, R. A. to fill
+in some of the blanks of the RepGuild2 column. Mainly the “open
+water/substratum egg scatterers”. You will then name your file
+complete_traits_gnathostomata_with_Patzner_2008_data.csv</p>
+<p>After that you can determine the traits that you would like to
+include in your analyses which may be all or a subset. For this project
+we chose a subset that have quality definitions according to FishBase
+and are not repetitive traits. We named our final file
+final_traits_gnathostomata.csv which we use in all downstream
+analyses.</p>
 </div>
 
 

@@ -361,7 +361,13 @@ display: none;
 <div id="see-tutorial-to-download-initial-tree" class="section level1">
 <h1>See tutorial to download initial tree</h1>
 <p>See Emily Jane McTavishes’ tutorial for how to download a date tree
-for species in your list. Below is a python code sample. <a href="https://github.com/McTavishLab/jupyter_OpenTree_tutorials/blob/master/notebooks/DatedTree_Bailey.ipynb" class="uri">https://github.com/McTavishLab/jupyter_OpenTree_tutorials/blob/master/notebooks/DatedTree_Bailey.ipynb</a></p>
+for species in your list. <a href="https://github.com/McTavishLab/jupyter_OpenTree_tutorials/blob/master/notebooks/DatedTree_Bailey.ipynb" class="uri">https://github.com/McTavishLab/jupyter_OpenTree_tutorials/blob/master/notebooks/DatedTree_Bailey.ipynb</a>
+Here is the output tree file form Emily Jane’s tutorial
+labelled_dated_tree.tre Before writing in labelled_dated_tree.tre you
+need to remove spaces between the genus and species of some of the
+species in the file.</p>
+<p>Below is a python code sample from the tutorial Emily Jane provides
+for other trees which is on her github.</p>
 <pre class="python"><code># #This is the python code from Emily Jane McTavish&#39;s OpenTree tutorial demo
 # from opentree import OT
 # 
@@ -426,15 +432,15 @@ slightly from the FishBase names so we need to validate the species
 names on the tree. There are a few species that FishBase does not
 recognize or fails to correct when validating.</p>
 <pre class="r"><code># Read in your tree to R and check the details
-fish_tree &lt;- read.tree(&quot;/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/palau_fish_tree.tre&quot;)
+fish_tree &lt;- read.tree(&quot;/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/labelled_dated_tree.tre&quot;)
 fish_tree</code></pre>
 <pre><code>## 
-## Phylogenetic tree with 1734 tips and 1221 internal nodes.
+## Phylogenetic tree with 1631 tips and 2635 internal nodes.
 ## 
 ## Tip labels:
 ##   Plotosus_lineatus, Chanos_chanos, Amblygaster_sirm, Amblygaster_clupeoides, Amblygaster_leiogaster, Herklotsichthys_quadrimaculatus, ...
 ## Node labels:
-##   ott278114, ott212201, ott285819, ott761450, ott803544, ott5541314, ...
+##   ott278114, ott114656, ott114654, ott773483, ott285821, ott471203, ...
 ## 
 ## Rooted; includes branch lengths.</code></pre>
 <pre class="r"><code># Test if the tree is rooted, should come back as TRUE
@@ -442,81 +448,21 @@ is.rooted(fish_tree)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code># Test if the tree is ultrametric, should come back as FALSE
 is.ultrametric(fish_tree)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code># Need to make a new tree file to compared differences after FishBase validation
-tree &lt;- fish_tree
-
-# Replace _ with a space
-tree$tip.label &lt;- gsub(&quot;_&quot;, &quot; &quot;, tree$tip.label)
-
-# Validate the tip label names that you can using FishBase
-tree$tip.label &lt;- validate_names(tree$tip.label)</code></pre>
-<pre><code>## Joining with `by = join_by(Subfamily, GenCode, FamCode)`
-## Joining with `by = join_by(FamCode)`
-## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
-## Joining with `by = join_by(Class, ClassNum)`</code></pre>
-<pre class="r"><code># Replace space with an _ because later adding tips by genus doesn&#39;t seem to work without the _
-tree$tip.label &lt;- gsub(&quot; &quot;, &quot;_&quot;, tree$tip.label)
-
-# Find fish names that have been corrected by fish base located in tree file
-tree_species_names_only &lt;- setdiff(tree$tip.label, fish_tree$tip.label)
-tree_species_names_only</code></pre>
-<pre><code>## [1] NA              &quot;Genus_Species&quot;</code></pre>
-<pre class="r"><code># Find fish names that were changed or dropped by rfishbase in fish_tree
-fish_tree_species_names_only &lt;- setdiff(fish_tree$tip.label, tree$tip.label)
-fish_tree_species_names_only</code></pre>
-<pre><code>##  [1] &quot;Dussumieria_sp&quot;             &quot;Pomacentrus_sp&quot;            
-##  [3] &quot;Chrysiptera_ellenae&quot;        &quot;Chromis_sp&quot;                
-##  [5] &quot;Chromis_anadema&quot;            &quot;Opistognathus_wassi&quot;       
-##  [7] &quot;Rhabdoblennius_sp&quot;          &quot;Platax_sp&quot;                 
-##  [9] &quot;Lubbockichthys_sp&quot;          &quot;Schindleria_sp&quot;            
-## [11] &quot;Soleichthys_sp&quot;             &quot;Acanthurus_sp&quot;             
-## [13] &quot;Cirrhilabrus_sp&quot;            &quot;Cirrhilabrus_ryukyuensis&quot;  
-## [15] &quot;Sebastapistes_sp&quot;           &quot;Epinephelus_sp&quot;            
-## [17] &quot;Tetronarce_sp&quot;              &quot;Liopropoma_sp_B&quot;           
-## [19] &quot;Liopropoma_sp&quot;              &quot;Plectranthias_sp&quot;          
-## [21] &quot;Tosanoides_sp&quot;              &quot;Trimma_sp_2&quot;               
-## [23] &quot;Trimma_sp&quot;                  &quot;Trimma_macrophthalmus&quot;     
-## [25] &quot;Glossogobius_sandakanensis&quot; &quot;Callogobius_sp_B&quot;          
-## [27] &quot;Callogobius_sp&quot;             &quot;Pandaka_sp&quot;                
-## [29] &quot;Tomiyamichthys_sp&quot;          &quot;Eviota_sp_2&quot;               
-## [31] &quot;Eviota_sp&quot;                  &quot;Eviota_diyhritisma&quot;        
-## [33] &quot;Bryaninops_sp&quot;              &quot;Gobiodon_sp&quot;               
-## [35] &quot;Gobiodon_macrochir&quot;         &quot;Fusigobius_sp&quot;             
-## [37] &quot;Asterropteryx_sp&quot;           &quot;Drombus_sp&quot;                
-## [39] &quot;Silhouettea_sp&quot;             &quot;Cryptocentrus_sp&quot;          
-## [41] &quot;Bathygobius_sp&quot;             &quot;Trimmatom_sp&quot;              
-## [43] &quot;Parioglossus_sp&quot;            &quot;Xenisthmus_sp_2&quot;           
-## [45] &quot;Xenisthmus_sp&quot;              &quot;Zoramia_leptacanthus&quot;      
-## [47] &quot;Apogon_sp&quot;                  &quot;Cheilodipterus_isostigma&quot;  
-## [49] &quot;Cercamia_sp&quot;                &quot;Myripristis_sp&quot;            
-## [51] &quot;Gorgasia_sp&quot;                &quot;Ophichthus_sp&quot;</code></pre>
-<pre class="r"><code># Validate the names using FishBase, this allows you to see what the names were changed into and those that have NAs
-fish_tree_species_names_only &lt;- gsub(&quot;_&quot;, &quot; &quot;, fish_tree_species_names_only)
-val_fish_tree_species_names_only &lt;- validate_names(fish_tree_species_names_only)</code></pre>
-<pre><code>## Joining with `by = join_by(Subfamily, GenCode, FamCode)`
-## Joining with `by = join_by(FamCode)`
-## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
-## Joining with `by = join_by(Class, ClassNum)`</code></pre>
-<pre class="r"><code>fish_tree_species_names_only &lt;- gsub(&quot; &quot;, &quot;_&quot;, fish_tree_species_names_only)
-
-# This will show us the names that were changed but also those that did not register on FishBase which we will edit
-compare_species_names &lt;- as.data.frame(cbind(val_fish_tree_species_names_only, fish_tree_species_names_only))
-
-# Rename species that will not be renamed by FishBase validate_names command
-fish_tree$tip.label[fish_tree$tip.label==&quot;mrcaott896554ott896558&quot;] &lt;- &quot;Tylosurus_melanotus&quot;
-# fish_tree$tip.label[fish_tree$tip.label==&quot;Moolgarda_seheli&quot;] &lt;- &quot;Crenimugil_seheli&quot;
-# fish_tree$tip.label[fish_tree$tip.label==&quot;Chelonodontops_patoca&quot;] &lt;- &quot;Chelonodon_patoca&quot;
-# fish_tree$tip.label[fish_tree$tip.label==&quot;Antennarius_analis&quot;] &lt;- &quot;Antennatus_analis&quot;
-# fish_tree$tip.label[fish_tree$tip.label==&quot;Antennarius_dorehensis&quot;] &lt;- &quot;Antennatus_dorehensis&quot;
-fish_tree$tip.label[fish_tree$tip.label==&quot;Diagramma_picta_picta&quot;] &lt;- &quot;Diagramma_pictum&quot;
-fish_tree$tip.label[fish_tree$tip.label==&quot;Acentrogobius_chusanensis&quot;] &lt;- &quot;Ctenogobius_chusanensis&quot;
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code># Rename species that are missing the underscore or are at the subspecies level
+fish_tree$tip.label[fish_tree$tip.label==&quot;mrcaott896554ott896558&quot;] = &quot;Tylosurus_melanotus&quot;
+fish_tree$tip.label[fish_tree$tip.label==&quot;Moolgarda_seheli&quot;] = &quot;Crenimugil_seheli&quot;
+fish_tree$tip.label[fish_tree$tip.label==&quot;Yongeichthys_nebulosus&quot;] = &quot;Acentrogobius_nebulosus&quot;
+fish_tree$tip.label[fish_tree$tip.label==&quot;Acentrogobius_chusanensis&quot;] = &quot;Ctenogobius_chusanensis&quot;
+fish_tree$tip.label[fish_tree$tip.label==&quot;Antennarius analis&quot;] = &quot;Abantennarius_analis&quot;
+fish_tree$tip.label[fish_tree$tip.label==&quot;Antennarius dorehensis&quot;] = &quot;Abantennarius_dorehensis&quot;
+fish_tree$tip.label[fish_tree$tip.label==&quot;Diagramma_picta_picta&quot;] = &quot;Diagramma_pictum&quot;
+fish_tree$tip.label[fish_tree$tip.label==&quot;Coranthus polyacanthus&quot;] = &quot;Amioides_polyacanthus&quot;
 
 # Check to determine if names were changed
 fish_tree_labs &lt;- fish_tree$tip.label
 fish_tree_labs &lt;- as.data.frame(fish_tree_labs)
 
-# Remake tree file now and compare
 # Need to make a new tree file to compared differences after FishBase validation
 tree &lt;- fish_tree
 
@@ -532,56 +478,114 @@ tree$tip.label &lt;- validate_names(tree$tip.label)</code></pre>
 <pre class="r"><code># Replace space with an _ because later adding tips by genus doesn&#39;t seem to work without the _
 tree$tip.label &lt;- gsub(&quot; &quot;, &quot;_&quot;, tree$tip.label)
 
-# Find fish names that have been corrected by fish base located in tree file
+# Find fish names that have been corrected by fish base located in tree file, should be the same number as fish_tree_species_names_only
 tree_species_names_only &lt;- setdiff(tree$tip.label, fish_tree$tip.label)
 tree_species_names_only</code></pre>
-<pre><code>## [1] NA              &quot;Genus_Species&quot;</code></pre>
-<pre class="r"><code># Find fish names that were changed or dropped by rfishbase in fish_tree
+<pre><code>##  [1] &quot;Stegastes_lacrymatus&quot;           &quot;Plectroglyphidodon_fasciolatus&quot;
+##  [3] &quot;Amphiprion_biaculeatus&quot;         &quot;Amblyglyphidodon_batunaorum&quot;   
+##  [5] &quot;Pycnochromis_amboinensis&quot;       &quot;Pycnochromis_caudalis&quot;         
+##  [7] &quot;Pycnochromis_agilis&quot;            &quot;Pycnochromis_retrofasciatus&quot;   
+##  [9] &quot;Pycnochromis_atripes&quot;           &quot;Pycnochromis_margaritifer&quot;     
+## [11] &quot;Pycnochromis_vanderbilti&quot;       &quot;Pycnochromis_acares&quot;           
+## [13] &quot;Azurina_lepidolepis&quot;            &quot;Azurina_brevirostris&quot;          
+## [15] &quot;Pycnochromis_delta&quot;             &quot;Pictichromis_paccagnellorum&quot;   
+## [17] &quot;Discotrema_crinophilum&quot;         &quot;Osteomugil_engeli&quot;             
+## [19] &quot;Osteomugil_perusii&quot;             &quot;Plicomugil_labiosus&quot;           
+## [21] &quot;Doboatherina_duodecimalis&quot;      &quot;Ferdauia_orthogrammus&quot;         
+## [23] &quot;Ostracion_cubicum&quot;              &quot;Ostracion_solorense&quot;           
+## [25] &quot;Rhynchostracion_nasus&quot;          &quot;Abantennarius_analis&quot;          
+## [27] &quot;Abantennarius_dorehensis&quot;       &quot;Abantennarius_rosaceus&quot;        
+## [29] &quot;Abantennarius_coccineus&quot;        &quot;Abantennarius_nummifer&quot;        
+## [31] &quot;Centropyge_loriculus&quot;           &quot;Leiognathus_equula&quot;            
+## [33] &quot;Scorpaenopsis_oxycephalus&quot;      &quot;Chromileptes_altivelis&quot;        
+## [35] &quot;Mirolabrichthys_pascalus&quot;       &quot;Pyronotanthias_lori&quot;           
+## [37] &quot;Mirolabrichthys_tuka&quot;           &quot;Nemanthias_bartlettorum&quot;       
+## [39] &quot;Nemanthias_bicolor&quot;             &quot;Pyronotanthias_flavoguttatus&quot;  
+## [41] &quot;Pyronotanthias_smithvanizi&quot;     &quot;Nemanthias_dispar&quot;             
+## [43] &quot;Pyronotanthias_parvirostris&quot;    &quot;Kyphosus_ocyurus&quot;              
+## [45] &quot;Lophocampus_brevidorsalis&quot;      &quot;Lophocampus_retzii&quot;            
+## [47] &quot;Microphis_brachyurus&quot;           &quot;Microphis_leiaspis&quot;            
+## [49] &quot;Synchiropus_ocellatus&quot;          &quot;Synchiropus_moyeri&quot;            
+## [51] &quot;Synchiropus_morrisoni&quot;          &quot;Pseudogobius_poicilosoma&quot;      
+## [53] &quot;Fusigobius_gracilis&quot;            &quot;Vanderhorstia_phaeosticta&quot;     
+## [55] &quot;Acentrogobius_signatus&quot;         &quot;Stonogobiops_xanthorhinicus&quot;   
+## [57] &quot;Trimma_macrophthalmus&quot;          &quot;Trimma_hotsarihiense&quot;          
+## [59] &quot;Eleotris_acanthopomus&quot;          &quot;Ostorhinchus_semilineatus&quot;     
+## [61] &quot;Zoramia_leptacanthus&quot;           &quot;Cheilodipterus_isostigma&quot;      
+## [63] &quot;Yarica_hyalosoma&quot;               &quot;Amioides_polyacanthus&quot;         
+## [65] &quot;Encheliophis_boraborensis&quot;      &quot;Encheliophis_homei&quot;            
+## [67] &quot;Lamnostoma_polyophthalmum&quot;      &quot;Lamnostoma_orientale&quot;          
+## [69] &quot;Gymnothorax_rueppelliae&quot;        &quot;Rhina_ancylostomus&quot;            
+## [71] &quot;Taeniurops_meyeni&quot;              &quot;Stegostoma_tigrinum&quot;</code></pre>
+<pre class="r"><code># Find fish names that were changed or dropped by rfishbase in fish_tree, should be the same number as tree_species_names_only
 fish_tree_species_names_only &lt;- setdiff(fish_tree$tip.label, tree$tip.label)
 fish_tree_species_names_only</code></pre>
-<pre><code>##  [1] &quot;Dussumieria_sp&quot;             &quot;Pomacentrus_sp&quot;            
-##  [3] &quot;Chrysiptera_ellenae&quot;        &quot;Chromis_sp&quot;                
-##  [5] &quot;Chromis_anadema&quot;            &quot;Opistognathus_wassi&quot;       
-##  [7] &quot;Rhabdoblennius_sp&quot;          &quot;Platax_sp&quot;                 
-##  [9] &quot;Lubbockichthys_sp&quot;          &quot;Schindleria_sp&quot;            
-## [11] &quot;Soleichthys_sp&quot;             &quot;Acanthurus_sp&quot;             
-## [13] &quot;Cirrhilabrus_sp&quot;            &quot;Cirrhilabrus_ryukyuensis&quot;  
-## [15] &quot;Sebastapistes_sp&quot;           &quot;Epinephelus_sp&quot;            
-## [17] &quot;Tetronarce_sp&quot;              &quot;Liopropoma_sp_B&quot;           
-## [19] &quot;Liopropoma_sp&quot;              &quot;Plectranthias_sp&quot;          
-## [21] &quot;Tosanoides_sp&quot;              &quot;Trimma_sp_2&quot;               
-## [23] &quot;Trimma_sp&quot;                  &quot;Trimma_macrophthalmus&quot;     
-## [25] &quot;Glossogobius_sandakanensis&quot; &quot;Callogobius_sp_B&quot;          
-## [27] &quot;Callogobius_sp&quot;             &quot;Pandaka_sp&quot;                
-## [29] &quot;Tomiyamichthys_sp&quot;          &quot;Eviota_sp_2&quot;               
-## [31] &quot;Eviota_sp&quot;                  &quot;Eviota_diyhritisma&quot;        
-## [33] &quot;Bryaninops_sp&quot;              &quot;Gobiodon_sp&quot;               
-## [35] &quot;Gobiodon_macrochir&quot;         &quot;Fusigobius_sp&quot;             
-## [37] &quot;Asterropteryx_sp&quot;           &quot;Drombus_sp&quot;                
-## [39] &quot;Silhouettea_sp&quot;             &quot;Cryptocentrus_sp&quot;          
-## [41] &quot;Bathygobius_sp&quot;             &quot;Trimmatom_sp&quot;              
-## [43] &quot;Parioglossus_sp&quot;            &quot;Xenisthmus_sp_2&quot;           
-## [45] &quot;Xenisthmus_sp&quot;              &quot;Zoramia_leptacanthus&quot;      
-## [47] &quot;Apogon_sp&quot;                  &quot;Cheilodipterus_isostigma&quot;  
-## [49] &quot;Cercamia_sp&quot;                &quot;Myripristis_sp&quot;            
-## [51] &quot;Gorgasia_sp&quot;                &quot;Ophichthus_sp&quot;</code></pre>
-<pre class="r"><code># Check file to see names changed and are now part of the new tree file
+<pre><code>##  [1] &quot;Plectroglyphidodon_lacrymatus&quot; &quot;Stegastes_fasciolatus&quot;        
+##  [3] &quot;Premnas_biaculeatus&quot;           &quot;Amblyglyphidodon_batunai&quot;     
+##  [5] &quot;Chromis_amboinensis&quot;           &quot;Chromis_caudalis&quot;             
+##  [7] &quot;Chromis_agilis&quot;                &quot;Chromis_retrofasciata&quot;        
+##  [9] &quot;Chromis_atripes&quot;               &quot;Chromis_margaritifer&quot;         
+## [11] &quot;Chromis_vanderbilti&quot;           &quot;Chromis_acares&quot;               
+## [13] &quot;Chromis_lepidolepis&quot;           &quot;Chromis_brevirostris&quot;         
+## [15] &quot;Chromis_delta&quot;                 &quot;Pictichromis_paccagnellae&quot;    
+## [17] &quot;Discotrema_crinophila&quot;         &quot;Moolgarda_engeli&quot;             
+## [19] &quot;Moolgarda_perusii&quot;             &quot;Oedalechilus_labiosus&quot;        
+## [21] &quot;Atherinomorus_duodecimalis&quot;    &quot;Carangoides_orthogrammus&quot;     
+## [23] &quot;Ostracion_cubicus&quot;             &quot;Ostracion_solorensis&quot;         
+## [25] &quot;Ostracion_nasus&quot;               &quot;Antennarius_analis&quot;           
+## [27] &quot;Antennarius_dorehensis&quot;        &quot;Antennatus_rosaceus&quot;          
+## [29] &quot;Antennatus_coccineus&quot;          &quot;Antennatus_nummifer&quot;          
+## [31] &quot;Centropyge_loricula&quot;           &quot;Leiognathus_equulus&quot;          
+## [33] &quot;Scorpaenopsis_oxycephala&quot;      &quot;Cromileptes_altivelis&quot;        
+## [35] &quot;Pseudanthias_pascalus&quot;         &quot;Pseudanthias_lori&quot;            
+## [37] &quot;Pseudanthias_tuka&quot;             &quot;Pseudanthias_bartlettorum&quot;    
+## [39] &quot;Pseudanthias_bicolor&quot;          &quot;Pseudanthias_flavoguttatus&quot;   
+## [41] &quot;Pseudanthias_smithvanizi&quot;      &quot;Pseudanthias_dispar&quot;          
+## [43] &quot;Pseudanthias_parvirostris&quot;     &quot;Sectator_ocyurus&quot;             
+## [45] &quot;Microphis_brevidorsalis&quot;       &quot;Microphis_retzii&quot;             
+## [47] &quot;Oostethus_brachyurus&quot;          &quot;Coelonotus_leiaspis&quot;          
+## [49] &quot;Neosynchiropus_ocellatus&quot;      &quot;Neosynchiropus_moyeri&quot;        
+## [51] &quot;Neosynchiropus_morrisoni&quot;      &quot;Pseudogobius_javanicus&quot;       
+## [53] &quot;Coryphopterus_gracilis&quot;        &quot;Ctenogobiops_phaeostictus&quot;    
+## [55] &quot;Amoya_signata&quot;                 &quot;Stonogobiops_xanthorhinica&quot;   
+## [57] &quot;Trimma_macrophthalmum&quot;         &quot;Trimma_hotsarihiensis&quot;        
+## [59] &quot;Eleotris_acanthopoma&quot;          &quot;Apogon_semilineatus&quot;          
+## [61] &quot;Zoramia_leptacantha&quot;           &quot;Cheilodipterus_isostigmus&quot;    
+## [63] &quot;Apogon_hyalosoma&quot;              &quot;Coranthus_polyacanthus&quot;       
+## [65] &quot;Carapus_boraborensis&quot;          &quot;Carapus_homei&quot;                
+## [67] &quot;Lamnostoma_polyophthalma&quot;      &quot;Lamnostoma_orientalis&quot;        
+## [69] &quot;Gymnothorax_rueppellii&quot;        &quot;Rhina_ancylostoma&quot;            
+## [71] &quot;Taeniura_meyeni&quot;               &quot;Stegostoma_fasciatum&quot;</code></pre>
+<pre class="r"><code># Validate the names using FishBase, this allows you to see what the names were changed into and those that have NAs
+fish_tree_species_names_only &lt;- gsub(&quot;_&quot;, &quot; &quot;, fish_tree_species_names_only)
+val_fish_tree_species_names_only &lt;- validate_names(fish_tree_species_names_only)</code></pre>
+<pre><code>## Joining with `by = join_by(Subfamily, GenCode, FamCode)`
+## Joining with `by = join_by(FamCode)`
+## Joining with `by = join_by(Order, Ordnum, Class, ClassNum)`
+## Joining with `by = join_by(Class, ClassNum)`</code></pre>
+<pre class="r"><code>fish_tree_species_names_only &lt;- gsub(&quot; &quot;, &quot;_&quot;, fish_tree_species_names_only)
+
+# This will show us the names that were changed but also those that did not register on FishBase which we will edit
+# use this to go back and edit the orignial tree file after loading it in. Anything with an NA needs to be looked up on FishBase and edited manual using the code above to alter species names.
+compare_species_names &lt;- as.data.frame(cbind(val_fish_tree_species_names_only, fish_tree_species_names_only))
+
+# Check file to see names changed and are now part of the new tree file
 species_names &lt;- as.data.frame(cbind(tree$tip.label, fish_tree$tip.label))
 
 # Check your tree details
 tree</code></pre>
 <pre><code>## 
-## Phylogenetic tree with 1734 tips and 1221 internal nodes.
+## Phylogenetic tree with 1631 tips and 2635 internal nodes.
 ## 
 ## Tip labels:
 ##   Plotosus_lineatus, Chanos_chanos, Amblygaster_sirm, Amblygaster_clupeoides, Amblygaster_leiogaster, Herklotsichthys_quadrimaculatus, ...
 ## Node labels:
-##   ott278114, ott212201, ott285819, ott761450, ott803544, ott5541314, ...
+##   ott278114, ott114656, ott114654, ott773483, ott285821, ott471203, ...
 ## 
 ## Rooted; includes branch lengths.</code></pre>
 <pre class="r"><code># Should still fail to be ultrametric
 is.ultrametric(tree)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
+<pre><code>## [1] FALSE</code></pre>
 </div>
 <div id="load-in-species-list" class="section level1">
 <h1>Load in species list</h1>
@@ -601,7 +605,8 @@ existing_species &lt;- gsub(&quot; &quot;, &quot;_&quot;, existing_species)
 
 diff_check &lt;- setdiff(tree$tip.label, existing_species)
 diff_check</code></pre>
-<pre><code>## [1] NA              &quot;Genus_Species&quot;</code></pre>
+<pre><code>## [1] &quot;Cirrhilabrus_cyanopleura&quot; &quot;Mugilogobius_stigmaticus&quot;
+## [3] &quot;Callogobius_liolepis&quot;     &quot;Gymnothorax_neglectus&quot;</code></pre>
 <pre class="r"><code># These species names were changed after the tree was made &quot;Cirrhilabrus cyanopleura&quot; &quot;Mugilogobius stigmaticus&quot; &quot;Callogobius liolepis&quot; &quot;Gymnothorax neglectus&quot; so they will be dropped at the end before the final tree is made.
 
 # Only use for looking up species name changes for those that are not validated by FishBase
@@ -701,32 +706,54 @@ level.</p>
 <pre class="r"><code># See which species are missing from the tree
 missing_species_from_tree &lt;- setdiff(existing_species, tree$tip.label)
 missing_species_from_tree</code></pre>
-<pre><code>##  [1] &quot;Acanthurus_sp&quot;              &quot;Apogon_sp&quot;                 
-##  [3] &quot;Asterropteryx_sp&quot;           &quot;Bathygobius_sp&quot;            
-##  [5] &quot;Bryaninops_sp&quot;              &quot;Callogobius_sp&quot;            
-##  [7] &quot;Callogobius_sp_B&quot;           &quot;Cercamia_sp&quot;               
-##  [9] &quot;Cheilodipterus_isostigma&quot;   &quot;Chromis_anadema&quot;           
-## [11] &quot;Chromis_sp&quot;                 &quot;Chrysiptera_ellenae&quot;       
-## [13] &quot;Cirrhilabrus_ryukyuensis&quot;   &quot;Cirrhilabrus_sp&quot;           
-## [15] &quot;Cryptocentrus_sp&quot;           &quot;Drombus_sp&quot;                
-## [17] &quot;Dussumieria_sp&quot;             &quot;Epinephelus_sp&quot;            
-## [19] &quot;Eviota_diyhritisma&quot;         &quot;Eviota_sp&quot;                 
-## [21] &quot;Eviota_sp_2&quot;                &quot;Fusigobius_sp&quot;             
-## [23] &quot;Glossogobius_sandakanensis&quot; &quot;Gobiodon_macrochir&quot;        
-## [25] &quot;Gobiodon_sp&quot;                &quot;Gorgasia_sp&quot;               
-## [27] &quot;Liopropoma_sp&quot;              &quot;Liopropoma_sp_B&quot;           
-## [29] &quot;Lubbockichthys_sp&quot;          &quot;Myripristis_sp&quot;            
-## [31] &quot;Ophichthus_sp&quot;              &quot;Opistognathus_wassi&quot;       
-## [33] &quot;Pandaka_sp&quot;                 &quot;Parioglossus_sp&quot;           
-## [35] &quot;Platax_sp&quot;                  &quot;Plectranthias_sp&quot;          
-## [37] &quot;Pomacentrus_sp&quot;             &quot;Rhabdoblennius_sp&quot;         
-## [39] &quot;Schindleria_sp&quot;             &quot;Sebastapistes_sp&quot;          
-## [41] &quot;Silhouettea_sp&quot;             &quot;Soleichthys_sp&quot;            
-## [43] &quot;Tetronarce_sp&quot;              &quot;Tomiyamichthys_sp&quot;         
-## [45] &quot;Tosanoides_sp&quot;              &quot;Trimma_macrophthalmus&quot;     
-## [47] &quot;Trimma_sp&quot;                  &quot;Trimma_sp_2&quot;               
-## [49] &quot;Trimmatom_sp&quot;               &quot;Xenisthmus_sp&quot;             
-## [51] &quot;Xenisthmus_sp_2&quot;            &quot;Zoramia_leptacanthus&quot;</code></pre>
+<pre><code>##  [1] &quot;Acanthurus_sp&quot;                 &quot;Ambassis_nalua&quot;               
+##  [3] &quot;Amsichthys_knighti&quot;            &quot;Apogon_sp&quot;                    
+##  [5] &quot;Apogon_susanae&quot;                &quot;Apogon_talboti&quot;               
+##  [7] &quot;Asterropteryx_sp&quot;              &quot;Azurina_elerae&quot;               
+##  [9] &quot;Bathygobius_sp&quot;                &quot;Bryaninops_sp&quot;                
+## [11] &quot;Callogobius_sp&quot;                &quot;Callogobius_sp_B&quot;             
+## [13] &quot;Calloplesiops_altivelis&quot;       &quot;Carcharhinus_amblyrhynchoides&quot;
+## [15] &quot;Cercamia_sp&quot;                   &quot;Chromis_albomaculata&quot;         
+## [17] &quot;Chromis_anadema&quot;               &quot;Chromis_scotochiloptera&quot;      
+## [19] &quot;Chromis_sp&quot;                    &quot;Chrysiptera_ellenae&quot;          
+## [21] &quot;Cirrhilabrus_ryukyuensis&quot;      &quot;Cirrhilabrus_sp&quot;              
+## [23] &quot;Cryptocentrus_nanus&quot;           &quot;Cryptocentrus_sp&quot;             
+## [25] &quot;Dischistodus_fasciatus&quot;        &quot;Drombus_sp&quot;                   
+## [27] &quot;Dussumieria_sp&quot;                &quot;Epinephelus_sp&quot;               
+## [29] &quot;Eviota_diyhritisma&quot;            &quot;Eviota_sp&quot;                    
+## [31] &quot;Eviota_sp_2&quot;                   &quot;Fusigobius_sp&quot;                
+## [33] &quot;Glossogobius_sandakanensis&quot;    &quot;Gobiodon_macrochir&quot;           
+## [35] &quot;Gobiodon_sp&quot;                   &quot;Gobiopsis_aporia&quot;             
+## [37] &quot;Gorgasia_sp&quot;                   &quot;Gymnocranius_microdon&quot;        
+## [39] &quot;Liopropoma_sp&quot;                 &quot;Liopropoma_sp_B&quot;              
+## [41] &quot;Lubbockichthys_sp&quot;             &quot;Manonichthys_polynemus&quot;       
+## [43] &quot;Mugilogobius_platystoma&quot;       &quot;Myripristis_sp&quot;               
+## [45] &quot;Neoglyphidodon_mitratus&quot;       &quot;Neopomacentrus_violascens&quot;    
+## [47] &quot;Ophichthus_sp&quot;                 &quot;Opistognathus_solorensis&quot;     
+## [49] &quot;Opistognathus_variabilis&quot;      &quot;Opistognathus_wassi&quot;          
+## [51] &quot;Oxyurichthys_zeta&quot;             &quot;Pandaka_sp&quot;                   
+## [53] &quot;Parioglossus_sp&quot;               &quot;Planiliza_melinoptera&quot;        
+## [55] &quot;Platax_sp&quot;                     &quot;Plectranthias_sp&quot;             
+## [57] &quot;Plesiops_corallicola&quot;          &quot;Plesiops_gracilis&quot;            
+## [59] &quot;Plesiops_oxycephalus&quot;          &quot;Plesiops_verecundus&quot;          
+## [61] &quot;Pomacentrus_albiaxillaris&quot;     &quot;Pomacentrus_flavoaxillaris&quot;   
+## [63] &quot;Pomacentrus_micronesicus&quot;      &quot;Pomacentrus_simsiang&quot;         
+## [65] &quot;Pomacentrus_sp&quot;                &quot;Pomacentrus_taeniometopon&quot;    
+## [67] &quot;Pseudamia_amblyuroptera&quot;       &quot;Pseudamia_hayashii&quot;           
+## [69] &quot;Pseudamia_zonata&quot;              &quot;Pseudochromis_marshallensis&quot;  
+## [71] &quot;Pseudochromis_pylei&quot;           &quot;Pseudochromis_tapeinosoma&quot;    
+## [73] &quot;Pseudojuloides_zeus&quot;           &quot;Pseudoplesiops_annae&quot;         
+## [75] &quot;Pseudoplesiops_immaculatus&quot;    &quot;Pseudoplesiops_rosae&quot;         
+## [77] &quot;Pseudoplesiops_typus&quot;          &quot;Pycnochromis_lineatus&quot;        
+## [79] &quot;Redigobius_oyensi&quot;             &quot;Rhabdoblennius_sp&quot;            
+## [81] &quot;Schindleria_sp&quot;                &quot;Sebastapistes_sp&quot;             
+## [83] &quot;Silhouettea_sp&quot;                &quot;Soleichthys_sp&quot;               
+## [85] &quot;Sphyraena_qenie&quot;               &quot;Steeneichthys_plesiopsus&quot;     
+## [87] &quot;Stegastes_punctatus&quot;           &quot;Tetronarce_sp&quot;                
+## [89] &quot;Tomiyamichthys_sp&quot;             &quot;Tosanoides_sp&quot;                
+## [91] &quot;Trimma_sp&quot;                     &quot;Trimma_sp_2&quot;                  
+## [93] &quot;Trimmatom_sp&quot;                  &quot;Valenciennea_yanoi&quot;           
+## [95] &quot;Xenisthmus_sp&quot;                 &quot;Xenisthmus_sp_2&quot;</code></pre>
 <pre class="r"><code>#tree &lt;- check_and_fix_ultrametric(tree)
 
 # Use phytools to make tree ultrametric even though tree should be ultrametric it barely fails the test
@@ -735,21 +762,27 @@ tree &lt;- force.ultrametric(tree, method = &quot;extend&quot;)</code></pre>
 ## *                          Note:                              *
 ## *    force.ultrametric does not include a formal method to    *
 ## *    ultrametricize a tree &amp; should only be used to coerce    *
-## *   a phylogeny that fails is.ultramtric due to rounding --   *
+## *   a phylogeny that fails is.ultrametric due to rounding --  *
 ## *    not as a substitute for formal rate-smoothing methods.   *
 ## ***************************************************************</code></pre>
 <pre class="r"><code># Check that code above worked
 is.ultrametric(tree)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code># Added species to the tree based upon genus
+<pre class="r"><code># Added species to the tree based upon genus, groups may not be monophyletic or species cannot be added so a warning will be issued.
 for(i in 1:length(missing_species_from_tree)) tree&lt;-add.species.to.genus(tree,missing_species_from_tree[i],where=&quot;root&quot;)</code></pre>
 <pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Acanthurus may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
+<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
+##   check spelling, including case</code></pre>
 <pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Apogon may not be monophyletic
+##   attaching to the most inclusive group containing members of this genus
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Apogon may not be monophyletic
+##   attaching to the most inclusive group containing members of this genus
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Apogon may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Asterropteryx may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Bathygobius may not be monophyletic
+<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Azurina may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
 <pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Bryaninops may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
@@ -758,9 +791,17 @@ for(i in 1:length(missing_species_from_tree)) tree&lt;-add.species.to.genus(tree
 
 ## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Callogobius may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Cheilodipterus may not be monophyletic
+<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
+##   check spelling, including case</code></pre>
+<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Carcharhinus may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
 <pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Chromis may not be monophyletic
+##   attaching to the most inclusive group containing members of this genus
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Chromis may not be monophyletic
+##   attaching to the most inclusive group containing members of this genus
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Chromis may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus
 
 ## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Chromis may not be monophyletic
@@ -773,6 +814,9 @@ for(i in 1:length(missing_species_from_tree)) tree&lt;-add.species.to.genus(tree
 ## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Cirrhilabrus may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
 <pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Cryptocentrus may not be monophyletic
+##   attaching to the most inclusive group containing members of this genus
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Cryptocentrus may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
 <pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Drombus may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
@@ -790,80 +834,89 @@ for(i in 1:length(missing_species_from_tree)) tree&lt;-add.species.to.genus(tree
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
 <pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Glossogobius may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Gobiodon may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus
-
-## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Gobiodon may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Liopropoma may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus
-
-## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Liopropoma may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
-##   check spelling, including case</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Myripristis may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Ophichthus may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Opistognathus may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Parioglossus may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Platax may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Plectranthias may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Pomacentrus may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
 <pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
 ##   check spelling, including case
 
 ## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
 ##   check spelling, including case</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Sebastapistes may not be monophyletic
+<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Mugilogobius may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Silhouettea may not be monophyletic
+<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Ophichthus may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
 <pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
+##   check spelling, including case
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
+##   check spelling, including case
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
+##   check spelling, including case</code></pre>
+<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Oxyurichthys may not be monophyletic
+##   attaching to the most inclusive group containing members of this genus</code></pre>
+<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Pseudochromis may not be monophyletic
+##   attaching to the most inclusive group containing members of this genus
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Pseudochromis may not be monophyletic
+##   attaching to the most inclusive group containing members of this genus
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Pseudochromis may not be monophyletic
+##   attaching to the most inclusive group containing members of this genus</code></pre>
+<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
+##   check spelling, including case
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
+##   check spelling, including case
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
+##   check spelling, including case
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
+##   check spelling, including case</code></pre>
+<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Pycnochromis may not be monophyletic
+##   attaching to the most inclusive group containing members of this genus</code></pre>
+<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
+##   check spelling, including case
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
+##   check spelling, including case
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
+##   check spelling, including case
+
+## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
 ##   check spelling, including case
 
 ## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): could not match your species to a genus
 ##   check spelling, including case</code></pre>
 <pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Tomiyamichthys may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Tosanoides may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
 <pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Trimma may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus
 
 ## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Trimma may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus
-
-## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Trimma may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Trimmatom may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Xenisthmus may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus
-
-## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Xenisthmus may not be monophyletic
-##   attaching to the most inclusive group containing members of this genus</code></pre>
-<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Zoramia may not be monophyletic
+<pre><code>## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = &quot;root&quot;): Valenciennea may not be monophyletic
 ##   attaching to the most inclusive group containing members of this genus</code></pre>
 <pre class="r"><code># What remains should be species with no genus to attach to in the tree
 missing_species_from_tree &lt;- setdiff(existing_species, tree$tip.label)
 missing_species_from_tree</code></pre>
-<pre><code>## [1] &quot;Lubbockichthys_sp&quot; &quot;Rhabdoblennius_sp&quot; &quot;Schindleria_sp&quot;   
-## [4] &quot;Soleichthys_sp&quot;    &quot;Tetronarce_sp&quot;</code></pre>
+<pre><code>##  [1] &quot;Amsichthys_knighti&quot;         &quot;Calloplesiops_altivelis&quot;   
+##  [3] &quot;Lubbockichthys_sp&quot;          &quot;Manonichthys_polynemus&quot;    
+##  [5] &quot;Opistognathus_solorensis&quot;   &quot;Opistognathus_variabilis&quot;  
+##  [7] &quot;Opistognathus_wassi&quot;        &quot;Pseudoplesiops_annae&quot;      
+##  [9] &quot;Pseudoplesiops_immaculatus&quot; &quot;Pseudoplesiops_rosae&quot;      
+## [11] &quot;Pseudoplesiops_typus&quot;       &quot;Rhabdoblennius_sp&quot;         
+## [13] &quot;Schindleria_sp&quot;             &quot;Soleichthys_sp&quot;            
+## [15] &quot;Steeneichthys_plesiopsus&quot;   &quot;Tetronarce_sp&quot;</code></pre>
 <pre class="r"><code># Get rid of everything after the _ to get genera only
 missing_genera_from_tree &lt;- str_extract(missing_species_from_tree, &quot;[^_]+&quot;)
 
+# Create data frame with Genus and Species in separate columns
 missing_species_from_tree &lt;- as.data.frame(cbind(missing_species_from_tree, missing_genera_from_tree))
 names(missing_species_from_tree)[1] &lt;- &quot;Species&quot;
 names(missing_species_from_tree)[2] &lt;- &quot;Genus&quot;
 
-# Download taxonomic information from FishBase
+# Download taxonomic information from FishBase because we will use this information to figure out where to attach the remaining species on the tree
 missing_genera_from_tree &lt;- rfishbase::load_taxa() %&gt;% 
   filter(Genus %in% missing_genera_from_tree) %&gt;%
   collect()</code></pre>
@@ -880,11 +933,12 @@ missing_from_tree &lt;- merge(missing_genera_from_tree, missing_species_from_tre
 # Remove duplicates
 missing_from_tree &lt;- missing_from_tree[!duplicated(missing_from_tree[c(&#39;Species&#39;)]), ]
 
+# Place species column before Genus column
 missing_from_tree &lt;- missing_from_tree %&gt;% relocate(Species, .before = Genus)
 
 # For species still not present in the tree, use missing_from_tree to determine the family the genus is in or higher taxonomic levels. Using the Open Tree of Life (https://tree.opentreeoflife.org/opentree/argus/ottol@278114) you can find the node.label for the family or subfamily if available. Sometimes the subfamily or higher taxonomic level is present on Open Tree of Life but may not be present in our tree so you have to find the lowest taxonomic level that is present on Open Tree of Life and present in our tree. Then using the code below you can determine the node number:
 which(tree$node.label==&quot;ott195928&quot;)</code></pre>
-<pre><code>## [1] 1202</code></pre>
+<pre><code>## [1] 2566</code></pre>
 <pre class="r"><code># Genus_species, node id in synthetic tree from OTL, number of node.label of our tree
 # Amsichthys_knighti, mrcaott26915ott295046, 379 #One step up from subfamily level
 # Calloplesiops_altivelis, ott224901, 387 #Subfamily taxonomic level
@@ -904,66 +958,22 @@ which(tree$node.label==&quot;ott195928&quot;)</code></pre>
 # Tetronarce_sp, ott195928, 2566 #Four steps up from the genus level
 
 # Using the node number you can attach the species to the tree at the lowest taxa classification as possible
-tree &lt;- bind.tip(tree, tip.label = &quot;Amsichthys_knighti&quot;, where = 379)</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tree$tip.label[where]):
-## longer object length is not a multiple of shorter object length</code></pre>
-<pre class="r"><code>tree &lt;- bind.tip(tree, tip.label = &quot;Calloplesiops_altivelis&quot;, where = 387)</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == nn: longer object length is not a multiple of
-## shorter object length</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == nn: longer object length is not a multiple of
-## shorter object length</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tree$tip.label[where]):
-## longer object length is not a multiple of shorter object length</code></pre>
-<pre class="r"><code>tree &lt;- bind.tip(tree, tip.label = &quot;Lubbockichthys_sp&quot;, where = 379)</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tree$tip.label[where]):
-## longer object length is not a multiple of shorter object length</code></pre>
-<pre class="r"><code>tree &lt;- bind.tip(tree, tip.label = &quot;Manonichthys_polynemus&quot;, where = 94)</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length</code></pre>
-<pre class="r"><code>tree &lt;- bind.tip(tree, tip.label = &quot;Opistognathus_solorensis&quot;, where = 278)
-tree &lt;- bind.tip(tree, tip.label = &quot;Opistognathus_variabilis&quot;, where = 278)</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length
-
-## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length</code></pre>
-<pre class="r"><code>tree &lt;- bind.tip(tree, tip.label = &quot;Opistognathus_wassi&quot;, where = 278)</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length
-
-## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tree$tip.label[where]):
-## longer object length is not a multiple of shorter object length</code></pre>
-<pre class="r"><code>tree &lt;- bind.tip(tree, tip.label = &quot;Pseudoplesiops_annae&quot;, where = 379)
-tree &lt;- bind.tip(tree, tip.label = &quot;Pseudoplesiops_immaculatus&quot;, where = 379)</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length</code></pre>
-<pre class="r"><code>tree &lt;- bind.tip(tree, tip.label = &quot;Pseudoplesiops_rosae&quot;, where = 379)</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length
-
-## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length</code></pre>
-<pre class="r"><code>tree &lt;- bind.tip(tree, tip.label = &quot;Pseudoplesiops_typus&quot;, where = 379)
+tree &lt;- bind.tip(tree, tip.label = &quot;Amsichthys_knighti&quot;, where = 379)
+tree &lt;- bind.tip(tree, tip.label = &quot;Calloplesiops_altivelis&quot;, where = 387)
+tree &lt;- bind.tip(tree, tip.label = &quot;Lubbockichthys_sp&quot;, where = 379)
+tree &lt;- bind.tip(tree, tip.label = &quot;Manonichthys_polynemus&quot;, where = 94)
+tree &lt;- bind.tip(tree, tip.label = &quot;Opistognathus_solorensis&quot;, where = 278)
+tree &lt;- bind.tip(tree, tip.label = &quot;Opistognathus_variabilis&quot;, where = 278)
+tree &lt;- bind.tip(tree, tip.label = &quot;Opistognathus_wassi&quot;, where = 278)
+tree &lt;- bind.tip(tree, tip.label = &quot;Pseudoplesiops_annae&quot;, where = 379)
+tree &lt;- bind.tip(tree, tip.label = &quot;Pseudoplesiops_immaculatus&quot;, where = 379)
+tree &lt;- bind.tip(tree, tip.label = &quot;Pseudoplesiops_rosae&quot;, where = 379)
+tree &lt;- bind.tip(tree, tip.label = &quot;Pseudoplesiops_typus&quot;, where = 379)
 tree &lt;- bind.tip(tree, tip.label = &quot;Rhabdoblennius_sp&quot;, where = 327)
 tree &lt;- bind.tip(tree, tip.label = &quot;Schindleria_sp&quot;, where = 2146)
 tree &lt;- bind.tip(tree, tip.label = &quot;Soleichthys_sp&quot;, where = 523)
-tree &lt;- bind.tip(tree, tip.label = &quot;Steeneichthys_plesiopsus&quot;, where = 387)</code></pre>
-<pre><code>## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length
-
-## Warning in obj$edge[, 2] == which(obj$tip.label == tip$tip.label): longer
-## object length is not a multiple of shorter object length</code></pre>
-<pre class="r"><code>tree &lt;- bind.tip(tree, tip.label = &quot;Tetronarce_sp&quot;, where = 2566)
+tree &lt;- bind.tip(tree, tip.label = &quot;Steeneichthys_plesiopsus&quot;, where = 387)
+tree &lt;- bind.tip(tree, tip.label = &quot;Tetronarce_sp&quot;, where = 2566)
 
 # Do one last check to ensure all species from your list are present in the tree now
 missing_species &lt;- setdiff(existing_species, tree$tip.label)
@@ -981,6 +991,8 @@ palau_fish_tree &lt;- drop.tip(tree, setdiff(tree$tip.label, existing_species), 
 # Check dataframe to ensure changes were added
 pft_labs &lt;- as.data.frame(palau_fish_tree$tip.label)
 
+existing_species &lt;- as.data.frame(existing_species)
+
 ## Load out files
 # Phylogenetic tree of species present in marine lakes and ocean of Palau
 write.tree(palau_fish_tree,&quot;/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/palau_fish_tree.tre&quot;)
@@ -997,42 +1009,42 @@ sessionInfo()</code></pre>
 ## locale:
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
-## time zone: America/Denver
+## time zone: America/Los_Angeles
 ## tzcode source: internal
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] reticulate_1.31 fuzzyjoin_0.1.6 stringr_1.5.0   dplyr_1.1.3    
-## [5] rfishbase_4.1.2 phytools_1.9-16 maps_3.4.1      ape_5.7-1      
+## [1] reticulate_1.34.0 fuzzyjoin_0.1.6   stringr_1.5.1     dplyr_1.1.4      
+## [5] rfishbase_4.1.2   phytools_2.0-3    maps_3.4.1.1      ape_5.7-1        
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] fastmatch_1.1-4         xfun_0.40               bslib_0.5.1            
-##  [4] lattice_0.21-8          tzdb_0.4.0              numDeriv_2016.8-1.1    
-##  [7] quadprog_1.5-8          vctrs_0.6.3             tools_4.3.1            
-## [10] generics_0.1.3          curl_5.0.2              parallel_4.3.1         
-## [13] tibble_3.2.1            fansi_1.0.4             pkgconfig_2.0.3        
-## [16] contentid_0.0.17        Matrix_1.5-4.1          dbplyr_2.3.3           
-## [19] scatterplot3d_0.3-44    lifecycle_1.0.3         compiler_4.3.1         
-## [22] progress_1.2.2          mnormt_2.1.1            combinat_0.0-8         
-## [25] codetools_0.2-19        htmltools_0.5.6         sass_0.4.7             
+##  [1] fastmatch_1.1-4         xfun_0.41               bslib_0.6.1            
+##  [4] lattice_0.22-5          tzdb_0.4.0              numDeriv_2016.8-1.1    
+##  [7] quadprog_1.5-8          vctrs_0.6.5             tools_4.3.1            
+## [10] generics_0.1.3          curl_5.2.0              parallel_4.3.1         
+## [13] tibble_3.2.1            fansi_1.0.6             pkgconfig_2.0.3        
+## [16] contentid_0.0.18        Matrix_1.6-4            dbplyr_2.4.0           
+## [19] scatterplot3d_0.3-44    lifecycle_1.0.4         compiler_4.3.1         
+## [22] progress_1.2.3          mnormt_2.1.1            combinat_0.0-8         
+## [25] codetools_0.2-19        htmltools_0.5.7         sass_0.4.8             
 ## [28] yaml_2.3.7              pillar_1.9.0            crayon_1.5.2           
-## [31] jquerylib_0.1.4         MASS_7.3-60             openssl_2.1.0          
+## [31] jquerylib_0.1.4         MASS_7.3-60             openssl_2.1.1          
 ## [34] cachem_1.0.8            clusterGeneration_1.3.8 iterators_1.0.14       
-## [37] foreach_1.5.2           nlme_3.1-162            phangorn_2.11.1        
-## [40] tidyselect_1.2.0        digest_0.6.33           stringi_1.7.12         
-## [43] duckdb_0.8.1-3          purrr_1.0.2             fastmap_1.1.1          
-## [46] grid_4.3.1              expm_0.999-7            cli_3.6.1              
-## [49] magrittr_2.0.3          optimParallel_1.0-2     utf8_1.2.3             
-## [52] withr_2.5.0             readr_2.1.4             prettyunits_1.1.1      
-## [55] plotrix_3.8-2           httr_1.4.7              rmarkdown_2.24         
-## [58] igraph_1.5.1            askpass_1.2.0           png_0.1-8              
-## [61] hms_1.1.3               memoise_2.0.1           coda_0.19-4            
-## [64] evaluate_0.21           knitr_1.43              doParallel_1.0.17      
-## [67] rlang_1.1.1             Rcpp_1.0.11             glue_1.6.2             
-## [70] DBI_1.1.3               rstudioapi_0.15.0       jsonlite_1.8.7         
-## [73] R6_2.5.1                fs_1.6.3</code></pre>
+## [37] foreach_1.5.2           nlme_3.1-164            phangorn_2.11.1        
+## [40] tidyselect_1.2.0        digest_0.6.33           stringi_1.8.2          
+## [43] duckdb_0.9.2-1          purrr_1.0.2             fastmap_1.1.1          
+## [46] grid_4.3.1              expm_0.999-8            cli_3.6.1              
+## [49] magrittr_2.0.3          optimParallel_1.0-2     utf8_1.2.4             
+## [52] withr_2.5.2             readr_2.1.4             prettyunits_1.2.0      
+## [55] httr_1.4.7              rmarkdown_2.25          igraph_1.5.1           
+## [58] askpass_1.2.0           png_0.1-8               hms_1.1.3              
+## [61] memoise_2.0.1           coda_0.19-4             evaluate_0.23          
+## [64] knitr_1.45              doParallel_1.0.17       rlang_1.1.2            
+## [67] Rcpp_1.0.11             glue_1.6.2              DBI_1.1.3              
+## [70] rstudioapi_0.15.0       jsonlite_1.8.8          R6_2.5.1               
+## [73] fs_1.6.3</code></pre>
 </div>
 
 

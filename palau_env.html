@@ -384,57 +384,74 @@ env_data &lt;- read.csv(&quot;/Users/bailey/Documents/research/fish_biodiversity
 # Generate depth-by-lake environmental summaries
 env_data_means &lt;- env_data[, -c(2:4, 14)] %&gt;%
   group_by(lake_code, depth) %&gt;%
-  summarise(across(.cols = everything(), .fns = mean, .names = NULL, na.rm = TRUE))</code></pre>
-<pre><code>## Warning: There was 1 warning in `summarise()`.
-## ℹ In argument: `across(.cols = everything(), .fns = mean, .names = NULL, na.rm
-##   = TRUE)`.
-## ℹ In group 1: `lake_code = &quot;BCM&quot;`, `depth = 0`.
-## Caused by warning:
-## ! The `...` argument of `across()` is deprecated as of dplyr 1.1.0.
-## Supply arguments directly to `.fns` through an anonymous function instead.
-## 
-##   # Previously
-##   across(a:b, mean, na.rm = TRUE)
-## 
-##   # Now
-##   across(a:b, \(x) mean(x, na.rm = TRUE))</code></pre>
+  summarise(across(.cols = everything(), ~mean(., na.rm = TRUE)))</code></pre>
 <pre><code>## `summarise()` has grouped output by &#39;lake_code&#39;. You can override using the
 ## `.groups` argument.</code></pre>
 <pre class="r"><code># Generate summaries of environmental variables
-environment_byLake &lt;- env_data_means %&gt;%
+environment_by_lake &lt;- env_data_means %&gt;%
   dplyr::select(-depth) %&gt;%
   group_by(lake_code) %&gt;%
-  summarise(across(.cols = , .fns = list(median = median, sd = sd), .names = &quot;{.col}_{.fn}&quot;, na.rm = TRUE))</code></pre>
-<pre><code>## Warning: There was 1 warning in `summarise()`.
-## ℹ In argument: `across(...)`.
-## ℹ In group 1: `lake_code = &quot;BCM&quot;`.
-## Caused by warning:
-## ! Using `across()` without supplying `.cols` was deprecated in dplyr 1.1.0.
-## ℹ Please supply `.cols` instead.</code></pre>
-<pre class="r"><code># depth &lt;- env_data_means %&gt;%
+  summarise(across(.cols = everything(), list(median = ~median(., na.rm = TRUE), sd = ~sd(., na.rm = TRUE)), .names = &quot;{.col}_{.fn}&quot;))
+
+# depth &lt;- env_data_means %&gt;%
 #   dplyr::select(lake_code, depth) %&gt;%
 #   group_by(lake_code) %&gt;%
 #   summarise(across(.cols = depth, .fns = mean, .names = NULL, na.rm = TRUE))
 # 
 # depth[depth == &quot;NaN&quot;] &lt;- NA
 # 
-# environment_byLake &lt;- merge(environment_byLake, depth, by = &quot;lake_code&quot;, all = TRUE)
+# environment_byLake &lt;- merge(environment_by_lake, depth, by = &quot;lake_code&quot;, all = TRUE)
 
 ## Add additional lakes attributes
 # Add measures of area and isolation
-lake_attributes &lt;- read.csv(&quot;/Users/bailey/Documents/research/fish_biodiversity/data/collection/environment/lake_physical_attributes_fish_biodiversity_manuscript.csv&quot;, header = TRUE)
+lake_attributes &lt;- read.csv(&quot;/Users/bailey/Documents/research/fish_biodiversity/data/collection/environment/lake_physical_attributes.csv&quot;, header = TRUE)
 
 # Combine the physical and chemical factors for the lakes the by the site column
-env_byLake &lt;- merge(environment_byLake, lake_attributes, by = &quot;lake_code&quot;, all = TRUE)
+env_by_lake &lt;- merge(environment_by_lake, lake_attributes, by = &quot;lake_code&quot;, all = TRUE)
 
-row.names(env_byLake) &lt;- env_byLake$lake_code
+row.names(env_by_lake) &lt;- env_by_lake$lake_code
 
-env_byLake &lt;- env_byLake[,-1]</code></pre>
+env_by_lake &lt;- env_by_lake[,-1]
+
+# Reorder the columns based on the desired order
+desired_order &lt;- c(&quot;BCM&quot;, &quot;CLM&quot;, &quot;FLK&quot;, &quot;GLK&quot;, &quot;HLM&quot;, &quot;HLO&quot;, &quot;IBK&quot;, &quot;LLN&quot;, &quot;LCN&quot;, &quot;MLN&quot;, &quot;NCN&quot;, &quot;NLK&quot;, &quot;NLN&quot;, &quot;NLU&quot;, &quot;OLO&quot;, &quot;OOO&quot;, &quot;OTM&quot;, &quot;OOM&quot;, &quot;RCA&quot;, &quot;REF&quot;, &quot;SLN&quot;, &quot;TLN&quot;, &quot;ULN&quot;)
+env_by_lake &lt;- env_by_lake[desired_order,]</code></pre>
 </div>
 <div id="load-out-files" class="section level1">
 <h1>Load out files</h1>
 <pre class="r"><code># Contains environmental data for lakes sample from
-write.csv(env_byLake, &quot;/Users/bailey/Documents/research/fish_biodiversity/data/collection/environment/env_by_lake.csv&quot;)</code></pre>
+write.csv(env_by_lake, &quot;/Users/bailey/Documents/research/fish_biodiversity/data/collection/environment/env_by_lake.csv&quot;)
+
+sessionInfo()</code></pre>
+<pre><code>## R version 4.3.1 (2023-06-16)
+## Platform: aarch64-apple-darwin20 (64-bit)
+## Running under: macOS Ventura 13.4.1
+## 
+## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## time zone: America/Los_Angeles
+## tzcode source: internal
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] dplyr_1.1.4
+## 
+## loaded via a namespace (and not attached):
+##  [1] vctrs_0.6.5       cli_3.6.1         knitr_1.45        rlang_1.1.2      
+##  [5] xfun_0.41         generics_0.1.3    jsonlite_1.8.8    glue_1.6.2       
+##  [9] htmltools_0.5.7   sass_0.4.8        fansi_1.0.6       rmarkdown_2.25   
+## [13] evaluate_0.23     jquerylib_0.1.4   tibble_3.2.1      fastmap_1.1.1    
+## [17] yaml_2.3.7        lifecycle_1.0.4   compiler_4.3.1    pkgconfig_2.0.3  
+## [21] rstudioapi_0.15.0 digest_0.6.33     R6_2.5.1          tidyselect_1.2.0 
+## [25] utf8_1.2.4        pillar_1.9.0      magrittr_2.0.3    bslib_0.6.1      
+## [29] withr_2.5.2       tools_4.3.1       cachem_1.0.8</code></pre>
 </div>
 
 
