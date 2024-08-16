@@ -1,10 +1,9 @@
 ---
-title: "Bringing everything together & modifying files"
+title: "Fish traits"
 output: github_document
 editor_options: 
   chunk_output_type: console
 ---
-
 #### R Markdown
 
 ## Load packages
