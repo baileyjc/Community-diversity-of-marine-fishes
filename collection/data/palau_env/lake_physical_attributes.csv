@@ -1,0 +1,28 @@
+lake,lake_code,Stratification,Community,Island,volume_m3_w_chemocline,volume_m3,surface_area_m2,distance_to_ocean_min_m,distance_to_ocean_mean_m,distance_to_ocean_median_m,tidal_lag_time_minutes,tidal_efficiency,perimeter_fromSat,max_depth
+Big Crocodile Lake,BCM,Stratified,Meromictic,Mecherchar,592620.5506,1098736.01,77651,249,379,391,160,0.24,1705,25
+Clear Lake,CLM,Stratified,Meromictic,Mecherchar,391849.438,1010109.8,53703,250,404,397,186,0.21,1007,30
+Flatworm Lake,FLK,Mixed,Holomictic,Ngermeuangel,18625.93106,18625.93106,4402,113,155,156,128,0.33,316,4
+Goby Lake,GLK,Stratified,Meromictic,Ngermeuangel,40754.68451,58485.35118,19081,100,181,182,117,0.36,921,16
+Hot Water Lake,HLM,Stratified,Holomictic,Mecherchar,1457900.053,1457900.053,76125,99,332,333,150,0.27,1365,36
+Heliofungia Lake,HLO,Mixed,Holomictic,Ongael,284624.3674,284624.3674,20840,27,67,68,20,0.95,600,24
+Iwayama Bay,IBK,Ocean,Ocean,Ngermeuangel,38027238.11,38027238.11,1780435,0,0,0,0,1,9853,35.42
+Little Crocodile Lake,LCM,Stratified,Meromictic,Mecherchar,NA,NA,3992,501,542,540,170,0.17,265,16
+Long Lake,LLN,Mixed,Holomictic,Ngeruktabel,1118103.691,1118103.691,111397,96.5,159.66,145,NA,NA,4350,16
+Long Lake outer channel,LCN,Ocean,Ocean,Ngeruktabel,98282.40924,98282.40924,30714,0,0,0,0,1,2126,3
+L-shaped Lake,LSM,Stratified,Meromictic,Mecherchar,NA,NA,37664,254,412,416,160,0.22,1318,20
+Lake Mekaeald,MLN,Mixed,Holomictic,Ngeruktabel,457987.6602,457987.6602,26343,55,160,158,41,0.69,607,26
+Ngerchaol Cove,NCN,Ocean,Ocean,Ngeruktabel,36226.87284,36226.87284,5722,0,0,0,0,1,350,10
+Big Jellyfish Lake,NLK,Stratified,Meromictic,Ngermeuangel,600742.6776,1201485.355,50123,189,282,260,190,0.25,857,38
+Lake Ngerultabel,NLN,Mixed,Holomictic,Ngeruktabel,409563.9836,409563.9836,38372,51,154,149,132,0.44,1522,16
+Ngel Lake,NLU,Mixed,Holomictic,Ulebsechel,2298.205402,2298.205402,878,52,68,67,0,0.99,156,3
+Lake Ongael,OLO,Mixed,Holomictic,Ongael,41055.56849,102638.9212,12962,103,175,174,99,0.59,551,10
+Outside OLO,OOO,Ocean,Ocean,Ongael,13789329.8,13789329.8,1462217,0,0,0,0,1,6065,10
+OTM (J),OTM,Stratified,Meromictic,Mecherchar,548490.9232,1246565.377,61917,104,224,222,136,0.41,1257,32
+Outside Dock OTM,OOM,Ocean,Ocean,Mecherchar,2789011.491,2789011.491,562999,0,0,0,0,1,4251,7
+Risong Cove,RCA,Ocean,Ocean,Ulebsechel,163444.4994,163444.4994,10499,23,65,73,0,1,469,23
+Spooky Lake,SLM,Stratified,Meromictic,Mecherchar,NA,NA,13651,391,458,467,178,0.21,651,14
+Shrimp Lake,SLN,Stratified,Meromictic,Ngeruktabel,12259.51032,31203.94234,3386,195,228,228,128,0.45,286,12
+T-Lake,TLN,Stratified,Meromictic,Ngeruktabel,9207.230337,19585.43034,6990,55,122,120,179,0.46,534,10
+Lake Ngchas,ULN,Mixed,Holomictic,Ngeruktabel,253869.9964,253869.9964,30273,49,111,113,67,0.73,1021,10
+Ulong Lake,ULU,Mixed,Holomictic,Ulong,NA,NA,3184,24,48,52,NA,NA,247,8
+Reference,REF,Reference,Reference,Palau,NA,NA,NA,0,0,0,0,0,NA,200
