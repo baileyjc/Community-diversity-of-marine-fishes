@@ -1,59 +1,29 @@
-Environment and trait PCAs
-================
-
+---
+title: "Environment and trait PCAs"
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
 #### R Markdown
 
 ## Load PCA libaries and files
-
-``` r
+```{r, Load PCA libaries and files}
 # Load the knitr package if not already loaded
 library(knitr)
 library(dplyr)
-```
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-``` r
 library(ggplot2)
 library(viridis)
-```
-
-    ## Loading required package: viridisLite
-
-``` r
 library(ggrepel)
 
 # Source the R Markdown file
 knit("/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.Rmd", output = "/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md")
-```
 
-    ## 
-    ## 
-    ## processing file: /Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.Rmd
-
-    ##   |                  |          |   0%  |                  |          |   3%                                                                          |                  |.         |   6% [Bringing everything together load modifying files packages]             |                  |.         |   9%                                                                          |                  |.         |  12% [Bringing everything together load in modifying files]                   |                  |..        |  16%                                                                          |                  |..        |  19% [Check species names across files]                                       |                  |..        |  22%                                                                          |                  |..        |  25% [Modify environment data]                                                |                  |...       |  28%                                                                          |                  |...       |  31% [Modify incidence matrices]                                              |                  |...       |  34%                                                                          |                  |....      |  38% [Modify phylogeny]                                                       |                  |....      |  41%                                                                          |                  |....      |  44% [Modify trait data]                                                      |                  |.....     |  47%                                                                          |                  |.....     |  50% [Modify community data frames]                                           |                  |.....     |  53%                                                                          |                  |......    |  56% [Modify community trait data]                                            |                  |......    |  59%                                                                          |                  |......    |  62% [Community trait data tests]                                             |                  |.......   |  66%                                                                          |                  |.......   |  69% [Modify stratification data frames]                                      |                  |.......   |  72%                                                                          |                  |........  |  75% [Modify stratification trait data]                                       |                  |........  |  78%                                                                          |                  |........  |  81% [Stratification trait data tests]                                        |                  |........  |  84%                                                                          |                  |......... |  88% [Modify site trait data frames]                                          |                  |......... |  91%                                                                          |                  |......... |  94% [Site trait data tests]                                                  |                  |..........|  97%                                                                          |                  |..........| 100% [Bringing everything together load out modified files and session info]
-
-    ## output file: /Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md
-
-    ## [1] "/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md"
-
-``` r
 # Define your custom colors
 custom_colors <- c("Reference" = "black", "Ocean" = "#EE6363", "Mixed" = "#87CEFA", "Stratified" = "#6E8B3D")
 ```
 
 ## All sites environment PCA
-
-``` r
+```{r, All sites env PCA}
 ### Environment ###
 ## All sites
 # Extract numerical
@@ -66,33 +36,13 @@ all_sites_env_scaled_data <- scale(all_sites_env_numerical_vars)
 # Run PCA
 all_sites_env_pca <- prcomp(all_sites_env_scaled_data, center = TRUE, scale. = TRUE)
 summary(all_sites_env_pca)
-```
-
-    ## Importance of components:
-    ##                           PC1    PC2     PC3     PC4     PC5     PC6    PC7
-    ## Standard deviation     1.9767 1.6509 0.88933 0.76148 0.74347 0.51632 0.2969
-    ## Proportion of Variance 0.4341 0.3028 0.08788 0.06443 0.06142 0.02962 0.0098
-    ## Cumulative Proportion  0.4341 0.7370 0.82487 0.88929 0.95071 0.98033 0.9901
-    ##                            PC8     PC9
-    ## Standard deviation     0.22526 0.19521
-    ## Proportion of Variance 0.00564 0.00423
-    ## Cumulative Proportion  0.99577 1.00000
-
-``` r
+    
 # Biplot
 biplot(all_sites_env_pca)
-```
 
-![](PCAs_files/figure-gfm/All%20sites%20env%20PCA-1.png)<!-- -->
-
-``` r
 # Scree plot
 plot(all_sites_env_pca)
-```
 
-![](PCAs_files/figure-gfm/All%20sites%20env%20PCA-2.png)<!-- -->
-
-``` r
 # Pull out principal component data frame
 all_sites_env_coords <- all_sites_env_pca$x
 
@@ -135,25 +85,8 @@ labs(x= "PC1 45%", y= "PC2 27%", colour = "Site type", fill = "Site type", tag =
 
 all_sites_env_pca_plot <- all_sites_env_pca_plot + guides(color = guide_legend(override.aes = list(label = "")))
 all_sites_env_pca_plot
-```
-
-    ## Too few points to calculate an ellipse
-
-    ## Warning: Removed 1 row containing missing values or values outside the scale range
-    ## (`geom_path()`).
-
-![](PCAs_files/figure-gfm/All%20sites%20env%20PCA-3.png)<!-- -->
-
-``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/pca/all_sites_env_pca_plot.png", all_sites_env_pca_plot, width = 8.25, height = 4.13)
-```
 
-    ## Too few points to calculate an ellipse
-
-    ## Warning: Removed 1 row containing missing values or values outside the scale range
-    ## (`geom_path()`).
-
-``` r
 # Loadings of variables on PC1
 all_sites_env_loadings_on_PC1 <- all_sites_env_pca$rotation[, 1]
 
@@ -162,11 +95,7 @@ all_sites_env_sorted_vars_l1 <- names(all_sites_env_loadings_on_PC1[order(-abs(a
 
 # Print sorted variables
 print(all_sites_env_sorted_vars_l1)
-```
 
-    ## [1] "Tl"    "meanD" "S"     "O"     "pH"    "C"     "V"     "M"     "LA"
-
-``` r
 # Loadings of variables on PC2
 all_sites_env_loadings_on_PC2 <- all_sites_env_pca$rotation[, 2]
 
@@ -177,11 +106,8 @@ all_sites_env_sorted_vars_l2 <- names(all_sites_env_loadings_on_PC2[order(-abs(a
 print(all_sites_env_sorted_vars_l2)
 ```
 
-    ## [1] "LA"    "M"     "V"     "C"     "pH"    "O"     "meanD" "Tl"    "S"
-
 ## Marine lakes environment PCA
-
-``` r
+```{r, Marine lakes env PCA}
 ## Only marine lakes
 # Extract numerical
 # marine_lakes_env_numerical_vars <- env[-c(7:9,11,16,18:20), c("temperature_median", "salinity_median", "oxygen_median", "pH_median", "volume_m3_w_chemocline", "surface_area_m2", "distance_to_ocean_mean_m", "tidal_efficiency", "max_depth")]
@@ -193,33 +119,13 @@ marine_lakes_env_scaled_data <- scale(marine_lakes_env_numerical_vars)
 # Run PCA
 marine_lakes_env_pca <- prcomp(marine_lakes_env_scaled_data, center = TRUE, scale. = TRUE)
 summary(marine_lakes_env_pca)
-```
 
-    ## Importance of components:
-    ##                           PC1    PC2     PC3     PC4     PC5     PC6     PC7
-    ## Standard deviation     2.1448 1.4630 0.90948 0.83406 0.60809 0.45290 0.30091
-    ## Proportion of Variance 0.5111 0.2378 0.09191 0.07729 0.04109 0.02279 0.01006
-    ## Cumulative Proportion  0.5111 0.7489 0.84082 0.91811 0.95920 0.98199 0.99205
-    ##                            PC8     PC9
-    ## Standard deviation     0.24024 0.11754
-    ## Proportion of Variance 0.00641 0.00154
-    ## Cumulative Proportion  0.99846 1.00000
-
-``` r
 # Biplot
 biplot(marine_lakes_env_pca)
-```
 
-![](PCAs_files/figure-gfm/Marine%20lakes%20env%20PCA-1.png)<!-- -->
-
-``` r
 # Scree plot
 plot(marine_lakes_env_pca)
-```
 
-![](PCAs_files/figure-gfm/Marine%20lakes%20env%20PCA-2.png)<!-- -->
-
-``` r
 # Pull out principal component data frame
 marine_lakes_env_coords <- marine_lakes_env_pca$x
 
@@ -262,11 +168,6 @@ labs(x= "PC1 53%", y= "PC2 22%", colour = "Site type", fill = "Site type", tag =
 
 marine_lakes_env_pca_plot <- marine_lakes_env_pca_plot + guides(color = guide_legend(override.aes = list(label = "")))
 marine_lakes_env_pca_plot
-```
-
-![](PCAs_files/figure-gfm/Marine%20lakes%20env%20PCA-3.png)<!-- -->
-
-``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/pca/marine_lakes_env_pca_plot.png", marine_lakes_env_pca_plot, width = 8.25, height = 4.13)
 
 # Loadings of variables on PC1
@@ -277,11 +178,7 @@ marine_lakes_env_sorted_vars_l1 <- names(marine_lakes_env_loadings_on_PC1[order(
 
 # Print sorted variables
 print(marine_lakes_env_sorted_vars_l1)
-```
 
-    ## [1] "meanD" "V"     "Tl"    "M"     "LA"    "C"     "S"     "O"     "pH"
-
-``` r
 # Loadings of variables on PC1
 marine_lakes_env_loadings_on_PC2 <- marine_lakes_env_pca$rotation[, 2]
 
@@ -292,11 +189,8 @@ marine_lakes_env_sorted_vars_l2 <- names(marine_lakes_env_loadings_on_PC2[order(
 print(marine_lakes_env_sorted_vars_l2)
 ```
 
-    ## [1] "pH"    "LA"    "S"     "O"     "M"     "V"     "Tl"    "C"     "meanD"
-
 ## All sites trait PCA
-
-``` r
+```{r, All sites trait PCA, eval=F}
 St <- Sites_at[,c(1:18,36:37)] %>%
   rename(B = BodyShapeI) %>%
   rename(O = OperculumPresent) %>%
@@ -458,8 +352,7 @@ print(stratified_sites_trait_sorted_vars_l1)
 ```
 
 ## Marine lakes trait PCA
-
-``` r
+```{r, Marine lakes trait PCA, eval=F}
 Lt <- Lakes_at[,c(1:18,36:37)] %>%
   rename(B = BodyShapeI) %>%
   rename(O = OperculumPresent) %>%
@@ -591,57 +484,13 @@ marine_lakes_trait_sorted_vars_l1 <- names(marine_lakes_trait_loadings_on_PC1[or
 print(marine_lakes_trait_sorted_vars_l1)
 ```
 
-``` r
+
+```{r, PCAs session info}
 sessionInfo()
 ```
 
-    ## R version 4.3.1 (2023-06-16)
-    ## Platform: aarch64-apple-darwin20 (64-bit)
-    ## Running under: macOS Ventura 13.6.6
-    ## 
-    ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
-    ## 
-    ## locale:
-    ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
-    ## 
-    ## time zone: America/Los_Angeles
-    ## tzcode source: internal
-    ## 
-    ## attached base packages:
-    ## [1] parallel  stats     graphics  grDevices utils     datasets  methods  
-    ## [8] base     
-    ## 
-    ## other attached packages:
-    ##  [1] tidyr_1.3.0       phytools_2.0-3    maps_3.4.1.1      ape_5.7-1        
-    ##  [5] reshape2_1.4.4    stringr_1.5.1     ggrepel_0.9.4     viridis_0.6.4    
-    ##  [9] viridisLite_0.4.2 ggplot2_3.5.1     dplyr_1.1.4       knitr_1.45       
-    ## 
-    ## loaded via a namespace (and not attached):
-    ##  [1] fastmatch_1.1-4         gtable_0.3.4            xfun_0.41              
-    ##  [4] lattice_0.22-5          numDeriv_2016.8-1.1     quadprog_1.5-8         
-    ##  [7] vctrs_0.6.5             tools_4.3.1             generics_0.1.3         
-    ## [10] tibble_3.2.1            fansi_1.0.6             highr_0.10             
-    ## [13] pkgconfig_2.0.3         Matrix_1.6-4            scatterplot3d_0.3-44   
-    ## [16] lifecycle_1.0.4         compiler_4.3.1          farver_2.1.1           
-    ## [19] textshaping_0.3.7       munsell_0.5.0           mnormt_2.1.1           
-    ## [22] combinat_0.0-8          codetools_0.2-19        htmltools_0.5.7        
-    ## [25] yaml_2.3.7              pillar_1.9.0            MASS_7.3-60            
-    ## [28] clusterGeneration_1.3.8 iterators_1.0.14        foreach_1.5.2          
-    ## [31] nlme_3.1-164            phangorn_2.11.1         tidyselect_1.2.0       
-    ## [34] digest_0.6.33           stringi_1.8.2           purrr_1.0.2            
-    ## [37] labeling_0.4.3          fastmap_1.1.1           grid_4.3.1             
-    ## [40] colorspace_2.1-0        expm_0.999-8            cli_3.6.1              
-    ## [43] magrittr_2.0.3          optimParallel_1.0-2     utf8_1.2.4             
-    ## [46] withr_2.5.2             scales_1.3.0            rmarkdown_2.25         
-    ## [49] igraph_1.5.1            gridExtra_2.3           ragg_1.2.6             
-    ## [52] coda_0.19-4             evaluate_0.23           doParallel_1.0.17      
-    ## [55] rlang_1.1.2             Rcpp_1.0.11             glue_1.6.2             
-    ## [58] rstudioapi_0.15.0       R6_2.5.1                plyr_1.8.9             
-    ## [61] systemfonts_1.0.5
 
-``` r
+```{r, eval=F}
 marine_lakes_trait_numerical_vars <- Lt[, c("DS", "L", "T", "DMin", "DMax", "TMin", "TMax")]
 marine_lakes_trait_numerical_vars$X <- row.names(marine_lakes_trait_numerical_vars)
 
@@ -684,8 +533,7 @@ print(marine_lakes_trait_sorted_vars_l1)
 ```
 
 ## Extra PCAs
-
-``` r
+```{r, Extra PCAs, eval=F}
 #Plot eigenvalues and percentages of variation of an ordination object
 # Kaiser rule and broken stick model
 # Usage:evplot(ev)

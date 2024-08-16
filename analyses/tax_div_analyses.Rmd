@@ -1,0 +1,491 @@
+---
+title: "Taxonomic diversity analyses"
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+#### R Markdown
+
+## Load packages
+```{r, Load taxon packages}
+# Load the knitr package if not already loaded
+library(knitr)
+library(betapart)
+library(ggplot2)
+library(viridis)
+library(ggrepel)
+library(ggvenn)
+
+# Source the R Markdown file
+knit("/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.Rmd", output = "/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md")
+
+strat_fish <- stratified_fish[,-c(1,10)]
+mix_fish <- mixed_fish[,-c(1,10)]
+oc_fish <- ocean_fish[,-c(1,8)]
+
+# Define your custom colors
+custom_colors <- c("Reference" = "black", "Ocean" = "#EE6363", "Mixed" = "#87CEFA", "Stratified" = "#6E8B3D")
+```
+
+## Plot species richness for all sites with more than 1 species
+```{r}
+#Plot species richness
+SR_env$Stratification <- factor(SR_env$Stratification, levels = c("Ocean", "Mixed", "Stratified"))
+
+SR_plot <- ggplot(data = SR_env[-20,], mapping = aes(x = reorder(X, row_sum, decreasing = T), y = row_sum, color = Stratification, fill = Stratification)) + 
+  geom_bar(stat = 'identity',
+    alpha = 1) +
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  theme_bw() +
+  theme(text = element_text(size = 22), legend.title = element_text(size = 16), legend.text = element_text(size = 16),
+    axis.text = element_text(size = 22, color = "black"),
+    axis.line = element_line(color = "black"),
+    plot.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank()) + 
+  labs(x="Site", y="Species Richness", colour = "Site type", fill = "Site type")
+SR_plot
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/species_richness/SR_plot.png", plot = SR_plot, width = 6, height = 4, units = "in")
+
+subset_SR_env <- subset(SR_env, Stratification == "Ocean")
+ordered_subset_SR_env <- subset_SR_env[order(subset_SR_env$row_sum), ]
+Q1 <- ordered_subset_SR_env[2,2]
+Q3 <- ordered_subset_SR_env[5,2]
+IQR1 <- Q3 - Q1
+Q1 - 1.5*IQR1
+Q3 + 1.5*IQR1
+ordered_subset_SR_env$row_sum
+
+subset_SR_env <- subset(SR_env, Stratification == "Stratified")
+ordered_subset_SR_env <- subset_SR_env[order(subset_SR_env$row_sum), ]
+Q1 <- ordered_subset_SR_env[2,2]
+Q3 <- ordered_subset_SR_env[5,2]
+IQR1 <- Q3 - Q1
+Q1 - 1.5*IQR1
+Q3 + 1.5*IQR1
+ordered_subset_SR_env$row_sum
+```
+
+## Plot species richness venn diagram
+```{r}
+site_type_pres <- strat_presabs_lake[c(24:26),]
+site_type_pres <- t(site_type_pres)
+site_type_pres <- site_type_pres[which(rowSums(site_type_pres) > 0),]
+
+# Convert numerical values to logical
+site_type_pres_logical <- as.data.frame(site_type_pres > 0)
+
+# Check the structure of the transformed data
+str(site_type_pres_logical)
+
+# Generate a color palette with three colors
+# palette <- viridis_pal(alpha = 1, begin = 0.45, end = 0.75, option = "G")(3)
+# palette
+
+# Plot the colors
+# barplot(rep(1, 3), col = palette, border = NA, axes = FALSE, main = "Viridis Palette")
+
+# Create the Venn diagram
+venn_plot <- ggvenn(site_type_pres_logical,
+                    show_percentage = F,
+                    fill_color = c("#EE6363", "#87CEFA", "#6E8B3D"),
+                    fill_alpha = 0.7,
+                    stroke_alpha = 0,
+                    stroke_size = 0.5, 
+                    set_name_size = 5,
+                    text_size = 5)
+
+venn_plot
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/species_richness/venn_plot.png", plot = venn_plot, width = 6, height = 4, units = "in")
+```
+
+## Subsample species richness venn diagram
+```{r}
+# Randomly sample six columns from stratified_fish and mixed_fish
+sampled_stratified <- sample(names(strat_fish)[-1], 6)
+sampled_mixed <- sample(names(mix_fish)[-1], 6)
+
+# Select sampled columns from stratified_fish and mixed_fish
+stratified_subset <- select(stratified_fish, all_of(sampled_stratified))
+mixed_subset <- select(mixed_fish, all_of(sampled_mixed))
+
+# Get rid of species not present in the 6 remaining sites
+stratified_subset <- stratified_subset[which(rowSums(stratified_subset[, -1]) > 0),]
+mixed_subset <- mixed_subset[which(rowSums(mixed_subset[, -1]) > 0),]
+
+# Make site type columns in each dataframe
+stratified_subset[,7] <- rowSums(stratified_subset[,c(1:6)])
+colnames(stratified_subset)[colnames(stratified_subset) == "V7"] <- "Stratified lakes"
+
+mixed_subset[,7] <- rowSums(mixed_subset[,c(1:6)])
+colnames(mixed_subset)[colnames(mixed_subset) == "V7"] <- "Mixed lakes"
+
+oc_fish[,7] <- rowSums(oc_fish[,c(1:6)])
+colnames(oc_fish)[colnames(oc_fish) == "V7"] <- "Ocean sites"
+
+# Merge the two data frames, replacing missing values with 0
+oc_mix_merge <- merge(oc_fish, mixed_subset, by = 0, all = TRUE)
+row.names(oc_mix_merge) <- oc_mix_merge$Row.names
+oc_mix_merge <- oc_mix_merge[,-1]
+oc_mix_strat_merge <- merge(oc_mix_merge, stratified_subset, by = 0, all = TRUE)
+row.names(oc_mix_strat_merge) <- oc_mix_strat_merge$Row.names
+oc_mix_strat_merge <- oc_mix_strat_merge[,-1]
+
+# Keep only site type
+keep <- c("Ocean sites", "Mixed lakes", "Stratified lakes")
+site_type_pres_sample <- oc_mix_strat_merge[,keep]
+
+# Replace NA with 0
+site_type_pres_sample[is.na(site_type_pres_sample)] <- 0
+
+## Remove all species not found in any locations
+# Identifies which rows are greater than 0
+site_type_pres_sample <- site_type_pres_sample[which(rowSums(site_type_pres_sample) > 0),]
+
+site_type_pres_sample_logical <- as.data.frame(site_type_pres_sample > 0)
+
+venn_plot <- ggvenn(site_type_pres_sample_logical,
+                    show_percentage = F,
+                    fill_color = c("#EE6363", "#87CEFA", "#6E8B3D"),
+                    fill_alpha = 0.7,
+                    stroke_alpha = 0,
+                    stroke_size = 0.5, 
+                    set_name_size = 5,
+                    text_size = 5)
+venn_plot
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/species_richness/venn_plot_s10.png", plot = venn_plot, width = 6, height = 4, units = "in")
+```
+
+## SR complete island Linear Models
+```{r}
+SR_model <- lm(log(row_sum) ~ surface_area_m2 + distance_to_ocean_mean_m + tidal_lag_time_minutes + max_depth + logArea, data = SR_env[c(1:2,4,5,12,17,21:22),])
+summary(SR_model)
+p_values <- summary(SR_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+anova(SR_model)
+# Get R-squared value
+r_squared <- summary(SR_model)$r.squared
+
+# Get number of observations
+n <- nrow(SR_env[c(1:2,4,5,12,17,21:22),])
+
+# Get number of predictor variables (excluding intercept)
+k <- length(coef(SR_model)) - 1  # Subtract 1 for the intercept
+
+# Calculate Cohen's f^2
+f_squared <- r_squared / (1 - r_squared) * ((n - k - 1) / k)
+
+# Print the result
+print(f_squared)
+
+SR_model <- lm(row_sum ~ temperature_median + salinity_median + oxygen_median + pH_median, data = SR_env[c(1:2,4,5,12,17,21:22),])
+summary(SR_model)
+p_values <- summary(SR_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+anova(SR_model)
+# Get R-squared value
+r_squared <- summary(SR_model)$r.squared
+
+# Get number of observations
+n <- nrow(SR_env[c(1:2,4,5,12,17,21:22),])
+
+# Get number of predictor variables (excluding intercept)
+k <- length(coef(SR_model)) - 1  # Subtract 1 for the intercept
+
+# Calculate Cohen's f^2
+f_squared <- r_squared / (1 - r_squared) * ((n - k - 1) / k)
+
+# Print the result
+print(f_squared)
+
+SR_model <- lm(row_sum ~ salinity_median, data = SR_env[c(1:2,4,5,12,17,21:22),])
+summary(SR_model)
+anova(SR_model)
+plot(SR_env[c(1:2,4,5,12,17,21:22),2], SR_env[c(1:2,4,5,12,17,21:22),7])
+
+# Island biogeography common relationships
+SR_model <- lm(log(row_sum) ~ logArea, data = SR_env[c(1:2,4,5,12,17,21:22),])
+summary(SR_model)
+anova(SR_model)
+
+SR_model <- lm(log(row_sum) ~ log(distance_to_ocean_mean_m), data = SR_env[c(1:2,4,5,12,17,21:22),])
+summary(SR_model)
+anova(SR_model)
+
+SR_model <- lm(log(row_sum) ~ log(max_depth), data = SR_env[c(1:2,4,5,12,17,21:22),])
+summary(SR_model)
+anova(SR_model)
+```
+
+## SR habitat island Linear Models
+```{r}
+SR_model <- lm(log(row_sum) ~ surface_area_m2 + distance_to_ocean_mean_m + tidal_lag_time_minutes + max_depth + logArea, data = SR_env[c(3,6,8,10,13:15,23),])
+summary(SR_model)
+p_values <- summary(SR_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+anova(SR_model)
+# Get R-squared value
+r_squared <- summary(SR_model)$r.squared
+
+# Get number of observations
+n <- nrow(SR_env[c(3,6,8,10,13:15,23),])
+
+# Get number of predictor variables (excluding intercept)
+k <- length(coef(SR_model)) - 1  # Subtract 1 for the intercept
+
+# Calculate Cohen's f^2
+f_squared <- r_squared / (1 - r_squared) * ((n - k - 1) / k)
+
+# Print the result
+print(f_squared)
+
+SR_model <- lm(row_sum ~ temperature_median + salinity_median + oxygen_median + pH_median, data = SR_env[c(3,6,8,10,13:15,23),])
+summary(SR_model)
+p_values <- summary(SR_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+anova(SR_model)
+# Get R-squared value
+r_squared <- summary(SR_model)$r.squared
+
+# Get number of observations
+n <- nrow(SR_env[c(3,6,8,10,13:15,23),])
+
+# Get number of predictor variables (excluding intercept)
+k <- length(coef(SR_model)) - 1  # Subtract 1 for the intercept
+
+# Calculate Cohen's f^2
+f_squared <- r_squared / (1 - r_squared) * ((n - k - 1) / k)
+
+# Print the result
+print(f_squared)
+
+SR_model <- lm(row_sum ~ pH_median, data = SR_env[c(3,6,8,10,13:15,23),])
+summary(SR_model)
+anova(SR_model)
+plot(SR_env[c(3,6,8,10,13:15,23),2], SR_env[c(3,6,8,10,13:15,23),11])
+
+# Island biogeography common relationships
+SR_model <- lm(log(row_sum) ~ logArea, data = SR_env[c(3,6,8,10,13:15,23),])
+summary(SR_model)
+anova(SR_model)
+
+SR_model <- lm(log(row_sum) ~ log(distance_to_ocean_mean_m), data = SR_env[c(3,6,8,10,13:15,23),])
+summary(SR_model)
+anova(SR_model)
+
+SR_model <- lm(log(row_sum) ~ log(max_depth), data = SR_env[c(3,6,8,10,13:15,23),])
+summary(SR_model)
+anova(SR_model)
+```
+
+## SR vs log area, distance to the ocean, max depth
+```{r}
+SR_plot <- ggplot(data = SR_env[-20,], mapping = aes(x = logArea, y = log(row_sum), color = Stratification, fill = Stratification)) +
+  geom_point(stat = 'identity',
+    size = 4,
+    alpha = 1) + 
+  geom_text_repel(label = SR_env[-20,1], size = 5, point.padding = 3) +
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  theme_bw() +
+  theme(text = element_text(size = 22), legend.title = element_text(size = 16), legend.text = element_text(size = 16),
+    axis.text = element_text(size = 22, color = "black"),
+    axis.line = element_line(color = "black"),
+    plot.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank()) + 
+  labs(x="Log Area (m"^"2"~")", y= "Log SRic", colour = "Site type", fill = "Site type")
+# SR_plot <- SR_plot + geom_smooth(mapping = aes(x = logArea, y = row_sum), method = lm, se = FALSE, inherit.aes = FALSE, color = 'black')
+SR_plot <- SR_plot + guides(color = guide_legend(override.aes = list(label = "")))
+SR_plot
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/species_richness/SR_plot_area.png", SR_plot, width = 6, height = 4, units = "in")
+
+
+SR_plot <- ggplot(data = SR_env[-20,], mapping = aes(x = log(distance_to_ocean_mean_m), y = log(row_sum), color = Stratification, fill = Stratification)) +
+  geom_point(stat = 'identity',
+    size = 4,
+    alpha = 1) + 
+  geom_text_repel(label = SR_env[-20,1], size = 5, point.padding = 3) +
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  theme_bw() +
+  theme(text = element_text(size = 22), legend.title = element_text(size = 16), legend.text = element_text(size = 16),
+    axis.text = element_text(size = 22, color = "black"),
+    axis.line = element_line(color = "black"),
+    plot.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank()) + 
+  labs(x="Log Isolation", y= "Log SRic", colour = "Site type", fill = "Site type")
+SR_plot <- SR_plot + guides(color = guide_legend(override.aes = list(label = "")))
+SR_plot
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/species_richness/SR_plot_dist.png", SR_plot, width = 6, height = 4, units = "in")
+
+
+SR_plot <- ggplot(data = SR_env[-20,], mapping = aes(x = log(max_depth), y = log(row_sum), color = Stratification, fill = Stratification)) +
+  geom_point(stat = 'identity',
+    size = 4,
+    alpha = 1) + 
+  geom_text_repel(label = SR_env[-20,1], size = 5, point.padding = 3) +
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  theme_bw() +
+  theme(text = element_text(size = 22), legend.title = element_text(size = 16), legend.text = element_text(size = 16),
+    axis.text = element_text(size = 22, color = "black"),
+    axis.line = element_line(color = "black"),
+    plot.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank()) + 
+  labs(x="Log Age", y= "Log SRic", colour = "Site type", fill = "Site type")
+SR_plot <- SR_plot + guides(color = guide_legend(override.aes = list(label = "")))
+SR_plot
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/species_richness/SR_plot_depth.png", SR_plot, width = 6, height = 4, units = "in")
+```
+
+## SR vs Oxygen Concentration
+```{r}
+SR_oxygen_median_plot <- ggplot(data = SR_env[-20,], mapping = aes(x = oxygen_median, y = row_sum, color = Stratification, fill = Stratification)) +
+  geom_point(stat = 'identity',
+    size = 4,
+    alpha = 1) + 
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  theme_bw() +
+  theme(text = element_text(size = 18),
+    plot.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank()) +
+  theme(axis.line = element_line(color = "black")) +
+  labs(x= "Oxygen Concentration (mg/L)", y= "SRic", colour = "Site type", fill = "Site type") +
+  ylim(c(0,110))
+SR_oxygen_median_plot <- SR_oxygen_median_plot + geom_smooth(mapping = aes(x = oxygen_median, y = row_sum), method = lm, se = FALSE, inherit.aes = FALSE, color = 'black')
+SR_oxygen_median_plot
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/species_richness/SR_oxygen_median_plot.png", SR_oxygen_median_plot, width = 6, height = 4, units = "in")
+```
+
+## SR vs tidal efficiency
+```{r}
+SR_tidal_efficiency_plot <- ggplot(data = SR_env[-20,], mapping = aes(x = tidal_efficiency, y = row_sum, color = Stratification, fill = Stratification)) +
+  geom_point(stat = 'identity',
+    size = 4,
+    alpha = 1) + 
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  guides(fill = "none", color = "none") +
+  theme_bw() +
+  theme(text = element_text(size = 24),
+    plot.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank()) +
+  theme(axis.line = element_line(color = "black")) +
+  labs(x= "Tidal Efficiency", y= "SRic", colour = "Site type", fill = "Site type") +
+  ylim(c(0,110))
+SR_tidal_efficiency_plot <- SR_tidal_efficiency_plot + geom_smooth(mapping = aes(x = tidal_efficiency, y = row_sum), method = lm, se = FALSE, inherit.aes = FALSE, color = 'black')
+SR_tidal_efficiency_plot
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/species_richness/SR_tidal_efficiency_plot.png", SR_tidal_efficiency_plot, width = 6, height = 4, units = "in")
+```
+
+
+```{r, tax div analyses session info}
+sessionInfo()
+```
+
+## Beta Diversity of SR
+```{r, eval=FALSE}
+# Do the following to order lakes by the circulation pattern, then delete env data
+####https://pedrohbraga.github.io/CommunityPhylogenetics-Workshop/CommunityPhylogenetics-Workshop.html#between-assemblage-phylogenetic-structure####
+presabs_env <- merge(pres_abs_by_lake, env, by = 'X', sort = F)
+presabs_env <- presabs_env[order(presabs_env$Stratification),]
+row.names(presabs_env) <- presabs_env$X
+presabs_env_ordered <- presabs_env[,-c(1, 1725:1770)]
+
+SR_betap_jac <- beta.pair(presabs_env_ordered[-15,], index.family = "jaccard")
+
+# Turnover matrix:
+SR.jac.turn <- SR_betap_jac$beta.jtu %>% 
+  as.matrix() %>% melt() %>% 
+  ggplot() + geom_tile(aes(x = Var1, y = Var2, fill = value)) + # create the heatmap
+  xlab("Sites") + ylab("Sites") + labs(fill = "Turnover") + # edit axis and legend titles
+  scale_fill_viridis_c(option = "H", limits = range(0,1)) +
+  theme(axis.text.x = element_text(angle = 90)) # rotates x axis labels
+
+# Nestedness matrix:
+SR.jac.nest <- SR_betap_jac$beta.jne %>% 
+  as.matrix() %>% melt() %>% 
+  ggplot() + geom_tile(aes(x = Var1, y = Var2, fill = value)) + # create the heatmap
+  xlab("Sites") + ylab("Sites") + labs(fill = "Nestedness") + # edit axis and legend titles
+    scale_fill_viridis_c(option = "H", limits = range(0,1)) +
+  theme(axis.text.x = element_text(angle = 90)) # rotates x axis labels
+
+# Nestedness matrix:
+SR.jac <- SR_betap_jac$beta.jac %>% 
+  as.matrix() %>% melt() %>% 
+  ggplot() + geom_tile(aes(x = Var1, y = Var2, fill = value)) + # create the heatmap
+  xlab("Sites") + ylab("Sites") + labs(fill = "Beta Diversity") + # edit axis and legend titles
+    scale_fill_viridis_c(option = "H", limits = range(0,1)) +
+  theme(axis.text.x = element_text(angle = 90)) # rotates x axis labels
+SR.jac
+
+# plot both heatmaps next to each other
+SR_beta_div_plot <- gridExtra::grid.arrange(SR.jac.turn, SR.jac.nest, ncol = 2)
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/species_richness/SR_beta_div_plot.png", SR_beta_div_plot, width = 6, height = 4.5)
+```
+
+## Determine what families of fish are most present in the lakes
+```{r, eval=F}
+library(rfishbase)
+species_sums_tax <- site_sums
+species_sums_tax$X <- gsub("_", " ", species_sums_tax$X)
+species_sums_tax <- species_sums_tax$X
+species_sums_tax <- rfishbase::load_taxa() %>% 
+  filter(Species %in% species_sums_tax) %>%
+  collect()
+species_sums_tax$Species <- gsub(" ", "_", species_sums_tax$Species)
+species_sums_tax <- merge(species_sums_tax, species_sums, by.x = "Species", by.y = "X")
+species_sums_tax <- species_sums_tax[, -c(2:4, 7:8)]
+species_sums_tax <- species_sums_tax[order(species_sums_tax$row_sum),]
+
+species_sums_tax_summary <- species_sums_tax %>%
+  group_by(Family) %>%
+  summarise(across(.cols = row_sum, .fns = sum, na.rm = TRUE))
+
+family <- ggplot(data = species_sums_tax_summary) + 
+  geom_bar(aes(x = reorder(Family, row_sum), y = row_sum),
+    stat = 'identity',
+    col="green", 
+    fill="green4", 
+    alpha = .5) + 
+  theme_bw() +
+  theme(plot.background = element_blank()
+    ,panel.grid.major = element_blank()
+    ,panel.grid.minor = element_blank()
+    ,panel.border = element_blank()) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1), axis.line = element_line(color = "black")) +
+  labs(x="Family", y="Family Richness")
+family
+ggsave("family.png", family, width = 6, height = 4.5)
+
+order <- ggplot(data = species_sums_tax) + 
+  geom_bar(aes(x = reorder(Order, row_sum), y = row_sum),
+    stat = 'identity',
+    col="green", 
+    fill="green4", 
+    alpha = .5) + 
+  theme_bw() +
+  theme(plot.background = element_blank()
+    ,panel.grid.major = element_blank()
+    ,panel.grid.minor = element_blank()
+    ,panel.border = element_blank()) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1), axis.line = element_line(color = "black")) +
+  labs(x="Order", y="Richness in Lakess")
+order
+#ggsave("order.png", order)
+
+detach("package:rfishbase")
+```

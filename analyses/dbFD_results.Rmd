@@ -7,98 +7,23 @@ editor_options:
 #### R Markdown
 
 ## Load packages and files
-
-```r
+```{r, FD analyses results load packages and files}
 # Load the knitr package if not already loaded
 library(knitr)
 
 # Source the R Markdown file
 knit("/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.Rmd", output = "/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md")
-```
 
-```
-## 
-## 
-## processing file: /Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.Rmd
-```
-
-```
-##   |                  |          |   0%  |                  |          |   3%                                                                          |                  |.         |   6% [Bringing everything together load modifying files packages]             |                  |.         |   9%                                                                          |                  |.         |  12% [Bringing everything together load in modifying files]                   |                  |..        |  16%                                                                          |                  |..        |  19% [Check species names across files]                                       |                  |..        |  22%                                                                          |                  |..        |  25% [Modify environment data]                                                |                  |...       |  28%                                                                          |                  |...       |  31% [Modify incidence matrices]                                              |                  |...       |  34%                                                                          |                  |....      |  38% [Modify phylogeny]                                                       |                  |....      |  41%                                                                          |                  |....      |  44% [Modify trait data]                                                      |                  |.....     |  47%                                                                          |                  |.....     |  50% [Modify community data frames]                                           |                  |.....     |  53%                                                                          |                  |......    |  56% [Modify community trait data]                                            |                  |......    |  59%                                                                          |                  |......    |  62% [Community trait data tests]                                             |                  |.......   |  66%                                                                          |                  |.......   |  69% [Modify stratification data frames]                                      |                  |.......   |  72%                                                                          |                  |........  |  75% [Modify stratification trait data]                                       |                  |........  |  78%                                                                          |                  |........  |  81% [Stratification trait data tests]                                        |                  |........  |  84%                                                                          |                  |......... |  88% [Modify site trait data frames]                                          |                  |......... |  91%                                                                          |                  |......... |  94% [Site trait data tests]                                                  |                  |..........|  97%                                                                          |                  |..........| 100% [Bringing everything together load out modified files and session info]
-```
-
-```
-## output file: /Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md
-```
-
-```
-## [1] "/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md"
-```
-
-```r
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(viridis)
-```
-
-```
-## Loading required package: viridisLite
-```
-
-```
-## 
-## Attaching package: 'viridis'
-```
-
-```
-## The following object is masked from 'package:maps':
-## 
-##     unemp
-```
-
-```r
 library(ggrepel)
 
 #Analyses
 library(vegan)
-```
-
-```
-## Loading required package: permute
-```
-
-```
-## Loading required package: lattice
-```
-
-```
-## This is vegan 2.6-4
-```
-
-```
-## 
-## Attaching package: 'vegan'
-```
-
-```
-## The following object is masked from 'package:phytools':
-## 
-##     scores
-```
-
-```r
 library(FD)
-```
 
-```
-## Loading required package: ade4
-```
-
-```
-## Loading required package: geometry
-```
-
-```r
 surveyed_sites <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LLN", "LCN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OOO", "OTM", "OOM", "RCA", "SLN", "TLN", "ULN")
 
 # Define your custom colors
@@ -106,8 +31,7 @@ custom_colors <- c("Reference" = "black", "Ocean" = "#EE6363", "Mixed" = "#87CEF
 ```
 
 ## Functional Diversity FRic, FEve, FDiv, FDis, CWM
-
-```r
+```{r, Functional Diversity FRic, FEve, FDiv, FDis, CWM, eval = FALSE}
 # All sites including reference
 # Using categorical excludes variance eitehr by mode or meidan whereas turning them into numerical allows the use of the mean which provides greater population variation measurement but same general outcome
 FD_total <- dbFD(traits, presabs_lake, w.abun = T, corr = "cailliez")
@@ -181,8 +105,7 @@ write.csv(FD_sites_strat, "/Users/bailey/Documents/research/fish_biodiversity/da
 
 ## Edit FD files
 - Read in Functional Diversity file and combine with env data
-
-```r
+```{r, Edit FD files}
 FD_total <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/analyses/traits/FD_total.csv")
 
 FD_total_env <- merge(FD_total, env[,-c(33:47)], by = "X", sort = F)
@@ -248,8 +171,7 @@ FD_sites_strat <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/d
 ```
 
 ## Biplot of FRic and FDis
-
-```r
+```{r, Biplot of FRic and FDis}
 FRic_FDis_plot <- ggplot(data = FD_total_env, mapping = aes(y = FDis_total, x = FRic_total, color = Stratification, fill = Stratification)) + 
   geom_point(stat = 'identity',
     size = 4,
@@ -273,74 +195,15 @@ FRic_FDis_plot <- ggplot(data = FD_total_env, mapping = aes(y = FDis_total, x = 
   # annotate('rect', ymin=0, ymax=1, xmin=-2, xmax=2, alpha = 0.3, fill='grey')
 FRic_FDis_plot <- FRic_FDis_plot + guides(color = guide_legend(override.aes = list(label = "")))
 FRic_FDis_plot
-```
-
-
-![](stratification_NMDS_envfit_analyses_files/figure-gfm/Biplot of FRic and FDis-1.png)<!-- -->
-
-```r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD_plots/FRic_FDis_plot.png", FRic_FDis_plot, width = 6, height = 4, units = "in")
 ```
 
-
-```r
+```{r, FD analyses results session info}
 sessionInfo()
 ```
 
-```
-## R version 4.3.1 (2023-06-16)
-## Platform: aarch64-apple-darwin20 (64-bit)
-## Running under: macOS Ventura 13.6.6
-## 
-## Matrix products: default
-## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
-## LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
-## 
-## locale:
-## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
-## 
-## time zone: America/Los_Angeles
-## tzcode source: internal
-## 
-## attached base packages:
-## [1] parallel  stats     graphics  grDevices utils     datasets  methods  
-## [8] base     
-## 
-## other attached packages:
-##  [1] FD_1.0-12.3       geometry_0.4.7    ade4_1.7-22       vegan_2.6-4      
-##  [5] lattice_0.22-5    permute_0.9-7     ggrepel_0.9.4     viridis_0.6.4    
-##  [9] viridisLite_0.4.2 ggplot2_3.5.1     tidyr_1.3.0       phytools_2.0-3   
-## [13] maps_3.4.1.1      ape_5.7-1         reshape2_1.4.4    stringr_1.5.1    
-## [17] dplyr_1.1.4       knitr_1.45       
-## 
-## loaded via a namespace (and not attached):
-##  [1] tidyselect_1.2.0        farver_2.1.1            optimParallel_1.0-2    
-##  [4] fastmap_1.1.1           combinat_0.0-8          digest_0.6.33          
-##  [7] lifecycle_1.0.4         cluster_2.1.6           magrittr_2.0.3         
-## [10] compiler_4.3.1          rlang_1.1.2             tools_4.3.1            
-## [13] igraph_1.5.1            utf8_1.2.4              yaml_2.3.7             
-## [16] phangorn_2.11.1         clusterGeneration_1.3.8 labeling_0.4.3         
-## [19] mnormt_2.1.1            scatterplot3d_0.3-44    plyr_1.8.9             
-## [22] abind_1.4-5             expm_0.999-8            withr_2.5.2            
-## [25] purrr_1.0.2             numDeriv_2016.8-1.1     grid_4.3.1             
-## [28] fansi_1.0.6             colorspace_2.1-0        scales_1.3.0           
-## [31] iterators_1.0.14        MASS_7.3-60             cli_3.6.1              
-## [34] rmarkdown_2.25          ragg_1.2.6              generics_0.1.3         
-## [37] rstudioapi_0.15.0       magic_1.6-1             splines_4.3.1          
-## [40] vctrs_0.6.5             Matrix_1.6-4            systemfonts_1.0.5      
-## [43] foreach_1.5.2           glue_1.6.2              codetools_0.2-19       
-## [46] stringi_1.8.2           gtable_0.3.4            quadprog_1.5-8         
-## [49] munsell_0.5.0           tibble_3.2.1            pillar_1.9.0           
-## [52] htmltools_0.5.7         R6_2.5.1                textshaping_0.3.7      
-## [55] doParallel_1.0.17       evaluate_0.23           highr_0.10             
-## [58] Rcpp_1.0.11             fastmatch_1.1-4         coda_0.19-4            
-## [61] gridExtra_2.3           nlme_3.1-164            mgcv_1.9-0             
-## [64] xfun_0.41               pkgconfig_2.0.3
-```
-
 ## Null models of functional diversity
-
-```r
+```{r, Null models of functional diversity, eval = FALSE}
 #Try to bootstrap or null model community weighted mean
 null_sites <- lapply(1:1000, function(x){
   randomizeMatrix(surveyed_sites_lake, null.model = "trialswap")
@@ -370,8 +233,7 @@ dbFD(traits, null[[x]], w.abun = T, corr = "cailliez")
 ```
 
 ## Community weighted mean
-
-```r
+```{r, CWM with null, eval = FALSE}
 #Extract CWM dataframe
 CWM_sums_abund <- FD_sums_abund[,c(1,6:21)]
 
@@ -425,8 +287,7 @@ write.csv(CWM, "/Users/bailey/Documents/research/fish_biodiversity/data/analyses
 ```
 
 ## Functional Richness
-
-```r
+```{r, FRic with null, eval = FALSE}
 #Extract FRic_sites dataframe
 FRic_sites <- FD_sites[,c(1:2)]
 
@@ -457,8 +318,7 @@ write.csv(FRic_sites, "/Users/bailey/Documents/research/fish_biodiversity/data/a
 ```
 
 ## Functional Dispersion
-
-```r
+```{r, FDis with null, eval = FALSE}
 #Extract FD_sites dataframe
 FDis_sites <- FD_sites[,c(1,5)]
 
