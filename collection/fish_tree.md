@@ -1,20 +1,22 @@
 Fish phylogeny
 ================
 
-### R Markdown
+#### R Markdown
 
-## See tutorial to download initial tree
+### See tutorial to download initial tree
 
-See Emily Jane McTavishes’ tutorial for how to download a date tree for
-species in your list.
-<https://github.com/McTavishLab/jupyter_OpenTree_tutorials/blob/master/notebooks/DatedTree_Bailey.ipynb>
-Here is the output tree file form Emily Jane’s tutorial
-labelled_dated_tree.tre Before writing in labelled_dated_tree.tre you
-need to remove spaces between the genus and species of some of the
-species in the file.
+- See Emily Jane McTavishes’ tutorial for how to download a date tree
+  for species in your list.
+  <https://github.com/McTavishLab/jupyter_OpenTree_tutorials/blob/master/notebooks/DatedTree_Bailey.ipynb>
 
-Below is a python code sample from the tutorial Emily Jane provides for
-other trees which is on her github.
+- Here is the output tree file form Emily Jane’s tutorial
+  labelled_dated_tree.tre
+
+- Before writing in labelled_dated_tree.tre you need to remove spaces
+  between the genus and species of some of the species in the file.
+
+- Below is a python code sample from the tutorial Emily Jane provides
+  for other trees which is on her github.
 
 ``` python
 # #This is the python code from Emily Jane McTavish's OpenTree tutorial demo
@@ -75,8 +77,8 @@ library(reticulate)
 
 ## Some old code
 
-We won’t use this but this is another way of acquiring a tree from the
-Open Tree of Life.
+- We won’t use this but this is another way of acquiring a tree from the
+  Open Tree of Life.
 
 ``` r
 #### This is previous information from the other way I figured out how to download a phylo tree frm the Open Tree of life
@@ -93,11 +95,11 @@ Open Tree of Life.
 
 ## Load and check tree
 
-We are importing the tree we downloaded above using Emily Jane’s GitHub
-tutorial. The species names on the Open Tree of Life differ slightly
-from the FishBase names so we need to validate the species names on the
-tree. There are a few species that FishBase does not recognize or fails
-to correct when validating.
+- We are importing the tree we downloaded above using Emily Jane’s
+  GitHub tutorial. The species names on the Open Tree of Life differ
+  slightly from the FishBase names so we need to validate the species
+  names on the tree. There are a few species that FishBase does not
+  recognize or fails to correct when validating.
 
 ``` r
 # Read in your tree to R and check the details
@@ -292,8 +294,8 @@ is.ultrametric(tree)
 
 ## Load in species list
 
-We can use the species list to know which species were not found on the
-Open Tree of Life and attach them to the tree.
+- We can use the species list to know which species were not found on
+  the Open Tree of Life and attach them to the tree.
 
 ``` r
 # Load in list of species made up of reference pool and sites
@@ -324,8 +326,8 @@ diff_check
 
 ## Old code
 
-Previous code to validate species names that was helpful but a more
-efficient method was developed.
+- Previous code to validate species names that was helpful but a more
+  efficient method was developed.
 
 ``` r
 # # Once you have found the matching synonyms in the tree in relation to the existing_species file you will load in this file. We will use this file to correct the names in the tree to match FishBase.
@@ -353,9 +355,9 @@ efficient method was developed.
 
 ## Jonathan Chang’s Fix \#3
 
-This is code to make the tree ultrametric but it unfortunately still
-fails
-<https://jonathanchang.org/blog/three-ways-to-check-and-fix-ultrametric-phylogenies/>
+- This is code to make the tree ultrametric but it unfortunately still
+  fails
+  <https://jonathanchang.org/blog/three-ways-to-check-and-fix-ultrametric-phylogenies/>
 
 ``` r
 # N <- Ntip(tree)
@@ -387,14 +389,15 @@ fails
 
 ## Old code
 
-Was used to make tree ultrametric but was having difficulties with the
-code working properly. Now for the species in “existing_species” that
-had a Genus name change and that Genus was also present in the tree or
-for those species that did not have a synonym in the tree. Here we will
-make the tree ultrametric to attach them. See Cadotte, M. W. 2015.
-Phylogenetic diversity–ecosystem function relationships are insensitive
-to phylogenetic edge lengths. Functional Ecology 29:718–723 \#From
-traitDependent_functions.R written by Gio Rappacioulo
+- Was used to make tree ultrametric but was having difficulties with the
+  code working properly.
+- Now for the species in “existing_species” that had a Genus name change
+  and that Genus was also present in the tree or for those species that
+  did not have a synonym in the tree. Here we will make the tree
+  ultrametric to attach them. See Cadotte, M. W. 2015. Phylogenetic
+  diversity–ecosystem function relationships are insensitive to
+  phylogenetic edge lengths. Functional Ecology 29:718–723
+- From traitDependent_functions.R written by Gio Rappacioulo
 
 ``` r
 # check_and_fix_ultrametric <- function(phy){
@@ -418,13 +421,14 @@ traitDependent_functions.R written by Gio Rappacioulo
 
 ## Make tree ultrametric and attach missing species
 
-Here we use some commands from phytools to make our tree ultrametric.
-Again the main goal for our analyses is that the tree topology is
-conserved even if we lose the full branch lengths. The
-add.species.to.genus command attaches species that share the same genus
-already found in the tree to be attached there. We then find the node
-closest to the tips we can attach species too whose genus is not already
-in the tree which is around the subfamily and family taxonomic level.
+- Here we use some commands from phytools to make our tree ultrametric.
+  Again the main goal for our analyses is that the tree topology is
+  conserved even if we lose the full branch lengths. The
+  add.species.to.genus command attaches species that share the same
+  genus already found in the tree to be attached there. We then find the
+  node closest to the tips we can attach species too whose genus is not
+  already in the tree which is around the subfamily and family taxonomic
+  level.
 
 ``` r
 # See which species are missing from the tree
@@ -435,51 +439,52 @@ missing_species_from_tree
     ##  [1] "Acanthurus_sp"                 "Ambassis_nalua"               
     ##  [3] "Amsichthys_knighti"            "Apogon_sp"                    
     ##  [5] "Apogon_susanae"                "Apogon_talboti"               
-    ##  [7] "Asterropteryx_sp"              "Azurina_elerae"               
-    ##  [9] "Bathygobius_sp"                "Bryaninops_sp"                
-    ## [11] "Callogobius_sp"                "Callogobius_sp_B"             
-    ## [13] "Calloplesiops_altivelis"       "Carcharhinus_amblyrhynchoides"
-    ## [15] "Cercamia_sp"                   "Chromis_albomaculata"         
-    ## [17] "Chromis_anadema"               "Chromis_scotochiloptera"      
-    ## [19] "Chromis_sp"                    "Chrysiptera_ellenae"          
-    ## [21] "Cirrhilabrus_ryukyuensis"      "Cirrhilabrus_sp"              
-    ## [23] "Cryptocentrus_nanus"           "Cryptocentrus_sp"             
-    ## [25] "Dischistodus_fasciatus"        "Drombus_sp"                   
-    ## [27] "Dussumieria_sp"                "Epinephelus_sp"               
-    ## [29] "Eviota_diyhritisma"            "Eviota_sp"                    
-    ## [31] "Eviota_sp_2"                   "Fusigobius_sp"                
-    ## [33] "Glossogobius_sandakanensis"    "Gobiodon_macrochir"           
-    ## [35] "Gobiodon_sp"                   "Gobiopsis_aporia"             
-    ## [37] "Gorgasia_sp"                   "Gymnocranius_microdon"        
-    ## [39] "Liopropoma_sp"                 "Liopropoma_sp_B"              
-    ## [41] "Lubbockichthys_sp"             "Manonichthys_polynemus"       
-    ## [43] "Mugilogobius_platystoma"       "Myripristis_sp"               
-    ## [45] "Neoglyphidodon_mitratus"       "Neopomacentrus_violascens"    
-    ## [47] "Ophichthus_sp"                 "Opistognathus_solorensis"     
-    ## [49] "Opistognathus_variabilis"      "Opistognathus_wassi"          
-    ## [51] "Oxyurichthys_zeta"             "Pandaka_sp"                   
-    ## [53] "Parioglossus_sp"               "Planiliza_melinoptera"        
-    ## [55] "Platax_sp"                     "Plectranthias_sp"             
-    ## [57] "Plesiops_corallicola"          "Plesiops_gracilis"            
-    ## [59] "Plesiops_oxycephalus"          "Plesiops_verecundus"          
-    ## [61] "Pomacentrus_albiaxillaris"     "Pomacentrus_flavoaxillaris"   
-    ## [63] "Pomacentrus_micronesicus"      "Pomacentrus_simsiang"         
-    ## [65] "Pomacentrus_sp"                "Pomacentrus_taeniometopon"    
-    ## [67] "Pseudamia_amblyuroptera"       "Pseudamia_hayashii"           
-    ## [69] "Pseudamia_zonata"              "Pseudochromis_marshallensis"  
-    ## [71] "Pseudochromis_pylei"           "Pseudochromis_tapeinosoma"    
-    ## [73] "Pseudojuloides_zeus"           "Pseudoplesiops_annae"         
-    ## [75] "Pseudoplesiops_immaculatus"    "Pseudoplesiops_rosae"         
-    ## [77] "Pseudoplesiops_typus"          "Pycnochromis_lineatus"        
-    ## [79] "Redigobius_oyensi"             "Rhabdoblennius_sp"            
-    ## [81] "Schindleria_sp"                "Sebastapistes_sp"             
-    ## [83] "Silhouettea_sp"                "Soleichthys_sp"               
-    ## [85] "Sphyraena_qenie"               "Steeneichthys_plesiopsus"     
-    ## [87] "Stegastes_punctatus"           "Tetronarce_sp"                
-    ## [89] "Tomiyamichthys_sp"             "Tosanoides_sp"                
-    ## [91] "Trimma_sp"                     "Trimma_sp_2"                  
-    ## [93] "Trimmatom_sp"                  "Valenciennea_yanoi"           
-    ## [95] "Xenisthmus_sp"                 "Xenisthmus_sp_2"
+    ##  [7] "Asterropteryx_sp"              "Atherinomorus_sp"             
+    ##  [9] "Azurina_elerae"                "Bathygobius_sp"               
+    ## [11] "Bryaninops_sp"                 "Callogobius_sp"               
+    ## [13] "Callogobius_sp_B"              "Calloplesiops_altivelis"      
+    ## [15] "Carcharhinus_amblyrhynchoides" "Cercamia_sp"                  
+    ## [17] "Chromis_albomaculata"          "Chromis_anadema"              
+    ## [19] "Chromis_scotochiloptera"       "Chromis_sp"                   
+    ## [21] "Chrysiptera_ellenae"           "Cirrhilabrus_ryukyuensis"     
+    ## [23] "Cirrhilabrus_sp"               "Cryptocentrus_nanus"          
+    ## [25] "Cryptocentrus_sp"              "Dischistodus_fasciatus"       
+    ## [27] "Drombus_sp"                    "Dussumieria_sp"               
+    ## [29] "Epinephelus_sp"                "Eviota_diyhritisma"           
+    ## [31] "Eviota_sp"                     "Eviota_sp_2"                  
+    ## [33] "Fusigobius_sp"                 "Glossogobius_sandakanensis"   
+    ## [35] "Gobiodon_macrochir"            "Gobiodon_sp"                  
+    ## [37] "Gobiopsis_aporia"              "Gorgasia_sp"                  
+    ## [39] "Gymnocranius_microdon"         "Liopropoma_sp"                
+    ## [41] "Liopropoma_sp_B"               "Lubbockichthys_sp"            
+    ## [43] "Manonichthys_polynemus"        "Mugilogobius_platystoma"      
+    ## [45] "Myripristis_sp"                "Neoglyphidodon_mitratus"      
+    ## [47] "Neopomacentrus_violascens"     "Ophichthus_sp"                
+    ## [49] "Opistognathus_solorensis"      "Opistognathus_variabilis"     
+    ## [51] "Opistognathus_wassi"           "Oxyurichthys_zeta"            
+    ## [53] "Pandaka_sp"                    "Parioglossus_sp"              
+    ## [55] "Planiliza_melinoptera"         "Platax_sp"                    
+    ## [57] "Plectranthias_sp"              "Plesiops_corallicola"         
+    ## [59] "Plesiops_gracilis"             "Plesiops_oxycephalus"         
+    ## [61] "Plesiops_verecundus"           "Pomacentrus_albiaxillaris"    
+    ## [63] "Pomacentrus_flavoaxillaris"    "Pomacentrus_micronesicus"     
+    ## [65] "Pomacentrus_simsiang"          "Pomacentrus_sp"               
+    ## [67] "Pomacentrus_taeniometopon"     "Pseudamia_amblyuroptera"      
+    ## [69] "Pseudamia_hayashii"            "Pseudamia_zonata"             
+    ## [71] "Pseudochromis_marshallensis"   "Pseudochromis_pylei"          
+    ## [73] "Pseudochromis_tapeinosoma"     "Pseudojuloides_zeus"          
+    ## [75] "Pseudoplesiops_annae"          "Pseudoplesiops_immaculatus"   
+    ## [77] "Pseudoplesiops_rosae"          "Pseudoplesiops_typus"         
+    ## [79] "Pycnochromis_lineatus"         "Redigobius_oyensi"            
+    ## [81] "Rhabdoblennius_sp"             "Schindleria_sp"               
+    ## [83] "Sebastapistes_sp"              "Silhouettea_sp"               
+    ## [85] "Soleichthys_sp"                "Sphyraena_qenie"              
+    ## [87] "Steeneichthys_plesiopsus"      "Stegastes_punctatus"          
+    ## [89] "Tetronarce_sp"                 "Tomiyamichthys_sp"            
+    ## [91] "Tosanoides_sp"                 "Trimma_sp"                    
+    ## [93] "Trimma_sp_2"                   "Trimmatom_sp"                 
+    ## [95] "Valenciennea_yanoi"            "Xenisthmus_sp"                
+    ## [97] "Xenisthmus_sp_2"
 
 ``` r
 #tree <- check_and_fix_ultrametric(tree)
@@ -521,6 +526,9 @@ for(i in 1:length(missing_species_from_tree)) tree<-add.species.to.genus(tree,mi
     ##   attaching to the most inclusive group containing members of this genus
 
     ## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = "root"): Apogon may not be monophyletic
+    ##   attaching to the most inclusive group containing members of this genus
+
+    ## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = "root"): Atherinomorus may not be monophyletic
     ##   attaching to the most inclusive group containing members of this genus
 
     ## Warning in add.species.to.genus(tree, missing_species_from_tree[i], where = "root"): Azurina may not be monophyletic
@@ -771,10 +779,6 @@ palau_fish_tree <- drop.tip(tree, setdiff(tree$tip.label, existing_species), tri
 ## Load out files
 
 ``` r
-# Change names in tree back to what we had, unfortunately you have to do it this way because these species are not validated correctly by FishBase unless the subspecies identifier is present
-# palau_fish_tree$tip.label[palau_fish_tree$tip.label=="Platybelone_argalus_argalus"] <- "Platybelone_argalus"
-# palau_fish_tree$tip.label[palau_fish_tree$tip.label=="Tylosurus_acus_melanotus"] <- "Tylosurus_melanotus"
-
 # Check dataframe to ensure changes were added
 pft_labs <- as.data.frame(palau_fish_tree$tip.label)
 
@@ -789,7 +793,7 @@ sessionInfo()
 
     ## R version 4.3.1 (2023-06-16)
     ## Platform: aarch64-apple-darwin20 (64-bit)
-    ## Running under: macOS Ventura 13.4.1
+    ## Running under: macOS Ventura 13.6.6
     ## 
     ## Matrix products: default
     ## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 

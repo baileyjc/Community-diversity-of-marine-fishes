@@ -1,7 +1,7 @@
 TLN oxygen concentration
 ================
 
-### R Markdown
+#### R Markdown
 
 ## Load packages
 
@@ -74,7 +74,7 @@ sessionInfo()
 
     ## R version 4.3.1 (2023-06-16)
     ## Platform: aarch64-apple-darwin20 (64-bit)
-    ## Running under: macOS Ventura 13.4.1
+    ## Running under: macOS Ventura 13.6.6
     ## 
     ## Matrix products: default
     ## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
@@ -90,7 +90,7 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] viridis_0.6.4     viridisLite_0.4.2 ggplot2_3.4.4     dplyr_1.1.4      
+    ## [1] viridis_0.6.4     viridisLite_0.4.2 ggplot2_3.5.1     dplyr_1.1.4      
     ## [5] openxlsx_4.2.5.2 
     ## 
     ## loaded via a namespace (and not attached):

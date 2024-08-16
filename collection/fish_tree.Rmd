@@ -1,0 +1,345 @@
+---
+title: "Fish phylogeny"
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+#### R Markdown
+
+### See tutorial to download initial tree
+- See Emily Jane McTavishes' tutorial for how to download a date tree for species in your list. https://github.com/McTavishLab/jupyter_OpenTree_tutorials/blob/master/notebooks/DatedTree_Bailey.ipynb
+- Here is the output tree file form Emily Jane's tutorial labelled_dated_tree.tre
+- Before writing in labelled_dated_tree.tre you need to remove spaces between the genus and species of some of the species in the file.
+
+- Below is a python code sample from the tutorial Emily Jane provides for other trees which is on her github.
+```{python, eval = FALSE}
+# #This is the python code from Emily Jane McTavish's OpenTree tutorial demo
+# from opentree import OT
+# 
+# fi = open("../tutorial/main.csv").readlines()
+# 
+# ott_ids = set()
+# 
+# for lin in fi[1:]: #skip the header
+#     lii = lin.split(',')#split on commas
+#     ott_id = int(lii[2])#grab the opentree id
+#     ott_ids.add(ott_id)#add to the set
+# 
+# 
+# treefile = "GA_waterfowl.tre"
+# #Get the synthetic tree from OpenTree
+# output = OT.synth_induced_tree(ott_ids=list(ott_ids),  label_format='name')
+# output.tree.write(path = treefile, schema = "newick")
+# output.tree.print_plot(width=100)
+```
+
+
+## Load packages
+```{r,}
+library(phytools)
+library(rfishbase)
+library(dplyr)
+library(stringr)
+library(fuzzyjoin)
+library(reticulate)
+```
+
+
+## Some old code
+- We won't use this but this is another way of acquiring a tree from the Open Tree of Life.
+```{r, eval=FALSE}
+#### This is previous information from the other way I figured out how to download a phylo tree frm the Open Tree of life
+### Tree help from Emily Jane, see https://github.com/OpenTreeOfLife/chronosynth
+## Code used to generate tree with "chronosynth" is: ott278114
+## python examples/synthpriordate.py --node_id 'ott212201' --method bladj --output_dir teleosts
+## Teleostei
+## python examples/synthpriordate.py --node_id 'ott278114' --output gnathostomata
+## Gnasthostomata
+# I had to manually delete apostrophes and put "Teleostei:0" after the last parentheses in the tree file before loading into R
+# Get rid of additional information on tip.labels other than species name, will also get rid of subspecies names but FishBase does not use subspecies nomenclature yet based upon the several I have looked up.
+#gnathostomata_tree$tip.label <- str_extract(gnathostomata_tree$tip.label, "[^_]+_[^_]+")
+```
+
+
+## Load and check tree
+- We are importing the tree we downloaded above using Emily Jane's GitHub tutorial. The species names on the Open Tree of Life differ slightly from the FishBase names so we need to validate the species names on the tree. There are a few species that FishBase does not recognize or fails to correct when validating. 
+```{r,}
+# Read in your tree to R and check the details
+fish_tree <- read.tree("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/labelled_dated_tree.tre")
+fish_tree
+
+# Test if the tree is rooted, should come back as TRUE
+is.rooted(fish_tree)
+
+# Test if the tree is ultrametric, should come back as FALSE
+is.ultrametric(fish_tree)
+
+# Rename species that are missing the underscore or are at the subspecies level
+fish_tree$tip.label[fish_tree$tip.label=="mrcaott896554ott896558"] = "Tylosurus_melanotus"
+fish_tree$tip.label[fish_tree$tip.label=="Moolgarda_seheli"] = "Crenimugil_seheli"
+fish_tree$tip.label[fish_tree$tip.label=="Yongeichthys_nebulosus"] = "Acentrogobius_nebulosus"
+fish_tree$tip.label[fish_tree$tip.label=="Acentrogobius_chusanensis"] = "Ctenogobius_chusanensis"
+fish_tree$tip.label[fish_tree$tip.label=="Antennarius analis"] = "Abantennarius_analis"
+fish_tree$tip.label[fish_tree$tip.label=="Antennarius dorehensis"] = "Abantennarius_dorehensis"
+fish_tree$tip.label[fish_tree$tip.label=="Diagramma_picta_picta"] = "Diagramma_pictum"
+fish_tree$tip.label[fish_tree$tip.label=="Coranthus polyacanthus"] = "Amioides_polyacanthus"
+
+# Check to determine if names were changed
+fish_tree_labs <- fish_tree$tip.label
+fish_tree_labs <- as.data.frame(fish_tree_labs)
+
+# Need to make a new tree file to compared differences after FishBase validation
+tree <- fish_tree
+
+# Replace _ with a space
+tree$tip.label <- gsub("_", " ", tree$tip.label)
+
+# Validate the tip label names that you can using FishBase
+tree$tip.label <- validate_names(tree$tip.label)
+
+# Replace space with an _ because later adding tips by genus doesn't seem to work without the _
+tree$tip.label <- gsub(" ", "_", tree$tip.label)
+
+# Find fish names that have been corrected by fish base located in tree file, should be the same number as fish_tree_species_names_only
+tree_species_names_only <- setdiff(tree$tip.label, fish_tree$tip.label)
+tree_species_names_only
+
+# Find fish names that were changed or dropped by rfishbase in fish_tree, should be the same number as tree_species_names_only
+fish_tree_species_names_only <- setdiff(fish_tree$tip.label, tree$tip.label)
+fish_tree_species_names_only
+
+# Validate the names using FishBase, this allows you to see what the names were changed into and those that have NAs
+fish_tree_species_names_only <- gsub("_", " ", fish_tree_species_names_only)
+val_fish_tree_species_names_only <- validate_names(fish_tree_species_names_only)
+fish_tree_species_names_only <- gsub(" ", "_", fish_tree_species_names_only)
+
+# This will show us the names that were changed but also those that did not register on FishBase which we will edit
+# use this to go back and edit the orignial tree file after loading it in. Anything with an NA needs to be looked up on FishBase and edited manual using the code above to alter species names.
+compare_species_names <- as.data.frame(cbind(val_fish_tree_species_names_only, fish_tree_species_names_only))
+
+# Check file to see names changed and are now part of the new tree file
+species_names <- as.data.frame(cbind(tree$tip.label, fish_tree$tip.label))
+
+# Check your tree details
+tree
+
+# Should still fail to be ultrametric
+is.ultrametric(tree)
+```
+
+
+## Load in species list
+- We can use the species list to know which species were not found on the Open Tree of Life and attach them to the tree.
+```{r,}
+# Load in list of species made up of reference pool and sites
+# From fish_species_data.rmd
+existing_species <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/species_lists/existing_species.csv")
+
+# Get rid of extra # column
+existing_species <- existing_species[,-1]
+
+existing_species <- gsub(" ", "_", existing_species)
+
+# existing_species[existing_species=="Platybelone_argalus"] <- "Platybelone_argalus_argalus"
+# existing_species[existing_species=="Tylosurus_melanotus"] <- "Tylosurus_acus_melanotus"
+
+diff_check <- setdiff(tree$tip.label, existing_species)
+diff_check
+# These species names were changed after the tree was made "Cirrhilabrus cyanopleura" "Mugilogobius stigmaticus" "Callogobius liolepis" "Gymnothorax neglectus" so they will be dropped at the end before the final tree is made.
+
+# Only use for looking up species name changes for those that are not validated by FishBase
+# existing_species <- as.data.frame(existing_species)
+```
+
+
+## Old code
+- Previous code to validate species names that was helpful but a more efficient method was developed.
+```{r, eval=FALSE}
+# # Once you have found the matching synonyms in the tree in relation to the existing_species file you will load in this file. We will use this file to correct the names in the tree to match FishBase.
+# conversionTable <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/tax_con_corrected.csv")
+# 
+# ## Translate tree taxa to match FishBase taxonomy (involves renaming and dropping tips)
+# # Determines whether species in column 1 are found in the tree. It should come back as FALSE
+# all(conversionTable[,1] %in% fish_tree$tip.label)
+# # We run this to change the names in the tree to match those in the "existing_species" file
+# for (i in 1:nrow(conversionTable)) {
+# 	if (!is.na(conversionTable[i,1])) {
+# 	  fish_tree$tip.label[which(fish_tree$tip.label == conversionTable[i,2])] <- conversionTable[i,1]
+# 	}
+# }
+# 
+# tip_labs <- fish_tree$tip.label
+# 
+# # This should print out a shorter list than before. Here you are comparing the "existing_species" file with the tree. What remains are unmatched species still missing in the tree.
+# um_DataOnly <- setdiff(existing_species, tip_labs)
+# um_DataOnly
+# 
+# um_DataOnly <- setdiff(tip_labs, existing_species)
+# um_DataOnly
+```
+
+
+## Jonathan Chang's Fix #3 
+- This is code to make the tree ultrametric but it unfortunately still fails https://jonathanchang.org/blog/three-ways-to-check-and-fix-ultrametric-phylogenies/
+```{r, eval=FALSE}
+# N <- Ntip(tree)
+# root_node <- N + 1
+# root_to_tip <- dist.nodes(tree)[1:N, root_node]
+# 
+# e1 <- tree$edge[, 1] # parent node
+# e2 <- tree$edge[, 2] # child node
+# EL <- tree$edge.length
+# 
+# ages <- numeric(N + tree$Nnode)
+# 
+# for (ii in seq_along(EL)) {
+#      if (ages[e1[ii]] == 0) {
+#          ages[e1[ii]] <- ages[e2[ii]] + EL[ii]
+#      } else {
+#          recorded_age <- ages[e1[ii]]
+#          new_age <- ages[e2[ii]] + EL[ii]
+#          if (recorded_age != new_age) {
+#              cat(sprintf("node %i age %.6f != %.6f\n", e1[ii], recorded_age, new_age))
+#              EL[ii] <- recorded_age - ages[e2[ii]]
+#          }
+#      }
+#  }
+# 
+# tree$edge.length <- EL
+# is.ultrametric(tree)
+```
+
+
+## Old code
+- Was used to make tree ultrametric but was having difficulties with the code working properly.
+- Now for the species in "existing_species" that had a Genus name change and that Genus was also present in the tree or for those species that did not have a synonym in the tree. Here we will make the tree ultrametric to attach them. See Cadotte, M. W. 2015. Phylogenetic diversity–ecosystem function relationships are insensitive to phylogenetic edge lengths. Functional Ecology 29:718–723
+- From traitDependent_functions.R written by Gio Rappacioulo
+```{r, eval=FALSE}
+# check_and_fix_ultrametric <- function(phy){
+# 	
+# 	if (!is.ultrametric(phy)){
+# 		
+# 		vv <- vcv.phylo(phy)
+# 		dx <- diag(vv)
+# 		mxx <- max(dx) - dx
+# 		for (i in 1:length(mxx)){
+# 			phy$edge.length[phy$edge[,2] == i] <- phy$edge.length[phy$edge[,2] == i] + mxx[i]
+# 		}
+# 		if (!is.ultrametric(phy)){
+# 			stop("Ultrametric fix failed\n")
+# 		}	
+# 	}
+# 	
+# 	return(phy)
+# }
+```
+
+
+## Make tree ultrametric and attach missing species
+- Here we use some commands from phytools to make our tree ultrametric. Again the main goal for our analyses is that the tree topology is conserved even if we lose the full branch lengths. The add.species.to.genus command attaches species that share the same genus already found in the tree to be attached there. We then find the node closest to the tips we can attach species too whose genus is not already in the tree which is around the subfamily and family taxonomic level.
+```{r,}
+# See which species are missing from the tree
+missing_species_from_tree <- setdiff(existing_species, tree$tip.label)
+missing_species_from_tree
+
+#tree <- check_and_fix_ultrametric(tree)
+
+# Use phytools to make tree ultrametric even though tree should be ultrametric it barely fails the test
+tree <- force.ultrametric(tree, method = "extend")
+
+# Check that code above worked
+is.ultrametric(tree)
+
+# Added species to the tree based upon genus, groups may not be monophyletic or species cannot be added so a warning will be issued.
+for(i in 1:length(missing_species_from_tree)) tree<-add.species.to.genus(tree,missing_species_from_tree[i],where="root")
+
+# What remains should be species with no genus to attach to in the tree
+missing_species_from_tree <- setdiff(existing_species, tree$tip.label)
+missing_species_from_tree
+
+# Get rid of everything after the _ to get genera only
+missing_genera_from_tree <- str_extract(missing_species_from_tree, "[^_]+")
+
+# Create data frame with Genus and Species in separate columns
+missing_species_from_tree <- as.data.frame(cbind(missing_species_from_tree, missing_genera_from_tree))
+names(missing_species_from_tree)[1] <- "Species"
+names(missing_species_from_tree)[2] <- "Genus"
+
+# Download taxonomic information from FishBase because we will use this information to figure out where to attach the remaining species on the tree
+missing_genera_from_tree <- rfishbase::load_taxa() %>% 
+  filter(Genus %in% missing_genera_from_tree) %>%
+  collect()
+
+# Choose which classification levels you want to keep
+missing_genera_from_tree <- missing_genera_from_tree[,-c(1:2,8)]
+
+# Merge dataframes together
+missing_from_tree <- merge(missing_genera_from_tree, missing_species_from_tree, by = "Genus", all.x = F, all.y = F)
+
+# Remove duplicates
+missing_from_tree <- missing_from_tree[!duplicated(missing_from_tree[c('Species')]), ]
+
+# Place species column before Genus column
+missing_from_tree <- missing_from_tree %>% relocate(Species, .before = Genus)
+
+# You have to do this part manually to know where to attach each species
+# For species still not present in the tree, use missing_from_tree to determine the family the genus is in or higher taxonomic levels. Using the Open Tree of Life (https://tree.opentreeoflife.org/opentree/argus/ottol@278114) you can find the node.label for the family or subfamily if available. Sometimes the subfamily or higher taxonomic level is present on Open Tree of Life but may not be present in our tree so you have to find the lowest taxonomic level that is present on Open Tree of Life and present in our tree. Then using the code below you can determine the node number:
+which(tree$node.label=="ott195928")
+# Genus_species, node id in synthetic tree from OTL, number of node.label of our tree
+# Amsichthys_knighti, mrcaott26915ott295046, 379 #One step up from subfamily level
+# Calloplesiops_altivelis, ott224901, 387 #Subfamily taxonomic level
+# Lubbockichthys_sp, mrcaott5034ott26915, 379 #One step up from subfamily level
+# Manonichthys_polynemus, mrcaott392ott5034, 94 #Three steps down from the order
+# Opistognathus_solorensis, mrcaott5034ott259991, 278 #One step up from the family level since our tree lacks it
+# Opistognathus_variabilis, mrcaott5034ott259991, 278 #One step up from the family level since our tree lacks it
+# Opistognathus_wassi, mrcaott5034ott259991, 278 #One step up from the family level since our tree lacks it
+# Pseudoplesiops_annae, mrcaott26915ott295046, 379 #One step up from the subfamily level
+# Pseudoplesiops_immaculatus, mrcaott26915ott295046, 379 #One step up from the subfamily level
+# Pseudoplesiops_rosae, mrcaott26915ott295046, 379 #One step up from the subfamily level
+# Pseudoplesiops_typus, mrcaott26915ott295046, 379 #One step up from the subfamily level
+# Rhabdoblennius_sp, mrcaott13624ott324193, 327 #Two steps up from genus level
+# Schindleria_sp, mrcaott36673ott193341, 2146 #One step up from the family level
+# Soleichthys_sp, mrcaott21417ott120430, 523 #Thre steps up from the genus level, two steps down from family
+# Steeneichthys_plesiopsus, ott224901, 387 #Subfamily taxonomic level
+# Tetronarce_sp, ott195928, 2566 #Four steps up from the genus level
+
+# Using the node number you can attach the species to the tree at the lowest taxa classification as possible
+tree <- bind.tip(tree, tip.label = "Amsichthys_knighti", where = 379)
+tree <- bind.tip(tree, tip.label = "Calloplesiops_altivelis", where = 387)
+tree <- bind.tip(tree, tip.label = "Lubbockichthys_sp", where = 379)
+tree <- bind.tip(tree, tip.label = "Manonichthys_polynemus", where = 94)
+tree <- bind.tip(tree, tip.label = "Opistognathus_solorensis", where = 278)
+tree <- bind.tip(tree, tip.label = "Opistognathus_variabilis", where = 278)
+tree <- bind.tip(tree, tip.label = "Opistognathus_wassi", where = 278)
+tree <- bind.tip(tree, tip.label = "Pseudoplesiops_annae", where = 379)
+tree <- bind.tip(tree, tip.label = "Pseudoplesiops_immaculatus", where = 379)
+tree <- bind.tip(tree, tip.label = "Pseudoplesiops_rosae", where = 379)
+tree <- bind.tip(tree, tip.label = "Pseudoplesiops_typus", where = 379)
+tree <- bind.tip(tree, tip.label = "Rhabdoblennius_sp", where = 327)
+tree <- bind.tip(tree, tip.label = "Schindleria_sp", where = 2146)
+tree <- bind.tip(tree, tip.label = "Soleichthys_sp", where = 523)
+tree <- bind.tip(tree, tip.label = "Steeneichthys_plesiopsus", where = 387)
+tree <- bind.tip(tree, tip.label = "Tetronarce_sp", where = 2566)
+
+# Do one last check to ensure all species from your list are present in the tree now
+missing_species <- setdiff(existing_species, tree$tip.label)
+missing_species
+
+# Create tree with only species from Palau
+palau_fish_tree <- drop.tip(tree, setdiff(tree$tip.label, existing_species), trim.internal = TRUE, rooted = is.rooted(tree))
+```
+
+
+## Load out files
+```{r, Load out phylo files and session info}
+# Check dataframe to ensure changes were added
+pft_labs <- as.data.frame(palau_fish_tree$tip.label)
+
+existing_species <- as.data.frame(existing_species)
+
+## Load out files
+# Phylogenetic tree of species present in marine lakes and ocean of Palau
+write.tree(palau_fish_tree,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/palau_fish_tree.tre")
+
+sessionInfo()
+```
