@@ -1,0 +1,1420 @@
+---
+title: "Species diversity analyses"
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+### Load packages and files
+```{r, load packages and files}
+# Load the knitr package if not already loaded
+library(knitr)
+
+# Source the R Markdown file
+knit("/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.Rmd", output = "/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md")
+
+# Packages
+library(picante)
+library(vegan)
+library(phytools)
+library(ggplot2)
+library(viridis)
+library(ggrepel)
+library(caret)
+library(BAT)
+library(pairwiseAdonis)
+library(ggvenn)
+library(dplyr)
+
+# Site vectors
+surveyed_sites <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LCN", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OOM", "OOO", "OTM", "RCA", "SLN", "TLN", "ULN")
+
+surveyed_sites_wo_LCN <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OOM", "OOO", "OTM", "RCA", "SLN", "TLN", "ULN")
+
+surveyed_sites_wo_TLN_HLM <- c("BCM", "CLM", "FLK", "GLK", "HLO", "IBK", "LCN", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OOM", "OOO", "OTM", "RCA", "SLN", "ULN")
+
+surveyed_sites_env <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OTM", "RCA", "SLN", "TLN", "ULN")
+
+surveyed_sites_geo <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LCN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OOM", "OOO", "OTM", "RCA", "SLN", "TLN", "ULN")
+
+ocean_mixed_sites <- c("IBK", "LCN", "NCN", "OOO", "OOM", "RCA", "FLK", "HLO", "LLN", "MLN", "NLN", "NLU", "OLO", "ULN")
+
+ocean_mixed_sites_env <- c("IBK", "NCN", "RCA", "FLK", "HLO", "LLN", "MLN", "NLN", "NLU", "OLO", "ULN")
+
+ocean_mixed_sites_geo <- c("IBK", "LCN", "NCN", "OOO", "OOM", "RCA", "FLK", "HLO", "MLN", "NLN", "NLU", "OLO", "ULN")
+
+ocean_stratified_sites <- c("IBK", "LCN", "NCN", "OOO", "OOM", "RCA", "BCM", "CLM", "GLK", "HLM", "NLK", "OTM", "SLN", "TLN")
+
+ocean_stratified_sites_env <- c("IBK", "NCN", "RCA", "BCM", "CLM", "GLK", "HLM", "NLK", "OTM", "SLN", "TLN")
+
+mixed_stratified_lakes <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "LLN", "MLN", "NLK", "NLN", "NLU", "OLO", "OTM", "SLN", "TLN", "ULN")
+
+mixed_stratified_lakes_geo <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "MLN", "NLK", "NLN", "NLU", "OLO", "OTM", "SLN", "TLN", "ULN")
+
+ocean_sites <- c("IBK", "LCN", "NCN", "OOO", "OOM", "RCA")
+
+ocean_sites_env <- c("IBK", "NCN", "RCA")
+
+mixed_lakes <- c("FLK", "HLO", "LLN", "MLN", "NLN", "NLU", "OLO", "ULN")
+
+mixed_lakes_geo <- c("FLK", "HLO", "MLN", "NLN", "NLU", "OLO", "ULN")
+
+stratified_lakes <- c("BCM", "CLM", "GLK", "HLM", "NLK", "OTM", "SLN", "TLN")
+
+# Define your custom colors
+custom_colors <- c("Reference" = "black", "Ocean" = "#EE6363", "Mixed" = "#87CEFA", "Stratified" = "#6E8B3D")
+
+env_cont <- "#FFB90F"
+
+trait_cont <- "#68228B"
+
+trait_cat <- "#DEB887"
+```
+
+### Edit input files
+```{r, edit files}
+strat_fish <- stratified_fish[,-c(1,10)]
+mix_fish <- mixed_fish[,-c(1,10)]
+oc_fish <- ocean_fish[,-c(1,8)]
+
+env <- env[order(env$X),]
+presabs_lake <- presabs_lake[order(row.names(presabs_lake)),]
+surveyed_sites_lake <- surveyed_sites_lake[order(row.names(surveyed_sites_lake)),]
+
+stratification_group_ref <- env[,19]
+stratification_group <- env[surveyed_sites,19]
+```
+
+# Species Diversity
+## SD alpha diversity
+### SD alpha bar plot
+```{r, SD alpha bar plot}
+#Plot species richness with a bar plot
+SR_env$Stratification <- factor(SR_env$Stratification, levels = c("Ocean", "Mixed", "Stratified"))
+
+(SR_plot <- ggplot(data = SR_env[-20,], mapping = aes(x = reorder(X, row_sum, decreasing = T), y = row_sum, color = Stratification, fill = Stratification, )) + 
+  geom_bar(stat = 'identity',
+    alpha = 1) +
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  theme_bw() +
+  theme(text = element_text(size = 16), legend.title = element_text(size = 16), legend.text = element_text(size = 16),
+    axis.text = element_text(size = 16, color = "black"),
+    axis.line = element_line(color = "black"),
+    plot.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank()) + 
+  labs(x="Site", y="Species Richness", colour = "Site type", fill = "Site type"))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SR_plot.jpg", plot = SR_plot, width = 6, height = 6, units = "in")
+```
+
+### SD alpha venn diagram plot
+```{r, SD alpha venn diagram plot}
+site_type_pres <- strat_presabs_lake[c(24:26),]
+site_type_pres <- t(site_type_pres)
+site_type_pres <- site_type_pres[which(rowSums(site_type_pres) > 0),]
+
+# Convert numerical values to logical
+site_type_pres_logical <- as.data.frame(site_type_pres > 0)
+
+# Check the structure of the transformed data
+str(site_type_pres_logical)
+
+# Create the Venn diagram
+(venn_plot <- ggvenn(site_type_pres_logical,
+                    show_percentage = F,
+                    fill_color = c("#EE6363", "#87CEFA", "#6E8B3D"),
+                    fill_alpha = 0.7,
+                    stroke_alpha = 0,
+                    stroke_size = 0.5, 
+                    set_name_size = 5,
+                    text_size = 5))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/venn_plot.jpg", plot = venn_plot, width = 4.25, height = 4, units = "in")
+```
+
+### SD alpha subsample venn diagram plots
+```{r, SD alpha venn diagram plots}
+# Randomly sample six columns from stratified_fish and mixed_fish
+sampled_stratified <- sample(names(strat_fish)[-1], 6)
+sampled_mixed <- sample(names(mix_fish)[-1], 6)
+
+# Select sampled columns from stratified_fish and mixed_fish
+stratified_subset <- select(stratified_fish, all_of(sampled_stratified))
+mixed_subset <- select(mixed_fish, all_of(sampled_mixed))
+
+# Get rid of species not present in the 6 remaining sites
+stratified_subset <- stratified_subset[which(rowSums(stratified_subset[, -1]) > 0),]
+mixed_subset <- mixed_subset[which(rowSums(mixed_subset[, -1]) > 0),]
+
+# Make site type columns in each dataframe
+stratified_subset[,7] <- rowSums(stratified_subset[,c(1:6)])
+colnames(stratified_subset)[colnames(stratified_subset) == "V7"] <- "Stratified lakes"
+
+mixed_subset[,7] <- rowSums(mixed_subset[,c(1:6)])
+colnames(mixed_subset)[colnames(mixed_subset) == "V7"] <- "Mixed lakes"
+
+oc_fish[,7] <- rowSums(oc_fish[,c(1:6)])
+colnames(oc_fish)[colnames(oc_fish) == "V7"] <- "Ocean sites"
+
+# Merge the two data frames, replacing missing values with 0
+oc_mix_merge <- merge(oc_fish, mixed_subset, by = 0, all = TRUE)
+row.names(oc_mix_merge) <- oc_mix_merge$Row.names
+oc_mix_merge <- oc_mix_merge[,-1]
+oc_mix_strat_merge <- merge(oc_mix_merge, stratified_subset, by = 0, all = TRUE)
+row.names(oc_mix_strat_merge) <- oc_mix_strat_merge$Row.names
+oc_mix_strat_merge <- oc_mix_strat_merge[,-1]
+
+# Keep only site type
+keep <- c("Ocean sites", "Mixed lakes", "Stratified lakes")
+site_type_pres_sample <- oc_mix_strat_merge[,keep]
+
+# Replace NA with 0
+site_type_pres_sample[is.na(site_type_pres_sample)] <- 0
+
+## Remove all species not found in any locations
+# Identifies which rows are greater than 0
+site_type_pres_sample <- site_type_pres_sample[which(rowSums(site_type_pres_sample) > 0),]
+
+site_type_pres_sample_logical <- as.data.frame(site_type_pres_sample > 0)
+
+venn_plot <- ggvenn(site_type_pres_sample_logical,
+                    show_percentage = F,
+                    fill_color = c("#EE6363", "#87CEFA", "#6E8B3D"),
+                    fill_alpha = 0.7,
+                    stroke_alpha = 0,
+                    stroke_size = 0.5, 
+                    set_name_size = 5,
+                    text_size = 5)
+venn_plot
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/venn_plot_s10.jpg", plot = venn_plot, width = 4.25, height = 4, units = "in")
+```
+
+### SD alpha outliers for each stratification type
+```{r, SD alpha outliers}
+outlier_SD_alpha <- SR_env[surveyed_sites,] %>%
+  group_by(Stratification) %>%
+  mutate(
+    Q1 = quantile(row_sum, 0.25),
+    Q3 = quantile(row_sum, 0.75),
+    IQR = Q3 - Q1,
+    lower_bound = Q1 - 1.5 * IQR,
+    upper_bound = Q3 + 1.5 * IQR,
+    is_outlier = row_sum < lower_bound | row_sum > upper_bound
+  )
+
+outlier_SD_alpha <- as.data.frame(outlier_SD_alpha)
+row.names(outlier_SD_alpha) <- outlier_SD_alpha$X
+
+# Create the plot
+(outlier_SD_alpha_plot <- ggplot(outlier_SD_alpha, aes(x = Stratification, y = row_sum, fill = Stratification)) +
+  geom_violin(trim = FALSE) +
+  geom_jitter(aes(color = is_outlier, fill = is_outlier), width = 0.2, size = 4, alpha = 0.7) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
+  scale_fill_manual(values = custom_colors) +
+  theme(text = element_text(size = 16),
+        legend.position = "right",
+        legend.title = element_text(size = 16),
+        legend.text = element_text(size = 16),
+        axis.line = element_line(color = "black"),
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.text = element_text(color = "black", size = 16)) +
+  scale_y_continuous(expand = c(0,0)) +
+  guides(fill = "none") + 
+  labs(y = "Species Richness", x = "Site type", color = "Outlier", fill = "Site type", tag = "a"))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/outlier_SD_alpha.jpg", outlier_SD_alpha_plot, width = 6.26, height = 6, units = "in")
+```
+
+### Identify VIF of env and geo variables
+```{r, env and geo VIFs}
+# Determine which env variables have variance
+environment <- c("temperature_median", "salinity_median", "oxygen_median", "pH_median")
+nzv <- nearZeroVar(env[,environment])
+nzv
+# All env variables have variance
+
+mod <-  lm(row_sum ~ temperature_median + salinity_median + oxygen_median + pH_median, SR_env)
+summary(mod)
+anova(mod)
+rms::vif(mod)
+car::vif(mod)
+
+mod <-  lm(row_sum ~ temperature_median + salinity_median + oxygen_median, SR_env)
+summary(mod)
+rms::vif(mod)
+car::vif(mod)
+environment <- c("temperature_median", "salinity_median", "oxygen_median")
+
+# Determine which geo variables have variance
+geography <- c("volume_m3_w_chemocline", "volume_m3", "surface_area_m2", "distance_to_ocean_min_m", "distance_to_ocean_mean_m", "distance_to_ocean_median_m", "tidal_lag_time_minutes", "tidal_efficiency", "perimeter_fromSat", "max_depth", "logArea")
+nzv <- nearZeroVar(env[,geography])
+nzv
+# All geo variables have variance
+
+mod <-  lm(row_sum ~ volume_m3_w_chemocline + volume_m3 + surface_area_m2 + distance_to_ocean_min_m + distance_to_ocean_mean_m + distance_to_ocean_median_m + tidal_lag_time_minutes + tidal_efficiency + perimeter_fromSat + max_depth + logArea, SR_env)
+summary(mod)
+rms::vif(mod)
+car::vif(mod)
+
+mod <-  lm(row_sum ~ distance_to_ocean_min_m + max_depth + logArea, SR_env)
+summary(mod)
+rms::vif(mod)
+car::vif(mod)
+geography <- c("distance_to_ocean_min_m", "max_depth", "logArea")
+```
+
+### SD alpha SRic & stratification
+```{r, SD alpha & stratification}
+### Stratification
+# Run ANOVA
+anova_logSRic_result <- aov(log(row_sum) ~ Stratification, data = SR_env[surveyed_sites,])
+summary(anova_logSRic_result)
+
+# Perform Tukey's HSD test
+tukey_logSRic_result <- TukeyHSD(anova_logSRic_result)
+print(tukey_logSRic_result)
+
+# Sites
+N <- length(anova_logSRic_result$residuals)
+# Categories
+k <- length(anova_logSRic_result$coefficients)
+# Sum of squares
+SS <- sum(resid(anova_logSRic_result)^2) # from anova, the residual SS
+# Mean squares
+MS <- SS/(N-k)
+# Balanced
+BSE <- sqrt(MS / 8)
+# Unbalanced
+USE <- sqrt((MS/2)*((1/6)+(1/8)))
+
+# Get differences
+Stratification <- tukey_logSRic_result$Stratification
+
+# q-values
+(OM_q <- (abs(Stratification[1,1]))/USE)
+(MS_q <- (abs(Stratification[3,1]))/BSE)
+(SO_q <- (abs(Stratification[2,1]))/USE)
+
+
+# Run ANOVA
+anova_SRic_result <- aov(row_sum ~ Stratification, data = SR_env[surveyed_sites,])
+summary(anova_SRic_result)
+
+# Perform Tukey's HSD test
+tukey_SRic_result <- TukeyHSD(anova_SRic_result)
+print(tukey_SRic_result)
+
+# Sites
+N <- length(anova_SRic_result$residuals)
+# Categories
+k <- length(anova_SRic_result$coefficients)
+# Sum of squares
+SS <- sum(resid(anova_SRic_result)^2) # from anova, the residual SS
+# Mean squares
+MS <- SS/(N-k)
+# Balanced
+BSE <- sqrt(MS / 8)
+# Unbalanced
+USE <- sqrt((MS/2)*((1/6)+(1/8)))
+
+# Get differences
+Stratification <- tukey_SRic_result$Stratification
+
+# q-values
+(OM_q <- (abs(Stratification[1,1]))/USE)
+(MS_q <- (abs(Stratification[3,1]))/BSE)
+(SO_q <- (abs(Stratification[2,1]))/USE)
+# Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
+```
+
+### SD alpha SRic env and geo linear models
+```{r, SD alpha lm}
+### Environmental
+# Surveyed sites
+SD_logSRic_env_model <- lm(log(row_sum) ~ temperature_median + salinity_median + oxygen_median, SR_env[surveyed_sites_env,])
+summary(SD_logSRic_env_model)
+anova(SD_logSRic_env_model)
+p_values <- summary(SD_logSRic_env_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+SD_SRic_env_model <- lm(row_sum ~ temperature_median + salinity_median + oxygen_median, SR_env[surveyed_sites_env,])
+summary(SD_SRic_env_model)
+anova(SD_SRic_env_model)
+p_values <- summary(SD_SRic_env_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+
+# Mixed and stratified lakes
+SD_logSRic_env_MS_model <- lm(log(row_sum) ~ temperature_median + salinity_median + oxygen_median, SR_env[mixed_stratified_lakes,])
+summary(SD_logSRic_env_MS_model)
+anova(SD_logSRic_env_MS_model)
+p_values <- summary(SD_logSRic_env_MS_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+SD_SRic_env_MS_model <- lm(row_sum ~ temperature_median + salinity_median + oxygen_median, SR_env[mixed_stratified_lakes,])
+summary(SD_SRic_env_MS_model)
+anova(SD_SRic_env_MS_model)
+p_values <- summary(SD_SRic_env_MS_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+
+# Ocean sites and mixed lakes
+SD_logSRic_env_OM_model <- lm(log(row_sum) ~ temperature_median + salinity_median + oxygen_median, SR_env[ocean_mixed_sites_env,])
+summary(SD_logSRic_env_OM_model)
+anova(SD_logSRic_env_OM_model)
+p_values <- summary(SD_logSRic_env_OM_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+SD_SRic_env_OM_model <- lm(row_sum ~ temperature_median + salinity_median + oxygen_median, SR_env[ocean_mixed_sites_env,])
+summary(SD_SRic_env_OM_model)
+anova(SD_SRic_env_OM_model)
+p_values <- summary(SD_SRic_env_OM_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+
+# Stratified lakes and ocean sites
+SD_logSRic_env_SO_model <- lm(log(row_sum) ~ temperature_median + salinity_median + oxygen_median, SR_env[ocean_stratified_sites_env,])
+summary(SD_logSRic_env_SO_model)
+anova(SD_logSRic_env_SO_model)
+p_values <- summary(SD_logSRic_env_SO_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+SD_SRic_env_SO_model <- lm(row_sum ~ temperature_median + salinity_median + oxygen_median, SR_env[ocean_stratified_sites_env,])
+summary(SD_SRic_env_SO_model)
+anova(SD_SRic_env_SO_model)
+p_values <- summary(SD_SRic_env_SO_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+
+# Mixed lakes
+SD_logSRic_env_M_model <- lm(log(row_sum) ~ temperature_median + salinity_median + oxygen_median, SR_env[mixed_lakes,])
+summary(SD_logSRic_env_M_model)
+anova(SD_logSRic_env_M_model)
+p_values <- summary(SD_logSRic_env_M_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+SD_SRic_env_M_model <- lm(row_sum ~ temperature_median + salinity_median + oxygen_median, SR_env[mixed_lakes,])
+summary(SD_SRic_env_M_model)
+anova(SD_SRic_env_M_model)
+p_values <- summary(SD_SRic_env_M_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+
+# Stratified lakes
+SD_logSRic_env_S_model <- lm(log(row_sum) ~ temperature_median + salinity_median + oxygen_median, SR_env[stratified_lakes,])
+summary(SD_logSRic_env_S_model)
+anova(SD_logSRic_env_S_model)
+p_values <- summary(SD_logSRic_env_S_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+SD_SRic_env_S_model <- lm(row_sum ~ temperature_median + salinity_median + oxygen_median, SR_env[stratified_lakes,])
+summary(SD_SRic_env_S_model)
+anova(SD_SRic_env_S_model)
+p_values <- summary(SD_SRic_env_S_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+
+
+### Geographical
+# Surveyed sites
+SD_logSRic_geo_model <- lm(log(row_sum) ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[surveyed_sites_geo,])
+summary(SD_logSRic_geo_model)
+anova(SD_logSRic_geo_model)
+p_values <- summary(SD_logSRic_geo_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+SD_SRic_geo_model <- lm(row_sum ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[surveyed_sites_geo,])
+summary(SD_SRic_geo_model)
+anova(SD_SRic_geo_model)
+p_values <- summary(SD_SRic_geo_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+
+# Mixed and stratified lakes
+SD_logSRic_geo_MS_model <- lm(log(row_sum) ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[mixed_stratified_lakes_geo,])
+summary(SD_logSRic_geo_MS_model)
+anova(SD_logSRic_geo_MS_model)
+p_values <- summary(SD_logSRic_geo_MS_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+SD_SRic_geo_MS_model <- lm(row_sum ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[mixed_stratified_lakes_geo,])
+summary(SD_SRic_geo_MS_model)
+anova(SD_SRic_geo_MS_model)
+p_values <- summary(SD_SRic_geo_MS_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+
+# Ocean sites and mixed lakes
+SD_logSRic_geo_OM_model <- lm(log(row_sum) ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[ocean_mixed_sites_geo,])
+summary(SD_logSRic_geo_OM_model)
+anova(SD_logSRic_geo_OM_model)
+p_values <- summary(SD_logSRic_geo_OM_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+SD_SRic_geo_OM_model <- lm(row_sum ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[ocean_mixed_sites_geo,])
+summary(SD_SRic_geo_OM_model)
+anova(SD_SRic_geo_OM_model)
+p_values <- summary(SD_SRic_geo_OM_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+
+# Stratified lakes and ocean sites
+SD_logSRic_geo_SO_model <- lm(log(row_sum) ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[ocean_stratified_sites,])
+summary(SD_logSRic_geo_SO_model)
+anova(SD_logSRic_geo_SO_model)
+p_values <- summary(SD_logSRic_geo_SO_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+SD_SRic_geo_SO_model <- lm(row_sum ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[ocean_stratified_sites,])
+summary(SD_SRic_geo_SO_model)
+anova(SD_SRic_geo_SO_model)
+p_values <- summary(SD_SRic_geo_SO_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+
+# Mixed lakes
+SD_logSRic_geo_M_model <- lm(log(row_sum) ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[mixed_lakes_geo,])
+summary(SD_logSRic_geo_M_model)
+anova(SD_logSRic_geo_M_model)
+p_values <- summary(SD_logSRic_geo_M_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+SD_SRic_geo_M_model <- lm(row_sum ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[mixed_lakes_geo,])
+summary(SD_SRic_geo_M_model)
+anova(SD_SRic_geo_M_model)
+p_values <- summary(SD_SRic_geo_M_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+
+# Stratified lakes
+SD_logSRic_geo_S_model <- lm(log(row_sum) ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[stratified_lakes,])
+summary(SD_logSRic_geo_S_model)
+anova(SD_logSRic_geo_S_model)
+p_values <- summary(SD_logSRic_geo_S_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+SD_SRic_geo_S_model <- lm(row_sum ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[stratified_lakes,])
+summary(SD_SRic_geo_S_model)
+anova(SD_SRic_geo_S_model)
+p_values <- summary(SD_SRic_geo_S_model)$coefficients[, "Pr(>|t|)"]
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+adjusted_p_values
+```
+
+### SD alpha z-scores with env and geo correlated variables
+```{r, SD alpha lm plots}
+# Log Area
+SD_alpha_LA_plot <- ggplot(data = SR_env[surveyed_sites,], mapping = aes(y = log(row_sum), x = logArea, color = Stratification, fill = Stratification)) + 
+  geom_point(stat = 'identity',
+    size = 4,
+    alpha = 1) + 
+  geom_text_repel(label = SR_env[surveyed_sites,1], size = 5, point.padding = 3) +
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  theme_bw() +
+  theme(text = element_text(size = 16),legend.title =  element_text(size = 16), legend.text = element_text(size = 16),
+    axis.text = element_text(size = 16, color = "black"),
+    axis.line = element_line(color = "black"),
+    panel.background = element_rect(fill='transparent'),
+    plot.background = element_rect(fill='transparent', color=NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank()) + 
+  labs(x="Log Area (m"^"2"~")", y="Log SRic", colour = "Site type", fill = "Site type", tag = "c")
+(SD_alpha_LA_plot <- SD_alpha_LA_plot + guides(color = guide_legend(override.aes = list(label = ""))))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_alpha_LA_plot.jpg", plot = SD_alpha_LA_plot, width = 6.26, height = 6, units = "in")
+
+# Distance from the ocean mean
+SD_alpha_D_plot <- ggplot(data = SR_env[surveyed_sites,], mapping = aes(y = row_sum, x = distance_to_ocean_min_m, color = Stratification, fill = Stratification)) + 
+  geom_point(stat = 'identity',
+    size = 4,
+    alpha = 1) + 
+  geom_text_repel(label = SR_env[surveyed_sites,1], size = 5, point.padding = 3) +
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  theme_bw() +
+  theme(text = element_text(size = 16),legend.title =  element_text(size = 16), legend.text = element_text(size = 16),
+    axis.text = element_text(size = 16, color = "black"),
+    axis.line = element_line(color = "black"),
+    panel.background = element_rect(fill='transparent'),
+    plot.background = element_rect(fill='transparent', color=NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank()) + 
+  labs(x="Isolation (m)", y="SRic", colour = "Site type", fill = "Site type", tag = "b")
+(SD_alpha_D_plot <- SD_alpha_D_plot + guides(color = guide_legend(override.aes = list(label = ""))))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_alpha_D_plot.jpg", plot = SD_alpha_D_plot, width = 6.26, height = 6, units = "in")
+
+# Max depth
+SD_alpha_MD_plot <- ggplot(data = SR_env[surveyed_sites,], mapping = aes(y = row_sum, x = max_depth, color = Stratification, fill = Stratification)) + 
+  geom_point(stat = 'identity',
+    size = 4,
+    alpha = 1) + 
+  geom_text_repel(label = SR_env[surveyed_sites,1], size = 5, point.padding = 3) +
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  theme_bw() +
+  theme(text = element_text(size = 16),legend.title =  element_text(size = 16), legend.text = element_text(size = 16),
+    axis.text = element_text(size = 16, color = "black"),
+    axis.line = element_line(color = "black"),
+    panel.background = element_rect(fill='transparent'),
+    plot.background = element_rect(fill='transparent', color=NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank()) + 
+  labs(x="Age (m)", y="SRic", colour = "Site type", fill = "Site type", tag = "a")
+(SD_alpha_MD_plot <- SD_alpha_MD_plot + guides(color = guide_legend(override.aes = list(label = ""))))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_alpha_MD_plot.jpg", plot = SD_alpha_MD_plot, width = 6.26, height = 6, units = "in")
+```
+
+## SD beta diversity
+### SD beta diversity distance calculations plus dispersion and PERMANOVA
+```{r, SD beta distances}
+### Regular
+# Reference
+SD_beta_ref_dist<- BAT::beta(presabs_lake, abund = F)
+(SD_beta_ref_BD <- betadisper(SD_beta_ref_dist$Btotal, stratification_group_ref))
+(SD_beta_ref_AOV <- anova(SD_beta_ref_BD))
+(SD_beta_ref_THSD <- TukeyHSD(SD_beta_ref_BD))
+(SD_beta_ref_PM <- adonis2(SD_beta_ref_dist$Btotal ~ env[,19], permutations = 999))
+(SD_beta_ref_PM_pair <- pairwise.adonis(SD_beta_ref_dist$Btotal, env[,19], p.adjust.m = "bonferroni", perm = 999))
+# Surveyed sites
+SD_beta_dist<- BAT::beta(surveyed_sites_lake, abund = F)
+(SD_beta_BD <- betadisper(SD_beta_dist$Btotal, stratification_group))
+(SD_beta_AOV <- anova(SD_beta_BD))
+(SD_beta_THSD <- TukeyHSD(SD_beta_BD))
+(SD_beta_PM <- adonis2(SD_beta_dist$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(SD_beta_PM_pair <- pairwise.adonis(SD_beta_dist$Btotal, env[surveyed_sites,19], p.adjust.m = "bonferroni", perm = 999))
+# Without LCN
+SD_beta_wo_LCN_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_LCN,], abund = F)
+(SD_beta_wo_LCN_BD <- betadisper(SD_beta_wo_LCN_dist$Btotal, stratification_group[-8]))
+(SD_beta_wo_LCN_AOV <- anova(SD_beta_wo_LCN_BD))
+(SD_beta_wo_LCN_THSD <- TukeyHSD(SD_beta_wo_LCN_BD))
+(SD_beta_wo_LCN_PM <- adonis2(SD_beta_wo_LCN_dist$Btotal ~ env[surveyed_sites_wo_LCN,19], permutations = 999))
+(SD_beta_wo_LCN_PM_pair <- pairwise.adonis(SD_beta_wo_LCN_dist$Btotal, env[surveyed_sites_wo_LCN,19], p.adjust.m = "bonferroni", perm = 999))
+# Without TLN and HLM
+SD_beta_wo_TLN_HLM_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_TLN_HLM,], abund = F)
+(SD_beta_wo_TLN_HLM_BD <- betadisper(SD_beta_wo_TLN_HLM_dist$Btotal, stratification_group[-c(5,21)]))
+(SD_beta_wo_TLN_HLM_AOV <- anova(SD_beta_wo_TLN_HLM_BD))
+(SD_beta_wo_TLN_HLM_THSD <- TukeyHSD(SD_beta_wo_TLN_HLM_BD))
+(SD_beta_wo_TLN_HLM_PM <- adonis2(SD_beta_wo_TLN_HLM_dist$Btotal ~ env[surveyed_sites_wo_TLN_HLM,19], permutations = 999))
+(SD_beta_wo_TLN_HLM_PM_pair <- pairwise.adonis(SD_beta_wo_TLN_HLM_dist$Btotal, env[surveyed_sites_wo_TLN_HLM,19], p.adjust.m = "bonferroni", perm = 999))
+# Mixed and stratified lakes
+SD_beta_MS_dist<- BAT::beta(surveyed_sites_lake[mixed_stratified_lakes,], abund = F)
+# Ocean sites and mixed lakes
+SD_beta_OM_dist<- BAT::beta(surveyed_sites_lake[ocean_mixed_sites,], abund = F)
+# Stratified lakes and ocean sites
+SD_beta_SO_dist<- BAT::beta(surveyed_sites_lake[ocean_stratified_sites,], abund = F)
+# Stratified lakes
+SD_beta_S_dist<- BAT::beta(surveyed_sites_lake[stratified_lakes,], abund = F)
+
+
+### Environmental
+# Surveyed sites
+SD_beta_env_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_env,], abund = F)
+# Mixed and stratified lakes
+SD_beta_env_MS_dist<- BAT::beta(surveyed_sites_lake[mixed_stratified_lakes,], abund = F)
+# Ocean sites and mixed lakes
+SD_beta_env_OM_dist<- BAT::beta(surveyed_sites_lake[ocean_mixed_sites_env,], abund = F)
+# Stratified lakes and ocean sites
+SD_beta_env_SO_dist<- BAT::beta(surveyed_sites_lake[ocean_stratified_sites_env,], abund = F)
+# Mixed lakes
+SD_beta_env_M_dist<- BAT::beta(surveyed_sites_lake[mixed_lakes,], abund = F)
+
+
+### Geographic
+# Surveyed sites
+SD_beta_geo_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_geo,], abund = F)
+# Mixed and stratified lakes
+SD_beta_geo_MS_dist<- BAT::beta(surveyed_sites_lake[mixed_stratified_lakes_geo,], abund = F)
+# Ocean sites and mixed lakes
+SD_beta_geo_OM_dist<- BAT::beta(surveyed_sites_lake[ocean_mixed_sites_geo,], abund = F)
+# Stratified lakes and ocean sites
+SD_beta_geo_SO_dist<- BAT::beta(surveyed_sites_lake[ocean_stratified_sites,], abund = F)
+# Mixed lakes
+SD_beta_geo_M_dist<- BAT::beta(surveyed_sites_lake[mixed_lakes_geo,], abund = F)
+```
+
+### SD beta q values of dispersion statistics
+```{r, SD beta dispersion q-values}
+# Sites
+N <- 22
+# Categories
+k <- 3
+# Sum of squares
+SS <- SD_beta_AOV$`Sum Sq`[2]
+# Mean of squares
+MS <- SD_beta_AOV$`Mean Sq`[2]
+# q value
+q.value <- qtukey(p = 0.95, nmeans = k, df = N - k)
+# Balanced
+BSE <- sqrt(MS / 8)
+# Unbalanced
+USE <- sqrt((MS/2)*((1/6)+(1/8)))
+
+group <- SD_beta_THSD$group
+
+(OM_q <- (abs(group[1,1]))/USE)
+(MS_q <- (abs(group[2,1]))/BSE)
+(SO_q <- (abs(group[3,1]))/USE)
+# Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
+```
+
+### SD beta richness dispersions
+- The dissimilarity between sites of the same site type
+```{r, SD beta dispersion boxplot}
+# Dispersion within-groups
+SD_beta_BD_dist <- SD_beta_BD$distances
+SD_beta_BD_dist <- as.data.frame(SD_beta_BD_dist)
+SD_beta_BD_dist$X <- row.names(SD_beta_BD_dist)
+SD_beta_BD_dist_env <- merge(SD_beta_BD_dist, env[surveyed_sites,], by = "X", sort = F)
+
+SD_beta_BD_dist_env$Stratification <- factor(SD_beta_BD_dist_env$Stratification, levels = c("Ocean", "Mixed", "Stratified"))
+
+(SD_beta_BD_dist_env_plot <- ggplot(SD_beta_BD_dist_env, aes(x = Stratification, y = SD_beta_BD_dist, color = Stratification, fill = Stratification)) +
+  geom_violin(alpha = 0.6, draw_quantiles = c(0.25, 0.5, 0.75), aes(color = Stratification, fill = Stratification)) +
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  guides(fill = "none", color = "none") +
+  geom_jitter(shape = 21,
+            size = 4,
+            alpha = 0.8,
+            width = 0.1) +
+    geom_text_repel(data = SD_beta_BD_dist_env, label = SD_beta_BD_dist_env$X, size = 5, point.padding = 7, max.overlaps = 30, nudge_x = -0.01) +
+  theme_bw() +
+  theme(text = element_text(size = 16), legend.text = element_text(size = 16),
+    panel.background = element_rect(fill='transparent'),
+    plot.background = element_rect(fill='transparent', color=NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(), axis.text = element_text(size = 16, color = "black"),
+    axis.line = element_line(color = "black")) +
+  xlab("Site type") +
+  ylab("Distance to Centroid") +
+  labs(color = "Stratification", tag = "a"))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_BD_dist_plot.jpg", SD_beta_BD_dist_env_plot, width = 4.88, height = 6, units = "in")
+```
+
+### SD beta NMDS
+```{r, SD beta NMDS}
+### Regular
+# Reference
+SD_beta_ref_NMDS <- metaMDS(SD_beta_ref_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Surveyed sites 
+SD_beta_NMDS <- metaMDS(SD_beta_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+round(SD_beta_NMDS$stress, digits = 2)
+SD_beta_rep_NMDS <- metaMDS(SD_beta_dist$Brepl, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+SD_beta_ric_NMDS <- metaMDS(SD_beta_dist$Brich, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Mixed and stratified lakes
+SD_beta_MS_NMDS <- metaMDS(SD_beta_MS_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Ocean sites and mixed lakes
+SD_beta_OM_NMDS <- metaMDS(SD_beta_OM_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Stratified lakes and ocean sites
+SD_beta_SO_NMDS <- metaMDS(SD_beta_SO_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Stratified lakes
+SD_beta_S_NMDS <- metaMDS(SD_beta_S_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+
+
+### Environmental
+# Surveyed sites 
+SD_beta_env_NMDS <- metaMDS(SD_beta_env_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Mixed and stratified lakes
+SD_beta_env_MS_NMDS <- metaMDS(SD_beta_env_MS_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Ocean sites and mixed lakes
+SD_beta_env_OM_NMDS <- metaMDS(SD_beta_env_OM_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Stratified lakes and ocean sites
+SD_beta_env_SO_NMDS <- metaMDS(SD_beta_env_SO_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Mixed lakes
+SD_beta_env_M_NMDS <- metaMDS(SD_beta_env_M_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+
+
+### Geographic
+# Surveyed sites 
+SD_beta_geo_NMDS <- metaMDS(SD_beta_geo_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Mixed and stratified lakes
+SD_beta_geo_MS_NMDS <- metaMDS(SD_beta_geo_MS_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Ocean sites and mixed lakes
+SD_beta_geo_OM_NMDS <- metaMDS(SD_beta_geo_OM_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Stratified lakes and ocean sites
+SD_beta_geo_SO_NMDS <- metaMDS(SD_beta_geo_SO_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Mixed lakes
+SD_beta_geo_M_NMDS <- metaMDS(SD_beta_geo_M_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+```
+
+### Load an envfit analysis function for adjusting p-values
+- Need to run this function for downstream analyses in this Markdown file
+```{r, load envfit p-value function}
+# Function p.adjust.envfit
+# Calculates adjusted P values for results stored in envfit object,
+# created using envfit function from vegan, which fits supplementary variables
+# onto axes of unconstrained ordination. 
+# Arguments: 
+# x - envfit object
+# method - method for correction of multiple testing issue (default = 'bonferroni',
+#          see ''?p.adjust' for more options)
+# n - optional, number of tests for which to correct; if not given, the number is
+#          taken as the number of tests conducted by envfit function (for both vectors and factors).
+# Author: David Zeleny
+p.adjust.envfit <- function (x, method = 'bonferroni', n)
+{
+  x.new <- x
+  if (!is.null (x$vectors)) pval.vectors <- x$vectors$pvals else pval.vectors <- NULL
+  if (!is.null (x$factors)) pval.factors <- x$factors$pvals else pval.factors <- NULL
+  if (missing (n)) n <- length (pval.vectors) + length (pval.factors)
+  if (!is.null (x$vectors)) x.new$vectors$pvals <- p.adjust (x$vectors$pvals, method = method, n = n)
+  if (!is.null (x$factors)) x.new$factors$pvals <- p.adjust (x$factors$pvals, method = method, n = n)
+  cat ('Adjustment of significance by', method, 'method')
+  return (x.new)
+}
+```
+
+### SD beta env and geo correlated variables using envfit
+```{r, SD beta envfit}
+### Environmental
+# Surveyed sites 
+# For figure
+(SD_beta_env_ef <- envfit(SD_beta_env_NMDS, env[surveyed_sites_env,c(34)], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+(SD_beta_env_efp <- p.adjust.envfit(SD_beta_env_ef))
+# Surveyed sites by stratification
+(SD_beta_env_A_ef <- envfit(SD_beta_env_NMDS, env[surveyed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+(SD_beta_env_A_efp <- p.adjust.envfit(SD_beta_env_A_ef))
+# Mixed and stratified lakes
+(SD_beta_env_MS_ef <- envfit(SD_beta_env_MS_NMDS, env[mixed_stratified_lakes,environment], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+(SD_beta_env_MS_efp <- p.adjust.envfit(SD_beta_env_MS_ef))
+# Ocean sites and mixed lakes
+(SD_beta_env_OM_ef <- envfit(SD_beta_env_OM_NMDS, env[ocean_mixed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,19]))
+(SD_beta_env_OM_efp <- p.adjust.envfit(SD_beta_env_OM_ef))
+# Stratified lakes and ocean sites
+(SD_beta_env_SO_ef <- envfit(SD_beta_env_SO_NMDS, env[ocean_stratified_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
+(SD_beta_env_SO_efp <- p.adjust.envfit(SD_beta_env_SO_ef))
+# Mixed lakes
+(SD_beta_env_M_ef <- envfit(SD_beta_env_M_NMDS, env[mixed_lakes,environment], permutations = 999, na.rm = TRUE))
+(SD_beta_env_M_efp <- p.adjust.envfit(SD_beta_env_M_ef))
+
+
+# Stratified lakes
+(SD_beta_S_ef <- envfit(SD_beta_S_NMDS, env[stratified_lakes,c(2,6,8,26,31:32)], permutations = 999, na.rm = TRUE))
+(SD_beta_S_efp <- p.adjust.envfit(SD_beta_S_ef))
+
+
+### Geographic
+# Surveyed sites
+# For figure
+(SD_beta_geo_ef <- envfit(SD_beta_geo_NMDS, env[surveyed_sites_geo,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_geo,19]))
+(SD_beta_geo_efp <- p.adjust.envfit(SD_beta_geo_ef))
+# Surveyed sites by stratification
+(SD_beta_geo_A_ef <- envfit(SD_beta_geo_NMDS, env[surveyed_sites_geo,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_geo,19]))
+(SD_beta_geo_A_efp <- p.adjust.envfit(SD_beta_geo_A_ef))
+# Mixed and stratified lakes
+(SD_beta_geo_MS_ef <- envfit(SD_beta_geo_MS_NMDS, env[mixed_stratified_lakes_geo,geography], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes_geo,19]))
+(SD_beta_geo_MS_efp <- p.adjust.envfit(SD_beta_geo_MS_ef))
+# Ocean sites and mixed lakes
+(SD_beta_geo_OM_ef <- envfit(SD_beta_geo_OM_NMDS, env[ocean_mixed_sites_geo,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_geo,19]))
+(SD_beta_geo_OM_efp <- p.adjust.envfit(SD_beta_geo_OM_ef))
+# Stratified lakes and ocean sites
+(SD_beta_geo_SO_ef <- envfit(SD_beta_geo_SO_NMDS, env[ocean_stratified_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
+(SD_beta_geo_SO_efp <- p.adjust.envfit(SD_beta_geo_SO_ef))
+# Mixed lakes
+(SD_beta_geo_M_ef <- envfit(SD_beta_geo_M_NMDS, env[mixed_lakes_geo,geography], permutations = 999, na.rm = TRUE))
+(SD_beta_geo_M_efp <- p.adjust.envfit(SD_beta_geo_M_ef))
+```
+
+### SD beta Mantel correlation tests
+```{r, SD beta Mantel tests}
+### Environmental
+# Surveyed sites
+env_dist_t <- dist(scaled_env[surveyed_sites_env,c(1)], method = "euclidean")
+(SD_beta_env_mant_t <- mantel(SD_beta_env_dist$Btotal, env_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+env_dist_s <- dist(scaled_env[surveyed_sites_env,c(2)], method = "euclidean")
+(SD_beta_env_mant_s <- mantel(SD_beta_env_dist$Btotal, env_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+env_dist_o <- dist(scaled_env[surveyed_sites_env,c(3)], method = "euclidean")
+(SD_beta_env_mant_o <- mantel(SD_beta_env_dist$Btotal, env_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+# Adjust p-values
+SD_beta_env_mant_pv <- rbind(SD_beta_env_mant_t$signif, SD_beta_env_mant_s$signif, SD_beta_env_mant_o$signif)
+SD_beta_env_mant_pv <- SD_beta_env_mant_pv[,1]
+(SD_beta_env_mant_pv <- p.adjust(SD_beta_env_mant_pv, method = "bonferroni"))
+
+# Mixed and stratified lakes
+env_MS_dist_t <- dist(scaled_env[mixed_stratified_lakes,c(1)], method = "euclidean")
+(SD_beta_env_MS_mant_t <- mantel(SD_beta_env_MS_dist$Btotal, env_MS_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+env_MS_dist_s <- dist(scaled_env[mixed_stratified_lakes,c(2)], method = "euclidean")
+(SD_beta_env_MS_mant_s <- mantel(SD_beta_env_MS_dist$Btotal, env_MS_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+env_MS_dist_o <- dist(scaled_env[mixed_stratified_lakes,c(3)], method = "euclidean")
+(SD_beta_env_MS_mant_o <- mantel(SD_beta_env_MS_dist$Btotal, env_MS_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+# Adjust p-values
+SD_beta_env_MS_mant_pv <- rbind(SD_beta_env_MS_mant_t$signif, SD_beta_env_MS_mant_s$signif, SD_beta_env_MS_mant_o$signif)
+SD_beta_env_MS_mant_pv <- SD_beta_env_MS_mant_pv[,1]
+(SD_beta_env_MS_mant_pv <- p.adjust(SD_beta_env_MS_mant_pv, method = "bonferroni"))
+
+# Ocean sites and mixed lakes
+env_OM_dist_t <- dist(scaled_env[ocean_mixed_sites_env,c(1)], method = "euclidean")
+(SD_beta_env_OM_mant_t <- mantel(SD_beta_env_OM_dist$Btotal, env_OM_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,19]))
+env_OM_dist_s <- dist(scaled_env[ocean_mixed_sites_env,c(2)], method = "euclidean")
+(SD_beta_env_OM_mant_s <- mantel(SD_beta_env_OM_dist$Btotal, env_OM_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,19]))
+env_OM_dist_o <- dist(scaled_env[ocean_mixed_sites_env,c(3)], method = "euclidean")
+(SD_beta_env_OM_mant_o <- mantel(SD_beta_env_OM_dist$Btotal, env_OM_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,19]))
+# Adjust p-values
+SD_beta_env_OM_mant_pv <- rbind(SD_beta_env_OM_mant_t$signif, SD_beta_env_OM_mant_s$signif, SD_beta_env_OM_mant_o$signif)
+SD_beta_env_OM_mant_pv <- SD_beta_env_OM_mant_pv[,1]
+(SD_beta_env_OM_mant_pv <- p.adjust(SD_beta_env_OM_mant_pv, method = "bonferroni"))
+
+# Stratified lakes and ocean sites
+env_SO_dist_t <- dist(scaled_env[ocean_stratified_sites_env,c(1)], method = "euclidean")
+(SD_beta_env_SO_mant_t <- mantel(SD_beta_env_SO_dist$Btotal, env_SO_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
+env_SO_dist_s <- dist(scaled_env[ocean_stratified_sites_env,c(2)], method = "euclidean")
+(SD_beta_env_SO_mant_s <- mantel(SD_beta_env_SO_dist$Btotal, env_SO_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
+env_SO_dist_o <- dist(scaled_env[ocean_stratified_sites_env,c(3)], method = "euclidean")
+(SD_beta_env_SO_mant_o <- mantel(SD_beta_env_SO_dist$Btotal, env_SO_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
+# Adjust p-values
+SD_beta_env_SO_mant_pv <- rbind(SD_beta_env_SO_mant_t$signif, SD_beta_env_SO_mant_s$signif, SD_beta_env_SO_mant_o$signif)
+SD_beta_env_SO_mant_pv <- SD_beta_env_SO_mant_pv[,1]
+(SD_beta_env_SO_mant_pv <- p.adjust(SD_beta_env_SO_mant_pv, method = "bonferroni"))
+
+# Mixed lakes
+env_M_dist_t <- dist(scaled_env[mixed_lakes,c(1)], method = "euclidean")
+(SD_beta_env_M_mant_t <- mantel(SD_beta_env_M_dist$Btotal, env_M_dist_t, method = "spearman", permutations = 999, na.rm = TRUE))
+env_M_dist_s <- dist(scaled_env[mixed_lakes,c(2)], method = "euclidean")
+(SD_beta_env_M_mant_s <- mantel(SD_beta_env_M_dist$Btotal, env_M_dist_s, method = "spearman", permutations = 999, na.rm = TRUE))
+env_M_dist_o <- dist(scaled_env[mixed_lakes,c(3)], method = "euclidean")
+(SD_beta_env_M_mant_o <- mantel(SD_beta_env_M_dist$Btotal, env_M_dist_o, method = "spearman", permutations = 999, na.rm = TRUE))
+# Adjust p-values
+SD_beta_env_M_mant_pv <- rbind(SD_beta_env_M_mant_t$signif, SD_beta_env_M_mant_s$signif, SD_beta_env_M_mant_o$signif)
+SD_beta_env_M_mant_pv <- SD_beta_env_M_mant_pv[,1]
+(SD_beta_env_M_mant_pv <- p.adjust(SD_beta_env_M_mant_pv, method = "bonferroni"))
+
+
+# Stratified lakes
+env_geo_S_dist <- dist(scaled_env[stratified_lakes,c(1:3,9,14:15)], method = "euclidean")
+(SD_beta_S_mant <- mantel(SD_beta_S_dist$Btotal, env_geo_S_dist, method = "spearman", permutations = 999, na.rm = TRUE))
+
+
+### Geographic
+# Surveyed sites
+geo_dist_dmean <- dist(scaled_env[surveyed_sites_geo,c(9)], method = "euclidean")
+(SD_beta_geo_mant_dmean <- mantel(SD_beta_geo_dist$Btotal, geo_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_geo,19]))
+geo_dist_md <- dist(scaled_env[surveyed_sites_geo,c(14)], method = "euclidean")
+(SD_beta_geo_mant_md <- mantel(SD_beta_geo_dist$Btotal, geo_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_geo,19]))
+geo_dist_la <- dist(scaled_env[surveyed_sites_geo,c(15)], method = "euclidean")
+(SD_beta_geo_mant_la <- mantel(SD_beta_geo_dist$Btotal, geo_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_geo,19]))
+# Adjust p-values
+SD_beta_geo_mant_pv <- rbind(SD_beta_geo_mant_dmean$signif, SD_beta_geo_mant_md$signif, SD_beta_geo_mant_la$signif)
+SD_beta_geo_mant_pv <- SD_beta_geo_mant_pv[,1]
+(SD_beta_geo_mant_pv <- p.adjust(SD_beta_geo_mant_pv, method = "bonferroni"))
+
+# Mixed and stratified lakes 
+geo_MS_dist_dmean <- dist(scaled_env[mixed_stratified_lakes_geo,c(9)], method = "euclidean")
+(SD_beta_geo_MS_mant_dmean <- mantel(SD_beta_geo_MS_dist$Btotal, geo_MS_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes_geo,19]))
+geo_MS_dist_md <- dist(scaled_env[mixed_stratified_lakes_geo,c(14)], method = "euclidean")
+(SD_beta_geo_MS_mant_md <- mantel(SD_beta_geo_MS_dist$Btotal, geo_MS_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes_geo,19]))
+geo_MS_dist_la <- dist(scaled_env[mixed_stratified_lakes_geo,c(15)], method = "euclidean")
+(SD_beta_geo_MS_mant_la <- mantel(SD_beta_geo_MS_dist$Btotal, geo_MS_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes_geo,19]))
+# Adjust p-values
+SD_beta_geo_MS_mant_pv <- rbind(SD_beta_geo_MS_mant_dmean$signif, SD_beta_geo_MS_mant_md$signif, SD_beta_geo_MS_mant_la$signif)
+SD_beta_geo_MS_mant_pv <- SD_beta_geo_MS_mant_pv[,1]
+(SD_beta_geo_MS_mant_pv <- p.adjust(SD_beta_geo_MS_mant_pv, method = "bonferroni"))
+
+# Ocean sites and mixed lakes
+geo_OM_dist_dmean <- dist(scaled_env[ocean_mixed_sites_geo,c(9)], method = "euclidean")
+(SD_beta_geo_OM_mant_dmean <- mantel(SD_beta_geo_OM_dist$Btotal, geo_OM_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_geo,19]))
+geo_OM_dist_md <- dist(scaled_env[ocean_mixed_sites_geo,c(14)], method = "euclidean")
+(SD_beta_geo_OM_mant_md <- mantel(SD_beta_geo_OM_dist$Btotal, geo_OM_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_geo,19]))
+geo_OM_dist_la <- dist(scaled_env[ocean_mixed_sites_geo,c(15)], method = "euclidean")
+(SD_beta_geo_OM_mant_la <- mantel(SD_beta_geo_OM_dist$Btotal, geo_OM_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_geo,19]))
+# Adjust p-values
+SD_beta_geo_OM_mant_pv <- rbind( SD_beta_geo_OM_mant_dmean$signif, SD_beta_geo_OM_mant_md$signif, SD_beta_geo_OM_mant_la$signif)
+SD_beta_geo_OM_mant_pv <- SD_beta_geo_OM_mant_pv[,1]
+(SD_beta_geo_OM_mant_pv <- p.adjust(SD_beta_geo_OM_mant_pv, method = "bonferroni"))
+
+# Stratified lakes and ocean sites
+geo_SO_dist_dmean <- dist(scaled_env[ocean_stratified_sites,c(9)], method = "euclidean")
+(SD_beta_geo_SO_mant_dmean <- mantel(SD_beta_geo_SO_dist$Btotal, geo_SO_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
+geo_SO_dist_md <- dist(scaled_env[ocean_stratified_sites,c(14)], method = "euclidean")
+(SD_beta_geo_SO_mant_md <- mantel(SD_beta_geo_SO_dist$Btotal, geo_SO_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
+geo_SO_dist_la <- dist(scaled_env[ocean_stratified_sites,c(15)], method = "euclidean")
+(SD_beta_geo_SO_mant_la <- mantel(SD_beta_geo_SO_dist$Btotal, geo_SO_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
+# Adjust p-values
+SD_beta_geo_SO_mant_pv <- rbind( SD_beta_geo_SO_mant_dmean$signif, SD_beta_geo_SO_mant_md$signif, SD_beta_geo_SO_mant_la$signif)
+SD_beta_geo_SO_mant_pv <- SD_beta_geo_SO_mant_pv[,1]
+(SD_beta_geo_SO_mant_pv <- p.adjust(SD_beta_geo_SO_mant_pv, method = "bonferroni"))
+
+# Mixed lakes
+geo_M_dist_dmean <- dist(scaled_env[mixed_lakes_geo,c(9)], method = "euclidean")
+(SD_beta_geo_M_mant_dmean <- mantel(SD_beta_geo_M_dist$Btotal, geo_M_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_M_dist_md <- dist(scaled_env[mixed_lakes_geo,c(14)], method = "euclidean")
+(SD_beta_geo_M_mant_md <- mantel(SD_beta_geo_M_dist$Btotal, geo_M_dist_md, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_M_dist_la <- dist(scaled_env[mixed_lakes_geo,c(15)], method = "euclidean")
+(SD_beta_geo_M_mant_la <- mantel(SD_beta_geo_M_dist$Btotal, geo_M_dist_la, method = "spearman", permutations = 999, na.rm = TRUE))
+# Adjust p-values
+SD_beta_geo_M_mant_pv <- rbind( SD_beta_geo_M_mant_dmean$signif, SD_beta_geo_M_mant_md$signif, SD_beta_geo_M_mant_la$signif)
+SD_beta_geo_M_mant_pv <- SD_beta_geo_M_mant_pv[,1]
+(SD_beta_geo_M_mant_pv <- p.adjust(SD_beta_geo_M_mant_pv, method = "bonferroni"))
+```
+
+### SD beta NMDS ordination plots
+```{r, SD beta NMDS plots}
+# SD beta total NMDS scores
+SD_beta_NMDS_data.scores <- as.data.frame(scores(SD_beta_NMDS))
+SD_beta_NMDS_data.scores$Stratification <- env[surveyed_sites,19]
+SD_beta_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
+SD_beta_NMDS_data.scores$Stratification <- factor(SD_beta_NMDS_data.scores$Stratification, levels = c("Ocean", "Mixed", "Stratified"))
+
+# Get significantly correlated environmental variables
+SD_beta_env_ef_coord_cont <- as.data.frame(scores(SD_beta_env_ef, "vectors")) * ordiArrowMul(SD_beta_env_ef)
+SD_beta_env_row_names <- c("S")
+# Assign the new row names to the data frame
+SD_beta_env_ef_coord_cont <- data.frame(row.names = SD_beta_env_row_names, SD_beta_env_ef_coord_cont)
+
+# SD_beta_geo_ef_coord_cont <- as.data.frame(scores(SD_beta_geo_ef, "vectors")) * ordiArrowMul(SD_beta_geo_ef)
+# SD_beta_geo_row_names <- c("minD")
+# # Assign the new row names to the data frame
+# SD_beta_geo_ef_coord_cont <- data.frame(row.names = SD_beta_geo_row_names, SD_beta_geo_ef_coord_cont)
+
+# Plot NMDS ordination of SD beta total with CI = 0.95
+SD_beta_ef_plot <- ggplot(data = SD_beta_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Stratification)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Stratification), type = "t", level = 0.95) +
+  geom_point(data = SD_beta_NMDS_data.scores, aes(color = Stratification, fill = Stratification), size = 4, alpha = 1) + 
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  geom_segment(aes(x = 0, y = 0, xend = NMDS1, yend = NMDS2),
+               data = SD_beta_env_ef_coord_cont, linewidth =1, alpha = 0.2, color = env_cont) +
+  geom_text(data = SD_beta_env_ef_coord_cont, aes(x = NMDS1, y = NMDS2),
+            color = env_cont, label = row.names(SD_beta_env_ef_coord_cont), size = 5) +
+  geom_text_repel(data = SD_beta_NMDS_data.scores, label = SD_beta_NMDS_data.scores$Lakes, 
+                  size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
+  theme(text = element_text(size = 16), 
+        legend.position = "bottom", 
+        legend.title = element_text(size = 16), 
+        legend.text = element_text(size = 16), 
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.border = element_rect(fill = NA), 
+        axis.text = element_text(color = "black", size = 16), 
+        legend.key = element_blank()) +
+  annotate("text", x = -0.6, y = 0.5, size = 5,
+           label = paste("Stress: ", round(SD_beta_NMDS$stress, digits = 2))) +
+  labs(colour = "Site type:  ", fill = "Site type:  ") +
+  coord_fixed() +
+  scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81)) +
+  scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81))
+(SD_beta_ef_plot <- SD_beta_ef_plot + guides(color = guide_legend(override.aes = list(label = ""))))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_NMDS.jpg", SD_beta_ef_plot, width = 6, height = 6, units = "in")
+
+
+# Plot NMDS ordination of SD beta total with CI = 0.90
+SD_beta_ef_plot_CI90 <- ggplot(data = SD_beta_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Stratification)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Stratification), type = "t", level = 0.90) +
+  geom_point(data = SD_beta_NMDS_data.scores, aes(color = Stratification, fill = Stratification), size = 4, alpha = 1) + 
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  geom_segment(aes(x = 0, y = 0, xend = NMDS1, yend = NMDS2),
+               data = SD_beta_env_ef_coord_cont, linewidth =1, alpha = 0.2, color = env_cont) +
+  geom_text(data = SD_beta_env_ef_coord_cont, aes(x = NMDS1, y = NMDS2),
+            color = env_cont, label = row.names(SD_beta_env_ef_coord_cont), size = 5) +
+  geom_text_repel(data = SD_beta_NMDS_data.scores, label = SD_beta_NMDS_data.scores$Lakes, 
+                  size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
+  theme(text = element_text(size = 16), 
+        legend.position = "bottom", 
+        legend.title = element_text(size = 16), 
+        legend.text = element_text(size = 16), 
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.border = element_rect(fill = NA), 
+        axis.text = element_text(color = "black"), 
+        legend.key = element_blank()) +
+  annotate("text", x = -0.6, y = 0.5, size = 5,
+           label = paste("Stress: ", round(SD_beta_NMDS$stress, digits = 2))) +
+  labs(colour = "Site type:  ", fill = "Site type:  ") +
+  coord_fixed() +
+  scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81)) +
+  scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81))
+(SD_beta_ef_plot_CI90 <- SD_beta_ef_plot_CI90 + guides(color = guide_legend(override.aes = list(label = ""))))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_NMDS_CI90.jpg", SD_beta_ef_plot_CI90, width = 6, height = 6, units = "in")
+
+
+# SD beta replacement NMDS scores
+SD_beta_rep_NMDS_data.scores <- as.data.frame(scores(SD_beta_rep_NMDS))
+SD_beta_rep_NMDS_data.scores$Stratification <- env[surveyed_sites,19]
+SD_beta_rep_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
+SD_beta_rep_NMDS_data.scores$Stratification <- factor(SD_beta_rep_NMDS_data.scores$Stratification, levels = c("Ocean", "Mixed", "Stratified"))
+
+# Plot NMDS ordination of SD beta replacement with CI = 0.95
+SD_beta_rep_plot <- ggplot(data = SD_beta_rep_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Stratification)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Stratification), type = "t", level = 0.95) +
+  geom_point(data = SD_beta_rep_NMDS_data.scores, aes(color = Stratification, fill = Stratification), size = 4, alpha = 1) + 
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = SD_beta_rep_NMDS_data.scores, label = SD_beta_rep_NMDS_data.scores$Lakes, 
+                  size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
+  theme(text = element_text(size = 14), 
+        legend.position = "bottom", 
+        legend.title = element_text(size = 14), 
+        legend.text = element_text(size = 14), 
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.border = element_rect(fill = NA), 
+        axis.text = element_text(color = "black"), 
+        legend.key = element_blank()) +
+  annotate("text", x = -0.7, y = 0.8, size = 5,
+           label = paste("Stress: ", round(SD_beta_rep_NMDS$stress, digits = 2))) +
+  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "a") +
+  coord_fixed() +
+  scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05)) +
+  scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05))
+(SD_beta_rep_plot <- SD_beta_rep_plot + guides(color = guide_legend(override.aes = list(label = ""))))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_rep_NMDS.jpg", SD_beta_rep_plot, width = 4.88, height = 6, units = "in")
+
+
+# SD beta richness NMDS scores
+SD_beta_ric_NMDS_data.scores <- as.data.frame(scores(SD_beta_ric_NMDS))
+SD_beta_ric_NMDS_data.scores$Stratification <- env[surveyed_sites,19]
+SD_beta_ric_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
+SD_beta_ric_NMDS_data.scores$Stratification <- factor(SD_beta_ric_NMDS_data.scores$Stratification, levels = c("Ocean", "Mixed", "Stratified"))
+
+# Plot NMDS ordination of SD beta richness with CI = 0.95
+SD_beta_ric_plot <- ggplot(data = SD_beta_ric_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Stratification)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Stratification), type = "t", level = 0.95) +
+  geom_point(data = SD_beta_ric_NMDS_data.scores, aes(color = Stratification, fill = Stratification), size = 4, alpha = 1) + 
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = SD_beta_ric_NMDS_data.scores, label = SD_beta_ric_NMDS_data.scores$Lakes, 
+                  size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
+  theme(text = element_text(size = 14), 
+        legend.position = "bottom", 
+        legend.title = element_text(size = 14), 
+        legend.text = element_text(size = 14), 
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.border = element_rect(fill = NA), 
+        axis.text = element_text(color = "black"), 
+        legend.key = element_blank()) +
+  annotate("text", x = -0.7, y = 0.8, size = 5,
+           label = paste("Stress: ", round(SD_beta_ric_NMDS$stress, digits = 2))) +
+  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "b") +
+  coord_fixed() +
+  scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05)) +
+  scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05))
+(SD_beta_ric_plot <- SD_beta_ric_plot + guides(color = guide_legend(override.aes = list(label = ""))))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_ric_NMDS.jpg", SD_beta_ric_plot, width = 4.88, height = 6, units = "in")
+
+
+# SD beta ref NMDS scores
+SD_beta_ref_NMDS_data.scores <- as.data.frame(scores(SD_beta_ref_NMDS))
+SD_beta_ref_NMDS_data.scores$Stratification <- env[,19]
+SD_beta_ref_NMDS_data.scores$Lakes <- env[,1]
+SD_beta_ref_NMDS_data.scores$Stratification <- factor(SD_beta_ref_NMDS_data.scores$Stratification, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
+
+# Plot NMDS ordination of SD beta ref with CI = 0.95
+SD_beta_ref_plot <- ggplot(data = SD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Stratification)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Stratification), type = "t", level = 0.95) +
+  geom_point(data = SD_beta_ref_NMDS_data.scores, aes(color = Stratification, fill = Stratification), size = 4, alpha = 1) + 
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = SD_beta_ref_NMDS_data.scores, label = SD_beta_ref_NMDS_data.scores$Lakes, 
+                  size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
+  theme(text = element_text(size = 14), 
+        legend.position = "bottom", 
+        legend.title = element_text(size = 14), 
+        legend.text = element_text(size = 14), 
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.border = element_rect(fill = NA), 
+        axis.text = element_text(color = "black"), 
+        legend.key = element_blank()) +
+  annotate("text", x = -0.7, y = 0.8, size = 5,
+           label = paste("Stress: ", round(SD_beta_ref_NMDS$stress, digits = 2))) +
+  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "a") +
+  coord_fixed() +
+  scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05)) +
+  scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05))
+(SD_beta_ref_plot <- SD_beta_ref_plot + guides(color = guide_legend(override.aes = list(label = ""))))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_ref_NMDS.jpg", SD_beta_ref_plot, width = 4.88, height = 6, units = "in")
+```
+
+### SD beta dendrogram
+```{r, SD beta dendrogram}
+# Cluster communities using average-linkage algorithm
+SD_beta_dist_clust <- hclust(SD_beta_dist$Btotal, method = "average")
+
+# The following will create a dendrogram of SD_beta putting things in one dimensional space
+# Open a jpg device
+png("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_dendrogram.jpg", width = 6.5, height = 3, units = "in", res = 300, type = "cairo")
+
+# Create your plot using the plot() function
+plot(SD_beta_dist_clust, 
+     xlab = "Sites",
+     ylab = "SD beta",
+     main = "",
+     sub = "",
+     pch = 20,
+     col= "black")
+
+# Close the jpg device
+dev.off()
+
+
+# The following will graph and identify the best supported number of clusters of the dendrogram
+# Open a jpg device
+png("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_dg_silhouette.jpg", width = 6.5, height = 3, units = "in", res = 300, type = "cairo")
+
+Si <- numeric(nrow(presabs_lake[surveyed_sites,]))
+for (k in 2:(nrow(presabs_lake[surveyed_sites,])-1))
+{
+  sil<-silhouette(cutree(SD_beta_dist_clust, k=k), SD_beta_dist$Btotal)
+  Si[k] <- summary(sil)$avg.width
+}
+k.best<-which.max(Si)
+plot(1:nrow(presabs_lake[surveyed_sites,]), Si, type = "h", main = "Silhouette", xlab = "K", ylab = "Width")
+axis(1, k.best, paste("optimum", k.best, sep="\n"), col = "red", font = 2, col.axis = "red")
+
+# Close the jpg device
+dev.off()
+
+
+# Partitioning around mediods uses distances matrix to found how points according to silhouette are grouped around a centroid. The greater the number, the greater the distance from the centroid.
+# Open a jpg device
+png("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_dg_partitioning.jpg", width = 6.5, height = 3, units = "in", res = 300, type = "cairo")
+
+SD_beta_pam <- pam(SD_beta_dist$Btotal,2)
+plot(SD_beta_pam)
+
+# Close the jpg device
+dev.off()
+```
+
+### SD beta outliers
+```{r, SD beta outliers}
+# Determine NMDS1 outliers
+ordered_SD_beta_NMDS1_data.scores <- SD_beta_NMDS_data.scores[order(SD_beta_NMDS_data.scores$NMDS1), ]
+
+outlier_SD_beta_NMDS1 <- ordered_SD_beta_NMDS1_data.scores %>%
+  group_by(Stratification) %>%
+  mutate(
+    Q1 = quantile(NMDS1, 0.25),
+    Q3 = quantile(NMDS1, 0.75),
+    IQR = Q3 - Q1,
+    lower_bound = Q1 - 1.5 * IQR,
+    upper_bound = Q3 + 1.5 * IQR,
+    is_outlier = NMDS1 < lower_bound | NMDS1 > upper_bound
+  )
+
+outlier_SD_beta_NMDS1 <- as.data.frame(outlier_SD_beta_NMDS1)
+
+row.names(outlier_SD_beta_NMDS1) <- outlier_SD_beta_NMDS1$X
+
+# Create the plot
+(outlier_SD_beta_NMDS1_plot <- ggplot(outlier_SD_beta_NMDS1, aes(x = Stratification, y = NMDS1, fill = Stratification)) +
+  geom_violin(trim = FALSE) +
+  geom_jitter(aes(color = is_outlier), width = 0.2, size = 4, alpha = 0.7) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
+  scale_fill_manual(values = custom_colors) +
+  theme(text = element_text(size = 16),
+        legend.position = "right",
+        legend.title = element_text(size = 16),
+        legend.text = element_text(size = 16),
+        axis.line = element_line(color = "black"),
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.text = element_text(color = "black", size = 16)) +
+  labs(y = "NMDS1 Distances", x = "Site type", color = "Outlier", fill = "Site type", tag = "a"))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/outlier_SD_beta_NMDS1.jpg", outlier_SD_beta_NMDS1_plot, width = 6.26, height = 6, units = "in")
+
+
+# Determine NMDS2 outliers
+ordered_SD_beta_NMDS2_data.scores <- SD_beta_NMDS_data.scores[order(SD_beta_NMDS_data.scores$NMDS2), ]
+
+outlier_SD_beta_NMDS2 <- ordered_SD_beta_NMDS2_data.scores %>%
+  group_by(Stratification) %>%
+  mutate(
+    Q1 = quantile(NMDS2, 0.25),
+    Q3 = quantile(NMDS2, 0.75),
+    IQR = Q3 - Q1,
+    lower_bound = Q1 - 1.5 * IQR,
+    upper_bound = Q3 + 1.5 * IQR,
+    is_outlier = NMDS2 < lower_bound | NMDS2 > upper_bound
+  )
+
+outlier_SD_beta_NMDS2 <- as.data.frame(outlier_SD_beta_NMDS2)
+
+row.names(outlier_SD_beta_NMDS2) <- outlier_SD_beta_NMDS2$X
+
+# Create the plot
+(outlier_SD_beta_NMDS2_plot <- ggplot(outlier_SD_beta_NMDS2, aes(x = Stratification, y = NMDS2, fill = Stratification)) +
+  geom_violin(trim = FALSE) +
+  geom_jitter(aes(color = is_outlier), width = 0.2, size = 4, alpha = 0.7) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
+  scale_fill_manual(values = custom_colors) +
+  theme(text = element_text(size = 16),
+        legend.position = "right",
+        legend.title = element_text(size = 16),
+        legend.text = element_text(size = 16),
+        axis.line = element_line(color = "black"),
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.text = element_text(color = "black", size = 16)) +
+  labs(y = "NMDS2 Distances", x = "Site type", color = "Outlier", fill = "Site type", tag = "b"))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/outlier_SD_beta_NMDS2.jpg", outlier_SD_beta_NMDS2_plot, width = 6.26, height = 6, units = "in")
+
+
+# Make SD_beta distances into a matrix
+SD_beta_dist_matrix <- as.matrix(SD_beta_dist$Btotal)
+
+# Set the diagonal elements to NA
+diag(SD_beta_dist_matrix) <- NA
+
+# Get the labels of the sites
+sites <- attr(SD_beta_dist_matrix, "Labels")
+
+# Calculate the mean dist for each group
+SD_beta_mean_dist <- aggregate(SD_beta_dist_matrix, by = list(stratification_group), FUN = mean, na.rm = TRUE)
+
+# Rename rows, delete column, and transpose matrix and make it a data frame
+row.names(SD_beta_mean_dist) <- SD_beta_mean_dist$Group.1
+SD_beta_mean_dist <- SD_beta_mean_dist[,-1] 
+SD_beta_mean_dist <- as.data.frame(t(SD_beta_mean_dist))
+
+# Add Stratification column
+SD_beta_mean_dist$Stratification <- env[surveyed_sites,19]
+SD_beta_mean_dist$Stratification <- factor(SD_beta_mean_dist$Stratification, levels = c("Ocean", "Mixed", "Stratified"))
+
+
+# Determine ocean sites outliers based on distance from other ocean sites
+outlier_SD_beta_mean_dist_ocean <- SD_beta_mean_dist[ocean_sites,] %>%
+  group_by(Stratification) %>%
+  mutate(
+    Q1 = quantile(Ocean, 0.25),
+    Q3 = quantile(Ocean, 0.75),
+    IQR = Q3 - Q1,
+    lower_bound = Q1 - 1.5 * IQR,
+    upper_bound = Q3 + 1.5 * IQR,
+    is_outlier = Ocean < lower_bound | Ocean > upper_bound
+  )
+
+outlier_SD_beta_mean_dist_ocean <- as.data.frame(outlier_SD_beta_mean_dist_ocean)
+row.names(outlier_SD_beta_mean_dist_ocean) <- outlier_SD_beta_mean_dist_ocean$X
+outlier_SD_beta_mean_dist_ocean$Distances <- outlier_SD_beta_mean_dist_ocean$Ocean
+outlier_SD_beta_mean_dist_ocean <- outlier_SD_beta_mean_dist_ocean[,-c(1:3)]
+
+
+# Determine mixed lake outliers based on distance from other mixed lakes
+outlier_SD_beta_mean_dist_mixed <- SD_beta_mean_dist[mixed_lakes,] %>%
+  group_by(Stratification) %>%
+  mutate(
+    Q1 = quantile(Mixed, 0.25),
+    Q3 = quantile(Mixed, 0.75),
+    IQR = Q3 - Q1,
+    lower_bound = Q1 - 1.5 * IQR,
+    upper_bound = Q3 + 1.5 * IQR,
+    is_outlier = Mixed < lower_bound | Mixed > upper_bound
+  )
+
+outlier_SD_beta_mean_dist_mixed <- as.data.frame(outlier_SD_beta_mean_dist_mixed)
+row.names(outlier_SD_beta_mean_dist_mixed) <- outlier_SD_beta_mean_dist_mixed$X
+outlier_SD_beta_mean_dist_mixed$Distances <- outlier_SD_beta_mean_dist_mixed$Mixed
+outlier_SD_beta_mean_dist_mixed <- outlier_SD_beta_mean_dist_mixed[,-c(1:3)]
+
+
+# Determine stratified lake outliers based on distance from other stratified lakes
+outlier_SD_beta_mean_dist_stratified <- SD_beta_mean_dist[stratified_lakes,] %>%
+  group_by(Stratification) %>%
+  mutate(
+    Q1 = quantile(Stratified, 0.25),
+    Q3 = quantile(Stratified, 0.75),
+    IQR = Q3 - Q1,
+    lower_bound = Q1 - 1.5 * IQR,
+    upper_bound = Q3 + 1.5 * IQR,
+    is_outlier = Stratified < lower_bound | Stratified > upper_bound
+  )
+
+outlier_SD_beta_mean_dist_stratified <- as.data.frame(outlier_SD_beta_mean_dist_stratified)
+row.names(outlier_SD_beta_mean_dist_stratified) <- outlier_SD_beta_mean_dist_stratified$X
+outlier_SD_beta_mean_dist_stratified$Distances <- outlier_SD_beta_mean_dist_stratified$Stratified
+outlier_SD_beta_mean_dist_stratified <- outlier_SD_beta_mean_dist_stratified[,-c(1:3)]
+
+outlier_SD_beta_mean_dist <- rbind(outlier_SD_beta_mean_dist_ocean, outlier_SD_beta_mean_dist_mixed, outlier_SD_beta_mean_dist_stratified)
+
+(outlier_SD_beta_mean_dist_plot <- ggplot(outlier_SD_beta_mean_dist, aes(x = Stratification, y = Distances, fill = Stratification)) +
+  geom_violin(trim = FALSE) +
+  geom_jitter(aes(color = is_outlier), width = 0.2, size = 4, alpha = 0.7) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
+  scale_fill_manual(values = custom_colors) +
+  theme(text = element_text(size = 16),
+        legend.position = "right",
+        legend.title = element_text(size = 16),
+        legend.text = element_text(size = 16),
+        axis.line = element_line(color = "black"),
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.text = element_text(color = "black", size = 16)) +
+  labs(y = "Average Distance from other sites by site type", x = "Site type", color = "Outlier", fill = "Site type", tag = "c"))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/outlier_SD_beta_mean_dist.jpg", outlier_SD_beta_mean_dist_plot, width = 6.26, height = 6, units = "in")
+```
+
+### Package and version info
+```{r, session info}
+sessionInfo()
+```
+
+#### Determine what families of fish are most present in the lakes
+```{r, eval=F}
+library(rfishbase)
+species_sums_tax <- site_sums
+species_sums_tax$X <- gsub("_", " ", species_sums_tax$X)
+species_sums_tax <- species_sums_tax$X
+species_sums_tax <- rfishbase::load_taxa() %>% 
+  filter(Species %in% species_sums_tax) %>%
+  collect()
+species_sums_tax$Species <- gsub(" ", "_", species_sums_tax$Species)
+species_sums_tax <- merge(species_sums_tax, species_sums, by.x = "Species", by.y = "X")
+species_sums_tax <- species_sums_tax[, -c(2:4, 7:8)]
+species_sums_tax <- species_sums_tax[order(species_sums_tax$row_sum),]
+
+species_sums_tax_summary <- species_sums_tax %>%
+  group_by(Family) %>%
+  summarise(across(.cols = row_sum, .fns = sum, na.rm = TRUE))
+
+family <- ggplot(data = species_sums_tax_summary) + 
+  geom_bar(aes(x = reorder(Family, row_sum), y = row_sum),
+    stat = 'identity',
+    col="green", 
+    fill="green4", 
+    alpha = .5) + 
+  theme_bw() +
+  theme(plot.background = element_blank()
+    ,panel.grid.major = element_blank()
+    ,panel.grid.minor = element_blank()
+    ,panel.border = element_blank()) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1), axis.line = element_line(color = "black")) +
+  labs(x="Family", y="Family Richness")
+family
+ggsave("family.jpg", family, width = 5, height = 4.5)
+
+order <- ggplot(data = species_sums_tax) + 
+  geom_bar(aes(x = reorder(Order, row_sum), y = row_sum),
+    stat = 'identity',
+    col="green", 
+    fill="green4", 
+    alpha = .5) + 
+  theme_bw() +
+  theme(plot.background = element_blank()
+    ,panel.grid.major = element_blank()
+    ,panel.grid.minor = element_blank()
+    ,panel.border = element_blank()) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1), axis.line = element_line(color = "black")) +
+  labs(x="Order", y="Richness in Lakess")
+order
+#ggsave("order.jpg", order)
+
+detach("package:rfishbase")
+```
