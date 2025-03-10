@@ -1185,7 +1185,7 @@ SD_beta_ref_plot <- ggplot(data = SD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y
         legend.text = element_text(size = 14), 
         panel.background = element_rect(fill='transparent'),
         plot.background = element_rect(fill='transparent', color=NA),
-        panel.border = element_rect(fill = NA), 
+        panel.border = element_rect(fill = NA, size = 14), 
         axis.text = element_text(color = "black"), 
         legend.key = element_blank()) +
   annotate("text", x = -0.7, y = 0.8, size = 5,
