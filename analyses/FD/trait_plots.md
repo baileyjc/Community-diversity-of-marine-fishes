@@ -37,7 +37,7 @@ knit("/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_col
     ## 
     ## processing file: /Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.Rmd
 
-    ##   |                  |          |   0%  |                  |          |   3%                                                                          |                  |.         |   7% [Bringing everything together load modifying files packages]             |                  |.         |  10%                                                                          |                  |.         |  13% [Bringing everything together load in modifying files]                   |                  |..        |  17%                                                                          |                  |..        |  20% [Check species names across files]                                       |                  |..        |  23%                                                                          |                  |...       |  27% [Modify environment data]                                                |                  |...       |  30%                                                                          |                  |...       |  33% [Modify incidence matrices]                                              |                  |....      |  37%                                                                          |                  |....      |  40% [Modify phylogeny]                                                       |                  |....      |  43%                                                                          |                  |.....     |  47% [Modify trait data]                                                      |                  |.....     |  50%                                                                          |                  |.....     |  53% [Modify stratification data frames]                                      |                  |......    |  57%                                                                          |                  |......    |  60% [Modify stratification trait data]                                       |                  |......    |  63%                                                                          |                  |.......   |  67% [Stratification trait data tests]                                        |                  |.......   |  70%                                                                          |                  |.......   |  73% [Modify site trait data frames]                                          |                  |........  |  77%                                                                          |                  |........  |  80% [Site trait data tests]                                                  |                  |........  |  83%                                                                          |                  |......... |  87% [unnamed-chunk-2]                                                        |                  |......... |  90%                                                                          |                  |......... |  93% [unnamed-chunk-3]                                                        |                  |..........|  97%                                                                          |                  |..........| 100% [Bringing everything together load out modified files and session info]
+    ##   |                  |          |   0%  |                  |          |   3%                                                                          |                  |.         |   7% [Bringing everything together load modifying files packages]             |                  |.         |  10%                                                                          |                  |.         |  13% [Bringing everything together load in modifying files]                   |                  |..        |  17%                                                                          |                  |..        |  20% [Check species names across files]                                       |                  |..        |  23%                                                                          |                  |...       |  27% [Modify environment data]                                                |                  |...       |  30%                                                                          |                  |...       |  33% [Modify incidence matrices]                                              |                  |....      |  37%                                                                          |                  |....      |  40% [Modify phylogeny]                                                       |                  |....      |  43%                                                                          |                  |.....     |  47% [Modify trait data]                                                      |                  |.....     |  50%                                                                          |                  |.....     |  53% [Modify Site_type data frames]                                           |                  |......    |  57%                                                                          |                  |......    |  60% [Modify Site_type trait data]                                            |                  |......    |  63%                                                                          |                  |.......   |  67% [Site_type trait data tests]                                             |                  |.......   |  70%                                                                          |                  |.......   |  73% [Modify site trait data frames]                                          |                  |........  |  77%                                                                          |                  |........  |  80% [Site trait data tests]                                                  |                  |........  |  83%                                                                          |                  |......... |  87% [unnamed-chunk-2]                                                        |                  |......... |  90%                                                                          |                  |......... |  93% [unnamed-chunk-3]                                                        |                  |..........|  97%                                                                          |                  |..........| 100% [Bringing everything together load out modified files and session info]
 
     ## output file: /Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md
 
@@ -47,8 +47,8 @@ knit("/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_col
 # Define your custom colors
 custom_colors <- c("R" = "black", "O" = "#EE6363", "M" = "#87CEFA", "S" = "#6E8B3D")
 
-# Reference use Stratification_at_weighted
-# Surveyed sites use Stratification_st_weighted
+# Reference use Site_type_at_weighted
+# Surveyed sites use Site_type_st_weighted
 ```
 
 ## Biotic traits
@@ -56,7 +56,7 @@ custom_colors <- c("R" = "black", "O" = "#EE6363", "M" = "#87CEFA", "S" = "#6E8B
 ### Trophic level
 
 ``` r
-Troph_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x= Strat, y= Troph, color = "black", fill = Strat)) +
+Troph_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= Troph, color = "black", fill = Strat)) +
   geom_violin(alpha = 0.6, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
@@ -75,29 +75,17 @@ Troph_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x= Strat
     panel.border = element_blank()) + 
   ylab("Trophic Level") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "a")
+  labs(colour = "Site type:", fill = "Site type:", tag = "a")
 Troph_plot_weighted
 ```
-
-    ## Warning: Removed 3 rows containing non-finite outside the scale range
-    ## (`stat_ydensity()`).
-
-    ## Warning: Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
 ![](trait_plots_files/figure-gfm/Trophic%20level-1.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/Troph_plot_weighted.jpg", Troph_plot_weighted, width = 8, height = 8, units = "in")
-```
 
-    ## Warning: Removed 3 rows containing non-finite outside the scale range
-    ## (`stat_ydensity()`).
-    ## Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
-``` r
-# Troph_plot <- ggplot(Stratification_st, mapping = aes(x= Strat, y= Troph, fill = Strat)) +
+# Troph_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= Troph, fill = Strat)) +
 #   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
 #   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
 #   geom_jitter(shape = 21,
@@ -118,7 +106,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 ### Reproductive Guild2
 
 ``` r
-Stratification_st_props_RepGuild2 <- Stratification_st %>%
+Site_type_st_props_RepGuild2 <- Site_type_st %>%
   group_by(Strat, RepGuild2) %>%
   summarise(count = sum(SiteSums)) %>%
   mutate(proportion = count/sum(count))
@@ -128,12 +116,12 @@ Stratification_st_props_RepGuild2 <- Stratification_st %>%
     ## `.groups` argument.
 
 ``` r
-Stratification_st_props_RepGuild2 <- na.omit(Stratification_st_props_RepGuild2)
+Site_type_st_props_RepGuild2 <- na.omit(Site_type_st_props_RepGuild2)
 
-RepGuild2_plot_weighted <- ggplot(Stratification_st_props_RepGuild2, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = RepGuild2)) + 
+RepGuild2_plot_weighted <- ggplot(Site_type_st_props_RepGuild2, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = RepGuild2)) + 
   geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = RepGuild2), linewidth = 2, linetype = "dotted") +
-  scale_shape_manual(name = "Egg Strategy", values = c(11, 21:25), labels = c('1ib' = 'live bearers', '6s' = 'egg scatterers', '3n' = 'nesters', '5h' = 'brood hiders', '4t' = 'clutch tenders', '2eb' = 'external brooders')) +
+  scale_shape_manual(name = "Egg Strategy:", values = c(11, 21:25), labels = c('1ib' = 'live bearers', '6s' = 'egg scatterers', '3n' = 'nesters', '5h' = 'brood hiders', '4t' = 'clutch tenders', '2eb' = 'external brooders')) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   theme_bw() +
@@ -152,7 +140,7 @@ RepGuild2_plot_weighted <- ggplot(Stratification_st_props_RepGuild2, mapping = a
   ylim(c(0,0.6)) +
   ylab("Proportion") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "b")
+  labs(colour = "Site type:", fill = "Site type:", tag = "b")
 RepGuild2_plot_weighted
 ```
 
@@ -162,14 +150,14 @@ RepGuild2_plot_weighted
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/RepGuild2_plot_weighted.jpg", RepGuild2_plot_weighted, width = 8, height = 8, units = "in")
 
 
-# # Identify how many individuals have one of the trait factors for each Stratification
-# RepGuild2_counts <- table(Stratification_st$Stratification, row.names = Stratification_st$RepGuild2)
+# # Identify how many individuals have one of the trait factors for each Site_type
+# RepGuild2_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$RepGuild2)
 # 
 # # Divide each count by the total number of rows to find the proportion
 # RepGuild2_props <- RepGuild2_counts/(rowSums(RepGuild2_counts))
 # RepGuild2_props
 # 
-# RepGuild2_props <- as.dStratification_sta.frame(RepGuild2_props)
+# RepGuild2_props <- as.dSite_type_sta.frame(RepGuild2_props)
 # 
 # RepGuild2_props$Var1 <- factor(RepGuild2_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
 # 
@@ -191,7 +179,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 ### Dorsal Spines Mean
 
 ``` r
-DorsalSpinesMean_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x= Strat, y= DorsalSpinesMean, color = "black", fill = Strat)) +
+DorsalSpinesMean_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= DorsalSpinesMean, color = "black", fill = Strat)) +
   geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
@@ -210,15 +198,9 @@ DorsalSpinesMean_plot_weighted <- ggplot(Stratification_st_weighted, mapping = a
     panel.border = element_blank()) + 
   ylab("Dorsal Spines") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "c")
+  labs(colour = "Site type:", fill = "Site type:", tag = "c")
 DorsalSpinesMean_plot_weighted
 ```
-
-    ## Warning: Removed 3 rows containing non-finite outside the scale range
-    ## (`stat_ydensity()`).
-
-    ## Warning: Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
 ![](trait_plots_files/figure-gfm/Dorsal%20Spines%20Mean-1.png)<!-- -->
 
@@ -228,15 +210,9 @@ DorsalSpinesMean_plot_weighted
 # 2: Removed 10 rows containing missing values (`geom_point()`). 
 # Twelve values with NA
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/DorsalSpinesMean_plot_weighted.jpg", DorsalSpinesMean_plot_weighted, width = 8, height = 8, units = "in")
-```
 
-    ## Warning: Removed 3 rows containing non-finite outside the scale range
-    ## (`stat_ydensity()`).
-    ## Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
-``` r
-# DorsalSpinesMax_plot <- ggplot(Stratification_st, mapping = aes(x= Strat, y= DorsalSpinesMax, fill = Strat)) +
+# DorsalSpinesMax_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= DorsalSpinesMax, fill = Strat)) +
 #   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
 #   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
 #   geom_jitter(shape = 21,
@@ -257,7 +233,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 ### Parental Care
 
 ``` r
-Stratification_st_props_ParentalCare <- Stratification_st %>%
+Site_type_st_props_ParentalCare <- Site_type_st %>%
   group_by(Strat, ParentalCare) %>%
   summarise(count = sum(SiteSums)) %>%
   mutate(proportion = count/sum(count))
@@ -267,12 +243,12 @@ Stratification_st_props_ParentalCare <- Stratification_st %>%
     ## `.groups` argument.
 
 ``` r
-Stratification_st_props_ParentalCare <- na.omit(Stratification_st_props_ParentalCare)
+Site_type_st_props_ParentalCare <- na.omit(Site_type_st_props_ParentalCare)
 
-ParentalCare_plot_weighted <- ggplot(Stratification_st_props_ParentalCare, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = ParentalCare)) + 
+ParentalCare_plot_weighted <- ggplot(Site_type_st_props_ParentalCare, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = ParentalCare)) + 
   geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = ParentalCare), linewidth = 2, linetype = "dotted") +
-  scale_shape_manual(name = "Parental Care", values = c(21:25), labels = c('4n' = 'none', '3p' = 'paternal', '2m' = 'maternal', '1b' = 'biparental')) +
+  scale_shape_manual(name = "Parental Care:", values = c(21:25), labels = c('4n' = 'none', '3p' = 'paternal', '2m' = 'maternal', '1b' = 'biparental')) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   theme_bw() +
@@ -291,7 +267,7 @@ ParentalCare_plot_weighted <- ggplot(Stratification_st_props_ParentalCare, mappi
   ylim(c(0,0.6)) +
   ylab("Proportion") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "d")
+  labs(colour = "Site type:", fill = "Site type:", tag = "d")
 ParentalCare_plot_weighted
 ```
 
@@ -301,14 +277,14 @@ ParentalCare_plot_weighted
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/ParentalCare_plot_weighted.jpg", ParentalCare_plot_weighted, width = 8, height = 8, units = "in")
 
 
-# # Identify how many individuals have one of the trait factors for each Stratification
-# ParentalCare_counts <- table(Stratification_st$Stratification, row.names = Stratification_st$ParentalCare)
+# # Identify how many individuals have one of the trait factors for each Site_type
+# ParentalCare_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$ParentalCare)
 # 
 # # Divide each count by the total number of rows to find the proportion
 # ParentalCare_props <- ParentalCare_counts/(rowSums(ParentalCare_counts))
 # ParentalCare_props
 # 
-# ParentalCare_props <- as.dStratification_sta.frame(ParentalCare_props)
+# ParentalCare_props <- as.dSite_type_sta.frame(ParentalCare_props)
 # 
 # ParentalCare_props$Var1 <- factor(ParentalCare_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
 # 
@@ -332,7 +308,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 ### Temperature Preference Minimum
 
 ``` r
-TempPrefMin_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x= Strat, y= TempPrefMin, color = "black", fill = Strat)) +
+TempPrefMin_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= TempPrefMin, color = "black", fill = Strat)) +
   geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
@@ -351,15 +327,9 @@ TempPrefMin_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x=
     panel.border = element_blank()) + 
   ylab("Temp Min (Cº)") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "a")
+  labs(colour = "Site type:", fill = "Site type:", tag = "a")
 TempPrefMin_plot_weighted
 ```
-
-    ## Warning: Removed 3 rows containing non-finite outside the scale range
-    ## (`stat_ydensity()`).
-
-    ## Warning: Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
 ![](trait_plots_files/figure-gfm/Temperature%20Preference%20Minimum-1.png)<!-- -->
 
@@ -369,15 +339,9 @@ TempPrefMin_plot_weighted
 # 2: Removed 9 rows containing missing values (`geom_point()`). 
 # Two values with NA
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/TempPrefMin_plot_weighted.jpg", TempPrefMin_plot_weighted, width = 8, height = 8, units = "in")
-```
 
-    ## Warning: Removed 3 rows containing non-finite outside the scale range
-    ## (`stat_ydensity()`).
-    ## Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
-``` r
-# TempPrefMin_plot <- ggplot(Stratification_st, mapping = aes(x= Strat, y= TempPrefMin, fill = Strat)) +
+# TempPrefMin_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= TempPrefMin, fill = Strat)) +
 #   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
 #   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
 #   geom_jitter(shape = 21,
@@ -398,7 +362,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 ### Temperature Preference Maximum
 
 ``` r
-TempPrefMax_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x= Strat, y= TempPrefMax, color = "black", fill = Strat)) +
+TempPrefMax_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= TempPrefMax, color = "black", fill = Strat)) +
   geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
@@ -417,15 +381,9 @@ TempPrefMax_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x=
     panel.border = element_blank()) + 
   ylab("Temp Max (Cº)") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "b")
+  labs(colour = "Site type:", fill = "Site type:", tag = "b")
 TempPrefMax_plot_weighted
 ```
-
-    ## Warning: Removed 3 rows containing non-finite outside the scale range
-    ## (`stat_ydensity()`).
-
-    ## Warning: Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
 ![](trait_plots_files/figure-gfm/Temperature%20Preference%20Maximum-1.png)<!-- -->
 
@@ -435,15 +393,9 @@ TempPrefMax_plot_weighted
 # 2: Removed 11 rows containing missing values (`geom_point()`). 
 # Two values with NA
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/TempPrefMax_plot_weighted.jpg", TempPrefMax_plot_weighted, width = 8, height = 8, units = "in")
-```
 
-    ## Warning: Removed 3 rows containing non-finite outside the scale range
-    ## (`stat_ydensity()`).
-    ## Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
-``` r
-# TempPrefMax_plot <- ggplot(Stratification_st, mapping = aes(x= Strat, y= TempPrefMax, fill = Strat)) +
+# TempPrefMax_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= TempPrefMax, fill = Strat)) +
 #   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
 #   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
 #   geom_jitter(shape = 21,
@@ -466,7 +418,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 - Fresh/Brack/Salt
 
 ``` r
-Stratification_st_props_Water <- Stratification_st %>%
+Site_type_st_props_Water <- Site_type_st %>%
   group_by(Strat, WaterPref) %>%
   summarise(count = sum(SiteSums)) %>%
   mutate(proportion = count/sum(count))
@@ -476,12 +428,12 @@ Stratification_st_props_Water <- Stratification_st %>%
     ## `.groups` argument.
 
 ``` r
-#Stratification_st_props_Water$Water <- factor(Stratification_st_props_Water$Water, levels = c("all", "fresh", "fresh-brack", "brack", "brack-salt", "salt"))
+#Site_type_st_props_Water$Water <- factor(Site_type_st_props_Water$Water, levels = c("all", "fresh", "fresh-brack", "brack", "brack-salt", "salt"))
 
-Water_plot_weighted <- ggplot(Stratification_st_props_Water, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = WaterPref)) + 
+Water_plot_weighted <- ggplot(Site_type_st_props_Water, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = WaterPref)) + 
   geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = WaterPref), linewidth = 2, linetype = "dotted") +
-  scale_shape_manual(name = "Water", values = c(21:23,11,24:25), labels = c('3a' = 'all', '1s' = 'salt', '2bs' = 'brackish-salt', '4b' = 'brack', '5fb' = 'fresh-brackish', '6f' = 'fresh')) + 
+  scale_shape_manual(name = "Water:", values = c(21:23,11,24:25), labels = c('3a' = 'all', '1s' = 'salt', '2bs' = 'brackish-salt', '4b' = 'brack', '5fb' = 'fresh-brackish', '6f' = 'fresh')) + 
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   theme_bw() +
@@ -500,31 +452,24 @@ Water_plot_weighted <- ggplot(Stratification_st_props_Water, mapping = aes(x= St
   ylim(c(0,1)) +
   ylab("Proportion") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "c")
+  labs(colour = "Site type:", fill = "Site type:", tag = "c")
 Water_plot_weighted
 ```
-
-    ## Warning: Removed 1 row containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
 ![](trait_plots_files/figure-gfm/Water-1.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/Water_plot_weighted.jpg", Water_plot_weighted, width = 8, height = 8, units = "in")
-```
 
-    ## Warning: Removed 1 row containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
-``` r
-# # Identify how many individuals have one of the trait factors for each Stratification
-# Habitat_counts <- table(Stratification_st$Stratification, row.names = Stratification_st$Habitat)
+# # Identify how many individuals have one of the trait factors for each Site_type
+# Habitat_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$Habitat)
 # 
 # # Divide each count by the total number of rows to find the proportion
 # Habitat_props <- Habitat_counts/(rowSums(Habitat_counts))
 # Habitat_props
 # 
-# Habitat_props <- as.dStratification_sta.frame(Habitat_props)
+# Habitat_props <- as.dSite_type_sta.frame(Habitat_props)
 # 
 # Habitat_props$Var1 <- factor(Habitat_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
 # 
@@ -548,7 +493,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 ### Operculum Present
 
 ``` r
-Stratification_st_props_OperculumPresent <- Stratification_st %>%
+Site_type_st_props_OperculumPresent <- Site_type_st %>%
   group_by(Strat, OperculumPresent) %>%
   summarise(count = sum(SiteSums)) %>%
   mutate(proportion = count/sum(count))
@@ -558,10 +503,10 @@ Stratification_st_props_OperculumPresent <- Stratification_st %>%
     ## `.groups` argument.
 
 ``` r
-OperculumPresent_plot_weighted <- ggplot(Stratification_st_props_OperculumPresent, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = OperculumPresent)) + 
+OperculumPresent_plot_weighted <- ggplot(Site_type_st_props_OperculumPresent, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = OperculumPresent)) + 
   geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = OperculumPresent), linewidth = 2, linetype = "dotted") +
-  scale_shape_manual(name = "Operculum", values = c(21:22)) +
+  scale_shape_manual(name = "Operculum:", values = c(21:22)) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   theme_bw() +
@@ -581,31 +526,24 @@ OperculumPresent_plot_weighted <- ggplot(Stratification_st_props_OperculumPresen
   ylim(c(0,0.75)) +
   ylab("Proportion") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "a")
+  labs(colour = "Site type:", fill = "Site type:", tag = "a")
 OperculumPresent_plot_weighted
 ```
-
-    ## Warning: Removed 1 row containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
 ![](trait_plots_files/figure-gfm/Operculum%20Present-1.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/OperculumPresent_plot_weighted.jpg", OperculumPresent_plot_weighted,  width = 13, height = 10, units = "in")
-```
 
-    ## Warning: Removed 1 row containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
-``` r
-# # Identify how many individuals have one of the trait factors for each Stratification
-# OperculumPresent_counts <- table(Stratification_st$Stratification, row.names = Stratification_st$OperculumPresent)
+# # Identify how many individuals have one of the trait factors for each Site_type
+# OperculumPresent_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$OperculumPresent)
 # 
 # # Divide each count by the total number of rows to find the proportion
 # OperculumPresent_props <- OperculumPresent_counts/(rowSums(OperculumPresent_counts))
 # OperculumPresent_props
 # 
-# OperculumPresent_props <- as.dStratification_sta.frame(OperculumPresent_props)
+# OperculumPresent_props <- as.dSite_type_sta.frame(OperculumPresent_props)
 # 
 # OperculumPresent_props$Var1 <- factor(OperculumPresent_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
 # 
@@ -627,7 +565,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 ### Max Length (TL)
 
 ``` r
-MaxLengthTL_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x= Strat, y= MaxLengthTL, color = "black", fill = Strat)) +
+MaxLengthTL_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= MaxLengthTL, color = "black", fill = Strat)) +
   geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
@@ -647,15 +585,9 @@ MaxLengthTL_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x=
     panel.border = element_blank()) + 
   ylab("Length (cm)") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "b")
+  labs(colour = "Site type:", fill = "Site type:", tag = "b")
 MaxLengthTL_plot_weighted
 ```
-
-    ## Warning: Removed 3 rows containing non-finite outside the scale range
-    ## (`stat_ydensity()`).
-
-    ## Warning: Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
 ![](trait_plots_files/figure-gfm/Max%20Length%20(TL)-1.png)<!-- -->
 
@@ -664,15 +596,9 @@ MaxLengthTL_plot_weighted
 # 1: Removed 3 rows containing non-finite values (`stat_ydensity()`). 
 # 2: Removed 3 rows containing missing values (`geom_point()`). 
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/MaxLengthTL_plot_weighted.jpg", MaxLengthTL_plot_weighted,  width = 13, height = 10, units = "in")
-```
 
-    ## Warning: Removed 3 rows containing non-finite outside the scale range
-    ## (`stat_ydensity()`).
-    ## Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
-``` r
-# MaxLengthTL_plot <- ggplot(Stratification_st, mapping = aes(x= Strat, y= MaxLengthTL, fill = Strat)) +
+# MaxLengthTL_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= MaxLengthTL, fill = Strat)) +
 #   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
 #   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
 #   geom_jitter(shape = 21,
@@ -693,7 +619,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 ### Body Shape
 
 ``` r
-Stratification_st_props_BodyShape <- Stratification_st %>%
+Site_type_st_props_BodyShape <- Site_type_st %>%
   group_by(Strat, BodyShapeI) %>%
   summarise(count = sum(SiteSums)) %>%
   mutate(proportion = count/sum(count))
@@ -703,10 +629,10 @@ Stratification_st_props_BodyShape <- Stratification_st %>%
     ## `.groups` argument.
 
 ``` r
-BodyShape_plot_weighted <- ggplot(Stratification_st_props_BodyShape, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = BodyShapeI)) + 
+BodyShape_plot_weighted <- ggplot(Site_type_st_props_BodyShape, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = BodyShapeI)) + 
   geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = BodyShapeI), linewidth = 2, linetype = "dotted") +
-  scale_shape_manual(name = "Body Shape", values = c(11, 21:25), labels = c("1o" = "other", "2s" = "short deep", "3f" = "fusiform", "4e" = "elongated", "5l" = "eel-like")) +
+  scale_shape_manual(name = "Body Shape:", values = c(11, 21:25), labels = c("1o" = "other", "2s" = "short deep", "3f" = "fusiform", "4e" = "elongated", "5l" = "eel-like")) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   theme_bw() +
@@ -726,25 +652,18 @@ BodyShape_plot_weighted <- ggplot(Stratification_st_props_BodyShape, mapping = a
   ylim(c(0,0.6)) +
   ylab("Proportion") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "c")
+  labs(colour = "Site type:", fill = "Site type:", tag = "c")
 BodyShape_plot_weighted
 ```
-
-    ## Warning: Removed 1 row containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
 ![](trait_plots_files/figure-gfm/Body%20Shape-1.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/BodyShape_plot_weighted.jpg", BodyShape_plot_weighted,  width = 13, height = 10, units = "in")
-```
 
-    ## Warning: Removed 1 row containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
-``` r
-# BodyShape_plot_weighted <- ggplot(Stratification_st_props_BodyShape, aes(fill=Stratification, y=proportion, x=BodyShapeI)) + 
-#   geom_bar(position='dodge', stStratification_st='identity') +
+# BodyShape_plot_weighted <- ggplot(Site_type_st_props_BodyShape, aes(fill=Site_type, y=proportion, x=BodyShapeI)) + 
+#   geom_bar(position='dodge', stSite_type_st='identity') +
 #   scale_fill_viridis(alpha = 1, begin = 0.3, end = .85, discrete = T, option = "G") +  
 #   guides(fill = "none", color = "none") +
 #   theme_bw() +
@@ -760,14 +679,14 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 # ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/BodyShape_plot_weightedbar.jpg", BodyShape_plot_weighted,  width = 13, height = 10, units = "in")
 
 
-# # Identify how many individuals have one of the trait factors for each Stratification
-# BodyShape_counts <- table(Stratification_st$Stratification, row.names = Stratification_st$BodyShapeI)
+# # Identify how many individuals have one of the trait factors for each Site_type
+# BodyShape_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$BodyShapeI)
 # 
 # # Divide each count by the total number of rows to find the proportion
 # BodyShape_props <- BodyShape_counts/(rowSums(BodyShape_counts))
 # BodyShape_props
 # 
-# BodyShape_props <- as.dStratification_sta.frame(BodyShape_props)
+# BodyShape_props <- as.dSite_type_sta.frame(BodyShape_props)
 # 
 # BodyShape_props$Var1 <- factor(BodyShape_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
 # 
@@ -789,7 +708,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 ### Depth Maximum
 
 ``` r
-DepthMax_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x= Strat, y= DepthMax, color = "black", fill = Strat)) +
+DepthMax_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= DepthMax, color = "black", fill = Strat)) +
   geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
@@ -809,14 +728,14 @@ DepthMax_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x= St
     panel.border = element_blank()) + 
   ylab("Depth Max (m)") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "d")
+  labs(colour = "Site type:", fill = "Site type:", tag = "d")
 DepthMax_plot_weighted
 ```
 
-    ## Warning: Removed 9 rows containing non-finite outside the scale range
+    ## Warning: Removed 6 rows containing non-finite outside the scale range
     ## (`stat_ydensity()`).
 
-    ## Warning: Removed 9 rows containing missing values or values outside the scale range
+    ## Warning: Removed 6 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
 ![](trait_plots_files/figure-gfm/Depth%20Maximum-1.png)<!-- -->
@@ -829,13 +748,13 @@ DepthMax_plot_weighted
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/DepthMax_plot_weighted.jpg", DepthMax_plot_weighted,  width = 13, height = 10, units = "in")
 ```
 
-    ## Warning: Removed 9 rows containing non-finite outside the scale range
+    ## Warning: Removed 6 rows containing non-finite outside the scale range
     ## (`stat_ydensity()`).
-    ## Removed 9 rows containing missing values or values outside the scale range
+    ## Removed 6 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
 ``` r
-# DepthMax_plot <- ggplot(Stratification_st, mapping = aes(x= Strat, y= DepthMax, fill = Strat)) +
+# DepthMax_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= DepthMax, fill = Strat)) +
 #   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
 #   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
 #   geom_jitter(shape = 21,
@@ -856,7 +775,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 ### Feeding Pathway
 
 ``` r
-Stratification_st_props_FeedingPath <- Stratification_st %>%
+Site_type_st_props_FeedingPath <- Site_type_st %>%
   group_by(Strat, FeedingPath) %>%
   summarise(count = sum(SiteSums)) %>%
   mutate(proportion = count/sum(count))
@@ -866,12 +785,12 @@ Stratification_st_props_FeedingPath <- Stratification_st %>%
     ## `.groups` argument.
 
 ``` r
-Stratification_st_props_FeedingPath <- na.omit(Stratification_st_props_FeedingPath)
+Site_type_st_props_FeedingPath <- na.omit(Site_type_st_props_FeedingPath)
 
-FeedingPath_plot_weighted <- ggplot(Stratification_st_props_FeedingPath, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = FeedingPath)) + 
+FeedingPath_plot_weighted <- ggplot(Site_type_st_props_FeedingPath, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = FeedingPath)) + 
   geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = FeedingPath), linewidth = 2, linetype = "dotted") +
-  scale_shape_manual(name = "Diet Source", values = c(21:22), labels = c("b" = "benthic", "p" = "pelagic")) +
+  scale_shape_manual(name = "Diet Source:", values = c(21:22), labels = c("b" = "benthic", "p" = "pelagic")) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   theme_bw() +
@@ -891,7 +810,7 @@ FeedingPath_plot_weighted <- ggplot(Stratification_st_props_FeedingPath, mapping
   ylim(c(0,1)) +
   ylab("Proportion") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "e")
+  labs(colour = "Site type:", fill = "Site type:", tag = "e")
 FeedingPath_plot_weighted
 ```
 
@@ -901,14 +820,14 @@ FeedingPath_plot_weighted
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/FeedingPath_plot_weighted.jpg", FeedingPath_plot_weighted,  width = 13, height = 10, units = "in")
 
 
-# # Identify how many individuals have one of the trait factors for each Stratification
-# FeedingPath_counts <- table(Stratification_st$Stratification, row.names = Stratification_st$FeedingPStratification_sth)
+# # Identify how many individuals have one of the trait factors for each Site_type
+# FeedingPath_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$FeedingPSite_type_sth)
 # 
 # # Divide each count by the total number of rows to find the proportion
 # FeedingPath_props <- FeedingPath_counts/(rowSums(FeedingPath_counts))
 # FeedingPath_props
 # 
-# FeedingPath_props <- as.dStratification_sta.frame(FeedingPath_props)
+# FeedingPath_props <- as.dSite_type_sta.frame(FeedingPath_props)
 # 
 # FeedingPath_props$Var1 <- factor(FeedingPath_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
 # 
@@ -930,7 +849,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 ### Depth Minimum
 
 ``` r
-DepthMin_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x= Strat, y= DepthMin, color = "black", fill = Strat)) +
+DepthMin_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= DepthMin, color = "black", fill = Strat)) +
   geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
@@ -950,15 +869,9 @@ DepthMin_plot_weighted <- ggplot(Stratification_st_weighted, mapping = aes(x= St
     panel.border = element_blank()) + 
   ylab("Depth Min (m)") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "f")
+  labs(colour = "Site type:", fill = "Site type:", tag = "f")
 DepthMin_plot_weighted
 ```
-
-    ## Warning: Removed 3 rows containing non-finite outside the scale range
-    ## (`stat_ydensity()`).
-
-    ## Warning: Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
 ![](trait_plots_files/figure-gfm/Depth%20Minimum-1.png)<!-- -->
 
@@ -968,15 +881,9 @@ DepthMin_plot_weighted
 # 2: Removed 8 rows containing missing values (`geom_point()`). 
 # One value with NA
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/DepthMin_plot_weighted.jpg", DepthMin_plot_weighted,  width = 13, height = 10, units = "in")
-```
 
-    ## Warning: Removed 3 rows containing non-finite outside the scale range
-    ## (`stat_ydensity()`).
-    ## Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
-``` r
-# DepthMin_plot <- ggplot(Stratification_st, mapping = aes(x= Strat, y= DepthMin, fill = Strat)) +
+# DepthMin_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= DepthMin, fill = Strat)) +
 #   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
 #   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
 #   geom_jitter(shape = 21,
@@ -997,7 +904,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 ### DemersPelag
 
 ``` r
-Stratification_st_props_DemersPelag <- Stratification_st %>%
+Site_type_st_props_DemersPelag <- Site_type_st %>%
   group_by(Strat, DemersPelag) %>%
   summarise(count = sum(SiteSums)) %>%
   mutate(proportion = count/sum(count))
@@ -1007,10 +914,10 @@ Stratification_st_props_DemersPelag <- Stratification_st %>%
     ## `.groups` argument.
 
 ``` r
-DemersPelag_plot_weighted <- ggplot(Stratification_st_props_DemersPelag, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = DemersPelag)) + 
+DemersPelag_plot_weighted <- ggplot(Site_type_st_props_DemersPelag, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = DemersPelag)) + 
   geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = DemersPelag), linewidth = 2, linetype = "dotted") +
-  scale_shape_manual(name = "Demersal Pelagic", values = c(21:25, 12:13), 
+  scale_shape_manual(name = "Demersal Pelagic:", values = c(21:25, 12:13), 
                      labels = c("1r" = "reef-associated", "2pn" = "pelagic-neritic", "3p" = "pelagic", "4po" = "pelagic-oceanic", "5d" = "demersal", '6bp' = 'benthopelagic', '7bd' = 'bathydemersal')) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
@@ -1031,12 +938,9 @@ DemersPelag_plot_weighted <- ggplot(Stratification_st_props_DemersPelag, mapping
   ylim(c(0,1)) +
   ylab("Proportion") +
   xlab("Site type") +
-  labs(colour = "Site type", fill = "Site type", tag = "g")
+  labs(colour = "Site type:", fill = "Site type:", tag = "g")
 DemersPelag_plot_weighted
 ```
-
-    ## Warning: Removed 1 row containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
 ![](trait_plots_files/figure-gfm/DemersPelag-1.png)<!-- -->
 
@@ -1044,13 +948,10 @@ DemersPelag_plot_weighted
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/DemersPelag_plot_weighted.jpg", DemersPelag_plot_weighted,  width = 13, height = 10, units = "in")
 ```
 
-    ## Warning: Removed 1 row containing missing values or values outside the scale range
-    ## (`geom_point()`).
-
 ### Reproductive Guild1
 
 ``` r
-Stratification_st_props_RepGuild1 <- Stratification_st %>%
+Site_type_st_props_RepGuild1 <- Site_type_st %>%
   group_by(Strat, RepGuild1) %>%
   summarise(count = sum(SiteSums)) %>%
   group_by(Strat) %>%
@@ -1061,12 +962,12 @@ Stratification_st_props_RepGuild1 <- Stratification_st %>%
     ## `.groups` argument.
 
 ``` r
-Stratification_st_props_RepGuild1 <- na.omit(Stratification_st_props_RepGuild1)
+Site_type_st_props_RepGuild1 <- na.omit(Site_type_st_props_RepGuild1)
 
-RepGuild1_plot_weighted <- ggplot(Stratification_st_props_RepGuild1, mapping = aes(x = Strat, y = proportion, shape = RepGuild1)) + 
+RepGuild1_plot_weighted <- ggplot(Site_type_st_props_RepGuild1, mapping = aes(x = Strat, y = proportion, shape = RepGuild1)) + 
   geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = RepGuild1), linewidth = 2, linetype = "dotted") +
-  scale_shape_manual(name = "Egg Care", values = c(21, 22, 23), labels = c('2g' = 'guarders', '1b' = 'bearers', '3n' = 'nonguarders')) +
+  scale_shape_manual(name = "Egg Care:", values = c(21, 22, 23), labels = c('2g' = 'guarders', '1b' = 'bearers', '3n' = 'nonguarders')) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   theme_bw() +
@@ -1096,14 +997,14 @@ RepGuild1_plot_weighted
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/RepGuild1_plot_weighted.jpg", RepGuild1_plot_weighted,  width = 13, height = 10, units = "in")
 
 
-# # Identify how many individuals have one of the trait factors for each Stratification
-# RepGuild1_counts <- table(Stratification_st$Stratification, row.names = Stratification_st$RepGuild1)
+# # Identify how many individuals have one of the trait factors for each Site_type
+# RepGuild1_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$RepGuild1)
 # 
 # # Divide each count by the total number of rows to find the proportion
 # RepGuild1_props <- RepGuild1_counts/(rowSums(RepGuild1_counts))
 # RepGuild1_props
 # 
-# RepGuild1_props <- as.dStratification_sta.frame(RepGuild1_props)
+# RepGuild1_props <- as.dSite_type_sta.frame(RepGuild1_props)
 # 
 # RepGuild1_props$Var1 <- factor(RepGuild1_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
 # 
