@@ -56,10 +56,6 @@ stratified_lakes <- c("BCM", "CLM", "GLK", "HLM", "NLK", "OTM", "SLN", "TLN")
 custom_colors <- c("Reference" = "black", "Ocean" = "#EE6363", "Mixed" = "#87CEFA", "Stratified" = "#6E8B3D")
 
 env_cont <- "#FFB90F"
-
-trait_cont <- "#68228B"
-
-trait_cat <- "#DEB887"
 ```
 
 ### Edit input files
@@ -181,7 +177,7 @@ venn_plot
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/venn_plot_s10.jpg", plot = venn_plot, width = 4.25, height = 4, units = "in")
 ```
 
-### SD alpha outliers for each stratification type
+### SD alpha outliers for each site type
 ```{r, SD alpha outliers}
 outlier_SD_alpha <- SR_env[surveyed_sites,] %>%
   group_by(Stratification) %>%
@@ -220,7 +216,7 @@ row.names(outlier_SD_alpha) <- outlier_SD_alpha$X
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/outlier_SD_alpha.jpg", outlier_SD_alpha_plot, width = 6.26, height = 6, units = "in")
 ```
 
-### Identify VIF of env and geo variables
+### Identify VIF of environmental and geographical variables
 ```{r, env and geo VIFs}
 # Determine which env variables have variance
 environment <- c("temperature_median", "salinity_median", "oxygen_median", "pH_median")
@@ -258,8 +254,8 @@ car::vif(mod)
 geography <- c("distance_to_ocean_min_m", "max_depth", "logArea")
 ```
 
-### SD alpha SRic & stratification
-```{r, SD alpha & stratification}
+### SD alpha & site type
+```{r, SD alpha & site type}
 ### Stratification
 # Run ANOVA
 anova_logSRic_result <- aov(log(row_sum) ~ Stratification, data = SR_env[surveyed_sites,])
@@ -322,8 +318,8 @@ Stratification <- tukey_SRic_result$Stratification
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
 ```
 
-### SD alpha SRic env and geo linear models
-```{r, SD alpha lm}
+### SD alpha with env and geo linear models & ANOVAs
+```{r, SD alpha lm & ANOVA}
 ### Environmental
 # Surveyed sites
 SD_logSRic_env_am <- aov(log(row_sum) ~ (temperature_median + salinity_median + oxygen_median) * Stratification, data = SR_env[surveyed_sites_env,])
@@ -570,7 +566,7 @@ p_values <- summary(SD_SRic_geo_S_lm)$coefficients[, "Pr(>|t|)"]
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-### SD alpha z-scores with env and geo correlated variables
+### SD alpha with env and geo correlated variables
 ```{r, SD alpha lm plots}
 # Log Area
 SD_alpha_LA_plot <- ggplot(data = SR_env[surveyed_sites,], mapping = aes(y = log(row_sum), x = logArea, color = Stratification, fill = Stratification)) + 
@@ -729,7 +725,7 @@ group <- SD_beta_THSD$group
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
 ```
 
-### SD beta richness dispersions
+### SD beta dispersions
 - The dissimilarity between sites of the same site type
 ```{r, SD beta dispersion boxplot}
 # Dispersion within-groups
@@ -837,7 +833,7 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
 }
 ```
 
-### SD beta env and geo correlated variables using envfit
+### SD beta with env and geo correlated variables using envfit
 ```{r, SD beta envfit}
 ### Environmental
 # Surveyed sites 
@@ -1181,7 +1177,7 @@ SD_beta_ref_plot <- ggplot(data = SD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y
   geom_text_repel(data = SD_beta_ref_NMDS_data.scores, label = SD_beta_ref_NMDS_data.scores$Lakes, 
                   size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
   theme(text = element_text(size = 14), 
-        legend.position = "bottom", 
+        legend.position = "right", 
         legend.title = element_text(size = 14), 
         legend.text = element_text(size = 14), 
         panel.background = element_rect(fill='transparent'),
@@ -1196,7 +1192,7 @@ SD_beta_ref_plot <- ggplot(data = SD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y
   scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05)) +
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05))
 (SD_beta_ref_plot <- SD_beta_ref_plot + guides(color = guide_legend(override.aes = list(label = ""))))
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_ref_NMDS.jpg", SD_beta_ref_plot, width = 4.88, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_ref_NMDS.jpg", SD_beta_ref_plot, width = 6.26, height = 6, units = "in")
 ```
 
 ### SD beta dendrogram
@@ -1250,7 +1246,7 @@ plot(SD_beta_pam)
 dev.off()
 ```
 
-### SD beta outliers
+### SD beta NMDS and distance outliers
 ```{r, SD beta outliers}
 # Determine NMDS1 outliers
 ordered_SD_beta_NMDS1_data.scores <- SD_beta_NMDS_data.scores[order(SD_beta_NMDS_data.scores$NMDS1), ]
