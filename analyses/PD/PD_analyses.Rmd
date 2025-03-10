@@ -54,10 +54,6 @@ stratified_lakes <- c("BCM", "CLM", "GLK", "HLM", "NLK", "OTM", "SLN", "TLN")
 custom_colors <- c("Reference" = "black", "Ocean" = "#EE6363", "Mixed" = "#87CEFA", "Stratified" = "#6E8B3D")
 
 env_cont <- "orange"
-
-trait_cont <- "#68228B"
-
-trait_cat <- "#DEB887"
 ```
 
 ### Edit input files
@@ -72,7 +68,7 @@ stratification_group <- env[surveyed_sites,19]
 
 # Phylogenetic Diversity
 ## PD alpha Diversity
-### PD alpha mntd, mpd, and pd calculations of traits and files to be saved
+### PD alpha mntd, mpd, and pd calculations of phylogeny and files to be saved
 ```{r, PD alpha calculations, eval=F}
 ## Reference
 # Dispersion
@@ -111,7 +107,7 @@ write.csv(stree_sespd, "/Users/bailey/Documents/research/fish_biodiversity/data/
 ```
 
 ### PD alpha files mntd, mpd, and pd to read into R 
-- Read in Phylogenetic Diversity files and combine with env data
+- Read in Phylogenetic Diversity files and combine with env data frame
 ```{r, PD alpha file read-in}
 ## Reference
 # Dispersion 
@@ -175,7 +171,7 @@ stree_sespd_env <- merge(stree_sespd_env, stree_disp, by = "X", sort = F)
 row.names(stree_sespd_env) <- stree_sespd_env$X
 ```
 
-### PD alpha outliers for each stratification type based on z-scores
+### PD alpha outliers for each site type
 ```{r, PD alpha outliers}
 outlier_PD_alpha <- stree_sespd_env %>%
   group_by(Stratification) %>%
@@ -214,7 +210,7 @@ row.names(outlier_PD_alpha) <- outlier_PD_alpha$X
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/outlier_PD_alpha.jpg", outlier_PD_alpha_plot, width = 6.26, height = 6, units = "in")
 ```
 
-### Identify VIF of env and geo variables
+### Identify VIF of environmental and geographic variables
 ```{r, env and geo VIFs}
 # Determine which env variables have variance
 environment <- c("temperature_median", "salinity_median", "oxygen_median", "pH_median")
@@ -252,8 +248,8 @@ car::vif(mod)
 geography <- c("distance_to_ocean_min_m", "max_depth", "logArea")
 ```
 
-### PD alpha PRic and z-score & stratification
-```{r, PD alpha & stratification}
+### PD alpha & site type
+```{r, PD alpha & site type}
 ### Stratification
 # Run ANOVA on the original data
 anova_PRic_result <- aov(pd.obs ~ Stratification, data = stree_sespd_env[surveyed_sites,])
@@ -346,8 +342,8 @@ Stratification <- tukey_PDisp_result$Stratification
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
 ```
 
-### PD alpha PRic and z-score & env and geo linear models
-```{r, PD alpha lm}
+### PD alpha with env and geo linear models & ANOVAs
+```{r, PD alpha lm and ANOVA}
 ### Environmental
 # Surveyed sites
 PD_PRic_env_am <- aov(log(pd.obs) ~ (distance_to_ocean_min_m + max_depth + logArea) * Stratification, data = stree_sespd_env[surveyed_sites_env,])
@@ -684,7 +680,7 @@ p_values <- summary(PD_PDisp_geo_S_lm)$coefficients[, "Pr(>|t|)"]
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-### PD alpha z-scores with env and geo correlated variables
+### PD alpha with env and geo correlated variables
 ```{r, PD alpha lm plots}
 # Log Area
 PD_alpha_LA_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs.z, x = logArea, color = Stratification, fill = Stratification)) + 
@@ -748,9 +744,11 @@ PD_alpha_MD_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs.z, x
   labs(x="Age (m)", y="PD alpha z-score", colour = "Site type", fill = "Site type", tag = "a")
 (PD_alpha_MD_plot <- PD_alpha_MD_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_MD_plot.jpg", plot = PD_alpha_MD_plot, width = 6.26, height = 6, units = "in")
+```
 
-# Phylogenetic richness and dispersion
-PD_alpha_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs.z, x = Dispersion, color = Stratification, fill = Stratification)) + 
+### PD alpha z-scores & dispersion
+```{r, z-scores & dispersion}
+PD_alpha_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs.z, x = Dispersion, color = Stratification, fill = Stratification)) +
   geom_point(stat = 'identity',
     size = 4,
     alpha = 1) + 
@@ -758,15 +756,18 @@ PD_alpha_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs.z, x = 
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   theme_bw() +
-  theme(text = element_text(size = 16),legend.title =  element_text(size = 16), legend.text = element_text(size = 16),
-    axis.text = element_text(size = 16, color = "black"),
+  theme(text = element_text(size = 14),
+    legend.position = "bottom", 
+    legend.title = element_text(size = 14), 
+    legend.text = element_text(size = 14), 
+    axis.text = element_text(size = 14, color = "black"),
     axis.line = element_line(color = "black"),
     panel.background = element_rect(fill='transparent'),
     plot.background = element_rect(fill='transparent', color=NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
-  labs(x="PD Dispersion", y="PD alpha z-score", colour = "Site type", fill = "Site type", tag = "a")
+  labs(x="PD alpha Dispersion", y="PD alpha z-score", colour = "Site type", fill = "Site type", tag = "a")
 (PD_alpha_plot <- PD_alpha_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_plot.jpg", plot = PD_alpha_plot, width = 4.88, height = 6, units = "in")
 ```
@@ -864,7 +865,7 @@ group <- PD_beta_THSD$group
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
 ```
 
-### PD beta trait dispersions
+### PD beta phylogenetic dispersions
 - The dissimilarity between sites of the same site type
 ```{r, PD beta dispersion plot}
 # Dispersion within-groups
@@ -1315,7 +1316,7 @@ PD_beta_ref_plot <- ggplot(data = PD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y
   geom_text_repel(data = PD_beta_ref_NMDS_data.scores, label = PD_beta_ref_NMDS_data.scores$Lakes, 
                   size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
   theme(text = element_text(size = 14), 
-        legend.position = "bottom", 
+        legend.position = "right", 
         legend.title = element_text(size = 14), 
         legend.text = element_text(size = 14), 
         panel.background = element_rect(fill='transparent'),
@@ -1330,7 +1331,7 @@ PD_beta_ref_plot <- ggplot(data = PD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y
   scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05)) +
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05))
 (PD_beta_ref_plot <- PD_beta_ref_plot + guides(color = guide_legend(override.aes = list(label = ""))))
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_ref_NMDS.jpg", PD_beta_ref_plot, width = 4.88, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_ref_NMDS.jpg", PD_beta_ref_plot, width = 6.26, height = 6, units = "in")
 ```
 
 ### PD beta dendrogram
