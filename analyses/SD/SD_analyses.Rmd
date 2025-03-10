@@ -85,8 +85,11 @@ SR_env$Stratification <- factor(SR_env$Stratification, levels = c("Ocean", "Mixe
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   theme_bw() +
-  theme(text = element_text(size = 16), legend.title = element_text(size = 16), legend.text = element_text(size = 16),
-    axis.text = element_text(size = 16, color = "black"),
+  theme(text = element_text(size = 14), 
+    legend.title = element_text(size = 14), 
+    legend.text = element_text(size = 14),
+    axis.text = element_text(size = 14, color = "black"),
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
     axis.line = element_line(color = "black"),
     plot.background = element_blank(),
     panel.grid.major = element_blank(),
