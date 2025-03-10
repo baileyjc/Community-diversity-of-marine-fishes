@@ -224,7 +224,7 @@ straits_sespd_env <- merge(straits_sespd_env, straits_disp, by = "X", sort = F)
 row.names(straits_sespd_env) <- straits_sespd_env$X
 ```
 
-### FD alpha outliers for each stratification type based on z-scores
+### FD alpha outliers for each site type
 ```{r, FD alpha outliers}
 outlier_FD_alpha <- straits_sespd_env %>%
   group_by(Stratification) %>%
@@ -263,7 +263,7 @@ row.names(outlier_FD_alpha) <- outlier_FD_alpha$X
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/outlier_FD_alpha.jpg", outlier_FD_alpha_plot, width = 6.26, height = 6, units = "in")
 ```
 
-### Identify VIF of env and geo variables
+### Identify VIF of environmental and geographic variables
 ```{r, env and geo VIFs}
 # Determine which env variables have variance
 environment <- c("temperature_median", "salinity_median", "oxygen_median", "pH_median")
@@ -301,8 +301,8 @@ car::vif(mod)
 geography <- c("distance_to_ocean_min_m", "max_depth", "logArea")
 ```
 
-### FD alpha FRic and z-score & stratification
-```{r, FD alpha & stratification}
+### FD alpha & site type
+```{r, FD alpha & site type}
 ### Stratification
 # Run ANOVA on the original data
 anova_FRic_result <- aov(pd.obs ~ Stratification, data = straits_sespd_env[surveyed_sites,])
@@ -395,8 +395,8 @@ Stratification <- tukey_FDisp_result$Stratification
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
 ```
 
-### FD alpha FRic and z-score & env and geo linear models
-```{r, FD alpha lm}
+### FD alpha with env and geo linear models & ANOVAs
+```{r, FD alpha lm & ANOVA}
 ### Environmental
 # Surveyed sites
 FD_FRic_env_am <- aov(log(pd.obs) ~ (distance_to_ocean_min_m + max_depth + logArea) * Stratification, data = straits_sespd_env[surveyed_sites_env,])
@@ -733,7 +733,7 @@ p_values <- summary(FD_FDisp_geo_S_lm)$coefficients[, "Pr(>|t|)"]
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-### FD alpha z-scores with env and geo correlated variables
+### FD alpha with env and geo correlated variables
 ```{r, FD alpha lm plots}
 # Log Area
 FD_alpha_LA_plot <- ggplot(data = straits_sespd_env, mapping = aes(y = pd.obs.z, x = logArea, color = Stratification, fill = Stratification)) + 
@@ -797,7 +797,10 @@ FD_alpha_MD_plot <- ggplot(data = straits_sespd_env, mapping = aes(y = pd.obs.z,
   labs(x="Age (m)", y="FD alpha z-score", colour = "Site type", fill = "Site type", tag = "a")
 (FD_alpha_MD_plot <- FD_alpha_MD_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_alpha_MD_plot.jpg", plot = FD_alpha_MD_plot, width = 6.26, height = 6, units = "in")
+```
 
+### FD alpha z-scores & dispersion
+```{r, z-scores & dispersion}
 # Functional richness and dispersion
 FD_alpha_plot <- ggplot(data = straits_sespd_env, mapping = aes(y = pd.obs.z, x = Dispersion, color = Stratification, fill = Stratification)) + 
   geom_point(stat = 'identity',
@@ -807,15 +810,18 @@ FD_alpha_plot <- ggplot(data = straits_sespd_env, mapping = aes(y = pd.obs.z, x 
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   theme_bw() +
-  theme(text = element_text(size = 16),legend.title =  element_text(size = 16), legend.text = element_text(size = 16),
-    axis.text = element_text(size = 16, color = "black"),
+  theme(text = element_text(size = 14),
+    legend.position = "bottom", 
+    legend.title = element_text(size = 14), 
+    legend.text = element_text(size = 14), 
+    axis.text = element_text(size = 14, color = "black"),
     axis.line = element_line(color = "black"),
     panel.background = element_rect(fill='transparent'),
     plot.background = element_rect(fill='transparent', color=NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
-  labs(x="FD Dispersion", y="FD alpha z-score", colour = "Site type", fill = "Site type", tag = "b")
+  labs(x="FD alpha Dispersion", y="FD alpha z-score", colour = "Site type", fill = "Site type", tag = "b")
 (FD_alpha_plot <- FD_alpha_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_alpha_plot.jpg", plot = FD_alpha_plot, width = 4.88, height = 6, units = "in")
 ```
@@ -1522,7 +1528,7 @@ FD_beta_ref_plot <- ggplot(data = FD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y
   geom_text_repel(data = FD_beta_ref_NMDS_data.scores, label = FD_beta_ref_NMDS_data.scores$Lakes, 
                   size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
   theme(text = element_text(size = 14), 
-        legend.position = "bottom", 
+        legend.position = "right", 
         legend.title = element_text(size = 14), 
         legend.text = element_text(size = 14), 
         panel.background = element_rect(fill='transparent'),
@@ -1537,7 +1543,7 @@ FD_beta_ref_plot <- ggplot(data = FD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y
   scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05)) +
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05))
 (FD_beta_ref_plot <- FD_beta_ref_plot + guides(color = guide_legend(override.aes = list(label = ""))))
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_ref_NMDS.jpg", FD_beta_ref_plot, width = 4.88, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_ref_NMDS.jpg", FD_beta_ref_plot, width = 6.26, height = 6, units = "in")
 ```
 
 ### FD beta dendrogram
