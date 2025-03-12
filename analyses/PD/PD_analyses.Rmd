@@ -770,98 +770,98 @@ p_values <- summary(PD_PRic_env_S_lm)$coefficients[, "Pr(>|t|)"]
 #### Geographical
 ### logPRic ANOVA
 ## Surveyed sites
-# Temperature
-PD_z_lm_temp <- lm(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
-plot(PD_z_lm_temp)
-PD_z_am_temp <- aov(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
-# Salinity
-PD_z_lm_sal <- lm(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
-plot(PD_z_lm_sal)
-PD_z_am_sal <- aov(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
-# Oxygen
-PD_z_lm_oxy <- lm(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
-plot(PD_z_lm_oxy)
-PD_z_am_oxy <- aov(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
+# Distance to the ocean
+PD_z_lm_dist <- lm(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
+plot(PD_z_lm_dist)
+PD_z_am_dist <- aov(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
+# Max depth
+PD_z_lm_mxd <- lm(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
+plot(PD_z_lm_mxd)
+PD_z_am_mxd <- aov(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
+# Log Area
+PD_z_lm_lga <- lm(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
+plot(PD_z_lm_lga)
+PD_z_am_lga <- aov(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
 # Anova outputs
-summary(PD_z_am_temp)
-summary(PD_z_am_sal)
-summary(PD_z_am_oxy)
+summary(PD_z_am_dist)
+summary(PD_z_am_mxd)
+summary(PD_z_am_lga)
 # p-values
-temp_p_values <- summary(PD_z_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(PD_z_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(PD_z_am_oxy)[[1]][, "Pr(>F)"]
+temp_p_values <- summary(PD_z_am_dist)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(PD_z_am_mxd)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(PD_z_am_lga)[[1]][, "Pr(>F)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Mixed and stratified lakes
-# Temperature
-PD_z_MS_lm_temp <- lm(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
-plot(PD_z_MS_lm_temp)
-PD_z_MS_am_temp <- aov(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
-# Salinity
-PD_z_MS_lm_sal <- lm(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
-plot(PD_z_MS_lm_sal)
-PD_z_MS_am_sal <- aov(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
-# Oxygen
-PD_z_MS_lm_oxy <- lm(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[mixed_stratified_lakes,])
-plot(PD_z_MS_lm_oxy)
-PD_z_MS_am_oxy <- aov(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[mixed_stratified_lakes,])
+# Distance to the ocean
+PD_z_MS_lm_dist <- lm(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
+plot(PD_z_MS_lm_dist)
+PD_z_MS_am_dist <- aov(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
+# Max depth
+PD_z_MS_lm_mxd <- lm(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
+plot(PD_z_MS_lm_mxd)
+PD_z_MS_am_mxd <- aov(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
+# Log Area
+PD_z_MS_lm_lga <- lm(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[mixed_stratified_lakes,])
+plot(PD_z_MS_lm_lga)
+PD_z_MS_am_lga <- aov(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[mixed_stratified_lakes,])
 # Anova outputs
-summary(PD_z_MS_am_temp)
-summary(PD_z_MS_am_sal)
-summary(PD_z_MS_am_oxy)
+summary(PD_z_MS_am_dist)
+summary(PD_z_MS_am_mxd)
+summary(PD_z_MS_am_lga)
 # p-values
-temp_p_values <- summary(PD_z_MS_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(PD_z_MS_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(PD_z_MS_am_oxy)[[1]][, "Pr(>F)"]
+temp_p_values <- summary(PD_z_MS_am_dist)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(PD_z_MS_am_mxd)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(PD_z_MS_am_lga)[[1]][, "Pr(>F)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Ocean sites and mixed lakes
-# Temperature
-PD_z_OM_lm_temp <- lm(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
-plot(PD_z_OM_lm_temp)
-PD_z_OM_am_temp <- aov(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
-# Salinity
-PD_z_OM_lm_sal <- lm(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[ocean_mixed_sites,])
-plot(PD_z_OM_lm_sal)
-PD_z_OM_am_sal <- aov(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[ocean_mixed_sites,])
-# Oxygen
-PD_z_OM_lm_oxy <- lm(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[ocean_mixed_sites,])
-plot(PD_z_OM_lm_oxy)
-PD_z_OM_am_oxy <- aov(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[ocean_mixed_sites,])
+# Distance to the ocean
+PD_z_OM_lm_dist <- lm(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
+plot(PD_z_OM_lm_dist)
+PD_z_OM_am_dist <- aov(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
+# Max depth
+PD_z_OM_lm_mxd <- lm(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[ocean_mixed_sites,])
+plot(PD_z_OM_lm_mxd)
+PD_z_OM_am_mxd <- aov(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[ocean_mixed_sites,])
+# Log Area
+PD_z_OM_lm_lga <- lm(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[ocean_mixed_sites,])
+plot(PD_z_OM_lm_lga)
+PD_z_OM_am_lga <- aov(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[ocean_mixed_sites,])
 # Anova outputs
-summary(PD_z_OM_am_temp)
-summary(PD_z_OM_am_sal)
-summary(PD_z_OM_am_oxy)
+summary(PD_z_OM_am_dist)
+summary(PD_z_OM_am_mxd)
+summary(PD_z_OM_am_lga)
 # p-values
-temp_p_values <- summary(PD_z_OM_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(PD_z_OM_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(PD_z_OM_am_oxy)[[1]][, "Pr(>F)"]
+temp_p_values <- summary(PD_z_OM_am_dist)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(PD_z_OM_am_mxd)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(PD_z_OM_am_lga)[[1]][, "Pr(>F)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Stratified lakes and ocean sites
-# Temperature
-PD_z_SO_lm_temp <- lm(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
-plot(PD_z_SO_lm_temp)
-PD_z_SO_am_temp <- aov(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
-# Salinity
-PD_z_SO_lm_sal <- lm(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[ocean_stratified_sites,])
-plot(PD_z_SO_lm_sal)
-PD_z_SO_am_sal <- aov(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[ocean_stratified_sites,])
-# Oxygen
-PD_z_SO_lm_oxy <- lm(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[ocean_stratified_sites,])
-plot(PD_z_SO_lm_oxy)
-PD_z_SO_am_oxy <- aov(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[ocean_stratified_sites,])
+# Distance to the ocean
+PD_z_SO_lm_dist <- lm(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
+plot(PD_z_SO_lm_dist)
+PD_z_SO_am_dist <- aov(pd.obs.z ~  Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
+# Max depth
+PD_z_SO_lm_mxd <- lm(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[ocean_stratified_sites,])
+plot(PD_z_SO_lm_mxd)
+PD_z_SO_am_mxd <- aov(pd.obs.z ~  Site_type + max_depth, data = stree_sespd_env[ocean_stratified_sites,])
+# Log Area
+PD_z_SO_lm_lga <- lm(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[ocean_stratified_sites,])
+plot(PD_z_SO_lm_lga)
+PD_z_SO_am_lga <- aov(pd.obs.z ~  Site_type + logArea, data = stree_sespd_env[ocean_stratified_sites,])
 # Anova outputs
-summary(PD_z_SO_am_temp)
-summary(PD_z_SO_am_sal)
-summary(PD_z_SO_am_oxy)
+summary(PD_z_SO_am_dist)
+summary(PD_z_SO_am_mxd)
+summary(PD_z_SO_am_lga)
 # p-values
-temp_p_values <- summary(PD_z_SO_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(PD_z_SO_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(PD_z_SO_am_oxy)[[1]][, "Pr(>F)"]
+temp_p_values <- summary(PD_z_SO_am_dist)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(PD_z_SO_am_mxd)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(PD_z_SO_am_lga)[[1]][, "Pr(>F)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
@@ -889,98 +889,98 @@ p_values <- summary(PD_z_geo_S_lm)$coefficients[, "Pr(>|t|)"]
 
 ### PRic ANOVA
 ## Surveyed sites
-# Temperature
-PD_PRic_lm_temp <- lm(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
-plot(PD_PRic_lm_temp)
-PD_PRic_temp_am <- aov(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
-# Salinity
-PD_PRic_lm_sal <- lm(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
-plot(PD_PRic_lm_sal)
-PD_PRic_sal_am <- aov(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
-# Oxygen
-PD_PRic_lm_oxy <- lm(pd.obs ~ Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
-plot(PD_PRic_lm_oxy)
-PD_PRic_oxy_am <- aov(pd.obs ~ Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
+# Distance to the ocean
+PD_PRic_lm_dist <- lm(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
+plot(PD_PRic_lm_dist)
+PD_PRic_dist_am <- aov(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
+# Max depth
+PD_PRic_lm_mxd <- lm(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
+plot(PD_PRic_lm_mxd)
+PD_PRic_mxd_am <- aov(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
+# Log Area
+PD_PRic_lm_lga <- lm(pd.obs ~ Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
+plot(PD_PRic_lm_lga)
+PD_PRic_lga_am <- aov(pd.obs ~ Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
 # Anova outputs
-summary(PD_PRic_temp_am)
-summary(PD_PRic_sal_am)
-summary(PD_PRic_oxy_am)
+summary(PD_PRic_dist_am)
+summary(PD_PRic_mxd_am)
+summary(PD_PRic_lga_am)
 # p-values
-temp_p_values <- summary(PD_PRic_temp_am)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(PD_PRic_sal_am)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(PD_PRic_oxy_am)[[1]][, "Pr(>F)"]
+temp_p_values <- summary(PD_PRic_dist_am)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(PD_PRic_mxd_am)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(PD_PRic_lga_am)[[1]][, "Pr(>F)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Mixed and stratified lakes
-# Temperature
-PD_PRic_MS_lm_temp <- lm(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
-plot(PD_PRic_MS_lm_temp)
-PD_PRic_MS_temp_am <- aov(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
-# Salinity
-PD_PRic_MS_lm_sal <- lm(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
-plot(PD_PRic_MS_lm_sal)
-PD_PRic_MS_sal_am <- aov(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
-# Oxygen
-PD_PRic_MS_lm_oxy <- lm(pd.obs ~ Site_type + logArea, data = stree_sespd_env[mixed_stratified_lakes,])
-plot(PD_PRic_MS_lm_oxy)
-PD_PRic_MS_oxy_am <- aov(pd.obs ~ Site_type + logArea, data = stree_sespd_env[mixed_stratified_lakes,])
+# Distance to the ocean
+PD_PRic_MS_lm_dist <- lm(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
+plot(PD_PRic_MS_lm_dist)
+PD_PRic_MS_dist_am <- aov(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
+# Max depth
+PD_PRic_MS_lm_mxd <- lm(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
+plot(PD_PRic_MS_lm_mxd)
+PD_PRic_MS_mxd_am <- aov(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
+# Log Area
+PD_PRic_MS_lm_lga <- lm(pd.obs ~ Site_type + logArea, data = stree_sespd_env[mixed_stratified_lakes,])
+plot(PD_PRic_MS_lm_lga)
+PD_PRic_MS_lga_am <- aov(pd.obs ~ Site_type + logArea, data = stree_sespd_env[mixed_stratified_lakes,])
 # Anova outputs
-summary(PD_PRic_MS_temp_am)
-summary(PD_PRic_MS_sal_am)
-summary(PD_PRic_MS_oxy_am)
+summary(PD_PRic_MS_dist_am)
+summary(PD_PRic_MS_mxd_am)
+summary(PD_PRic_MS_lga_am)
 # p-values
-temp_p_values <- summary(PD_PRic_MS_temp_am)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(PD_PRic_MS_sal_am)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(PD_PRic_MS_oxy_am)[[1]][, "Pr(>F)"]
+temp_p_values <- summary(PD_PRic_MS_dist_am)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(PD_PRic_MS_mxd_am)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(PD_PRic_MS_lga_am)[[1]][, "Pr(>F)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Ocean sites and mixed lakes
-# Temperature
-PD_PRic_OM_lm_temp <- lm(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
-plot(PD_PRic_OM_lm_temp)
-PD_PRic_OM_temp_am <- aov(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
-# Salinity
-PD_PRic_OM_lm_sal <- lm(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[ocean_mixed_sites,])
-plot(PD_PRic_OM_lm_sal)
-PD_PRic_OM_sal_am <- aov(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[ocean_mixed_sites,])
-# Oxygen
-PD_PRic_OM_lm_oxy <- lm(pd.obs ~ Site_type + logArea, data = stree_sespd_env[ocean_mixed_sites,])
-plot(PD_PRic_OM_lm_oxy)
-PD_PRic_OM_oxy_am <- aov(pd.obs ~ Site_type + logArea, data = stree_sespd_env[ocean_mixed_sites,])
+# Distance to the ocean
+PD_PRic_OM_lm_dist <- lm(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
+plot(PD_PRic_OM_lm_dist)
+PD_PRic_OM_dist_am <- aov(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
+# Max depth
+PD_PRic_OM_lm_mxd <- lm(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[ocean_mixed_sites,])
+plot(PD_PRic_OM_lm_mxd)
+PD_PRic_OM_mxd_am <- aov(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[ocean_mixed_sites,])
+# Log Area
+PD_PRic_OM_lm_lga <- lm(pd.obs ~ Site_type + logArea, data = stree_sespd_env[ocean_mixed_sites,])
+plot(PD_PRic_OM_lm_lga)
+PD_PRic_OM_lga_am <- aov(pd.obs ~ Site_type + logArea, data = stree_sespd_env[ocean_mixed_sites,])
 # Anova outputs
-summary(PD_PRic_OM_temp_am)
-summary(PD_PRic_OM_sal_am)
-summary(PD_PRic_OM_oxy_am)
+summary(PD_PRic_OM_dist_am)
+summary(PD_PRic_OM_mxd_am)
+summary(PD_PRic_OM_lga_am)
 # p-values
-temp_p_values <- summary(PD_PRic_OM_temp_am)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(PD_PRic_OM_sal_am)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(PD_PRic_OM_oxy_am)[[1]][, "Pr(>F)"]
+temp_p_values <- summary(PD_PRic_OM_dist_am)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(PD_PRic_OM_mxd_am)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(PD_PRic_OM_lga_am)[[1]][, "Pr(>F)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Stratified lakes and ocean sites
-# Temperature
-PD_PRic_SO_lm_temp <- lm(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
-plot(PD_PRic_SO_lm_temp)
-PD_PRic_SO_temp_am <- aov(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
-# Salinity
-PD_PRic_SO_lm_sal <- lm(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[ocean_stratified_sites,])
-plot(PD_PRic_SO_lm_sal)
-PD_PRic_SO_sal_am <- aov(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[ocean_stratified_sites,])
-# Oxygen
-PD_PRic_SO_lm_oxy <- lm(pd.obs ~ Site_type + logArea, data = stree_sespd_env[ocean_stratified_sites,])
-plot(PD_PRic_SO_lm_oxy)
-PD_PRic_SO_oxy_am <- aov(pd.obs ~ Site_type + logArea, data = stree_sespd_env[ocean_stratified_sites,])
+# Distance to the ocean
+PD_PRic_SO_lm_dist <- lm(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
+plot(PD_PRic_SO_lm_dist)
+PD_PRic_SO_dist_am <- aov(pd.obs ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
+# Max depth
+PD_PRic_SO_lm_mxd <- lm(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[ocean_stratified_sites,])
+plot(PD_PRic_SO_lm_mxd)
+PD_PRic_SO_mxd_am <- aov(pd.obs ~ Site_type + max_depth, data = stree_sespd_env[ocean_stratified_sites,])
+# Log Area
+PD_PRic_SO_lm_lga <- lm(pd.obs ~ Site_type + logArea, data = stree_sespd_env[ocean_stratified_sites,])
+plot(PD_PRic_SO_lm_lga)
+PD_PRic_SO_lga_am <- aov(pd.obs ~ Site_type + logArea, data = stree_sespd_env[ocean_stratified_sites,])
 # Anova outputs
-summary(PD_PRic_SO_temp_am)
-summary(PD_PRic_SO_sal_am)
-summary(PD_PRic_SO_oxy_am)
+summary(PD_PRic_SO_dist_am)
+summary(PD_PRic_SO_mxd_am)
+summary(PD_PRic_SO_lga_am)
 # p-values
-temp_p_values <- summary(PD_PRic_SO_temp_am)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(PD_PRic_SO_sal_am)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(PD_PRic_SO_oxy_am)[[1]][, "Pr(>F)"]
+temp_p_values <- summary(PD_PRic_SO_dist_am)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(PD_PRic_SO_mxd_am)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(PD_PRic_SO_lga_am)[[1]][, "Pr(>F)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
@@ -1008,98 +1008,98 @@ p_values <- summary(PD_PRic_geo_S_lm)$coefficients[, "Pr(>|t|)"]
 
 ### PDisp ANOVA
 ## Surveyed sites
-# Temperature
-PD_PRic_lm_temp <- lm(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
-plot(PD_PRic_lm_temp)
-PD_PRic_temp_am <- aov(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
-# Salinity
-PD_PRic_lm_sal <- lm(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
-plot(PD_PRic_lm_sal)
-PD_PRic_sal_am <- aov(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
-# Oxygen
-PD_PRic_lm_oxy <- lm(Dispersion ~ Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
-plot(PD_PRic_lm_oxy)
-PD_PRic_oxy_am <- aov(Dispersion ~ Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
+# Distance to the ocean
+PD_PRic_lm_dist <- lm(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
+plot(PD_PRic_lm_dist)
+PD_PRic_dist_am <- aov(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
+# Max depth
+PD_PRic_lm_mxd <- lm(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
+plot(PD_PRic_lm_mxd)
+PD_PRic_mxd_am <- aov(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
+# Log Area
+PD_PRic_lm_lga <- lm(Dispersion ~ Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
+plot(PD_PRic_lm_lga)
+PD_PRic_lga_am <- aov(Dispersion ~ Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
 # Anova outputs
-summary(PD_PRic_temp_am)
-summary(PD_PRic_sal_am)
-summary(PD_PRic_oxy_am)
+summary(PD_PRic_dist_am)
+summary(PD_PRic_mxd_am)
+summary(PD_PRic_lga_am)
 # p-values
-temp_p_values <- summary(PD_PRic_temp_am)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(PD_PRic_sal_am)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(PD_PRic_oxy_am)[[1]][, "Pr(>F)"]
+temp_p_values <- summary(PD_PRic_dist_am)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(PD_PRic_mxd_am)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(PD_PRic_lga_am)[[1]][, "Pr(>F)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Mixed and stratified lakes
-# Temperature
-PD_PRic_MS_lm_temp <- lm(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
-plot(PD_PRic_MS_lm_temp)
-PD_PRic_MS_temp_am <- aov(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
-# Salinity
-PD_PRic_MS_lm_sal <- lm(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
-plot(PD_PRic_MS_lm_sal)
-PD_PRic_MS_sal_am <- aov(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
-# Oxygen
-PD_PRic_MS_lm_oxy <- lm(Dispersion ~ Site_type + logArea, data = stree_sespd_env[mixed_stratified_lakes,])
-plot(PD_PRic_MS_lm_oxy)
-PD_PRic_MS_oxy_am <- aov(Dispersion ~ Site_type + logArea, data = stree_sespd_env[mixed_stratified_lakes,])
+# Distance to the ocean
+PD_PRic_MS_lm_dist <- lm(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
+plot(PD_PRic_MS_lm_dist)
+PD_PRic_MS_dist_am <- aov(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
+# Max depth
+PD_PRic_MS_lm_mxd <- lm(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
+plot(PD_PRic_MS_lm_mxd)
+PD_PRic_MS_mxd_am <- aov(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
+# Log Area
+PD_PRic_MS_lm_lga <- lm(Dispersion ~ Site_type + logArea, data = stree_sespd_env[mixed_stratified_lakes,])
+plot(PD_PRic_MS_lm_lga)
+PD_PRic_MS_lga_am <- aov(Dispersion ~ Site_type + logArea, data = stree_sespd_env[mixed_stratified_lakes,])
 # Anova outputs
-summary(PD_PRic_MS_temp_am)
-summary(PD_PRic_MS_sal_am)
-summary(PD_PRic_MS_oxy_am)
+summary(PD_PRic_MS_dist_am)
+summary(PD_PRic_MS_mxd_am)
+summary(PD_PRic_MS_lga_am)
 # p-values
-temp_p_values <- summary(PD_PRic_MS_temp_am)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(PD_PRic_MS_sal_am)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(PD_PRic_MS_oxy_am)[[1]][, "Pr(>F)"]
+temp_p_values <- summary(PD_PRic_MS_dist_am)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(PD_PRic_MS_mxd_am)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(PD_PRic_MS_lga_am)[[1]][, "Pr(>F)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Ocean sites and mixed lakes
-# Temperature
-PD_PRic_OM_lm_temp <- lm(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
-plot(PD_PRic_OM_lm_temp)
-PD_PRic_OM_temp_am <- aov(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
-# Salinity
-PD_PRic_OM_lm_sal <- lm(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[ocean_mixed_sites,])
-plot(PD_PRic_OM_lm_sal)
-PD_PRic_OM_sal_am <- aov(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[ocean_mixed_sites,])
-# Oxygen
-PD_PRic_OM_lm_oxy <- lm(Dispersion ~ Site_type + logArea, data = stree_sespd_env[ocean_mixed_sites,])
-plot(PD_PRic_OM_lm_oxy)
-PD_PRic_OM_oxy_am <- aov(Dispersion ~ Site_type + logArea, data = stree_sespd_env[ocean_mixed_sites,])
+# Distance to the ocean
+PD_PRic_OM_lm_dist <- lm(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
+plot(PD_PRic_OM_lm_dist)
+PD_PRic_OM_dist_am <- aov(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
+# Max depth
+PD_PRic_OM_lm_mxd <- lm(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[ocean_mixed_sites,])
+plot(PD_PRic_OM_lm_mxd)
+PD_PRic_OM_mxd_am <- aov(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[ocean_mixed_sites,])
+# Log Area
+PD_PRic_OM_lm_lga <- lm(Dispersion ~ Site_type + logArea, data = stree_sespd_env[ocean_mixed_sites,])
+plot(PD_PRic_OM_lm_lga)
+PD_PRic_OM_lga_am <- aov(Dispersion ~ Site_type + logArea, data = stree_sespd_env[ocean_mixed_sites,])
 # Anova outputs
-summary(PD_PRic_OM_temp_am)
-summary(PD_PRic_OM_sal_am)
-summary(PD_PRic_OM_oxy_am)
+summary(PD_PRic_OM_dist_am)
+summary(PD_PRic_OM_mxd_am)
+summary(PD_PRic_OM_lga_am)
 # p-values
-temp_p_values <- summary(PD_PRic_OM_temp_am)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(PD_PRic_OM_sal_am)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(PD_PRic_OM_oxy_am)[[1]][, "Pr(>F)"]
+temp_p_values <- summary(PD_PRic_OM_dist_am)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(PD_PRic_OM_mxd_am)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(PD_PRic_OM_lga_am)[[1]][, "Pr(>F)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Stratified lakes and ocean sites
-# Temperature
-PD_PRic_SO_lm_temp <- lm(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
-plot(PD_PRic_SO_lm_temp)
-PD_PRic_SO_temp_am <- aov(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
-# Salinity
-PD_PRic_SO_lm_sal <- lm(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[ocean_stratified_sites,])
-plot(PD_PRic_SO_lm_sal)
-PD_PRic_SO_sal_am <- aov(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[ocean_stratified_sites,])
-# Oxygen
-PD_PRic_SO_lm_oxy <- lm(Dispersion ~ Site_type + logArea, data = stree_sespd_env[ocean_stratified_sites,])
-plot(PD_PRic_SO_lm_oxy)
-PD_PRic_SO_oxy_am <- aov(Dispersion ~ Site_type + logArea, data = stree_sespd_env[ocean_stratified_sites,])
+# Distance to the ocean
+PD_PRic_SO_lm_dist <- lm(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
+plot(PD_PRic_SO_lm_dist)
+PD_PRic_SO_dist_am <- aov(Dispersion ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
+# Max depth
+PD_PRic_SO_lm_mxd <- lm(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[ocean_stratified_sites,])
+plot(PD_PRic_SO_lm_mxd)
+PD_PRic_SO_mxd_am <- aov(Dispersion ~ Site_type + max_depth, data = stree_sespd_env[ocean_stratified_sites,])
+# Log Area
+PD_PRic_SO_lm_lga <- lm(Dispersion ~ Site_type + logArea, data = stree_sespd_env[ocean_stratified_sites,])
+plot(PD_PRic_SO_lm_lga)
+PD_PRic_SO_lga_am <- aov(Dispersion ~ Site_type + logArea, data = stree_sespd_env[ocean_stratified_sites,])
 # Anova outputs
-summary(PD_PRic_SO_temp_am)
-summary(PD_PRic_SO_sal_am)
-summary(PD_PRic_SO_oxy_am)
+summary(PD_PRic_SO_dist_am)
+summary(PD_PRic_SO_mxd_am)
+summary(PD_PRic_SO_lga_am)
 # p-values
-temp_p_values <- summary(PD_PRic_SO_temp_am)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(PD_PRic_SO_sal_am)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(PD_PRic_SO_oxy_am)[[1]][, "Pr(>F)"]
+temp_p_values <- summary(PD_PRic_SO_dist_am)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(PD_PRic_SO_mxd_am)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(PD_PRic_SO_lga_am)[[1]][, "Pr(>F)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
