@@ -395,17 +395,17 @@ par(mfrow=c(2,2))
 ### logSRic ANOVA
 ## Surveyed sites
 # Temperature
-SD_logSRic_lm_temp <- lm(log(row_sum) ~  Site_type + temperature_median, data = SR_env[surveyed_sites_env,])
+SD_logSRic_lm_temp <- lm(log(row_sum) ~  Site_type * temperature_median, data = SR_env[surveyed_sites_env,])
 plot(SD_logSRic_lm_temp)
-SD_logSRic_am_temp <- aov(log(row_sum) ~  Site_type + temperature_median, data = SR_env[surveyed_sites_env,])
+SD_logSRic_am_temp <- aov(log(row_sum) ~  Site_type * temperature_median, data = SR_env[surveyed_sites_env,])
 # Salinity
-SD_logSRic_lm_sal <- lm(log(row_sum) ~  Site_type + salinity_median, data = SR_env[surveyed_sites_env,])
+SD_logSRic_lm_sal <- lm(log(row_sum) ~  Site_type * salinity_median, data = SR_env[surveyed_sites_env,])
 plot(SD_logSRic_lm_sal)
-SD_logSRic_am_sal <- aov(log(row_sum) ~  Site_type + salinity_median, data = SR_env[surveyed_sites_env,])
+SD_logSRic_am_sal <- aov(log(row_sum) ~  Site_type * salinity_median, data = SR_env[surveyed_sites_env,])
 # Oxygen
-SD_logSRic_lm_oxy <- lm(log(row_sum) ~  Site_type + oxygen_median, data = SR_env[surveyed_sites_env,])
+SD_logSRic_lm_oxy <- lm(log(row_sum) ~  Site_type * oxygen_median, data = SR_env[surveyed_sites_env,])
 plot(SD_logSRic_lm_oxy)
-SD_logSRic_am_oxy <- aov(log(row_sum) ~  Site_type + oxygen_median, data = SR_env[surveyed_sites_env,])
+SD_logSRic_am_oxy <- aov(log(row_sum) ~  Site_type * oxygen_median, data = SR_env[surveyed_sites_env,])
 # Anova outputs
 summary(SD_logSRic_am_temp)
 summary(SD_logSRic_am_sal)
@@ -414,22 +414,22 @@ summary(SD_logSRic_am_oxy)
 temp_p_values <- summary(SD_logSRic_am_temp)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_logSRic_am_sal)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_logSRic_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Mixed and stratified lakes
 # Temperature
-SD_logSRic_MS_lm_temp <- lm(log(row_sum) ~  Site_type + temperature_median, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_lm_temp <- lm(log(row_sum) ~  Site_type * temperature_median, data = SR_env[mixed_stratified_lakes,])
 plot(SD_logSRic_MS_lm_temp)
-SD_logSRic_MS_am_temp <- aov(log(row_sum) ~  Site_type + temperature_median, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_am_temp <- aov(log(row_sum) ~  Site_type * temperature_median, data = SR_env[mixed_stratified_lakes,])
 # Salinity
-SD_logSRic_MS_lm_sal <- lm(log(row_sum) ~  Site_type + salinity_median, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_lm_sal <- lm(log(row_sum) ~  Site_type * salinity_median, data = SR_env[mixed_stratified_lakes,])
 plot(SD_logSRic_MS_lm_sal)
-SD_logSRic_MS_am_sal <- aov(log(row_sum) ~  Site_type + salinity_median, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_am_sal <- aov(log(row_sum) ~  Site_type * salinity_median, data = SR_env[mixed_stratified_lakes,])
 # Oxygen
-SD_logSRic_MS_lm_oxy <- lm(log(row_sum) ~  Site_type + oxygen_median, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_lm_oxy <- lm(log(row_sum) ~  Site_type * oxygen_median, data = SR_env[mixed_stratified_lakes,])
 plot(SD_logSRic_MS_lm_oxy)
-SD_logSRic_MS_am_oxy <- aov(log(row_sum) ~  Site_type + oxygen_median, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_am_oxy <- aov(log(row_sum) ~  Site_type * oxygen_median, data = SR_env[mixed_stratified_lakes,])
 # Anova outputs
 summary(SD_logSRic_MS_am_temp)
 summary(SD_logSRic_MS_am_sal)
@@ -438,22 +438,22 @@ summary(SD_logSRic_MS_am_oxy)
 temp_p_values <- summary(SD_logSRic_MS_am_temp)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_logSRic_MS_am_sal)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_logSRic_MS_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Ocean sites and mixed lakes
 # Temperature
-SD_logSRic_OM_lm_temp <- lm(log(row_sum) ~  Site_type + temperature_median, data = SR_env[ocean_mixed_sites_env,])
+SD_logSRic_OM_lm_temp <- lm(log(row_sum) ~  Site_type * temperature_median, data = SR_env[ocean_mixed_sites_env,])
 plot(SD_logSRic_OM_lm_temp)
-SD_logSRic_OM_am_temp <- aov(log(row_sum) ~  Site_type + temperature_median, data = SR_env[ocean_mixed_sites_env,])
+SD_logSRic_OM_am_temp <- aov(log(row_sum) ~  Site_type * temperature_median, data = SR_env[ocean_mixed_sites_env,])
 # Salinity
-SD_logSRic_OM_lm_sal <- lm(log(row_sum) ~  Site_type + salinity_median, data = SR_env[ocean_mixed_sites_env,])
+SD_logSRic_OM_lm_sal <- lm(log(row_sum) ~  Site_type * salinity_median, data = SR_env[ocean_mixed_sites_env,])
 plot(SD_logSRic_OM_lm_sal)
-SD_logSRic_OM_am_sal <- aov(log(row_sum) ~  Site_type + salinity_median, data = SR_env[ocean_mixed_sites_env,])
+SD_logSRic_OM_am_sal <- aov(log(row_sum) ~  Site_type * salinity_median, data = SR_env[ocean_mixed_sites_env,])
 # Oxygen
-SD_logSRic_OM_lm_oxy <- lm(log(row_sum) ~  Site_type + oxygen_median, data = SR_env[ocean_mixed_sites_env,])
+SD_logSRic_OM_lm_oxy <- lm(log(row_sum) ~  Site_type * oxygen_median, data = SR_env[ocean_mixed_sites_env,])
 plot(SD_logSRic_OM_lm_oxy)
-SD_logSRic_OM_am_oxy <- aov(log(row_sum) ~  Site_type + oxygen_median, data = SR_env[ocean_mixed_sites_env,])
+SD_logSRic_OM_am_oxy <- aov(log(row_sum) ~  Site_type * oxygen_median, data = SR_env[ocean_mixed_sites_env,])
 # Anova outputs
 summary(SD_logSRic_OM_am_temp)
 summary(SD_logSRic_OM_am_sal)
@@ -462,22 +462,22 @@ summary(SD_logSRic_OM_am_oxy)
 temp_p_values <- summary(SD_logSRic_OM_am_temp)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_logSRic_OM_am_sal)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_logSRic_OM_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Stratified lakes and ocean sites
 # Temperature
-SD_logSRic_SO_lm_temp <- lm(log(row_sum) ~  Site_type + temperature_median, data = SR_env[ocean_stratified_sites_env,])
+SD_logSRic_SO_lm_temp <- lm(log(row_sum) ~  Site_type * temperature_median, data = SR_env[ocean_stratified_sites_env,])
 plot(SD_logSRic_SO_lm_temp)
-SD_logSRic_SO_am_temp <- aov(log(row_sum) ~  Site_type + temperature_median, data = SR_env[ocean_stratified_sites_env,])
+SD_logSRic_SO_am_temp <- aov(log(row_sum) ~  Site_type * temperature_median, data = SR_env[ocean_stratified_sites_env,])
 # Salinity
-SD_logSRic_SO_lm_sal <- lm(log(row_sum) ~  Site_type + salinity_median, data = SR_env[ocean_stratified_sites_env,])
+SD_logSRic_SO_lm_sal <- lm(log(row_sum) ~  Site_type * salinity_median, data = SR_env[ocean_stratified_sites_env,])
 plot(SD_logSRic_SO_lm_sal)
-SD_logSRic_SO_am_sal <- aov(log(row_sum) ~  Site_type + salinity_median, data = SR_env[ocean_stratified_sites_env,])
+SD_logSRic_SO_am_sal <- aov(log(row_sum) ~  Site_type * salinity_median, data = SR_env[ocean_stratified_sites_env,])
 # Oxygen
-SD_logSRic_SO_lm_oxy <- lm(log(row_sum) ~  Site_type + oxygen_median, data = SR_env[ocean_stratified_sites_env,])
+SD_logSRic_SO_lm_oxy <- lm(log(row_sum) ~  Site_type * oxygen_median, data = SR_env[ocean_stratified_sites_env,])
 plot(SD_logSRic_SO_lm_oxy)
-SD_logSRic_SO_am_oxy <- aov(log(row_sum) ~  Site_type + oxygen_median, data = SR_env[ocean_stratified_sites_env,])
+SD_logSRic_SO_am_oxy <- aov(log(row_sum) ~  Site_type * oxygen_median, data = SR_env[ocean_stratified_sites_env,])
 # Anova outputs
 summary(SD_logSRic_SO_am_temp)
 summary(SD_logSRic_SO_am_sal)
@@ -486,7 +486,7 @@ summary(SD_logSRic_SO_am_oxy)
 temp_p_values <- summary(SD_logSRic_SO_am_temp)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_logSRic_SO_am_sal)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_logSRic_SO_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Ocean sites
@@ -513,17 +513,17 @@ p_values <- summary(SD_logSRic_env_S_lm)$coefficients[, "Pr(>|t|)"]
 ### SRic ANOVA
 ## Surveyed sites
 # Temperature
-SD_SRic_lm_temp <- lm(row_sum ~ Site_type + temperature_median, data = SR_env[surveyed_sites_env,])
+SD_SRic_lm_temp <- lm(row_sum ~ Site_type * temperature_median, data = SR_env[surveyed_sites_env,])
 plot(SD_SRic_lm_temp)
-SD_SRic_temp_am <- aov(row_sum ~ Site_type + temperature_median, data = SR_env[surveyed_sites_env,])
+SD_SRic_temp_am <- aov(row_sum ~ Site_type * temperature_median, data = SR_env[surveyed_sites_env,])
 # Salinity
-SD_SRic_lm_sal <- lm(row_sum ~ Site_type + salinity_median, data = SR_env[surveyed_sites_env,])
+SD_SRic_lm_sal <- lm(row_sum ~ Site_type * salinity_median, data = SR_env[surveyed_sites_env,])
 plot(SD_SRic_lm_sal)
-SD_SRic_sal_am <- aov(row_sum ~ Site_type + salinity_median, data = SR_env[surveyed_sites_env,])
+SD_SRic_sal_am <- aov(row_sum ~ Site_type * salinity_median, data = SR_env[surveyed_sites_env,])
 # Oxygen
-SD_SRic_lm_oxy <- lm(row_sum ~ Site_type + oxygen_median, data = SR_env[surveyed_sites_env,])
+SD_SRic_lm_oxy <- lm(row_sum ~ Site_type * oxygen_median, data = SR_env[surveyed_sites_env,])
 plot(SD_SRic_lm_oxy)
-SD_SRic_oxy_am <- aov(row_sum ~ Site_type + oxygen_median, data = SR_env[surveyed_sites_env,])
+SD_SRic_oxy_am <- aov(row_sum ~ Site_type * oxygen_median, data = SR_env[surveyed_sites_env,])
 # Anova outputs
 summary(SD_SRic_temp_am)
 summary(SD_SRic_sal_am)
@@ -532,22 +532,22 @@ summary(SD_SRic_oxy_am)
 temp_p_values <- summary(SD_SRic_temp_am)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_SRic_sal_am)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_SRic_oxy_am)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Mixed and stratified lakes
 # Temperature
-SD_SRic_MS_lm_temp <- lm(row_sum ~ Site_type + temperature_median, data = SR_env[mixed_stratified_lakes,])
+SD_SRic_MS_lm_temp <- lm(row_sum ~ Site_type * temperature_median, data = SR_env[mixed_stratified_lakes,])
 plot(SD_SRic_MS_lm_temp)
-SD_SRic_MS_temp_am <- aov(row_sum ~ Site_type + temperature_median, data = SR_env[mixed_stratified_lakes,])
+SD_SRic_MS_temp_am <- aov(row_sum ~ Site_type * temperature_median, data = SR_env[mixed_stratified_lakes,])
 # Salinity
-SD_SRic_MS_lm_sal <- lm(row_sum ~ Site_type + salinity_median, data = SR_env[mixed_stratified_lakes,])
+SD_SRic_MS_lm_sal <- lm(row_sum ~ Site_type * salinity_median, data = SR_env[mixed_stratified_lakes,])
 plot(SD_SRic_MS_lm_sal)
-SD_SRic_MS_sal_am <- aov(row_sum ~ Site_type + salinity_median, data = SR_env[mixed_stratified_lakes,])
+SD_SRic_MS_sal_am <- aov(row_sum ~ Site_type * salinity_median, data = SR_env[mixed_stratified_lakes,])
 # Oxygen
-SD_SRic_MS_lm_oxy <- lm(row_sum ~ Site_type + oxygen_median, data = SR_env[mixed_stratified_lakes,])
+SD_SRic_MS_lm_oxy <- lm(row_sum ~ Site_type * oxygen_median, data = SR_env[mixed_stratified_lakes,])
 plot(SD_SRic_MS_lm_oxy)
-SD_SRic_MS_oxy_am <- aov(row_sum ~ Site_type + oxygen_median, data = SR_env[mixed_stratified_lakes,])
+SD_SRic_MS_oxy_am <- aov(row_sum ~ Site_type * oxygen_median, data = SR_env[mixed_stratified_lakes,])
 # Anova outputs
 summary(SD_SRic_MS_temp_am)
 summary(SD_SRic_MS_sal_am)
@@ -556,22 +556,22 @@ summary(SD_SRic_MS_oxy_am)
 temp_p_values <- summary(SD_SRic_MS_temp_am)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_SRic_MS_sal_am)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_SRic_MS_oxy_am)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Ocean sites and mixed lakes
 # Temperature
-SD_SRic_OM_lm_temp <- lm(row_sum ~ Site_type + temperature_median, data = SR_env[ocean_mixed_sites_env,])
+SD_SRic_OM_lm_temp <- lm(row_sum ~ Site_type * temperature_median, data = SR_env[ocean_mixed_sites_env,])
 plot(SD_SRic_OM_lm_temp)
-SD_SRic_OM_temp_am <- aov(row_sum ~ Site_type + temperature_median, data = SR_env[ocean_mixed_sites_env,])
+SD_SRic_OM_temp_am <- aov(row_sum ~ Site_type * temperature_median, data = SR_env[ocean_mixed_sites_env,])
 # Salinity
-SD_SRic_OM_lm_sal <- lm(row_sum ~ Site_type + salinity_median, data = SR_env[ocean_mixed_sites_env,])
+SD_SRic_OM_lm_sal <- lm(row_sum ~ Site_type * salinity_median, data = SR_env[ocean_mixed_sites_env,])
 plot(SD_SRic_OM_lm_sal)
-SD_SRic_OM_sal_am <- aov(row_sum ~ Site_type + salinity_median, data = SR_env[ocean_mixed_sites_env,])
+SD_SRic_OM_sal_am <- aov(row_sum ~ Site_type * salinity_median, data = SR_env[ocean_mixed_sites_env,])
 # Oxygen
-SD_SRic_OM_lm_oxy <- lm(row_sum ~ Site_type + oxygen_median, data = SR_env[ocean_mixed_sites_env,])
+SD_SRic_OM_lm_oxy <- lm(row_sum ~ Site_type * oxygen_median, data = SR_env[ocean_mixed_sites_env,])
 plot(SD_SRic_OM_lm_oxy)
-SD_SRic_OM_oxy_am <- aov(row_sum ~ Site_type + oxygen_median, data = SR_env[ocean_mixed_sites_env,])
+SD_SRic_OM_oxy_am <- aov(row_sum ~ Site_type * oxygen_median, data = SR_env[ocean_mixed_sites_env,])
 # Anova outputs
 summary(SD_SRic_OM_temp_am)
 summary(SD_SRic_OM_sal_am)
@@ -580,22 +580,22 @@ summary(SD_SRic_OM_oxy_am)
 temp_p_values <- summary(SD_SRic_OM_temp_am)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_SRic_OM_sal_am)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_SRic_OM_oxy_am)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Stratified lakes and ocean sites
 # Temperature
-SD_SRic_SO_lm_temp <- lm(row_sum ~ Site_type + temperature_median, data = SR_env[ocean_stratified_sites_env,])
+SD_SRic_SO_lm_temp <- lm(row_sum ~ Site_type * temperature_median, data = SR_env[ocean_stratified_sites_env,])
 plot(SD_SRic_SO_lm_temp)
-SD_SRic_SO_temp_am <- aov(row_sum ~ Site_type + temperature_median, data = SR_env[ocean_stratified_sites_env,])
+SD_SRic_SO_temp_am <- aov(row_sum ~ Site_type * temperature_median, data = SR_env[ocean_stratified_sites_env,])
 # Salinity
-SD_SRic_SO_lm_sal <- lm(row_sum ~ Site_type + salinity_median, data = SR_env[ocean_stratified_sites_env,])
+SD_SRic_SO_lm_sal <- lm(row_sum ~ Site_type * salinity_median, data = SR_env[ocean_stratified_sites_env,])
 plot(SD_SRic_SO_lm_sal)
-SD_SRic_SO_sal_am <- aov(row_sum ~ Site_type + salinity_median, data = SR_env[ocean_stratified_sites_env,])
+SD_SRic_SO_sal_am <- aov(row_sum ~ Site_type * salinity_median, data = SR_env[ocean_stratified_sites_env,])
 # Oxygen
-SD_SRic_SO_lm_oxy <- lm(row_sum ~ Site_type + oxygen_median, data = SR_env[ocean_stratified_sites_env,])
+SD_SRic_SO_lm_oxy <- lm(row_sum ~ Site_type * oxygen_median, data = SR_env[ocean_stratified_sites_env,])
 plot(SD_SRic_SO_lm_oxy)
-SD_SRic_SO_oxy_am <- aov(row_sum ~ Site_type + oxygen_median, data = SR_env[ocean_stratified_sites_env,])
+SD_SRic_SO_oxy_am <- aov(row_sum ~ Site_type * oxygen_median, data = SR_env[ocean_stratified_sites_env,])
 # Anova outputs
 summary(SD_SRic_SO_temp_am)
 summary(SD_SRic_SO_sal_am)
@@ -604,7 +604,7 @@ summary(SD_SRic_SO_oxy_am)
 temp_p_values <- summary(SD_SRic_SO_temp_am)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_SRic_SO_sal_am)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_SRic_SO_oxy_am)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Ocean sites
@@ -632,17 +632,17 @@ p_values <- summary(SD_SRic_env_S_lm)$coefficients[, "Pr(>|t|)"]
 ### logSRic ANOVA
 ## Surveyed sites
 # Distance to the ocean
-SD_logSRic_lm_dist <- lm(log(row_sum) ~  Site_type + distance_to_ocean_min_m, data = SR_env[surveyed_sites,])
+SD_logSRic_lm_dist <- lm(log(row_sum) ~  Site_type * distance_to_ocean_min_m, data = SR_env[surveyed_sites,])
 plot(SD_logSRic_lm_dist)
-SD_logSRic_am_dist <- aov(log(row_sum) ~  Site_type + distance_to_ocean_min_m, data = SR_env[surveyed_sites,])
+SD_logSRic_am_dist <- aov(log(row_sum) ~  Site_type * distance_to_ocean_min_m, data = SR_env[surveyed_sites,])
 # Max depth
-SD_logSRic_lm_mxd <- lm(log(row_sum) ~  Site_type + max_depth, data = SR_env[surveyed_sites,])
+SD_logSRic_lm_mxd <- lm(log(row_sum) ~  Site_type * max_depth, data = SR_env[surveyed_sites,])
 plot(SD_logSRic_lm_mxd)
-SD_logSRic_am_mxd <- aov(log(row_sum) ~  Site_type + max_depth, data = SR_env[surveyed_sites,])
+SD_logSRic_am_mxd <- aov(log(row_sum) ~  Site_type * max_depth, data = SR_env[surveyed_sites,])
 # Log Area
-SD_logSRic_lm_lga <- lm(log(row_sum) ~  Site_type + logArea, data = SR_env[surveyed_sites,])
+SD_logSRic_lm_lga <- lm(log(row_sum) ~  Site_type * logArea, data = SR_env[surveyed_sites,])
 plot(SD_logSRic_lm_lga)
-SD_logSRic_am_lga <- aov(log(row_sum) ~  Site_type + logArea, data = SR_env[surveyed_sites,])
+SD_logSRic_am_lga <- aov(log(row_sum) ~  Site_type * logArea, data = SR_env[surveyed_sites,])
 # Anova outputs
 summary(SD_logSRic_am_dist)
 summary(SD_logSRic_am_mxd)
@@ -651,22 +651,22 @@ summary(SD_logSRic_am_lga)
 temp_p_values <- summary(SD_logSRic_am_dist)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_logSRic_am_mxd)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_logSRic_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Mixed and stratified lakes
 # Distance to the ocean
-SD_logSRic_MS_lm_dist <- lm(log(row_sum) ~  Site_type + distance_to_ocean_min_m, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_lm_dist <- lm(log(row_sum) ~  Site_type * distance_to_ocean_min_m, data = SR_env[mixed_stratified_lakes,])
 plot(SD_logSRic_MS_lm_dist)
-SD_logSRic_MS_am_dist <- aov(log(row_sum) ~  Site_type + distance_to_ocean_min_m, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_am_dist <- aov(log(row_sum) ~  Site_type * distance_to_ocean_min_m, data = SR_env[mixed_stratified_lakes,])
 # Max depth
-SD_logSRic_MS_lm_mxd <- lm(log(row_sum) ~  Site_type + max_depth, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_lm_mxd <- lm(log(row_sum) ~  Site_type * max_depth, data = SR_env[mixed_stratified_lakes,])
 plot(SD_logSRic_MS_lm_mxd)
-SD_logSRic_MS_am_mxd <- aov(log(row_sum) ~  Site_type + max_depth, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_am_mxd <- aov(log(row_sum) ~  Site_type * max_depth, data = SR_env[mixed_stratified_lakes,])
 # Log Area
-SD_logSRic_MS_lm_lga <- lm(log(row_sum) ~  Site_type + logArea, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_lm_lga <- lm(log(row_sum) ~  Site_type * logArea, data = SR_env[mixed_stratified_lakes,])
 plot(SD_logSRic_MS_lm_lga)
-SD_logSRic_MS_am_lga <- aov(log(row_sum) ~  Site_type + logArea, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_am_lga <- aov(log(row_sum) ~  Site_type * logArea, data = SR_env[mixed_stratified_lakes,])
 # Anova outputs
 summary(SD_logSRic_MS_am_dist)
 summary(SD_logSRic_MS_am_mxd)
@@ -675,22 +675,22 @@ summary(SD_logSRic_MS_am_lga)
 temp_p_values <- summary(SD_logSRic_MS_am_dist)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_logSRic_MS_am_mxd)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_logSRic_MS_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Ocean sites and mixed lakes
 # Distance to the ocean
-SD_logSRic_OM_lm_dist <- lm(log(row_sum) ~  Site_type + distance_to_ocean_min_m, data = SR_env[ocean_mixed_sites,])
+SD_logSRic_OM_lm_dist <- lm(log(row_sum) ~  Site_type * distance_to_ocean_min_m, data = SR_env[ocean_mixed_sites,])
 plot(SD_logSRic_OM_lm_dist)
-SD_logSRic_OM_am_dist <- aov(log(row_sum) ~  Site_type + distance_to_ocean_min_m, data = SR_env[ocean_mixed_sites,])
+SD_logSRic_OM_am_dist <- aov(log(row_sum) ~  Site_type * distance_to_ocean_min_m, data = SR_env[ocean_mixed_sites,])
 # Max depth
-SD_logSRic_OM_lm_mxd <- lm(log(row_sum) ~  Site_type + max_depth, data = SR_env[ocean_mixed_sites,])
+SD_logSRic_OM_lm_mxd <- lm(log(row_sum) ~  Site_type * max_depth, data = SR_env[ocean_mixed_sites,])
 plot(SD_logSRic_OM_lm_mxd)
-SD_logSRic_OM_am_mxd <- aov(log(row_sum) ~  Site_type + max_depth, data = SR_env[ocean_mixed_sites,])
+SD_logSRic_OM_am_mxd <- aov(log(row_sum) ~  Site_type * max_depth, data = SR_env[ocean_mixed_sites,])
 # Log Area
-SD_logSRic_OM_lm_lga <- lm(log(row_sum) ~  Site_type + logArea, data = SR_env[ocean_mixed_sites,])
+SD_logSRic_OM_lm_lga <- lm(log(row_sum) ~  Site_type * logArea, data = SR_env[ocean_mixed_sites,])
 plot(SD_logSRic_OM_lm_lga)
-SD_logSRic_OM_am_lga <- aov(log(row_sum) ~  Site_type + logArea, data = SR_env[ocean_mixed_sites,])
+SD_logSRic_OM_am_lga <- aov(log(row_sum) ~  Site_type * logArea, data = SR_env[ocean_mixed_sites,])
 # Anova outputs
 summary(SD_logSRic_OM_am_dist)
 summary(SD_logSRic_OM_am_mxd)
@@ -699,22 +699,22 @@ summary(SD_logSRic_OM_am_lga)
 temp_p_values <- summary(SD_logSRic_OM_am_dist)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_logSRic_OM_am_mxd)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_logSRic_OM_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Stratified lakes and ocean sites
 # Distance to the ocean
-SD_logSRic_SO_lm_dist <- lm(log(row_sum) ~  Site_type + distance_to_ocean_min_m, data = SR_env[ocean_stratified_sites,])
+SD_logSRic_SO_lm_dist <- lm(log(row_sum) ~  Site_type * distance_to_ocean_min_m, data = SR_env[ocean_stratified_sites,])
 plot(SD_logSRic_SO_lm_dist)
-SD_logSRic_SO_am_dist <- aov(log(row_sum) ~  Site_type + distance_to_ocean_min_m, data = SR_env[ocean_stratified_sites,])
+SD_logSRic_SO_am_dist <- aov(log(row_sum) ~  Site_type * distance_to_ocean_min_m, data = SR_env[ocean_stratified_sites,])
 # Max depth
-SD_logSRic_SO_lm_mxd <- lm(log(row_sum) ~  Site_type + max_depth, data = SR_env[ocean_stratified_sites,])
+SD_logSRic_SO_lm_mxd <- lm(log(row_sum) ~  Site_type * max_depth, data = SR_env[ocean_stratified_sites,])
 plot(SD_logSRic_SO_lm_mxd)
-SD_logSRic_SO_am_mxd <- aov(log(row_sum) ~  Site_type + max_depth, data = SR_env[ocean_stratified_sites,])
+SD_logSRic_SO_am_mxd <- aov(log(row_sum) ~  Site_type * max_depth, data = SR_env[ocean_stratified_sites,])
 # Log Area
-SD_logSRic_SO_lm_lga <- lm(log(row_sum) ~  Site_type + logArea, data = SR_env[ocean_stratified_sites,])
+SD_logSRic_SO_lm_lga <- lm(log(row_sum) ~  Site_type * logArea, data = SR_env[ocean_stratified_sites,])
 plot(SD_logSRic_SO_lm_lga)
-SD_logSRic_SO_am_lga <- aov(log(row_sum) ~  Site_type + logArea, data = SR_env[ocean_stratified_sites,])
+SD_logSRic_SO_am_lga <- aov(log(row_sum) ~  Site_type * logArea, data = SR_env[ocean_stratified_sites,])
 # Anova outputs
 summary(SD_logSRic_SO_am_dist)
 summary(SD_logSRic_SO_am_mxd)
@@ -723,7 +723,7 @@ summary(SD_logSRic_SO_am_lga)
 temp_p_values <- summary(SD_logSRic_SO_am_dist)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_logSRic_SO_am_mxd)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_logSRic_SO_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Ocean sites
@@ -751,17 +751,17 @@ p_values <- summary(SD_logSRic_geo_S_lm)$coefficients[, "Pr(>|t|)"]
 ### SRic ANOVA
 ## Surveyed sites
 # Distance to the ocean
-SD_SRic_lm_dist <- lm(row_sum ~ Site_type + distance_to_ocean_min_m, data = SR_env[surveyed_sites,])
+SD_SRic_lm_dist <- lm(row_sum ~ Site_type * distance_to_ocean_min_m, data = SR_env[surveyed_sites,])
 plot(SD_SRic_lm_dist)
-SD_SRic_dist_am <- aov(row_sum ~ Site_type + distance_to_ocean_min_m, data = SR_env[surveyed_sites,])
+SD_SRic_dist_am <- aov(row_sum ~ Site_type * distance_to_ocean_min_m, data = SR_env[surveyed_sites,])
 # Max depth
-SD_SRic_lm_mxd <- lm(row_sum ~ Site_type + max_depth, data = SR_env[surveyed_sites,])
+SD_SRic_lm_mxd <- lm(row_sum ~ Site_type * max_depth, data = SR_env[surveyed_sites,])
 plot(SD_SRic_lm_mxd)
-SD_SRic_mxd_am <- aov(row_sum ~ Site_type + max_depth, data = SR_env[surveyed_sites,])
+SD_SRic_mxd_am <- aov(row_sum ~ Site_type * max_depth, data = SR_env[surveyed_sites,])
 # Log Area
-SD_SRic_lm_lga <- lm(row_sum ~ Site_type + logArea, data = SR_env[surveyed_sites,])
+SD_SRic_lm_lga <- lm(row_sum ~ Site_type * logArea, data = SR_env[surveyed_sites,])
 plot(SD_SRic_lm_lga)
-SD_SRic_lga_am <- aov(row_sum ~ Site_type + logArea, data = SR_env[surveyed_sites,])
+SD_SRic_lga_am <- aov(row_sum ~ Site_type * logArea, data = SR_env[surveyed_sites,])
 # Anova outputs
 summary(SD_SRic_dist_am)
 summary(SD_SRic_mxd_am)
@@ -770,22 +770,22 @@ summary(SD_SRic_lga_am)
 temp_p_values <- summary(SD_SRic_dist_am)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_SRic_mxd_am)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_SRic_lga_am)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Mixed and stratified lakes
 # Distance to the ocean
-SD_SRic_MS_lm_dist <- lm(row_sum ~ Site_type + distance_to_ocean_min_m, data = SR_env[mixed_stratified_lakes,])
+SD_SRic_MS_lm_dist <- lm(row_sum ~ Site_type * distance_to_ocean_min_m, data = SR_env[mixed_stratified_lakes,])
 plot(SD_SRic_MS_lm_dist)
-SD_SRic_MS_dist_am <- aov(row_sum ~ Site_type + distance_to_ocean_min_m, data = SR_env[mixed_stratified_lakes,])
+SD_SRic_MS_dist_am <- aov(row_sum ~ Site_type * distance_to_ocean_min_m, data = SR_env[mixed_stratified_lakes,])
 # Max depth
-SD_SRic_MS_lm_mxd <- lm(row_sum ~ Site_type + max_depth, data = SR_env[mixed_stratified_lakes,])
+SD_SRic_MS_lm_mxd <- lm(row_sum ~ Site_type * max_depth, data = SR_env[mixed_stratified_lakes,])
 plot(SD_SRic_MS_lm_mxd)
-SD_SRic_MS_mxd_am <- aov(row_sum ~ Site_type + max_depth, data = SR_env[mixed_stratified_lakes,])
+SD_SRic_MS_mxd_am <- aov(row_sum ~ Site_type * max_depth, data = SR_env[mixed_stratified_lakes,])
 # Log Area
-SD_SRic_MS_lm_lga <- lm(row_sum ~ Site_type + logArea, data = SR_env[mixed_stratified_lakes,])
+SD_SRic_MS_lm_lga <- lm(row_sum ~ Site_type * logArea, data = SR_env[mixed_stratified_lakes,])
 plot(SD_SRic_MS_lm_lga)
-SD_SRic_MS_lga_am <- aov(row_sum ~ Site_type + logArea, data = SR_env[mixed_stratified_lakes,])
+SD_SRic_MS_lga_am <- aov(row_sum ~ Site_type * logArea, data = SR_env[mixed_stratified_lakes,])
 # Anova outputs
 summary(SD_SRic_MS_dist_am)
 summary(SD_SRic_MS_mxd_am)
@@ -794,22 +794,22 @@ summary(SD_SRic_MS_lga_am)
 temp_p_values <- summary(SD_SRic_MS_dist_am)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_SRic_MS_mxd_am)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_SRic_MS_lga_am)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Ocean sites and mixed lakes
 # Distance to the ocean
-SD_SRic_OM_lm_dist <- lm(row_sum ~ Site_type + distance_to_ocean_min_m, data = SR_env[ocean_mixed_sites,])
+SD_SRic_OM_lm_dist <- lm(row_sum ~ Site_type * distance_to_ocean_min_m, data = SR_env[ocean_mixed_sites,])
 plot(SD_SRic_OM_lm_dist)
-SD_SRic_OM_dist_am <- aov(row_sum ~ Site_type + distance_to_ocean_min_m, data = SR_env[ocean_mixed_sites,])
+SD_SRic_OM_dist_am <- aov(row_sum ~ Site_type * distance_to_ocean_min_m, data = SR_env[ocean_mixed_sites,])
 # Max depth
-SD_SRic_OM_lm_mxd <- lm(row_sum ~ Site_type + max_depth, data = SR_env[ocean_mixed_sites,])
+SD_SRic_OM_lm_mxd <- lm(row_sum ~ Site_type * max_depth, data = SR_env[ocean_mixed_sites,])
 plot(SD_SRic_OM_lm_mxd)
-SD_SRic_OM_mxd_am <- aov(row_sum ~ Site_type + max_depth, data = SR_env[ocean_mixed_sites,])
+SD_SRic_OM_mxd_am <- aov(row_sum ~ Site_type * max_depth, data = SR_env[ocean_mixed_sites,])
 # Log Area
-SD_SRic_OM_lm_lga <- lm(row_sum ~ Site_type + logArea, data = SR_env[ocean_mixed_sites,])
+SD_SRic_OM_lm_lga <- lm(row_sum ~ Site_type * logArea, data = SR_env[ocean_mixed_sites,])
 plot(SD_SRic_OM_lm_lga)
-SD_SRic_OM_lga_am <- aov(row_sum ~ Site_type + logArea, data = SR_env[ocean_mixed_sites,])
+SD_SRic_OM_lga_am <- aov(row_sum ~ Site_type * logArea, data = SR_env[ocean_mixed_sites,])
 # Anova outputs
 summary(SD_SRic_OM_dist_am)
 summary(SD_SRic_OM_mxd_am)
@@ -818,22 +818,22 @@ summary(SD_SRic_OM_lga_am)
 temp_p_values <- summary(SD_SRic_OM_dist_am)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_SRic_OM_mxd_am)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_SRic_OM_lga_am)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Stratified lakes and ocean sites
 # Distance to the ocean
-SD_SRic_SO_lm_dist <- lm(row_sum ~ Site_type + distance_to_ocean_min_m, data = SR_env[ocean_stratified_sites,])
+SD_SRic_SO_lm_dist <- lm(row_sum ~ Site_type * distance_to_ocean_min_m, data = SR_env[ocean_stratified_sites,])
 plot(SD_SRic_SO_lm_dist)
-SD_SRic_SO_dist_am <- aov(row_sum ~ Site_type + distance_to_ocean_min_m, data = SR_env[ocean_stratified_sites,])
+SD_SRic_SO_dist_am <- aov(row_sum ~ Site_type * distance_to_ocean_min_m, data = SR_env[ocean_stratified_sites,])
 # Max depth
-SD_SRic_SO_lm_mxd <- lm(row_sum ~ Site_type + max_depth, data = SR_env[ocean_stratified_sites,])
+SD_SRic_SO_lm_mxd <- lm(row_sum ~ Site_type * max_depth, data = SR_env[ocean_stratified_sites,])
 plot(SD_SRic_SO_lm_mxd)
-SD_SRic_SO_mxd_am <- aov(row_sum ~ Site_type + max_depth, data = SR_env[ocean_stratified_sites,])
+SD_SRic_SO_mxd_am <- aov(row_sum ~ Site_type * max_depth, data = SR_env[ocean_stratified_sites,])
 # Log Area
-SD_SRic_SO_lm_lga <- lm(row_sum ~ Site_type + logArea, data = SR_env[ocean_stratified_sites,])
+SD_SRic_SO_lm_lga <- lm(row_sum ~ Site_type * logArea, data = SR_env[ocean_stratified_sites,])
 plot(SD_SRic_SO_lm_lga)
-SD_SRic_SO_lga_am <- aov(row_sum ~ Site_type + logArea, data = SR_env[ocean_stratified_sites,])
+SD_SRic_SO_lga_am <- aov(row_sum ~ Site_type * logArea, data = SR_env[ocean_stratified_sites,])
 # Anova outputs
 summary(SD_SRic_SO_dist_am)
 summary(SD_SRic_SO_mxd_am)
@@ -842,7 +842,7 @@ summary(SD_SRic_SO_lga_am)
 temp_p_values <- summary(SD_SRic_SO_dist_am)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_SRic_SO_mxd_am)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_SRic_SO_lga_am)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 ## Ocean sites
