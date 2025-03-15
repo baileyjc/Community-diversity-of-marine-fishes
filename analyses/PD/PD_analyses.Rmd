@@ -440,6 +440,10 @@ outlierTest(PD_PRicz_am_temp)
 plot(PD_PRicz_am_temp)
 # Summarize the ANOVA results
 summary(PD_PRicz_am_temp)
+# p-values
+temp_p_values <- summary(PD_PRicz_am_temp)[[1]][, "Pr(>F)"]
+p_values <- c(temp_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 PD_PRicz_am_temp <- aov(pd.obs.z ~ Site_type + temperature_median, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
@@ -464,6 +468,10 @@ outlierTest(PD_PRicz_am_sal)
 plot(PD_PRicz_am_sal)
 # Summarize the ANOVA results
 summary(PD_PRicz_am_sal)
+# p-values
+sal_p_values <- summary(PD_PRicz_am_sal)[[1]][, "Pr(>F)"]
+p_values <- c(sal_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 PD_PRicz_am_sal <- aov(pd.obs.z ~ Site_type + salinity_median, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
@@ -488,6 +496,10 @@ outlierTest(PD_PRicz_am_oxy)
 plot(PD_PRicz_am_oxy)
 # Summarize the ANOVA results
 summary(PD_PRicz_am_oxy)
+# p-values
+oxy_p_values <- summary(PD_PRicz_am_oxy)[[1]][, "Pr(>F)"]
+p_values <- c(oxy_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 PD_PRicz_am_oxy <- aov(pd.obs.z ~ Site_type + oxygen_median, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
@@ -545,6 +557,10 @@ outlierTest(PD_PRicz_am_dist)
 plot(PD_PRicz_am_dist)
 # Summarize the ANOVA results
 summary(PD_PRicz_am_dist)
+# p-values
+dist_p_values <- summary(PD_PRicz_am_dist)[[1]][, "Pr(>F)"]
+p_values <- c(dist_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 PD_PRicz_am_dist <- aov(pd.obs.z ~ Site_type + distance_to_ocean_min_m, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
@@ -569,16 +585,6 @@ outlierTest(PD_PRicz_am_mxd)
 plot(PD_PRicz_am_mxd)
 # Summarize the ANOVA results
 summary(PD_PRicz_am_mxd)
-# ANCOVA
-PD_PRicz_am_mxd <- aov(pd.obs.z ~ Site_type + max_depth, data = stree_sespd_env[surveyed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(PD_PRicz_am_mxd))
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_mxd) ~ stree_sespd_env[surveyed_sites,"Site_type"])
-# Check for outliers
-outlierTest(PD_PRicz_am_mxd)
-# Plot residuals
-plot(PD_PRicz_am_mxd)
 
 ## Log Area
 # Interaction
@@ -593,6 +599,10 @@ outlierTest(PD_PRicz_am_lga)
 plot(PD_PRicz_am_lga)
 # Summarize the ANOVA results
 summary(PD_PRicz_am_lga)
+# p-values
+lga_p_values <- summary(PD_PRicz_am_lga)[[1]][, "Pr(>F)"]
+p_values <- c(lga_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 PD_PRicz_am_lga <- aov(pd.obs.z ~ Site_type + logArea, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
