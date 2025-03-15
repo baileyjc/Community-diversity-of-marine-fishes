@@ -96,6 +96,14 @@ library(pairwiseAdonis)
     ##     votes.repub
 
 ``` r
+library(emmeans)
+```
+
+    ## Welcome to emmeans.
+    ## Caution: You lose important information if you filter this package's results.
+    ## See '? untidy'
+
+``` r
 # Site vectors
 surveyed_sites <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LCN", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OOM", "OOO", "OTM", "RCA", "SLN", "TLN", "ULN")
 
@@ -1231,8 +1239,8 @@ Site_type <- tukey_FRic_result$Site_type
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
 
 # Run ANOVA on the original data
-anova_zscore_result <- aov(pd.obs.z ~ Site_type, data = straits_sespd_env[surveyed_sites,])
-summary(anova_zscore_result)
+anova_FRicz_result <- aov(pd.obs.z ~ Site_type, data = straits_sespd_env[surveyed_sites,])
+summary(anova_FRicz_result)
 ```
 
     ##             Df Sum Sq Mean Sq F value Pr(>F)  
@@ -1243,8 +1251,8 @@ summary(anova_zscore_result)
 
 ``` r
 # Perform Tukey's HSD test
-tukey_zscore_result <- TukeyHSD(anova_zscore_result)
-print(tukey_zscore_result)
+tukey_FRicz_result <- TukeyHSD(anova_FRicz_result)
+print(tukey_FRicz_result)
 ```
 
     ##   Tukey multiple comparisons of means
@@ -1260,11 +1268,11 @@ print(tukey_zscore_result)
 
 ``` r
 # Sites
-N <- length(anova_zscore_result$residuals)
+N <- length(anova_FRicz_result$residuals)
 # Categories
-k <- length(anova_zscore_result$coefficients)
+k <- length(anova_FRicz_result$coefficients)
 # Sum of squares
-SS <- sum(resid(anova_zscore_result)^2) # from anova, the residual SS
+SS <- sum(resid(anova_FRicz_result)^2) # from anova, the residual SS
 # Mean squares
 MS <- SS/(N-k)
 # Balanced
@@ -1273,7 +1281,7 @@ BSE <- sqrt(MS / 8)
 USE <- sqrt((MS/2)*((1/6)+(1/8)))
 
 # Get differences
-Site_type <- tukey_zscore_result$Site_type
+Site_type <- tukey_FRicz_result$Site_type
 
 # q-values
 (OM_q <- (abs(Site_type[1,1]))/USE)
@@ -1365,2080 +1373,79 @@ Site_type <- tukey_FDisp_result$Site_type
 
 ``` r
 par(mfrow=c(2,2)) 
+##### FRicz ANOVAs
 #### Environmental
-### PRic ANOVA
-## Surveyed sites
-# Temperature
+### Surveyed sites
+## Temperature
 # Interaction
-FD_FRic_am_temp <- aov(pd.obs ~ temperature_median * Site_type, data = straits_sespd_env[surveyed_sites_env,])
-summary(FD_FRic_am_temp)
-```
-
-    ##                              Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## temperature_median            1  12.20   12.20   5.540 0.034989 *  
-    ## Site_type                     2  65.97   32.98  14.976 0.000423 ***
-    ## temperature_median:Site_type  2   5.88    2.94   1.335 0.297030    
-    ## Residuals                    13  28.63    2.20                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_lm_temp <- lm(pd.obs ~ temperature_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
+FD_FRicz_am_temp <- aov(pd.obs.z ~ Site_type * temperature_median, data = straits_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_lm_temp))
+shapiro.test(residuals(FD_FRicz_am_temp))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FRic_lm_temp)
-    ## W = 0.9518, p-value = 0.4237
+    ## data:  residuals(FD_FRicz_am_temp)
+    ## W = 0.88867, p-value = 0.03049
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_lm_temp) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_am_temp) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value  Pr(>F)  
-    ## group  2  4.6986 0.02481 *
-    ##       16                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##       Df F value Pr(>F)
+    ## group  2  0.3137 0.7351
+    ##       16
 
 ``` r
 # Check for outliers
-outlierTest(FD_FRic_lm_temp)
+outlierTest(FD_FRicz_am_temp)
 ```
 
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 2.834436            0.01325      0.25176
+    ##      rstudent unadjusted p-value Bonferroni p
+    ## HLO -3.991594          0.0017886     0.033983
 
 ``` r
 # Plot residuals
-plot(FD_FRic_lm_temp)
+plot(FD_FRicz_am_temp)
 ```
+
+    ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
+    ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
 
 ![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-1.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FRic_am_temp <- aov(pd.obs ~ temperature_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
-
-# Salinity
-# Interaction
-FD_FRic_am_sal <- aov(pd.obs ~ salinity_median * Site_type, data = straits_sespd_env[surveyed_sites_env,])
-summary(FD_FRic_am_sal)
-```
-
-    ##                           Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## salinity_median            1  68.60   68.60  37.228 3.77e-05 ***
-    ## Site_type                  2  13.59    6.79   3.687   0.0539 .  
-    ## salinity_median:Site_type  2   6.54    3.27   1.774   0.2083    
-    ## Residuals                 13  23.95    1.84                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_lm_sal <- lm(pd.obs ~ salinity_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_lm_sal))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_lm_sal)
-    ## W = 0.95282, p-value = 0.4407
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_lm_sal) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value   Pr(>F)   
-    ## group  2  8.0917 0.003732 **
-    ##       16                    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_lm_sal)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 3.189628          0.0065544      0.12453
-
-``` r
-# Plot residuals
-plot(FD_FRic_lm_sal)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-2.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_am_sal <- aov(pd.obs ~ salinity_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
-
-# Oxygen
-# Interaction
-FD_FRic_am_oxy <- aov(pd.obs ~ oxygen_median * Site_type, data = straits_sespd_env[surveyed_sites_env,])
-summary(FD_FRic_am_oxy)
-```
-
-    ##                         Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## oxygen_median            1  52.17   52.17  28.159 0.000142 ***
-    ## Site_type                2  25.56   12.78   6.897 0.009084 ** 
-    ## oxygen_median:Site_type  2  10.87    5.43   2.933 0.088832 .  
-    ## Residuals               13  24.08    1.85                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_lm_oxy <- lm(pd.obs ~ oxygen_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_lm_oxy))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_lm_oxy)
-    ## W = 0.94287, p-value = 0.2968
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_lm_oxy) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value  Pr(>F)  
-    ## group  2  4.8286 0.02287 *
-    ##       16                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_lm_oxy)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 2.903288           0.011567      0.21977
-
-``` r
-# Plot residuals
-plot(FD_FRic_lm_oxy)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-3.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_am_oxy <- aov(pd.obs ~ oxygen_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
-
-# Anova outputs
-summary(FD_FRic_am_temp)
-```
-
-    ##                    Df Sum Sq Mean Sq F value  Pr(>F)    
-    ## temperature_median  1  12.20   12.20   5.303 0.03603 *  
-    ## Site_type           2  65.97   32.98  14.336 0.00033 ***
-    ## Residuals          15  34.51    2.30                    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_am_sal)
-```
-
-    ##                 Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## salinity_median  1  68.60   68.60  33.744 3.44e-05 ***
-    ## Site_type        2  13.59    6.79   3.342   0.0631 .  
-    ## Residuals       15  30.49    2.03                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_am_oxy)
-```
-
-    ##               Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## oxygen_median  1  52.17   52.17  22.388 0.000268 ***
-    ## Site_type      2  25.56   12.78   5.484 0.016310 *  
-    ## Residuals     15  34.95    2.33                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-temp_p_values <- summary(FD_FRic_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(FD_FRic_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(FD_FRic_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 0.2161728732 0.0019827180           NA 0.0002066324 0.3783378382
-    ## [6]           NA 0.0016053012 0.0978591825           NA
-
-``` r
-## Mixed and stratified lakes
-# Temperature
-# Interaction
-FD_FRic_MS_am_temp <- aov(pd.obs ~ temperature_median * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FRic_MS_am_temp)
-```
-
-    ##                              Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## temperature_median            1  14.32   14.32   6.002 0.030598 *  
-    ## Site_type                     1  50.27   50.27  21.072 0.000621 ***
-    ## temperature_median:Site_type  1   4.02    4.02   1.687 0.218402    
-    ## Residuals                    12  28.63    2.39                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_MS_lm_temp <- lm(pd.obs ~ temperature_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_MS_lm_temp))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_MS_lm_temp)
-    ## W = 0.96371, p-value = 0.7293
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_MS_lm_temp) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)  
-    ## group  1  7.5346 0.0158 *
-    ##       14                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_MS_lm_temp)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 2.648459           0.021239      0.33983
-
-``` r
-# Plot residuals
-plot(FD_FRic_MS_lm_temp)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-4.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_MS_am_temp <- aov(pd.obs ~ temperature_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Salinity
-# Interaction
-FD_FRic_MS_am_sal <- aov(pd.obs ~ salinity_median * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FRic_MS_am_sal)
-```
-
-    ##                           Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## salinity_median            1  55.35   55.35  29.132 0.000161 ***
-    ## Site_type                  1  12.66   12.66   6.663 0.024043 *  
-    ## salinity_median:Site_type  1   6.42    6.42   3.381 0.090816 .  
-    ## Residuals                 12  22.80    1.90                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_MS_lm_sal <- lm(pd.obs ~ salinity_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_MS_lm_sal))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_MS_lm_sal)
-    ## W = 0.95704, p-value = 0.6086
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_MS_lm_sal) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value   Pr(>F)   
-    ## group  1  14.646 0.001849 **
-    ##       14                    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_MS_lm_sal)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 3.065224          0.0098034      0.15685
-
-``` r
-# Plot residuals
-plot(FD_FRic_MS_lm_sal)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-5.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_MS_am_sal <- aov(pd.obs ~ salinity_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Oxygen
-# Interaction
-FD_FRic_MS_am_oxy <- aov(pd.obs ~ oxygen_median * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FRic_MS_am_oxy)
-```
-
-    ##                         Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## oxygen_median            1  36.94   36.94   18.47 0.00104 **
-    ## Site_type                1  26.65   26.65   13.33 0.00332 **
-    ## oxygen_median:Site_type  1   9.66    9.66    4.83 0.04834 * 
-    ## Residuals               12  24.00    2.00                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_MS_lm_oxy <- lm(pd.obs ~ oxygen_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_MS_lm_oxy))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_MS_lm_oxy)
-    ## W = 0.94167, p-value = 0.3699
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_MS_lm_oxy) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value  Pr(>F)  
-    ## group  1  8.7171 0.01049 *
-    ##       14                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_MS_lm_oxy)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 2.808907           0.015781       0.2525
-
-``` r
-# Plot residuals
-plot(FD_FRic_MS_lm_oxy)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-6.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_MS_am_oxy <- aov(pd.obs ~ oxygen_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Anova outputs
-summary(FD_FRic_MS_am_temp)
-```
-
-    ##                    Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## temperature_median  1  14.32   14.32   5.701 0.032836 *  
-    ## Site_type           1  50.27   50.27  20.015 0.000627 ***
-    ## Residuals          13  32.65    2.51                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_MS_am_sal)
-```
-
-    ##                 Df Sum Sq Mean Sq F value  Pr(>F)    
-    ## salinity_median  1  55.35   55.35  24.623 0.00026 ***
-    ## Site_type        1  12.66   12.66   5.631 0.03374 *  
-    ## Residuals       13  29.22    2.25                    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_MS_am_oxy)
-```
-
-    ##               Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## oxygen_median  1  36.94   36.94   14.27 0.00230 **
-    ## Site_type      1  26.65   26.65   10.29 0.00686 **
-    ## Residuals     13  33.65    2.59                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-temp_p_values <- summary(FD_FRic_MS_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(FD_FRic_MS_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(FD_FRic_MS_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 0.197014904 0.003760101          NA 0.001558752 0.202458192          NA
-    ## [7] 0.013828112 0.041132439          NA
-
-``` r
-## Ocean sites and mixed lakes
-# Temperature
-# Interaction
-FD_FRic_OM_am_temp <- aov(pd.obs ~ temperature_median * Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-summary(FD_FRic_OM_am_temp)
-```
-
-    ##                              Df Sum Sq Mean Sq F value Pr(>F)
-    ## temperature_median            1  0.888   0.888   0.262  0.625
-    ## Site_type                     1  0.639   0.639   0.188  0.677
-    ## temperature_median:Site_type  1  5.063   5.063   1.490  0.262
-    ## Residuals                     7 23.782   3.397
-
-``` r
-# Linear model
-FD_FRic_OM_lm_temp <- lm(pd.obs ~ temperature_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_OM_lm_temp))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_OM_lm_temp)
-    ## W = 0.95752, p-value = 0.7404
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_OM_lm_temp) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1    1.75 0.2185
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_OM_lm_temp)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 2.307334             0.0544       0.5984
-
-``` r
-# Plot residuals
-plot(FD_FRic_OM_lm_temp)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-7.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_OM_am_temp <- aov(pd.obs ~ temperature_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-
-# Salinity
-# Interaction
-FD_FRic_OM_am_sal <- aov(pd.obs ~ salinity_median * Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-summary(FD_FRic_OM_am_sal)
-```
-
-    ##                           Df Sum Sq Mean Sq F value Pr(>F)
-    ## salinity_median            1  6.627   6.627   2.084  0.192
-    ## Site_type                  1  1.476   1.476   0.464  0.518
-    ## salinity_median:Site_type  1  0.007   0.007   0.002  0.964
-    ## Residuals                  7 22.263   3.180
-
-``` r
-# Linear model
-FD_FRic_OM_lm_sal <- lm(pd.obs ~ salinity_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_OM_lm_sal))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_OM_lm_sal)
-    ## W = 0.92742, p-value = 0.3854
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_OM_lm_sal) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.8283 0.3865
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_OM_lm_sal)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 2.644285           0.033216      0.36538
-
-``` r
-# Plot residuals
-plot(FD_FRic_OM_lm_sal)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-8.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_OM_am_sal <- aov(pd.obs ~ salinity_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-
-# Oxygen
-# Interaction
-FD_FRic_OM_am_oxy <- aov(pd.obs ~ oxygen_median * Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-summary(FD_FRic_OM_am_oxy)
-```
-
-    ##                         Df Sum Sq Mean Sq F value Pr(>F)
-    ## oxygen_median            1  6.197   6.197   1.963  0.204
-    ## Site_type                1  2.063   2.063   0.653  0.446
-    ## oxygen_median:Site_type  1  0.008   0.008   0.003  0.961
-    ## Residuals                7 22.104   3.158
-
-``` r
-# Linear model
-FD_FRic_OM_lm_oxy <- lm(pd.obs ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_OM_lm_oxy))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_OM_lm_oxy)
-    ## W = 0.96518, p-value = 0.8342
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_OM_lm_oxy) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value  Pr(>F)  
-    ## group  1  3.5051 0.09397 .
-    ##        9                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_OM_lm_oxy)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 2.236117           0.060423      0.66465
-
-``` r
-# Plot residuals
-plot(FD_FRic_OM_lm_oxy)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-9.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_OM_am_oxy <- aov(pd.obs ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-
-# Anova outputs
-summary(FD_FRic_OM_am_temp)
-```
-
-    ##                    Df Sum Sq Mean Sq F value Pr(>F)
-    ## temperature_median  1  0.888   0.888   0.246  0.633
-    ## Site_type           1  0.639   0.639   0.177  0.685
-    ## Residuals           8 28.845   3.606
-
-``` r
-summary(FD_FRic_OM_am_sal)
-```
-
-    ##                 Df Sum Sq Mean Sq F value Pr(>F)
-    ## salinity_median  1  6.627   6.627   2.381  0.161
-    ## Site_type        1  1.476   1.476   0.530  0.487
-    ## Residuals        8 22.270   2.784
-
-``` r
-summary(FD_FRic_OM_am_oxy)
-```
-
-    ##               Df Sum Sq Mean Sq F value Pr(>F)
-    ## oxygen_median  1  6.197   6.197   2.242  0.173
-    ## Site_type      1  2.063   2.063   0.746  0.413
-    ## Residuals      8 22.112   2.764
-
-``` r
-# p-values
-temp_p_values <- summary(FD_FRic_OM_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(FD_FRic_OM_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(FD_FRic_OM_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 1.0000000 1.0000000        NA 0.9685909 1.0000000        NA 1.0000000
-    ## [8] 1.0000000        NA
-
-``` r
-## Stratified lakes and ocean sites
-# Temperature
-# Interaction
-FD_FRic_SO_am_temp <- aov(pd.obs ~ temperature_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-summary(FD_FRic_SO_am_temp)
-```
-
-    ##                              Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## temperature_median            1   0.99    0.99   1.433 0.270265    
-    ## Site_type                     1  40.48   40.48  58.383 0.000122 ***
-    ## temperature_median:Site_type  1   1.33    1.33   1.912 0.209228    
-    ## Residuals                     7   4.85    0.69                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_SO_lm_temp <- lm(pd.obs ~ temperature_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_SO_lm_temp))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_SO_lm_temp)
-    ## W = 0.75253, p-value = 0.002243
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_SO_lm_temp) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.0121 0.9148
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_SO_lm_temp)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## HLM 1.958063           0.091079           NA
-
-``` r
-# Plot residuals
-plot(FD_FRic_SO_lm_temp)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-10.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_SO_am_temp <- aov(pd.obs ~ temperature_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-
-# Salinity
-# Interaction
-FD_FRic_SO_am_sal <- aov(pd.obs ~ salinity_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-summary(FD_FRic_SO_am_sal)
-```
-
-    ##                           Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## salinity_median            1  33.22   33.22  81.771 4.14e-05 ***
-    ## Site_type                  1  11.46   11.46  28.213  0.00111 ** 
-    ## salinity_median:Site_type  1   0.12    0.12   0.292  0.60543    
-    ## Residuals                  7   2.84    0.41                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_SO_lm_sal <- lm(pd.obs ~ salinity_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_SO_lm_sal))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_SO_lm_sal)
-    ## W = 0.94144, p-value = 0.5375
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_SO_lm_sal) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.1767 0.6841
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_SO_lm_sal)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## IBK 2.254892           0.058773       0.6465
-
-``` r
-# Plot residuals
-plot(FD_FRic_SO_lm_sal)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-11.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_SO_am_sal <- aov(pd.obs ~ salinity_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-
-# Oxygen
-# Interaction
-FD_FRic_SO_am_oxy <- aov(pd.obs ~ oxygen_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-summary(FD_FRic_SO_am_oxy)
-```
-
-    ##                         Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## oxygen_median            1 21.833  21.833   73.95 5.73e-05 ***
-    ## Site_type                1 21.614  21.614   73.21 5.92e-05 ***
-    ## oxygen_median:Site_type  1  2.135   2.135    7.23   0.0311 *  
-    ## Residuals                7  2.067   0.295                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_SO_lm_oxy <- lm(pd.obs ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_SO_lm_oxy))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_SO_lm_oxy)
-    ## W = 0.95192, p-value = 0.6686
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_SO_lm_oxy) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.3937 0.5459
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_SO_lm_oxy)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## IBK 2.770267           0.027683      0.30452
-
-``` r
-# Plot residuals
-plot(FD_FRic_SO_lm_oxy)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-12.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_SO_am_oxy <- aov(pd.obs ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-
-# Anova outputs
-summary(FD_FRic_SO_am_temp)
-```
-
-    ##                    Df Sum Sq Mean Sq F value  Pr(>F)    
-    ## temperature_median  1   0.99    0.99   1.286    0.29    
-    ## Site_type           1  40.48   40.48  52.407 8.9e-05 ***
-    ## Residuals           8   6.18    0.77                    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_SO_am_sal)
-```
-
-    ##                 Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## salinity_median  1  33.22   33.22   89.70 1.27e-05 ***
-    ## Site_type        1  11.46   11.46   30.95 0.000533 ***
-    ## Residuals        8   2.96    0.37                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_SO_am_oxy)
-```
-
-    ##               Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## oxygen_median  1 21.833  21.833   41.57 0.000199 ***
-    ## Site_type      1 21.614  21.614   41.16 0.000206 ***
-    ## Residuals      8  4.201   0.525                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-temp_p_values <- summary(FD_FRic_SO_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(FD_FRic_SO_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(FD_FRic_SO_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 1.0000000000 0.0005338571           NA 0.0000762872 0.0031957469
-    ## [6]           NA 0.0011926306 0.0012344231           NA
-
-``` r
-## Ocean sites
-FD_FRic_env_O_lm <- lm(pd.obs ~ salinity_median + oxygen_median + temperature_median, straits_sespd_env[ocean_sites_env,])
-summary(FD_FRic_env_O_lm)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = pd.obs ~ salinity_median + oxygen_median + temperature_median, 
-    ##     data = straits_sespd_env[ocean_sites_env, ])
-    ## 
-    ## Residuals:
-    ## ALL 3 residuals are 0: no residual degrees of freedom!
-    ## 
-    ## Coefficients: (1 not defined because of singularities)
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)         -59.765        NaN     NaN      NaN
-    ## salinity_median       1.591        NaN     NaN      NaN
-    ## oxygen_median         2.222        NaN     NaN      NaN
-    ## temperature_median       NA         NA      NA       NA
-    ## 
-    ## Residual standard error: NaN on 0 degrees of freedom
-    ## Multiple R-squared:      1,  Adjusted R-squared:    NaN 
-    ## F-statistic:   NaN on 2 and 0 DF,  p-value: NA
-
-``` r
-p_values <- summary(FD_FRic_env_O_lm)$coefficients[, "Pr(>|t|)"]
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ##     (Intercept) salinity_median   oxygen_median 
-    ##             NaN             NaN             NaN
-
-``` r
-## Mixed lakes
-FD_FRic_env_M_lm <- lm(pd.obs ~ salinity_median + oxygen_median + temperature_median, straits_sespd_env[mixed_lakes,])
-summary(FD_FRic_env_M_lm)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = pd.obs ~ salinity_median + oxygen_median + temperature_median, 
-    ##     data = straits_sespd_env[mixed_lakes, ])
-    ## 
-    ## Residuals:
-    ##     FLK     HLO     LLN     MLN     NLN     NLU     OLO     ULN 
-    ##  0.3535 -1.4713  1.9571 -0.5019  2.4016 -1.7837 -1.2480  0.2928 
-    ## 
-    ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)        -14.5877    97.1462  -0.150    0.888
-    ## salinity_median      1.2230     2.2584   0.542    0.617
-    ## oxygen_median        1.4695     1.8268   0.804    0.466
-    ## temperature_median  -0.8965     1.4018  -0.640    0.557
-    ## 
-    ## Residual standard error: 2.059 on 4 degrees of freedom
-    ## Multiple R-squared:  0.4104, Adjusted R-squared:  -0.0318 
-    ## F-statistic: 0.9281 on 3 and 4 DF,  p-value: 0.5046
-
-``` r
-Anova(FD_FRic_env_M_lm, type = 3)
-```
-
-    ## Anova Table (Type III tests)
-    ## 
-    ## Response: pd.obs
-    ##                     Sum Sq Df F value Pr(>F)
-    ## (Intercept)         0.0956  1  0.0225 0.8879
-    ## salinity_median     1.2438  1  0.2933 0.6169
-    ## oxygen_median       2.7442  1  0.6471 0.4663
-    ## temperature_median  1.7348  1  0.4090 0.5572
-    ## Residuals          16.9640  4
-
-``` r
-p_values <- summary(FD_FRic_env_M_lm)$coefficients[, "Pr(>|t|)"]
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ##        (Intercept)    salinity_median      oxygen_median temperature_median 
-    ##                  1                  1                  1                  1
-
-``` r
-## Stratified lakes
-FD_FRic_env_S_lm <- lm(pd.obs ~ salinity_median + oxygen_median + temperature_median, straits_sespd_env[stratified_lakes,])
-summary(FD_FRic_env_S_lm)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = pd.obs ~ salinity_median + oxygen_median + temperature_median, 
-    ##     data = straits_sespd_env[stratified_lakes, ])
-    ## 
-    ## Residuals:
-    ##     BCM     CLM     GLK     HLM     NLK     OTM     SLN     TLN 
-    ##  0.2934  0.1912  0.2145  0.3243 -0.4275 -0.8478 -0.1959  0.4477 
-    ## 
-    ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)         -1.4242     6.5744  -0.217    0.839
-    ## salinity_median      0.1281     0.1021   1.255    0.278
-    ## oxygen_median       -0.3893     0.4501  -0.865    0.436
-    ## temperature_median   0.0138     0.1456   0.095    0.929
-    ## 
-    ## Residual standard error: 0.5946 on 4 degrees of freedom
-    ## Multiple R-squared:  0.711,  Adjusted R-squared:  0.4943 
-    ## F-statistic: 3.281 on 3 and 4 DF,  p-value: 0.1406
-
-``` r
-Anova(FD_FRic_env_S_lm, type = 3)
-```
-
-    ## Anova Table (Type III tests)
-    ## 
-    ## Response: pd.obs
-    ##                     Sum Sq Df F value Pr(>F)
-    ## (Intercept)        0.01659  1  0.0469 0.8391
-    ## salinity_median    0.55661  1  1.5745 0.2779
-    ## oxygen_median      0.26445  1  0.7480 0.4359
-    ## temperature_median 0.00317  1  0.0090 0.9291
-    ## Residuals          1.41411  4
-
-``` r
-p_values <- summary(FD_FRic_env_S_lm)$coefficients[, "Pr(>|t|)"]
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ##        (Intercept)    salinity_median      oxygen_median temperature_median 
-    ##                  1                  1                  1                  1
-
-``` r
-#### Geographical
-### FRic ANOVA
-## Surveyed sites
-# Distance
-# Interaction
-FD_FRic_am_dist <- aov(pd.obs ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[surveyed_sites,])
-summary(FD_FRic_am_dist)
-```
-
-    ##                                   Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## distance_to_ocean_min_m            1  46.83   46.83  16.281 0.000959 ***
-    ## Site_type                          2  29.65   14.83   5.154 0.018720 *  
-    ## distance_to_ocean_min_m:Site_type  2   0.16    0.08   0.027 0.972992    
-    ## Residuals                         16  46.03    2.88                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_lm_dist <- lm(pd.obs ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[surveyed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_lm_dist))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_lm_dist)
-    ## W = 0.9654, p-value = 0.6053
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_lm_dist) ~ straits_sespd_env[surveyed_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value  Pr(>F)  
-    ## group  2  4.0174 0.03507 *
-    ##       19                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_lm_dist)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 2.841051           0.011285      0.24828
-
-``` r
-# Plot residuals
-plot(FD_FRic_lm_dist)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-13.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_am_dist <- aov(pd.obs ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[surveyed_sites,])
-
-# Max depth
-# Interaction
-FD_FRic_am_mxd <- aov(pd.obs ~ max_depth * Site_type, data = straits_sespd_env[surveyed_sites,])
-summary(FD_FRic_am_mxd)
-```
-
-    ##                     Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## max_depth            1   2.17    2.17   0.974    0.338    
-    ## Site_type            2  78.51   39.26  17.605 9.08e-05 ***
-    ## max_depth:Site_type  2   6.30    3.15   1.413    0.272    
-    ## Residuals           16  35.68    2.23                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_lm_mxd <- lm(pd.obs ~ max_depth + Site_type, data = straits_sespd_env[surveyed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_lm_mxd))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_lm_mxd)
-    ## W = 0.96772, p-value = 0.6584
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_lm_mxd) ~ straits_sespd_env[surveyed_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  2  1.3308 0.2878
-    ##       19
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_lm_mxd)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 2.582315           0.019375      0.42626
-
-``` r
-# Plot residuals
-plot(FD_FRic_lm_mxd)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-14.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_am_mxd <- aov(pd.obs ~ max_depth + Site_type, data = straits_sespd_env[surveyed_sites,])
-
-# Log area
-# Interaction
-FD_FRic_am_lga <- aov(pd.obs ~ logArea * Site_type, data = straits_sespd_env[surveyed_sites,])
-summary(FD_FRic_am_lga)
-```
-
-    ##                   Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## logArea            1   5.90    5.90   3.290   0.0885 .  
-    ## Site_type          2  74.26   37.13  20.719 3.63e-05 ***
-    ## logArea:Site_type  2  13.83    6.92   3.859   0.0429 *  
-    ## Residuals         16  28.67    1.79                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_lm_lga <- lm(pd.obs ~ logArea + Site_type, data = straits_sespd_env[surveyed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_lm_lga))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_lm_lga)
-    ## W = 0.96614, p-value = 0.6222
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_lm_lga) ~ straits_sespd_env[surveyed_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  2  1.0084 0.3835
-    ##       19
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_lm_lga)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## OOO -2.923718          0.0094738      0.20842
-
-``` r
-# Plot residuals
-plot(FD_FRic_lm_lga)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-15.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_am_lga <- aov(pd.obs ~ logArea + Site_type, data = straits_sespd_env[surveyed_sites,])
-
-# Anova outputs
-summary(FD_FRic_am_dist)
-```
-
-    ##                         Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## distance_to_ocean_min_m  1  46.83   46.83  18.254 0.000458 ***
-    ## Site_type                2  29.65   14.83   5.778 0.011523 *  
-    ## Residuals               18  46.18    2.57                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_am_mxd)
-```
-
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## max_depth    1   2.17    2.17   0.932    0.347    
-    ## Site_type    2  78.51   39.26  16.832 7.56e-05 ***
-    ## Residuals   18  41.98    2.33                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_am_lga)
-```
-
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## logArea      1   5.90    5.90   2.497 0.131467    
-    ## Site_type    2  74.26   37.13  15.724 0.000112 ***
-    ## Residuals   18  42.51    2.36                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-dist_p_values <- summary(FD_FRic_am_dist)[[1]][, "Pr(>F)"]
-mxd_p_values <- summary(FD_FRic_am_mxd)[[1]][, "Pr(>F)"]
-lga_p_values <- summary(FD_FRic_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 0.0027496434 0.0691386870           NA 1.0000000000 0.0004537987
-    ## [6]           NA 0.7888004940 0.0006733532           NA
-
-``` r
-## Mixed and stratified lakes
-# Distance
-# Interaction
-FD_FRic_MS_am_dist <- aov(pd.obs ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FRic_MS_am_dist)
-```
-
-    ##                                   Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## distance_to_ocean_min_m            1  38.45   38.45  14.740 0.00236 **
-    ## Site_type                          1  27.46   27.46  10.527 0.00703 **
-    ## distance_to_ocean_min_m:Site_type  1   0.02    0.02   0.007 0.93562   
-    ## Residuals                         12  31.31    2.61                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_MS_lm_dist <- lm(pd.obs ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_MS_lm_dist))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_MS_lm_dist)
-    ## W = 0.94262, p-value = 0.3823
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_MS_lm_dist) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value   Pr(>F)   
-    ## group  1  10.431 0.006051 **
-    ##       14                    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_MS_lm_dist)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 3.301843          0.0063191      0.10111
-
-``` r
-# Plot residuals
-plot(FD_FRic_MS_lm_dist)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-16.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_MS_am_dist <- aov(pd.obs ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Max depth
-# Interaction
-FD_FRic_MS_am_mxd <- aov(pd.obs ~ max_depth * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FRic_MS_am_mxd)
-```
-
-    ##                     Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## max_depth            1   5.07    5.07   2.446 0.143807    
-    ## Site_type            1  61.52   61.52  29.690 0.000148 ***
-    ## max_depth:Site_type  1   5.79    5.79   2.794 0.120498    
-    ## Residuals           12  24.86    2.07                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_MS_lm_mxd <- lm(pd.obs ~ max_depth + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_MS_lm_mxd))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_MS_lm_mxd)
-    ## W = 0.95989, p-value = 0.6597
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_MS_lm_mxd) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value  Pr(>F)  
-    ## group  1   4.015 0.06484 .
-    ##       14                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_MS_lm_mxd)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 2.793823           0.016229      0.25967
-
-``` r
-# Plot residuals
-plot(FD_FRic_MS_lm_mxd)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-17.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_MS_am_mxd <- aov(pd.obs ~ max_depth + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Log area
-# Interaction
-FD_FRic_MS_am_lga <- aov(pd.obs ~ logArea * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FRic_MS_am_lga)
-```
-
-    ##                   Df Sum Sq Mean Sq F value  Pr(>F)    
-    ## logArea            1   2.04    2.04   1.753  0.2102    
-    ## Site_type          1  72.96   72.96  62.633 4.2e-06 ***
-    ## logArea:Site_type  1   8.26    8.26   7.087  0.0207 *  
-    ## Residuals         12  13.98    1.16                    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_MS_lm_lga <- lm(pd.obs ~ logArea + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_MS_lm_lga))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_MS_lm_lga)
-    ## W = 0.95715, p-value = 0.6104
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_MS_lm_lga) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.0661 0.8009
-    ##       14
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_MS_lm_lga)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## TLN 2.269031           0.042512       0.6802
-
-``` r
-# Plot residuals
-plot(FD_FRic_MS_lm_lga)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-18.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_MS_am_lga <- aov(pd.obs ~ logArea + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Anova outputs
-summary(FD_FRic_MS_am_dist)
-```
-
-    ##                         Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## distance_to_ocean_min_m  1  38.45   38.45   15.96 0.00153 **
-    ## Site_type                1  27.46   27.46   11.40 0.00497 **
-    ## Residuals               13  31.32    2.41                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_MS_am_mxd)
-```
-
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## max_depth    1   5.07    5.07   2.149 0.166395    
-    ## Site_type    1  61.52   61.52  26.090 0.000201 ***
-    ## Residuals   13  30.65    2.36                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_MS_am_lga)
-```
-
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## logArea      1   2.04    2.04   1.194    0.294    
-    ## Site_type    1  72.96   72.96  42.659 1.91e-05 ***
-    ## Residuals   13  22.23    1.71                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-dist_p_values <- summary(FD_FRic_MS_am_dist)[[1]][, "Pr(>F)"]
-mxd_p_values <- summary(FD_FRic_MS_am_mxd)[[1]][, "Pr(>F)"]
-lga_p_values <- summary(FD_FRic_MS_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 0.0091607451 0.0297913881           NA 0.9983703382 0.0012056867
-    ## [6]           NA 1.0000000000 0.0001144795           NA
-
-``` r
-## Ocean sites and mixed lakes
-# Distance
-# Interaction
-FD_FRic_OM_am_dist <- aov(pd.obs ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-summary(FD_FRic_OM_am_dist)
-```
-
-    ##                                   Df Sum Sq Mean Sq F value Pr(>F)
-    ## distance_to_ocean_min_m            1   0.18   0.176   0.041  0.844
-    ## Site_type                          1   0.62   0.615   0.142  0.714
-    ## distance_to_ocean_min_m:Site_type  1   0.11   0.112   0.026  0.876
-    ## Residuals                         10  43.28   4.328
-
-``` r
-# Linear model
-FD_FRic_OM_lm_dist <- lm(pd.obs ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_OM_lm_dist))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_OM_lm_dist)
-    ## W = 0.93224, p-value = 0.328
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_OM_lm_dist) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.5282 0.4813
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_OM_lm_dist)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 2.424152           0.035806      0.50129
-
-``` r
-# Plot residuals
-plot(FD_FRic_OM_lm_dist)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-19.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_OM_am_dist <- aov(pd.obs ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-
-# Max depth
-# Interaction
-FD_FRic_OM_am_mxd <- aov(pd.obs ~ max_depth * Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-summary(FD_FRic_OM_am_mxd)
-```
-
-    ##                     Df Sum Sq Mean Sq F value Pr(>F)  
-    ## max_depth            1 11.644  11.644   3.782 0.0804 .
-    ## Site_type            1  1.059   1.059   0.344 0.5706  
-    ## max_depth:Site_type  1  0.688   0.688   0.223 0.6466  
-    ## Residuals           10 30.788   3.079                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_OM_lm_mxd <- lm(pd.obs ~ max_depth + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_OM_lm_mxd))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_OM_lm_mxd)
-    ## W = 0.93489, p-value = 0.3567
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_OM_lm_mxd) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.2778 0.6077
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_OM_lm_mxd)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## LLN 2.295907           0.044564      0.62389
-
-``` r
-# Plot residuals
-plot(FD_FRic_OM_lm_mxd)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-20.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_OM_am_mxd <- aov(pd.obs ~ max_depth + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-
-# Log area
-# Interaction
-FD_FRic_OM_am_lga <- aov(pd.obs ~ logArea * Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-summary(FD_FRic_OM_am_lga)
-```
-
-    ##                   Df Sum Sq Mean Sq F value Pr(>F)  
-    ## logArea            1  4.098   4.098   1.722 0.2187  
-    ## Site_type          1  3.981   3.981   1.673 0.2249  
-    ## logArea:Site_type  1 12.304  12.304   5.171 0.0463 *
-    ## Residuals         10 23.795   2.380                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_OM_lm_lga <- lm(pd.obs ~ logArea + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_OM_lm_lga))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_OM_lm_lga)
-    ## W = 0.93857, p-value = 0.4003
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_OM_lm_lga) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1       0 0.9994
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_OM_lm_lga)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## OOO -2.887671           0.016172       0.2264
-
-``` r
-# Plot residuals
-plot(FD_FRic_OM_lm_lga)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-21.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_OM_am_lga <- aov(pd.obs ~ logArea + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-
-# Anova outputs
-summary(FD_FRic_OM_am_dist)
-```
-
-    ##                         Df Sum Sq Mean Sq F value Pr(>F)
-    ## distance_to_ocean_min_m  1   0.18   0.176   0.045  0.837
-    ## Site_type                1   0.62   0.615   0.156  0.700
-    ## Residuals               11  43.39   3.944
-
-``` r
-summary(FD_FRic_OM_am_mxd)
-```
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## max_depth    1 11.644  11.644   4.069 0.0687 .
-    ## Site_type    1  1.059   1.059   0.370 0.5553  
-    ## Residuals   11 31.475   2.861                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_OM_am_lga)
-```
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## logArea      1   4.10   4.098   1.249  0.288
-    ## Site_type    1   3.98   3.981   1.213  0.294
-    ## Residuals   11  36.10   3.282
-
-``` r
-# p-values
-dist_p_values <- summary(FD_FRic_OM_am_dist)[[1]][, "Pr(>F)"]
-mxd_p_values <- summary(FD_FRic_OM_am_mxd)[[1]][, "Pr(>F)"]
-lga_p_values <- summary(FD_FRic_OM_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 1.0000000 1.0000000        NA 0.4124177 1.0000000        NA 1.0000000
-    ## [8] 1.0000000        NA
-
-``` r
-## Stratified lakes and ocean sites
-# Distance
-# Interaction
-FD_FRic_SO_am_dist <- aov(pd.obs ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-summary(FD_FRic_SO_am_dist)
-```
-
-    ##                                   Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## distance_to_ocean_min_m            1  38.37   38.37  21.963 0.000859 ***
-    ## Site_type                          1   7.04    7.04   4.031 0.072450 .  
-    ## distance_to_ocean_min_m:Site_type  1   0.14    0.14   0.082 0.779990    
-    ## Residuals                         10  17.47    1.75                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_SO_lm_dist <- lm(pd.obs ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_SO_lm_dist))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_SO_lm_dist)
-    ## W = 0.95634, p-value = 0.6627
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_SO_lm_dist) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value  Pr(>F)  
-    ## group  1  3.6357 0.08077 .
-    ##       12                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_SO_lm_dist)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## OOO -2.605139           0.026259      0.36762
-
-``` r
-# Plot residuals
-plot(FD_FRic_SO_lm_dist)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-22.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_SO_am_dist <- aov(pd.obs ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-
-# Max depth
-# Interaction
-FD_FRic_SO_am_mxd <- aov(pd.obs ~ max_depth * Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-summary(FD_FRic_SO_am_mxd)
-```
-
-    ##                     Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## max_depth            1   2.15    2.15   1.366 0.269577    
-    ## Site_type            1  42.68   42.68  27.177 0.000394 ***
-    ## max_depth:Site_type  1   2.50    2.50   1.592 0.235744    
-    ## Residuals           10  15.70    1.57                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_SO_lm_mxd <- lm(pd.obs ~ max_depth + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_SO_lm_mxd))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_SO_lm_mxd)
-    ## W = 0.97563, p-value = 0.9415
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_SO_lm_mxd) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  1.8103 0.2033
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_SO_lm_mxd)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## OOO -2.313651           0.043238      0.60533
-
-``` r
-# Plot residuals
-plot(FD_FRic_SO_lm_mxd)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-23.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_SO_am_mxd <- aov(pd.obs ~ max_depth + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-
-# Log area
-# Interaction
-FD_FRic_SO_am_lga <- aov(pd.obs ~ logArea * Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-summary(FD_FRic_SO_am_lga)
-```
-
-    ##                   Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## logArea            1   6.86    6.86   3.506 0.09066 . 
-    ## Site_type          1  36.53   36.53  18.660 0.00151 **
-    ## logArea:Site_type  1   0.06    0.06   0.028 0.86944   
-    ## Residuals         10  19.58    1.96                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRic_SO_lm_lga <- lm(pd.obs ~ logArea + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRic_SO_lm_lga))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRic_SO_lm_lga)
-    ## W = 0.93986, p-value = 0.4165
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRic_SO_lm_lga) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  2.4621 0.1426
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FRic_SO_lm_lga)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## OOO -2.896238           0.015936       0.2231
-
-``` r
-# Plot residuals
-plot(FD_FRic_SO_lm_lga)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-24.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRic_SO_am_lga <- aov(pd.obs ~ logArea + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-
-# Anova outputs
-summary(FD_FRic_SO_am_dist)
-```
-
-    ##                         Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## distance_to_ocean_min_m  1  38.37   38.37  23.962 0.000475 ***
-    ## Site_type                1   7.04    7.04   4.398 0.059901 .  
-    ## Residuals               11  17.61    1.60                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_SO_am_mxd)
-```
-
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## max_depth    1   2.15    2.15   1.296 0.279051    
-    ## Site_type    1  42.68   42.68  25.791 0.000356 ***
-    ## Residuals   11  18.20    1.65                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRic_SO_am_lga)
-```
-
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## logArea      1   6.86    6.86   3.845 0.075694 .  
-    ## Site_type    1  36.53   36.53  20.468 0.000866 ***
-    ## Residuals   11  19.63    1.78                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-dist_p_values <- summary(FD_FRic_SO_am_dist)[[1]][, "Pr(>F)"]
-mxd_p_values <- summary(FD_FRic_SO_am_mxd)[[1]][, "Pr(>F)"]
-lga_p_values <- summary(FD_FRic_SO_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 0.002851745 0.359404493          NA 1.000000000 0.002135062          NA
-    ## [7] 0.454163520 0.005196398          NA
-
-``` r
-## Ocean sites
-FD_FRic_geo_O_lm <- lm(pd.obs ~ distance_to_ocean_min_m + max_depth + logArea, straits_sespd_env[ocean_sites,])
-summary(FD_FRic_geo_O_lm)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = pd.obs ~ distance_to_ocean_min_m + max_depth + logArea, 
-    ##     data = straits_sespd_env[ocean_sites, ])
-    ## 
-    ## Residuals:
-    ##        IBK        LCN        NCN        OOO        OOM        RCA 
-    ##  1.981e-02 -9.885e-01  2.640e-01 -1.767e+00  2.472e+00  1.061e-16 
-    ## 
-    ## Coefficients:
-    ##                         Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)              5.45034    5.80550   0.939    0.447
-    ## distance_to_ocean_min_m -0.03765    0.13790  -0.273    0.810
-    ## max_depth                0.09485    0.10417   0.911    0.459
-    ## logArea                 -0.15504    0.51663  -0.300    0.792
-    ## 
-    ## Residual standard error: 2.267 on 2 degrees of freedom
-    ## Multiple R-squared:  0.3042, Adjusted R-squared:  -0.7395 
-    ## F-statistic: 0.2915 on 3 and 2 DF,  p-value: 0.8322
-
-``` r
-p_values <- summary(FD_FRic_geo_O_lm)$coefficients[, "Pr(>|t|)"]
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ##             (Intercept) distance_to_ocean_min_m               max_depth 
-    ##                       1                       1                       1 
-    ##                 logArea 
-    ##                       1
-
-``` r
-## Mixed lakes
-FD_FRic_geo_M_lm <- lm(pd.obs ~ distance_to_ocean_min_m + max_depth + logArea, straits_sespd_env[mixed_lakes,])
-summary(FD_FRic_geo_M_lm)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = pd.obs ~ distance_to_ocean_min_m + max_depth + logArea, 
-    ##     data = straits_sespd_env[mixed_lakes, ])
-    ## 
-    ## Residuals:
-    ##      FLK      HLO      LLN      MLN      NLN      NLU      OLO      ULN 
-    ##  0.30011 -1.28154  1.28019  0.35021  0.07125  0.93636 -2.09746  0.44088 
-    ## 
-    ## Coefficients:
-    ##                          Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)             -5.286829   4.175324  -1.266    0.274
-    ## distance_to_ocean_min_m -0.003736   0.024694  -0.151    0.887
-    ## max_depth                0.003742   0.107886   0.035    0.974
-    ## logArea                  1.114592   0.553789   2.013    0.114
-    ## 
-    ## Residual standard error: 1.497 on 4 degrees of freedom
-    ## Multiple R-squared:  0.6883, Adjusted R-squared:  0.4544 
-    ## F-statistic: 2.944 on 3 and 4 DF,  p-value: 0.162
-
-``` r
-Anova(FD_FRic_geo_M_lm, type = 3)
-```
-
-    ## Anova Table (Type III tests)
-    ## 
-    ## Response: pd.obs
-    ##                         Sum Sq Df F value Pr(>F)
-    ## (Intercept)             3.5952  1  1.6033 0.2742
-    ## distance_to_ocean_min_m 0.0513  1  0.0229 0.8871
-    ## max_depth               0.0027  1  0.0012 0.9740
-    ## logArea                 9.0835  1  4.0508 0.1145
-    ## Residuals               8.9695  4
-
-``` r
-p_values <- summary(FD_FRic_geo_M_lm)$coefficients[, "Pr(>|t|)"]
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ##             (Intercept) distance_to_ocean_min_m               max_depth 
-    ##               1.0000000               1.0000000               1.0000000 
-    ##                 logArea 
-    ##               0.4578011
-
-``` r
-## Stratified lakes
-FD_FRic_geo_S_lm <- lm(pd.obs ~ distance_to_ocean_min_m + max_depth + logArea, straits_sespd_env[stratified_lakes,])
-summary(FD_FRic_geo_S_lm)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = pd.obs ~ distance_to_ocean_min_m + max_depth + logArea, 
-    ##     data = straits_sespd_env[stratified_lakes, ])
-    ## 
-    ## Residuals:
-    ##      BCM      CLM      GLK      HLM      NLK      OTM      SLN      TLN 
-    ##  0.28109  0.03543 -0.69191  0.77942  0.06441 -0.99440 -0.17502  0.70099 
-    ## 
-    ## Coefficients:
-    ##                          Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)              1.347056   5.042038   0.267    0.803
-    ## distance_to_ocean_min_m -0.007740   0.004284  -1.806    0.145
-    ## max_depth               -0.003928   0.060853  -0.065    0.952
-    ## logArea                  0.119809   0.623743   0.192    0.857
-    ## 
-    ## Residual standard error: 0.8188 on 4 degrees of freedom
-    ## Multiple R-squared:  0.4521, Adjusted R-squared:  0.04109 
-    ## F-statistic:   1.1 on 3 and 4 DF,  p-value: 0.4463
-
-``` r
-Anova(FD_FRic_geo_S_lm, type = 3)
-```
-
-    ## Anova Table (Type III tests)
-    ## 
-    ## Response: pd.obs
-    ##                          Sum Sq Df F value Pr(>F)
-    ## (Intercept)             0.04785  1  0.0714 0.8026
-    ## distance_to_ocean_min_m 2.18772  1  3.2634 0.1451
-    ## max_depth               0.00279  1  0.0042 0.9516
-    ## logArea                 0.02473  1  0.0369 0.8570
-    ## Residuals               2.68150  4
-
-``` r
-p_values <- summary(FD_FRic_geo_S_lm)$coefficients[, "Pr(>|t|)"]
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ##             (Intercept) distance_to_ocean_min_m               max_depth 
-    ##               1.0000000               0.5805503               1.0000000 
-    ##                 logArea 
-    ##               1.0000000
-
-``` r
-#### Environmental
-### FRicz ANOVA
-## Surveyed sites
-# Temperature
-# Interaction
-FD_FRicz_am_temp <- aov(pd.obs.z ~ temperature_median * Site_type, data = straits_sespd_env[surveyed_sites_env,])
+# Summarize the ANOVA results
 summary(FD_FRicz_am_temp)
 ```
 
     ##                              Df Sum Sq Mean Sq F value Pr(>F)  
-    ## temperature_median            1   0.07   0.070   0.048 0.8297  
-    ## Site_type                     2   8.95   4.475   3.070 0.0809 .
-    ## temperature_median:Site_type  2   3.73   1.865   1.280 0.3110  
-    ## Residuals                    13  18.95   1.458                 
+    ## Site_type                     2  9.003   4.502   3.088 0.0799 .
+    ## temperature_median            1  0.017   0.017   0.012 0.9155  
+    ## Site_type:temperature_median  2  3.730   1.865   1.280 0.3110  
+    ## Residuals                    13 18.949   1.458                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-# Linear model
-FD_FRicz_lm_temp <- lm(pd.obs.z ~ temperature_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
+# ANCOVA
+FD_FRicz_am_temp <- aov(pd.obs.z ~ Site_type + temperature_median, data = straits_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_lm_temp))
+shapiro.test(residuals(FD_FRicz_am_temp))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FRicz_lm_temp)
+    ## data:  residuals(FD_FRicz_am_temp)
     ## W = 0.93906, p-value = 0.2536
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_lm_temp) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_am_temp) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3448,7 +1455,7 @@ car::leveneTest(residuals(FD_FRicz_lm_temp) ~ straits_sespd_env[surveyed_sites_e
 
 ``` r
 # Check for outliers
-outlierTest(FD_FRicz_lm_temp)
+outlierTest(FD_FRicz_am_temp)
 ```
 
     ## No Studentized residuals with Bonferroni p < 0.05
@@ -3458,45 +1465,81 @@ outlierTest(FD_FRicz_lm_temp)
 
 ``` r
 # Plot residuals
-plot(FD_FRicz_lm_temp)
+plot(FD_FRicz_am_temp)
 ```
 
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-25.png)<!-- -->
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-2.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FRicz_am_temp <- aov(pd.obs.z ~ temperature_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
-
-# Salinity
+## Salinity
 # Interaction
-FD_FRicz_am_sal <- aov(pd.obs.z ~ salinity_median * Site_type, data = straits_sespd_env[surveyed_sites_env,])
-summary(FD_FRicz_am_sal)
-```
-
-    ##                           Df Sum Sq Mean Sq F value Pr(>F)  
-    ## salinity_median            1  1.106   1.106   0.757 0.4001  
-    ## Site_type                  2  8.764   4.382   2.999 0.0849 .
-    ## salinity_median:Site_type  2  2.838   1.419   0.971 0.4044  
-    ## Residuals                 13 18.991   1.461                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_lm_sal <- lm(pd.obs.z ~ salinity_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
+FD_FRicz_am_sal <- aov(pd.obs.z ~ Site_type * salinity_median, data = straits_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_lm_sal))
+shapiro.test(residuals(FD_FRicz_am_sal))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FRicz_lm_sal)
+    ## data:  residuals(FD_FRicz_am_sal)
+    ## W = 0.90983, p-value = 0.07351
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(FD_FRicz_am_sal) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value Pr(>F)
+    ## group  2  0.6958 0.5131
+    ##       16
+
+``` r
+# Check for outliers
+outlierTest(FD_FRicz_am_sal)
+```
+
+    ## No Studentized residuals with Bonferroni p < 0.05
+    ## Largest |rstudent|:
+    ##      rstudent unadjusted p-value Bonferroni p
+    ## HLO -3.174753          0.0079987      0.15198
+
+``` r
+# Plot residuals
+plot(FD_FRicz_am_sal)
+```
+
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-3.png)<!-- -->
+
+``` r
+# Summarize the ANOVA results
+summary(FD_FRicz_am_sal)
+```
+
+    ##                           Df Sum Sq Mean Sq F value Pr(>F)  
+    ## Site_type                  2  9.003   4.502   3.081 0.0803 .
+    ## salinity_median            1  0.866   0.866   0.593 0.4551  
+    ## Site_type:salinity_median  2  2.838   1.419   0.971 0.4044  
+    ## Residuals                 13 18.991   1.461                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# ANCOVA
+FD_FRicz_am_sal <- aov(pd.obs.z ~ Site_type + salinity_median, data = straits_sespd_env[surveyed_sites_env,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_am_sal))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(FD_FRicz_am_sal)
     ## W = 0.93044, p-value = 0.1764
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_lm_sal) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_am_sal) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3506,7 +1549,7 @@ car::leveneTest(residuals(FD_FRicz_lm_sal) ~ straits_sespd_env[surveyed_sites_en
 
 ``` r
 # Check for outliers
-outlierTest(FD_FRicz_lm_sal)
+outlierTest(FD_FRicz_am_sal)
 ```
 
     ## No Studentized residuals with Bonferroni p < 0.05
@@ -3516,45 +1559,84 @@ outlierTest(FD_FRicz_lm_sal)
 
 ``` r
 # Plot residuals
-plot(FD_FRicz_lm_sal)
+plot(FD_FRicz_am_sal)
 ```
 
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-26.png)<!-- -->
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-4.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FRicz_am_sal <- aov(pd.obs.z ~ salinity_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
-
-# Oxygen
+## Oxygen
 # Interaction
-FD_FRicz_am_oxy <- aov(pd.obs.z ~ oxygen_median * Site_type, data = straits_sespd_env[surveyed_sites_env,])
-summary(FD_FRicz_am_oxy)
-```
-
-    ##                         Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## oxygen_median            1 13.802  13.802  19.556 0.000689 ***
-    ## Site_type                2  3.934   1.967   2.787 0.098362 .  
-    ## oxygen_median:Site_type  2  4.789   2.394   3.392 0.065233 .  
-    ## Residuals               13  9.175   0.706                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_lm_oxy <- lm(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
+FD_FRicz_am_oxy <- aov(pd.obs.z ~ Site_type * oxygen_median, data = straits_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_lm_oxy))
+shapiro.test(residuals(FD_FRicz_am_oxy))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FRicz_lm_oxy)
+    ## data:  residuals(FD_FRicz_am_oxy)
+    ## W = 0.95447, p-value = 0.4691
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(FD_FRicz_am_oxy) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value Pr(>F)
+    ## group  2  1.1446 0.3431
+    ##       16
+
+``` r
+# Check for outliers
+outlierTest(FD_FRicz_am_oxy)
+```
+
+    ## No Studentized residuals with Bonferroni p < 0.05
+    ## Largest |rstudent|:
+    ##      rstudent unadjusted p-value Bonferroni p
+    ## HLO -3.677548           0.003163     0.060097
+
+``` r
+# Plot residuals
+plot(FD_FRicz_am_oxy)
+```
+
+    ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
+    ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
+
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-5.png)<!-- -->
+
+``` r
+# Summarize the ANOVA results
+summary(FD_FRicz_am_oxy)
+```
+
+    ##                         Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## Site_type                2  9.003   4.502   6.378 0.01174 * 
+    ## oxygen_median            1  8.732   8.732  12.373 0.00378 **
+    ## Site_type:oxygen_median  2  4.789   2.394   3.392 0.06523 . 
+    ## Residuals               13  9.175   0.706                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# ANCOVA
+FD_FRicz_am_oxy <- aov(pd.obs.z ~ Site_type + oxygen_median, data = straits_sespd_env[surveyed_sites_env,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_am_oxy))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(FD_FRicz_am_oxy)
     ## W = 0.94666, p-value = 0.3461
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_lm_oxy) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_am_oxy) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3564,7 +1646,7 @@ car::leveneTest(residuals(FD_FRicz_lm_oxy) ~ straits_sespd_env[surveyed_sites_en
 
 ``` r
 # Check for outliers
-outlierTest(FD_FRicz_lm_oxy)
+outlierTest(FD_FRicz_am_oxy)
 ```
 
     ## No Studentized residuals with Bonferroni p < 0.05
@@ -3574,47 +1656,80 @@ outlierTest(FD_FRicz_lm_oxy)
 
 ``` r
 # Plot residuals
-plot(FD_FRicz_lm_oxy)
+plot(FD_FRicz_am_oxy)
 ```
 
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-27.png)<!-- -->
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-6.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FRicz_am_oxy <- aov(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
-
-# Anova outputs
+# Summarize ANOVA results and calculate pairwise comparisons
 summary(FD_FRicz_am_temp)
 ```
 
     ##                    Df Sum Sq Mean Sq F value Pr(>F)  
-    ## temperature_median  1   0.07   0.070   0.046 0.8323  
-    ## Site_type           2   8.95   4.475   2.960 0.0825 .
-    ## Residuals          15  22.68   1.512                 
+    ## Site_type           2  9.003   4.502   2.977 0.0815 .
+    ## temperature_median  1  0.017   0.017   0.011 0.9168  
+    ## Residuals          15 22.679   1.512                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+FD_FRicz_amp_temp <- emmeans(FD_FRicz_am_temp, pairwise ~ Site_type, adjust = "bonferroni")
+FD_FRicz_amp_temp$contrasts
+```
+
+    ##  contrast           estimate    SE df t.ratio p.value
+    ##  Ocean - Mixed        -1.572 0.837 15  -1.877  0.2402
+    ##  Ocean - Stratified   -2.040 0.844 15  -2.418  0.0864
+    ##  Mixed - Stratified   -0.468 0.655 15  -0.714  1.0000
+    ## 
+    ## P value adjustment: bonferroni method for 3 tests
 
 ``` r
 summary(FD_FRicz_am_sal)
 ```
 
     ##                 Df Sum Sq Mean Sq F value Pr(>F)  
-    ## salinity_median  1  1.106   1.106   0.760 0.3971  
-    ## Site_type        2  8.764   4.382   3.011 0.0796 .
+    ## Site_type        2  9.003   4.502   3.093  0.075 .
+    ## salinity_median  1  0.866   0.866   0.595  0.452  
     ## Residuals       15 21.830   1.455                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+FD_FRicz_amp_sal <- emmeans(FD_FRicz_am_sal, pairwise ~ Site_type, adjust = "bonferroni")
+FD_FRicz_amp_sal$contrasts
+```
+
+    ##  contrast           estimate    SE df t.ratio p.value
+    ##  Ocean - Mixed        -1.638 0.820 15  -1.997  0.1928
+    ##  Ocean - Stratified   -2.629 1.130 15  -2.324  0.1037
+    ##  Mixed - Stratified   -0.991 0.931 15  -1.064  0.9122
+    ## 
+    ## P value adjustment: bonferroni method for 3 tests
 
 ``` r
 summary(FD_FRicz_am_oxy)
 ```
 
     ##               Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## oxygen_median  1 13.802  13.802  14.827 0.00157 **
-    ## Site_type      2  3.934   1.967   2.113 0.15545   
+    ## Site_type      2  9.003   4.502   4.836 0.02395 * 
+    ## oxygen_median  1  8.732   8.732   9.381 0.00789 **
     ## Residuals     15 13.964   0.931                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+FD_FRicz_amp_oxy <- emmeans(FD_FRicz_am_oxy, pairwise ~ Site_type, adjust = "bonferroni")
+FD_FRicz_amp_oxy$contrasts
+```
+
+    ##  contrast           estimate    SE df t.ratio p.value
+    ##  Ocean - Mixed        -0.632 0.723 15  -0.874  1.0000
+    ##  Ocean - Stratified    0.678 1.100 15   0.618  1.0000
+    ##  Mixed - Stratified    1.310 0.749 15   1.750  0.3017
+    ## 
+    ## P value adjustment: bonferroni method for 3 tests
 
 ``` r
 # p-values
@@ -3625,685 +1740,11 @@ p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## [1] 1.000000000 0.495084590          NA 1.000000000 0.477342093          NA
-    ## [7] 0.009433285 0.932703910          NA
+    ## [1] 0.48888764 1.00000000         NA 0.45019983 1.00000000         NA 0.14367016
+    ## [8] 0.04736936         NA
 
 ``` r
-## Mixed and stratified lakes
-# Temperature
-# Interaction
-FD_FRicz_MS_am_temp <- aov(pd.obs.z ~ temperature_median * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FRicz_MS_am_temp)
-```
-
-    ##                              Df Sum Sq Mean Sq F value Pr(>F)
-    ## temperature_median            1  0.449  0.4494   0.319  0.582
-    ## Site_type                     1  0.482  0.4817   0.342  0.569
-    ## temperature_median:Site_type  1  0.017  0.0166   0.012  0.915
-    ## Residuals                    12 16.883  1.4069
-
-``` r
-# Linear model
-FD_FRicz_MS_lm_temp <- lm(pd.obs.z ~ temperature_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_MS_lm_temp))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_MS_lm_temp)
-    ## W = 0.87522, p-value = 0.03272
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_MS_lm_temp) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.6622 0.4294
-    ##       14
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_MS_lm_temp)
-```
-
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## HLO -4.228046           0.001172     0.018753
-
-``` r
-# Plot residuals
-plot(FD_FRicz_MS_lm_temp)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-28.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_MS_am_temp <- aov(pd.obs.z ~ temperature_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Salinity
-# Interaction
-FD_FRicz_MS_am_sal <- aov(pd.obs.z ~ salinity_median * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FRicz_MS_am_sal)
-```
-
-    ##                           Df Sum Sq Mean Sq F value Pr(>F)
-    ## salinity_median            1  0.007  0.0066   0.006  0.941
-    ## Site_type                  1  1.625  1.6255   1.425  0.256
-    ## salinity_median:Site_type  1  2.509  2.5089   2.199  0.164
-    ## Residuals                 12 13.689  1.1408
-
-``` r
-# Linear model
-FD_FRicz_MS_lm_sal <- lm(pd.obs.z ~ salinity_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_MS_lm_sal))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_MS_lm_sal)
-    ## W = 0.88125, p-value = 0.04059
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_MS_lm_sal) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  1.7504  0.207
-    ##       14
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_MS_lm_sal)
-```
-
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## HLO -4.369859         0.00091241     0.014599
-
-``` r
-# Plot residuals
-plot(FD_FRicz_MS_lm_sal)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-29.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_MS_am_sal <- aov(pd.obs.z ~ salinity_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Oxygen
-# Interaction
-FD_FRicz_MS_am_oxy <- aov(pd.obs.z ~ oxygen_median * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FRicz_MS_am_oxy)
-```
-
-    ##                         Df Sum Sq Mean Sq F value Pr(>F)  
-    ## oxygen_median            1  5.366   5.366   7.503  0.018 *
-    ## Site_type                1  1.991   1.991   2.784  0.121  
-    ## oxygen_median:Site_type  1  1.892   1.892   2.646  0.130  
-    ## Residuals               12  8.582   0.715                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_MS_lm_oxy <- lm(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_MS_lm_oxy))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_MS_lm_oxy)
-    ## W = 0.89461, p-value = 0.06592
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_MS_lm_oxy) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  1.2034 0.2912
-    ##       14
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_MS_lm_oxy)
-```
-
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## HLO -4.572916         0.00064024     0.010244
-
-``` r
-# Plot residuals
-plot(FD_FRicz_MS_lm_oxy)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-30.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_MS_am_oxy <- aov(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Anova outputs
-summary(FD_FRicz_MS_am_temp)
-```
-
-    ##                    Df Sum Sq Mean Sq F value Pr(>F)
-    ## temperature_median  1  0.449  0.4494   0.346  0.567
-    ## Site_type           1  0.482  0.4817   0.371  0.553
-    ## Residuals          13 16.899  1.2999
-
-``` r
-summary(FD_FRicz_MS_am_sal)
-```
-
-    ##                 Df Sum Sq Mean Sq F value Pr(>F)
-    ## salinity_median  1  0.007  0.0066   0.005  0.943
-    ## Site_type        1  1.625  1.6255   1.305  0.274
-    ## Residuals       13 16.198  1.2460
-
-``` r
-summary(FD_FRicz_MS_am_oxy)
-```
-
-    ##               Df Sum Sq Mean Sq F value Pr(>F)  
-    ## oxygen_median  1  5.366   5.366   6.659 0.0228 *
-    ## Site_type      1  1.991   1.991   2.471 0.1400  
-    ## Residuals     13 10.474   0.806                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-temp_p_values <- summary(FD_FRicz_MS_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(FD_FRicz_MS_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(FD_FRicz_MS_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 1.0000000 1.0000000        NA 1.0000000 1.0000000        NA 0.1369852
-    ## [8] 0.8399704        NA
-
-``` r
-## Ocean sites and mixed lakes
-# Temperature
-# Interaction
-FD_FRicz_OM_am_temp <- aov(pd.obs.z ~ temperature_median * Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-summary(FD_FRicz_OM_am_temp)
-```
-
-    ##                              Df Sum Sq Mean Sq F value Pr(>F)
-    ## temperature_median            1  2.140   2.140   0.975  0.356
-    ## Site_type                     1  4.181   4.181   1.905  0.210
-    ## temperature_median:Site_type  1  2.790   2.790   1.271  0.297
-    ## Residuals                     7 15.361   2.194
-
-``` r
-# Linear model
-FD_FRicz_OM_lm_temp <- lm(pd.obs.z ~ temperature_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_OM_lm_temp))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_OM_lm_temp)
-    ## W = 0.91006, p-value = 0.2443
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_OM_lm_temp) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.0447 0.8373
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_OM_lm_temp)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## HLO -2.651285            0.03288      0.36168
-
-``` r
-# Plot residuals
-plot(FD_FRicz_OM_lm_temp)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-31.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_OM_am_temp <- aov(pd.obs.z ~ temperature_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-
-# Salinity
-# Interaction
-FD_FRicz_OM_am_sal <- aov(pd.obs.z ~ salinity_median * Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-summary(FD_FRicz_OM_am_sal)
-```
-
-    ##                           Df Sum Sq Mean Sq F value Pr(>F)
-    ## salinity_median            1  6.094   6.094   2.582  0.152
-    ## Site_type                  1  1.171   1.171   0.496  0.504
-    ## salinity_median:Site_type  1  0.684   0.684   0.290  0.607
-    ## Residuals                  7 16.523   2.360
-
-``` r
-# Linear model
-FD_FRicz_OM_lm_sal <- lm(pd.obs.z ~ salinity_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_OM_lm_sal))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_OM_lm_sal)
-    ## W = 0.9331, p-value = 0.443
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_OM_lm_sal) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1   0.232 0.6415
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_OM_lm_sal)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## HLO -2.704229           0.030452      0.33497
-
-``` r
-# Plot residuals
-plot(FD_FRicz_OM_lm_sal)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-32.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_OM_am_sal <- aov(pd.obs.z ~ salinity_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-
-# Oxygen
-# Interaction
-FD_FRicz_OM_am_oxy <- aov(pd.obs.z ~ oxygen_median * Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-summary(FD_FRicz_OM_am_oxy)
-```
-
-    ##                         Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## oxygen_median            1 15.276  15.276  13.937 0.00733 **
-    ## Site_type                1  0.092   0.092   0.084 0.78016   
-    ## oxygen_median:Site_type  1  1.430   1.430   1.304 0.29098   
-    ## Residuals                7  7.673   1.096                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_OM_lm_oxy <- lm(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_OM_lm_oxy))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_OM_lm_oxy)
-    ## W = 0.94178, p-value = 0.5416
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_OM_lm_oxy) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.0387 0.8484
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_OM_lm_oxy)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## HLO -2.207066            0.06307      0.69377
-
-``` r
-# Plot residuals
-plot(FD_FRicz_OM_lm_oxy)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-33.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_OM_am_oxy <- aov(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-
-# Anova outputs
-summary(FD_FRicz_OM_am_temp)
-```
-
-    ##                    Df Sum Sq Mean Sq F value Pr(>F)
-    ## temperature_median  1  2.140   2.140   0.943  0.360
-    ## Site_type           1  4.181   4.181   1.843  0.212
-    ## Residuals           8 18.150   2.269
-
-``` r
-summary(FD_FRicz_OM_am_sal)
-```
-
-    ##                 Df Sum Sq Mean Sq F value Pr(>F)
-    ## salinity_median  1  6.094   6.094   2.833  0.131
-    ## Site_type        1  1.171   1.171   0.544  0.482
-    ## Residuals        8 17.206   2.151
-
-``` r
-summary(FD_FRicz_OM_am_oxy)
-```
-
-    ##               Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## oxygen_median  1 15.276  15.276  13.426 0.00636 **
-    ## Site_type      1  0.092   0.092   0.081 0.78309   
-    ## Residuals      8  9.102   1.138                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-temp_p_values <- summary(FD_FRicz_OM_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(FD_FRicz_OM_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(FD_FRicz_OM_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 1.0000000 1.0000000        NA 0.7850049 1.0000000        NA 0.0381785
-    ## [8] 1.0000000        NA
-
-``` r
-## Stratified lakes and ocean sites
-# Temperature
-# Interaction
-FD_FRicz_SO_am_temp <- aov(pd.obs.z ~ temperature_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-summary(FD_FRicz_SO_am_temp)
-```
-
-    ##                              Df Sum Sq Mean Sq F value Pr(>F)  
-    ## temperature_median            1  0.081   0.081   0.100 0.7614  
-    ## Site_type                     1  8.924   8.924  11.047 0.0127 *
-    ## temperature_median:Site_type  1  3.625   3.625   4.488 0.0719 .
-    ## Residuals                     7  5.654   0.808                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_SO_lm_temp <- lm(pd.obs.z ~ temperature_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_SO_lm_temp))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_SO_lm_temp)
-    ## W = 0.97158, p-value = 0.902
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_SO_lm_temp) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  1.6492 0.2311
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_SO_lm_temp)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## IBK -2.733159           0.029205      0.32126
-
-``` r
-# Plot residuals
-plot(FD_FRicz_SO_lm_temp)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-34.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_SO_am_temp <- aov(pd.obs.z ~ temperature_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-
-# Salinity
-# Interaction
-FD_FRicz_SO_am_sal <- aov(pd.obs.z ~ salinity_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-summary(FD_FRicz_SO_am_sal)
-```
-
-    ##                           Df Sum Sq Mean Sq F value Pr(>F)  
-    ## salinity_median            1  1.628   1.628   1.467 0.2652  
-    ## Site_type                  1  8.560   8.560   7.711 0.0274 *
-    ## salinity_median:Site_type  1  0.325   0.325   0.293 0.6051  
-    ## Residuals                  7  7.771   1.110                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_SO_lm_sal <- lm(pd.obs.z ~ salinity_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_SO_lm_sal))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_SO_lm_sal)
-    ## W = 0.97663, p-value = 0.9445
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_SO_lm_sal) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  2.9245 0.1214
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_SO_lm_sal)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## IBK -3.133086           0.016538      0.18192
-
-``` r
-# Plot residuals
-plot(FD_FRicz_SO_lm_sal)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-35.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_SO_am_sal <- aov(pd.obs.z ~ salinity_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-
-# Oxygen
-# Interaction
-FD_FRicz_SO_am_oxy <- aov(pd.obs.z ~ oxygen_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-summary(FD_FRicz_SO_am_oxy)
-```
-
-    ##                         Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## oxygen_median            1 12.754  12.754  42.608 0.000326 ***
-    ## Site_type                1  0.001   0.001   0.005 0.945846    
-    ## oxygen_median:Site_type  1  3.433   3.433  11.470 0.011651 *  
-    ## Residuals                7  2.095   0.299                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_SO_lm_oxy <- lm(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_SO_lm_oxy))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_SO_lm_oxy)
-    ## W = 0.97317, p-value = 0.9167
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_SO_lm_oxy) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  3.0943 0.1124
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_SO_lm_oxy)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## IBK -3.03707           0.018925      0.20817
-
-``` r
-# Plot residuals
-plot(FD_FRicz_SO_lm_oxy)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-36.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_SO_am_oxy <- aov(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-
-# Anova outputs
-summary(FD_FRicz_SO_am_temp)
-```
-
-    ##                    Df Sum Sq Mean Sq F value Pr(>F)  
-    ## temperature_median  1  0.081   0.081   0.069 0.7988  
-    ## Site_type           1  8.924   8.924   7.693 0.0242 *
-    ## Residuals           8  9.280   1.160                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRicz_SO_am_sal)
-```
-
-    ##                 Df Sum Sq Mean Sq F value Pr(>F)  
-    ## salinity_median  1  1.628   1.628   1.609 0.2403  
-    ## Site_type        1  8.560   8.560   8.458 0.0196 *
-    ## Residuals        8  8.096   1.012                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRicz_SO_am_oxy)
-```
-
-    ##               Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## oxygen_median  1 12.754  12.754  18.455 0.00263 **
-    ## Site_type      1  0.001   0.001   0.002 0.96418   
-    ## Residuals      8  5.529   0.691                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-temp_p_values <- summary(FD_FRicz_SO_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(FD_FRicz_SO_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(FD_FRicz_SO_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 1.00000000 0.14497654         NA 1.00000000 0.11784608         NA 0.01578116
-    ## [8] 1.00000000         NA
-
-``` r
-## Ocean sites
-FD_FRicz_env_O_lm <- lm(pd.obs.z ~ salinity_median + oxygen_median + temperature_median, straits_sespd_env[ocean_sites_env,])
-summary(FD_FRicz_env_O_lm)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = pd.obs.z ~ salinity_median + oxygen_median + temperature_median, 
-    ##     data = straits_sespd_env[ocean_sites_env, ])
-    ## 
-    ## Residuals:
-    ## ALL 3 residuals are 0: no residual degrees of freedom!
-    ## 
-    ## Coefficients: (1 not defined because of singularities)
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)        -114.556        NaN     NaN      NaN
-    ## salinity_median       4.138        NaN     NaN      NaN
-    ## oxygen_median        -4.765        NaN     NaN      NaN
-    ## temperature_median       NA         NA      NA       NA
-    ## 
-    ## Residual standard error: NaN on 0 degrees of freedom
-    ## Multiple R-squared:      1,  Adjusted R-squared:    NaN 
-    ## F-statistic:   NaN on 2 and 0 DF,  p-value: NA
-
-``` r
-p_values <- summary(FD_FRicz_env_O_lm)$coefficients[, "Pr(>|t|)"]
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ##     (Intercept) salinity_median   oxygen_median 
-    ##             NaN             NaN             NaN
-
-``` r
-## Mixed lakes
+### Mixed lakes
 FD_FRicz_env_M_lm <- lm(pd.obs.z ~ salinity_median + oxygen_median + temperature_median, straits_sespd_env[mixed_lakes,])
 summary(FD_FRicz_env_M_lm)
 ```
@@ -4351,7 +1792,7 @@ p_values <- summary(FD_FRicz_env_M_lm)$coefficients[, "Pr(>|t|)"]
     ##          1.0000000          1.0000000          0.7684344          1.0000000
 
 ``` r
-## Stratified lakes
+### Stratified lakes
 FD_FRicz_env_S_lm <- lm(pd.obs.z ~ salinity_median + oxygen_median + temperature_median, straits_sespd_env[stratified_lakes,])
 summary(FD_FRicz_env_S_lm)
 ```
@@ -4400,38 +1841,81 @@ p_values <- summary(FD_FRicz_env_S_lm)$coefficients[, "Pr(>|t|)"]
 
 ``` r
 #### Geographical
-### FRicz ANOVA
-## Surveyed sites
-# Distance
+### Surveyed sites
+## Distance
 # Interaction
-FD_FRicz_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[surveyed_sites,])
-summary(FD_FRicz_am_dist)
-```
-
-    ##                                   Df Sum Sq Mean Sq F value Pr(>F)  
-    ## distance_to_ocean_min_m            1  5.206   5.206   4.137 0.0589 .
-    ## Site_type                          2  9.126   4.563   3.626 0.0503 .
-    ## distance_to_ocean_min_m:Site_type  2  5.601   2.801   2.226 0.1403  
-    ## Residuals                         16 20.132   1.258                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[surveyed_sites,])
+FD_FRicz_am_dist <- aov(pd.obs.z ~ Site_type * distance_to_ocean_min_m, data = straits_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_lm_dist))
+shapiro.test(residuals(FD_FRicz_am_dist))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FRicz_lm_dist)
+    ## data:  residuals(FD_FRicz_am_dist)
+    ## W = 0.95485, p-value = 0.3927
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(FD_FRicz_am_dist) ~ straits_sespd_env[surveyed_sites,"Site_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value  Pr(>F)  
+    ## group  2  2.8964 0.07981 .
+    ##       19                  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# Check for outliers
+outlierTest(FD_FRicz_am_dist)
+```
+
+    ## No Studentized residuals with Bonferroni p < 0.05
+    ## Largest |rstudent|:
+    ##      rstudent unadjusted p-value Bonferroni p
+    ## HLO -2.614257           0.019536      0.41026
+
+``` r
+# Plot residuals
+plot(FD_FRicz_am_dist)
+```
+
+    ## Warning: not plotting observations with leverage one:
+    ##   19
+
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-7.png)<!-- -->
+
+``` r
+# Summarize the ANOVA results
+summary(FD_FRicz_am_dist)
+```
+
+    ##                                   Df Sum Sq Mean Sq F value Pr(>F)  
+    ## Site_type                          2 13.829   6.915   5.495 0.0152 *
+    ## distance_to_ocean_min_m            1  0.502   0.502   0.399 0.5365  
+    ## Site_type:distance_to_ocean_min_m  2  5.601   2.801   2.226 0.1403  
+    ## Residuals                         16 20.132   1.258                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# ANCOVA
+FD_FRicz_am_dist <- aov(pd.obs.z ~ Site_type + distance_to_ocean_min_m, data = straits_sespd_env[surveyed_sites,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_am_dist))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(FD_FRicz_am_dist)
     ## W = 0.92361, p-value = 0.09034
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_lm_dist) ~ straits_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_am_dist) ~ straits_sespd_env[surveyed_sites,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -4441,7 +1925,7 @@ car::leveneTest(residuals(FD_FRicz_lm_dist) ~ straits_sespd_env[surveyed_sites,"
 
 ``` r
 # Check for outliers
-outlierTest(FD_FRicz_lm_dist)
+outlierTest(FD_FRicz_am_dist)
 ```
 
     ##      rstudent unadjusted p-value Bonferroni p
@@ -4449,45 +1933,81 @@ outlierTest(FD_FRicz_lm_dist)
 
 ``` r
 # Plot residuals
-plot(FD_FRicz_lm_dist)
+plot(FD_FRicz_am_dist)
 ```
 
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-37.png)<!-- -->
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-8.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FRicz_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[surveyed_sites,])
-
-# Max depth
+## Max Depth
 # Interaction
-FD_FRicz_am_mxd <- aov(pd.obs.z ~ max_depth * Site_type, data = straits_sespd_env[surveyed_sites,])
-summary(FD_FRicz_am_mxd)
-```
-
-    ##                     Df Sum Sq Mean Sq F value Pr(>F)   
-    ## max_depth            1  1.176   1.176   1.153 0.2989   
-    ## Site_type            2 17.723   8.861   8.683 0.0028 **
-    ## max_depth:Site_type  2  4.836   2.418   2.369 0.1255   
-    ## Residuals           16 16.329   1.021                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_lm_mxd <- lm(pd.obs.z ~ max_depth + Site_type, data = straits_sespd_env[surveyed_sites,])
+FD_FRicz_am_mxd <- aov(pd.obs.z ~ Site_type * max_depth, data = straits_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_lm_mxd))
+shapiro.test(residuals(FD_FRicz_am_mxd))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FRicz_lm_mxd)
+    ## data:  residuals(FD_FRicz_am_mxd)
+    ## W = 0.97462, p-value = 0.8148
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(FD_FRicz_am_mxd) ~ straits_sespd_env[surveyed_sites,"Site_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value Pr(>F)
+    ## group  2  0.2106  0.812
+    ##       19
+
+``` r
+# Check for outliers
+outlierTest(FD_FRicz_am_mxd)
+```
+
+    ## No Studentized residuals with Bonferroni p < 0.05
+    ## Largest |rstudent|:
+    ##      rstudent unadjusted p-value Bonferroni p
+    ## HLO -2.591101           0.020458      0.45008
+
+``` r
+# Plot residuals
+plot(FD_FRicz_am_mxd)
+```
+
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-9.png)<!-- -->
+
+``` r
+# Summarize the ANOVA results
+summary(FD_FRicz_am_mxd)
+```
+
+    ##                     Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## Site_type            2 13.829   6.915   6.775 0.00739 **
+    ## max_depth            1  5.070   5.070   4.968 0.04051 * 
+    ## Site_type:max_depth  2  4.836   2.418   2.369 0.12552   
+    ## Residuals           16 16.329   1.021                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# ANCOVA
+FD_FRicz_am_mxd <- aov(pd.obs.z ~ Site_type + max_depth, data = straits_sespd_env[surveyed_sites,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_am_mxd))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(FD_FRicz_am_mxd)
     ## W = 0.91886, p-value = 0.072
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_lm_mxd) ~ straits_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_am_mxd) ~ straits_sespd_env[surveyed_sites,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -4497,7 +2017,7 @@ car::leveneTest(residuals(FD_FRicz_lm_mxd) ~ straits_sespd_env[surveyed_sites,"S
 
 ``` r
 # Check for outliers
-outlierTest(FD_FRicz_lm_mxd)
+outlierTest(FD_FRicz_am_mxd)
 ```
 
     ## No Studentized residuals with Bonferroni p < 0.05
@@ -4507,45 +2027,79 @@ outlierTest(FD_FRicz_lm_mxd)
 
 ``` r
 # Plot residuals
-plot(FD_FRicz_lm_mxd)
+plot(FD_FRicz_am_mxd)
 ```
 
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-38.png)<!-- -->
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-10.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FRicz_am_mxd <- aov(pd.obs.z ~ max_depth + Site_type, data = straits_sespd_env[surveyed_sites,])
-
-# Log area
+## Log Area
 # Interaction
-FD_FRicz_am_lga <- aov(pd.obs.z ~ logArea * Site_type, data = straits_sespd_env[surveyed_sites,])
-summary(FD_FRicz_am_lga)
-```
-
-    ##                   Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## logArea            1 13.537  13.537  12.053 0.00315 **
-    ## Site_type          2  6.788   3.394   3.022 0.07704 . 
-    ## logArea:Site_type  2  1.769   0.885   0.788 0.47175   
-    ## Residuals         16 17.970   1.123                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_lm_lga <- lm(pd.obs.z ~ logArea + Site_type, data = straits_sespd_env[surveyed_sites,])
+FD_FRicz_am_lga <- aov(pd.obs.z ~ Site_type * logArea, data = straits_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_lm_lga))
+shapiro.test(residuals(FD_FRicz_am_lga))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FRicz_lm_lga)
+    ## data:  residuals(FD_FRicz_am_lga)
+    ## W = 0.91956, p-value = 0.07443
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(FD_FRicz_am_lga) ~ straits_sespd_env[surveyed_sites,"Site_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value Pr(>F)
+    ## group  2  0.0837   0.92
+    ##       19
+
+``` r
+# Check for outliers
+outlierTest(FD_FRicz_am_lga)
+```
+
+    ##      rstudent unadjusted p-value Bonferroni p
+    ## HLO -3.909146           0.001395     0.030689
+
+``` r
+# Plot residuals
+plot(FD_FRicz_am_lga)
+```
+
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-11.png)<!-- -->
+
+``` r
+# Summarize the ANOVA results
+summary(FD_FRicz_am_lga)
+```
+
+    ##                   Df Sum Sq Mean Sq F value Pr(>F)  
+    ## Site_type          2 13.829   6.915   6.156 0.0104 *
+    ## logArea            1  6.496   6.496   5.784 0.0286 *
+    ## Site_type:logArea  2  1.769   0.885   0.788 0.4717  
+    ## Residuals         16 17.970   1.123                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# ANCOVA
+FD_FRicz_am_lga <- aov(pd.obs.z ~ Site_type + logArea, data = straits_sespd_env[surveyed_sites,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_am_lga))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(FD_FRicz_am_lga)
     ## W = 0.91604, p-value = 0.06296
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_lm_lga) ~ straits_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_am_lga) ~ straits_sespd_env[surveyed_sites,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -4555,7 +2109,7 @@ car::leveneTest(residuals(FD_FRicz_lm_lga) ~ straits_sespd_env[surveyed_sites,"S
 
 ``` r
 # Check for outliers
-outlierTest(FD_FRicz_lm_lga)
+outlierTest(FD_FRicz_am_lga)
 ```
 
     ##      rstudent unadjusted p-value Bonferroni p
@@ -4563,47 +2117,80 @@ outlierTest(FD_FRicz_lm_lga)
 
 ``` r
 # Plot residuals
-plot(FD_FRicz_lm_lga)
+plot(FD_FRicz_am_lga)
 ```
 
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-39.png)<!-- -->
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-12.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FRicz_am_lga <- aov(pd.obs.z ~ logArea + Site_type, data = straits_sespd_env[surveyed_sites,])
-
-# Anova outputs
+# Summarize ANOVA results and calculate pairwise comparisons
 summary(FD_FRicz_am_dist)
 ```
 
     ##                         Df Sum Sq Mean Sq F value Pr(>F)  
-    ## distance_to_ocean_min_m  1  5.206   5.206   3.641 0.0724 .
-    ## Site_type                2  9.126   4.563   3.192 0.0651 .
+    ## Site_type                2 13.829   6.915   4.837 0.0208 *
+    ## distance_to_ocean_min_m  1  0.502   0.502   0.351 0.5608  
     ## Residuals               18 25.733   1.430                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
+FD_FRicz_amp_dist <- emmeans(FD_FRicz_am_dist, pairwise ~ Site_type, adjust = "bonferroni")
+FD_FRicz_amp_dist$contrasts
+```
+
+    ##  contrast           estimate    SE df t.ratio p.value
+    ##  Ocean - Mixed        -1.718 0.738 18  -2.329  0.0951
+    ##  Ocean - Stratified   -2.447 1.060 18  -2.314  0.0981
+    ##  Mixed - Stratified   -0.729 0.767 18  -0.950  1.0000
+    ## 
+    ## P value adjustment: bonferroni method for 3 tests
+
+``` r
 summary(FD_FRicz_am_mxd)
 ```
 
-    ##             Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## max_depth    1  1.176   1.176   1.001 0.33044   
-    ## Site_type    2 17.723   8.861   7.536 0.00419 **
-    ## Residuals   18 21.165   1.176                   
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## Site_type    2  13.83   6.915   5.880 0.0108 *
+    ## max_depth    1   5.07   5.070   4.312 0.0524 .
+    ## Residuals   18  21.16   1.176                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+FD_FRicz_amp_mxd <- emmeans(FD_FRicz_am_mxd, pairwise ~ Site_type, adjust = "bonferroni")
+FD_FRicz_amp_mxd$contrasts
+```
+
+    ##  contrast           estimate    SE df t.ratio p.value
+    ##  Ocean - Mixed        -1.446 0.586 18  -2.466  0.0718
+    ##  Ocean - Stratified   -2.397 0.624 18  -3.843  0.0036
+    ##  Mixed - Stratified   -0.951 0.595 18  -1.600  0.3813
+    ## 
+    ## P value adjustment: bonferroni method for 3 tests
 
 ``` r
 summary(FD_FRicz_am_lga)
 ```
 
     ##             Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## logArea      1 13.537  13.537  12.344 0.00248 **
-    ## Site_type    2  6.788   3.394   3.095 0.06995 . 
+    ## Site_type    2 13.829   6.915   6.305 0.00841 **
+    ## logArea      1  6.496   6.496   5.923 0.02558 * 
     ## Residuals   18 19.740   1.097                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+FD_FRicz_amp_lga <- emmeans(FD_FRicz_am_lga, pairwise ~ Site_type, adjust = "bonferroni")
+FD_FRicz_amp_lga$contrasts
+```
+
+    ##  contrast           estimate    SE df t.ratio p.value
+    ##  Ocean - Mixed        -0.832 0.630 18  -1.321  0.6090
+    ##  Ocean - Stratified   -1.477 0.598 18  -2.470  0.0712
+    ##  Mixed - Stratified   -0.645 0.530 18  -1.217  0.7179
+    ## 
+    ## P value adjustment: bonferroni method for 3 tests
 
 ``` r
 # p-values
@@ -4614,695 +2201,11 @@ p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## [1] 0.43468499 0.39065117         NA 1.00000000 0.02514398         NA 0.01488936
-    ## [8] 0.41972121         NA
+    ## [1] 0.12504911 1.00000000         NA 0.06498293 0.31466408         NA 0.05044252
+    ## [8] 0.15350312         NA
 
 ``` r
-## Mixed and stratified lakes
-# Distance
-# Interaction
-FD_FRicz_MS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FRicz_MS_am_dist)
-```
-
-    ##                                   Df Sum Sq Mean Sq F value Pr(>F)  
-    ## distance_to_ocean_min_m            1  0.000   0.000   0.000 0.9946  
-    ## Site_type                          1  1.314   1.314   1.439 0.2535  
-    ## distance_to_ocean_min_m:Site_type  1  5.559   5.559   6.087 0.0296 *
-    ## Residuals                         12 10.958   0.913                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_MS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_MS_lm_dist))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_MS_lm_dist)
-    ## W = 0.86827, p-value = 0.02559
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_MS_lm_dist) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  2.3346 0.1488
-    ##       14
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_MS_lm_dist)
-```
-
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## HLO -5.076521         0.00027222    0.0043556
-
-``` r
-# Plot residuals
-plot(FD_FRicz_MS_lm_dist)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-40.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_MS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Max depth
-# Interaction
-FD_FRicz_MS_am_mxd <- aov(pd.obs.z ~ max_depth * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FRicz_MS_am_mxd)
-```
-
-    ##                     Df Sum Sq Mean Sq F value Pr(>F)  
-    ## max_depth            1  0.599   0.599   0.636 0.4407  
-    ## Site_type            1  2.029   2.029   2.154 0.1679  
-    ## max_depth:Site_type  1  3.898   3.898   4.139 0.0646 .
-    ## Residuals           12 11.304   0.942                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_MS_lm_mxd <- lm(pd.obs.z ~ max_depth + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_MS_lm_mxd))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_MS_lm_mxd)
-    ## W = 0.89448, p-value = 0.06561
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_MS_lm_mxd) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.1899 0.6697
-    ##       14
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_MS_lm_mxd)
-```
-
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## HLO -3.74463          0.0027982     0.044772
-
-``` r
-# Plot residuals
-plot(FD_FRicz_MS_lm_mxd)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-41.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_MS_am_mxd <- aov(pd.obs.z ~ max_depth + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Log area
-# Interaction
-FD_FRicz_MS_am_lga <- aov(pd.obs.z ~ logArea * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FRicz_MS_am_lga)
-```
-
-    ##                   Df Sum Sq Mean Sq F value Pr(>F)
-    ## logArea            1  0.991  0.9911   0.844  0.376
-    ## Site_type          1  1.325  1.3254   1.129  0.309
-    ## logArea:Site_type  1  1.421  1.4207   1.210  0.293
-    ## Residuals         12 14.093  1.1744
-
-``` r
-# Linear model
-FD_FRicz_MS_lm_lga <- lm(pd.obs.z ~ logArea + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_MS_lm_lga))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_MS_lm_lga)
-    ## W = 0.85241, p-value = 0.01479
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_MS_lm_lga) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.1343 0.7195
-    ##       14
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_MS_lm_lga)
-```
-
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## HLO -4.297247          0.0010369     0.016591
-
-``` r
-# Plot residuals
-plot(FD_FRicz_MS_lm_lga)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-42.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_MS_am_lga <- aov(pd.obs.z ~ logArea + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Anova outputs
-summary(FD_FRicz_MS_am_dist)
-```
-
-    ##                         Df Sum Sq Mean Sq F value Pr(>F)
-    ## distance_to_ocean_min_m  1  0.000   0.000   0.000  0.995
-    ## Site_type                1  1.314   1.314   1.034  0.328
-    ## Residuals               13 16.517   1.270
-
-``` r
-summary(FD_FRicz_MS_am_mxd)
-```
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## max_depth    1  0.599  0.5989   0.512  0.487
-    ## Site_type    1  2.029  2.0294   1.735  0.210
-    ## Residuals   13 15.202  1.1694
-
-``` r
-summary(FD_FRicz_MS_am_lga)
-```
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## logArea      1  0.991  0.9911   0.830  0.379
-    ## Site_type    1  1.325  1.3254   1.111  0.311
-    ## Residuals   13 15.514  1.1934
-
-``` r
-# p-values
-dist_p_values <- summary(FD_FRicz_MS_am_dist)[[1]][, "Pr(>F)"]
-mxd_p_values <- summary(FD_FRicz_MS_am_mxd)[[1]][, "Pr(>F)"]
-lga_p_values <- summary(FD_FRicz_MS_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1]  1  1 NA  1  1 NA  1  1 NA
-
-``` r
-## Ocean sites and mixed lakes
-# Distance
-# Interaction
-FD_FRicz_OM_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-summary(FD_FRicz_OM_am_dist)
-```
-
-    ##                                   Df Sum Sq Mean Sq F value Pr(>F)  
-    ## distance_to_ocean_min_m            1 11.285  11.285   5.961 0.0348 *
-    ## Site_type                          1  0.009   0.009   0.005 0.9458  
-    ## distance_to_ocean_min_m:Site_type  1  0.113   0.113   0.060 0.8122  
-    ## Residuals                         10 18.932   1.893                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_OM_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_OM_lm_dist))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_OM_lm_dist)
-    ## W = 0.926, p-value = 0.2679
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_OM_lm_dist) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.4513 0.5145
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_OM_lm_dist)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## HLO -2.252725           0.047957       0.6714
-
-``` r
-# Plot residuals
-plot(FD_FRicz_OM_lm_dist)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-43.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_OM_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-
-# Max depth
-# Interaction
-FD_FRicz_OM_am_mxd <- aov(pd.obs.z ~ max_depth * Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-summary(FD_FRicz_OM_am_mxd)
-```
-
-    ##                     Df Sum Sq Mean Sq F value Pr(>F)  
-    ## max_depth            1 10.917  10.917   8.624 0.0149 *
-    ## Site_type            1  6.624   6.624   5.233 0.0452 *
-    ## max_depth:Site_type  1  0.139   0.139   0.110 0.7469  
-    ## Residuals           10 12.659   1.266                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_OM_lm_mxd <- lm(pd.obs.z ~ max_depth + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_OM_lm_mxd))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_OM_lm_mxd)
-    ## W = 0.93638, p-value = 0.3739
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_OM_lm_mxd) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.0753 0.7885
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_OM_lm_mxd)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## HLO -2.497486           0.031583      0.44216
-
-``` r
-# Plot residuals
-plot(FD_FRicz_OM_lm_mxd)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-44.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_OM_am_mxd <- aov(pd.obs.z ~ max_depth + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-
-# Log area
-# Interaction
-FD_FRicz_OM_am_lga <- aov(pd.obs.z ~ logArea * Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-summary(FD_FRicz_OM_am_lga)
-```
-
-    ##                   Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## logArea            1 14.812  14.812  10.349 0.00922 **
-    ## Site_type          1  1.203   1.203   0.841 0.38078   
-    ## logArea:Site_type  1  0.013   0.013   0.009 0.92736   
-    ## Residuals         10 14.312   1.431                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_OM_lm_lga <- lm(pd.obs.z ~ logArea + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_OM_lm_lga))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_OM_lm_lga)
-    ## W = 0.89857, p-value = 0.1075
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_OM_lm_lga) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.0074 0.9331
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_OM_lm_lga)
-```
-
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## HLO -4.157409          0.0019568     0.027395
-
-``` r
-# Plot residuals
-plot(FD_FRicz_OM_lm_lga)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-45.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_OM_am_lga <- aov(pd.obs.z ~ logArea + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-
-# Anova outputs
-summary(FD_FRicz_OM_am_dist)
-```
-
-    ##                         Df Sum Sq Mean Sq F value Pr(>F)  
-    ## distance_to_ocean_min_m  1 11.285  11.285   6.518 0.0268 *
-    ## Site_type                1  0.009   0.009   0.005 0.9432  
-    ## Residuals               11 19.045   1.731                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRicz_OM_am_mxd)
-```
-
-    ##             Df Sum Sq Mean Sq F value Pr(>F)  
-    ## max_depth    1 10.917  10.917   9.383 0.0108 *
-    ## Site_type    1  6.624   6.624   5.694 0.0361 *
-    ## Residuals   11 12.798   1.163                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRicz_OM_am_lga)
-```
-
-    ##             Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## logArea      1 14.812  14.812  11.374 0.00622 **
-    ## Site_type    1  1.203   1.203   0.924 0.35709   
-    ## Residuals   11 14.324   1.302                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-dist_p_values <- summary(FD_FRicz_OM_am_dist)[[1]][, "Pr(>F)"]
-mxd_p_values <- summary(FD_FRicz_OM_am_mxd)[[1]][, "Pr(>F)"]
-lga_p_values <- summary(FD_FRicz_OM_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 0.16108517 1.00000000         NA 0.06474335 0.21664372         NA 0.03734095
-    ## [8] 1.00000000         NA
-
-``` r
-## Stratified lakes and ocean sites
-# Distance
-# Interaction
-FD_FRicz_SO_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-summary(FD_FRicz_SO_am_dist)
-```
-
-    ##                                   Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## distance_to_ocean_min_m            1  4.167   4.167   4.016 0.07289 . 
-    ## Site_type                          1 11.289  11.289  10.881 0.00803 **
-    ## distance_to_ocean_min_m:Site_type  1  0.091   0.091   0.088 0.77341   
-    ## Residuals                         10 10.375   1.037                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_SO_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_SO_lm_dist))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_SO_lm_dist)
-    ## W = 0.95208, p-value = 0.5934
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_SO_lm_dist) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value  Pr(>F)  
-    ## group  1  3.9849 0.06911 .
-    ##       12                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_SO_lm_dist)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## IBK -2.602764           0.026366      0.36913
-
-``` r
-# Plot residuals
-plot(FD_FRicz_SO_lm_dist)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-46.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_SO_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-
-# Max depth
-# Interaction
-FD_FRicz_SO_am_mxd <- aov(pd.obs.z ~ max_depth * Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-summary(FD_FRicz_SO_am_mxd)
-```
-
-    ##                     Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## max_depth            1  0.091   0.091   0.104 0.75340   
-    ## Site_type            1 14.417  14.417  16.579 0.00224 **
-    ## max_depth:Site_type  1  2.716   2.716   3.123 0.10763   
-    ## Residuals           10  8.696   0.870                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_SO_lm_mxd <- lm(pd.obs.z ~ max_depth + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_SO_lm_mxd))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_SO_lm_mxd)
-    ## W = 0.93797, p-value = 0.3929
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_SO_lm_mxd) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.4281 0.5253
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_SO_lm_mxd)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## SLN -2.051817           0.067303      0.94225
-
-``` r
-# Plot residuals
-plot(FD_FRicz_SO_lm_mxd)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-47.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_SO_am_mxd <- aov(pd.obs.z ~ max_depth + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-
-# Log area
-# Interaction
-FD_FRicz_SO_am_lga <- aov(pd.obs.z ~ logArea * Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-summary(FD_FRicz_SO_am_lga)
-```
-
-    ##                   Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## logArea            1  9.926   9.926  13.172 0.00462 **
-    ## Site_type          1  6.909   6.909   9.168 0.01272 * 
-    ## logArea:Site_type  1  1.551   1.551   2.058 0.18197   
-    ## Residuals         10  7.536   0.754                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FRicz_SO_lm_lga <- lm(pd.obs.z ~ logArea + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_SO_lm_lga))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FRicz_SO_lm_lga)
-    ## W = 0.98016, p-value = 0.9757
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_SO_lm_lga) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.6275 0.4436
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FRicz_SO_lm_lga)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## SLN -2.385605           0.038245      0.53542
-
-``` r
-# Plot residuals
-plot(FD_FRicz_SO_lm_lga)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-48.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FRicz_SO_am_lga <- aov(pd.obs.z ~ logArea + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-
-# Anova outputs
-summary(FD_FRicz_SO_am_dist)
-```
-
-    ##                         Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## distance_to_ocean_min_m  1  4.167   4.167   4.379 0.06036 . 
-    ## Site_type                1 11.289  11.289  11.865 0.00548 **
-    ## Residuals               11 10.465   0.951                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRicz_SO_am_mxd)
-```
-
-    ##             Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## max_depth    1  0.091   0.091   0.087 0.77300   
-    ## Site_type    1 14.417  14.417  13.896 0.00334 **
-    ## Residuals   11 11.412   1.037                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FRicz_SO_am_lga)
-```
-
-    ##             Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## logArea      1  9.926   9.926  12.016 0.00527 **
-    ## Site_type    1  6.909   6.909   8.364 0.01465 * 
-    ## Residuals   11  9.086   0.826                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-dist_p_values <- summary(FD_FRicz_SO_am_dist)[[1]][, "Pr(>F)"]
-mxd_p_values <- summary(FD_FRicz_SO_am_mxd)[[1]][, "Pr(>F)"]
-lga_p_values <- summary(FD_FRicz_SO_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 0.36213308 0.03287858         NA 1.00000000 0.02001751         NA 0.03163695
-    ## [8] 0.08791463         NA
-
-``` r
-## Ocean sites
-FD_FRicz_geo_O_lm <- lm(pd.obs.z ~ distance_to_ocean_min_m + max_depth + logArea, straits_sespd_env[ocean_sites,])
-summary(FD_FRicz_geo_O_lm)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m + max_depth + 
-    ##     logArea, data = straits_sespd_env[ocean_sites, ])
-    ## 
-    ## Residuals:
-    ##        IBK        LCN        NCN        OOO        OOM        RCA 
-    ##  3.381e-02 -3.209e-01  4.741e-02 -7.909e-01  1.031e+00  3.073e-17 
-    ## 
-    ## Coefficients:
-    ##                         Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)              3.37657    2.42561   1.392    0.298
-    ## distance_to_ocean_min_m -0.02775    0.05762  -0.482    0.678
-    ## max_depth               -0.04569    0.04352  -1.050    0.404
-    ## logArea                 -0.38135    0.21585  -1.767    0.219
-    ## 
-    ## Residual standard error: 0.9471 on 2 degrees of freedom
-    ## Multiple R-squared:  0.8048, Adjusted R-squared:  0.5121 
-    ## F-statistic: 2.749 on 3 and 2 DF,  p-value: 0.278
-
-``` r
-p_values <- summary(FD_FRicz_geo_O_lm)$coefficients[, "Pr(>|t|)"]
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ##             (Intercept) distance_to_ocean_min_m               max_depth 
-    ##               1.0000000               1.0000000               1.0000000 
-    ##                 logArea 
-    ##               0.8772667
-
-``` r
-## Mixed lakes
+### Mixed lakes
 FD_FRicz_geo_M_lm <- lm(pd.obs.z ~ distance_to_ocean_min_m + max_depth + logArea, straits_sespd_env[mixed_lakes,])
 summary(FD_FRicz_geo_M_lm)
 ```
@@ -5352,7 +2255,7 @@ p_values <- summary(FD_FRicz_geo_M_lm)$coefficients[, "Pr(>|t|)"]
     ##                       1
 
 ``` r
-## Stratified lakes
+### Stratified lakes
 FD_FRicz_geo_S_lm <- lm(pd.obs.z ~ distance_to_ocean_min_m + max_depth + logArea, straits_sespd_env[stratified_lakes,])
 summary(FD_FRicz_geo_S_lm)
 ```
@@ -5406,37 +2309,79 @@ p_values <- summary(FD_FRicz_geo_S_lm)$coefficients[, "Pr(>|t|)"]
     ##              1.00000000
 
 ``` r
+##### PDisp ANOVAs
 #### Environmental
-### FDisp ANOVA
-## Surveyed sites
-# Temperature
+### Surveyed sites
+## Temperature
 # Interaction
-FD_FDisp_am_temp <- aov(Dispersion ~ temperature_median * Site_type, data = straits_sespd_env[surveyed_sites_env,])
-summary(FD_FDisp_am_temp)
-```
-
-    ##                              Df  Sum Sq  Mean Sq F value Pr(>F)
-    ## temperature_median            1 0.00250 0.002503   1.014  0.332
-    ## Site_type                     2 0.00534 0.002668   1.081  0.368
-    ## temperature_median:Site_type  2 0.00042 0.000208   0.084  0.920
-    ## Residuals                    13 0.03209 0.002469
-
-``` r
-# Linear model
-FD_FDisp_lm_temp <- lm(Dispersion ~ temperature_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
+FD_FDisp_am_temp <- aov(Dispersion ~ Site_type * temperature_median, data = straits_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_lm_temp))
+shapiro.test(residuals(FD_FDisp_am_temp))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FDisp_lm_temp)
+    ## data:  residuals(FD_FDisp_am_temp)
+    ## W = 0.93005, p-value = 0.1736
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(FD_FDisp_am_temp) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value Pr(>F)
+    ## group  2   1.938 0.1763
+    ##       16
+
+``` r
+# Check for outliers
+outlierTest(FD_FDisp_am_temp)
+```
+
+    ## No Studentized residuals with Bonferroni p < 0.05
+    ## Largest |rstudent|:
+    ##      rstudent unadjusted p-value Bonferroni p
+    ## CLM -3.241058          0.0070727      0.13438
+
+``` r
+# Plot residuals
+plot(FD_FDisp_am_temp)
+```
+
+    ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
+    ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
+
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-13.png)<!-- -->
+
+``` r
+# Summarize the ANOVA results
+summary(FD_FDisp_am_temp)
+```
+
+    ##                              Df  Sum Sq  Mean Sq F value Pr(>F)
+    ## Site_type                     2 0.00550 0.002748   1.113  0.358
+    ## temperature_median            1 0.00234 0.002344   0.950  0.348
+    ## Site_type:temperature_median  2 0.00042 0.000208   0.084  0.920
+    ## Residuals                    13 0.03209 0.002469
+
+``` r
+# ANCOVA
+FD_FDisp_am_temp <- aov(Dispersion ~ Site_type + temperature_median, data = straits_sespd_env[surveyed_sites_env,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FDisp_am_temp))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(FD_FDisp_am_temp)
     ## W = 0.94458, p-value = 0.3182
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_lm_temp) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FDisp_am_temp) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -5446,7 +2391,7 @@ car::leveneTest(residuals(FD_FDisp_lm_temp) ~ straits_sespd_env[surveyed_sites_e
 
 ``` r
 # Check for outliers
-outlierTest(FD_FDisp_lm_temp)
+outlierTest(FD_FDisp_am_temp)
 ```
 
     ## No Studentized residuals with Bonferroni p < 0.05
@@ -5456,45 +2401,83 @@ outlierTest(FD_FDisp_lm_temp)
 
 ``` r
 # Plot residuals
-plot(FD_FDisp_lm_temp)
+plot(FD_FDisp_am_temp)
 ```
 
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-49.png)<!-- -->
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-14.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FDisp_am_temp <- aov(Dispersion ~ temperature_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
-
-# Salinity
+## Salinity
 # Interaction
-FD_FDisp_am_sal <- aov(Dispersion ~ salinity_median * Site_type, data = straits_sespd_env[surveyed_sites_env,])
-summary(FD_FDisp_am_sal)
-```
-
-    ##                           Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## salinity_median            1 0.000467 0.000467   0.247 0.6274  
-    ## Site_type                  2 0.012376 0.006188   3.272 0.0706 .
-    ## salinity_median:Site_type  2 0.002921 0.001460   0.772 0.4821  
-    ## Residuals                 13 0.024586 0.001891                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_lm_sal <- lm(Dispersion ~ salinity_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
+FD_FDisp_am_sal <- aov(Dispersion ~ Site_type * salinity_median, data = straits_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_lm_sal))
+shapiro.test(residuals(FD_FDisp_am_sal))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FDisp_lm_sal)
+    ## data:  residuals(FD_FDisp_am_sal)
+    ## W = 0.9724, p-value = 0.8232
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(FD_FDisp_am_sal) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value  Pr(>F)  
+    ## group  2  3.8228 0.04395 *
+    ##       16                  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# Check for outliers
+outlierTest(FD_FDisp_am_sal)
+```
+
+    ## No Studentized residuals with Bonferroni p < 0.05
+    ## Largest |rstudent|:
+    ##     rstudent unadjusted p-value Bonferroni p
+    ## OTM 2.816173            0.01557      0.29583
+
+``` r
+# Plot residuals
+plot(FD_FDisp_am_sal)
+```
+
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-15.png)<!-- -->
+
+``` r
+# Summarize the ANOVA results
+summary(FD_FDisp_am_sal)
+```
+
+    ##                           Df   Sum Sq  Mean Sq F value Pr(>F)  
+    ## Site_type                  2 0.005495 0.002748   1.453 0.2695  
+    ## salinity_median            1 0.007347 0.007347   3.885 0.0704 .
+    ## Site_type:salinity_median  2 0.002921 0.001460   0.772 0.4821  
+    ## Residuals                 13 0.024586 0.001891                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# ANCOVA
+FD_FDisp_am_sal <- aov(Dispersion ~ Site_type + salinity_median, data = straits_sespd_env[surveyed_sites_env,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FDisp_am_sal))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(FD_FDisp_am_sal)
     ## W = 0.9827, p-value = 0.969
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_lm_sal) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FDisp_am_sal) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -5506,7 +2489,7 @@ car::leveneTest(residuals(FD_FDisp_lm_sal) ~ straits_sespd_env[surveyed_sites_en
 
 ``` r
 # Check for outliers
-outlierTest(FD_FDisp_lm_sal)
+outlierTest(FD_FDisp_am_sal)
 ```
 
     ## No Studentized residuals with Bonferroni p < 0.05
@@ -5516,45 +2499,86 @@ outlierTest(FD_FDisp_lm_sal)
 
 ``` r
 # Plot residuals
-plot(FD_FDisp_lm_sal)
+plot(FD_FDisp_am_sal)
 ```
 
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-50.png)<!-- -->
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-16.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FDisp_am_sal <- aov(Dispersion ~ salinity_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
-
-# Oxygen
+## Oxygen
 # Interaction
-FD_FDisp_am_oxy <- aov(Dispersion ~ oxygen_median * Site_type, data = straits_sespd_env[surveyed_sites_env,])
-summary(FD_FDisp_am_oxy)
-```
-
-    ##                         Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## oxygen_median            1 0.008812 0.008812   4.329 0.0578 .
-    ## Site_type                2 0.005013 0.002507   1.231 0.3238  
-    ## oxygen_median:Site_type  2 0.000062 0.000031   0.015 0.9850  
-    ## Residuals               13 0.026462 0.002036                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_lm_oxy <- lm(Dispersion ~ oxygen_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
+FD_FDisp_am_oxy <- aov(Dispersion ~ Site_type * oxygen_median, data = straits_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_lm_oxy))
+shapiro.test(residuals(FD_FDisp_am_oxy))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FDisp_lm_oxy)
+    ## data:  residuals(FD_FDisp_am_oxy)
+    ## W = 0.96558, p-value = 0.6859
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(FD_FDisp_am_oxy) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value  Pr(>F)  
+    ## group  2  4.5341 0.02754 *
+    ##       16                  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# Check for outliers
+outlierTest(FD_FDisp_am_oxy)
+```
+
+    ## No Studentized residuals with Bonferroni p < 0.05
+    ## Largest |rstudent|:
+    ##     rstudent unadjusted p-value Bonferroni p
+    ## OTM 2.351261           0.036629      0.69594
+
+``` r
+# Plot residuals
+plot(FD_FDisp_am_oxy)
+```
+
+    ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
+    ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
+
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-17.png)<!-- -->
+
+``` r
+# Summarize the ANOVA results
+summary(FD_FDisp_am_oxy)
+```
+
+    ##                         Df   Sum Sq  Mean Sq F value Pr(>F)  
+    ## Site_type                2 0.005495 0.002748   1.350 0.2933  
+    ## oxygen_median            1 0.008330 0.008330   4.092 0.0641 .
+    ## Site_type:oxygen_median  2 0.000062 0.000031   0.015 0.9850  
+    ## Residuals               13 0.026462 0.002036                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# ANCOVA
+FD_FDisp_am_oxy <- aov(Dispersion ~ Site_type + oxygen_median, data = straits_sespd_env[surveyed_sites_env,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FDisp_am_oxy))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(FD_FDisp_am_oxy)
     ## W = 0.96607, p-value = 0.6961
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_lm_oxy) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FDisp_am_oxy) ~ straits_sespd_env[surveyed_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -5566,7 +2590,7 @@ car::leveneTest(residuals(FD_FDisp_lm_oxy) ~ straits_sespd_env[surveyed_sites_en
 
 ``` r
 # Check for outliers
-outlierTest(FD_FDisp_lm_oxy)
+outlierTest(FD_FDisp_am_oxy)
 ```
 
     ## No Studentized residuals with Bonferroni p < 0.05
@@ -5576,45 +2600,78 @@ outlierTest(FD_FDisp_lm_oxy)
 
 ``` r
 # Plot residuals
-plot(FD_FDisp_lm_oxy)
+plot(FD_FDisp_am_oxy)
 ```
 
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-51.png)<!-- -->
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-18.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FDisp_am_oxy <- aov(Dispersion ~ oxygen_median + Site_type, data = straits_sespd_env[surveyed_sites_env,])
-
-# Anova outputs
+# Summarize ANOVA results and calculate pairwise comparisons
 summary(FD_FDisp_am_temp)
 ```
 
     ##                    Df  Sum Sq  Mean Sq F value Pr(>F)
-    ## temperature_median  1 0.00250 0.002503   1.155  0.299
-    ## Site_type           2 0.00534 0.002668   1.231  0.320
+    ## Site_type           2 0.00550 0.002748   1.268  0.310
+    ## temperature_median  1 0.00234 0.002344   1.082  0.315
     ## Residuals          15 0.03251 0.002167
+
+``` r
+FD_FDisp_amp_temp <- emmeans(FD_FDisp_am_temp, pairwise ~ Site_type, adjust = "bonferroni")
+FD_FDisp_amp_temp$contrasts
+```
+
+    ##  contrast           estimate     SE df t.ratio p.value
+    ##  Ocean - Mixed      -0.04812 0.0317 15  -1.518  0.4495
+    ##  Ocean - Stratified -0.04287 0.0319 15  -1.342  0.5984
+    ##  Mixed - Stratified  0.00525 0.0248 15   0.212  1.0000
+    ## 
+    ## P value adjustment: bonferroni method for 3 tests
 
 ``` r
 summary(FD_FDisp_am_sal)
 ```
 
     ##                 Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## salinity_median  1 0.000467 0.000467   0.255 0.6210  
-    ## Site_type        2 0.012376 0.006188   3.374 0.0617 .
+    ## Site_type        2 0.005495 0.002748   1.498 0.2551  
+    ## salinity_median  1 0.007347 0.007347   4.007 0.0637 .
     ## Residuals       15 0.027507 0.001834                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+FD_FDisp_amp_sal <- emmeans(FD_FDisp_am_sal, pairwise ~ Site_type, adjust = "bonferroni")
+FD_FDisp_amp_sal$contrasts
+```
+
+    ##  contrast           estimate     SE df t.ratio p.value
+    ##  Ocean - Mixed       -0.0498 0.0291 15  -1.710  0.3238
+    ##  Ocean - Stratified  -0.1038 0.0401 15  -2.586  0.0620
+    ##  Mixed - Stratified  -0.0541 0.0331 15  -1.636  0.3680
+    ## 
+    ## P value adjustment: bonferroni method for 3 tests
 
 ``` r
 summary(FD_FDisp_am_oxy)
 ```
 
     ##               Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## oxygen_median  1 0.008812 0.008812   4.984 0.0413 *
-    ## Site_type      2 0.005013 0.002507   1.418 0.2730  
+    ## Site_type      2 0.005495 0.002748   1.554 0.2436  
+    ## oxygen_median  1 0.008330 0.008330   4.711 0.0464 *
     ## Residuals     15 0.026524 0.001768                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+FD_FDisp_amp_oxy <- emmeans(FD_FDisp_am_oxy, pairwise ~ Site_type, adjust = "bonferroni")
+FD_FDisp_amp_oxy$contrasts
+```
+
+    ##  contrast           estimate     SE df t.ratio p.value
+    ##  Ocean - Mixed       -0.0153 0.0315 15  -0.484  1.0000
+    ##  Ocean - Stratified   0.0353 0.0479 15   0.737  1.0000
+    ##  Mixed - Stratified   0.0505 0.0326 15   1.548  0.4276
+    ## 
+    ## P value adjustment: bonferroni method for 3 tests
 
 ``` r
 # p-values
@@ -5625,690 +2682,11 @@ p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## [1] 1.0000000 1.0000000        NA 1.0000000 0.3699075        NA 0.2475456
-    ## [8] 1.0000000        NA
+    ## [1] 1.0000000 1.0000000        NA 1.0000000 0.3824842        NA 1.0000000
+    ## [8] 0.2786215        NA
 
 ``` r
-## Mixed and stratified lakes
-# Temperature
-# Interaction
-FD_FDisp_MS_am_temp <- aov(Dispersion ~ temperature_median * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FDisp_MS_am_temp)
-```
-
-    ##                              Df  Sum Sq   Mean Sq F value Pr(>F)
-    ## temperature_median            1 0.00262 0.0026165   0.985  0.340
-    ## Site_type                     1 0.00014 0.0001363   0.051  0.825
-    ## temperature_median:Site_type  1 0.00002 0.0000186   0.007  0.935
-    ## Residuals                    12 0.03186 0.0026550
-
-``` r
-# Linear model
-FD_FDisp_MS_lm_temp <- lm(Dispersion ~ temperature_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_MS_lm_temp))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_MS_lm_temp)
-    ## W = 0.95641, p-value = 0.5973
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_MS_lm_temp) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  2.1195 0.1675
-    ##       14
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_MS_lm_temp)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## CLM -3.234357          0.0071612      0.11458
-
-``` r
-# Plot residuals
-plot(FD_FDisp_MS_lm_temp)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-52.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_MS_am_temp <- aov(Dispersion ~ temperature_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Salinity
-# Interaction
-FD_FDisp_MS_am_sal <- aov(Dispersion ~ salinity_median * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FDisp_MS_am_sal)
-```
-
-    ##                           Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## salinity_median            1 0.002479 0.002479   1.217  0.292
-    ## Site_type                  1 0.004885 0.004885   2.398  0.147
-    ## salinity_median:Site_type  1 0.002824 0.002824   1.386  0.262
-    ## Residuals                 12 0.024443 0.002037
-
-``` r
-# Linear model
-FD_FDisp_MS_lm_sal <- lm(Dispersion ~ salinity_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_MS_lm_sal))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_MS_lm_sal)
-    ## W = 0.98172, p-value = 0.9757
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_MS_lm_sal) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  1.9428 0.1851
-    ##       14
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_MS_lm_sal)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## OTM  2.61792           0.022471      0.35954
-
-``` r
-# Plot residuals
-plot(FD_FDisp_MS_lm_sal)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-53.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_MS_am_sal <- aov(Dispersion ~ salinity_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Oxygen
-# Interaction
-FD_FDisp_MS_am_oxy <- aov(Dispersion ~ oxygen_median * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FDisp_MS_am_oxy)
-```
-
-    ##                         Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## oxygen_median            1 0.004035 0.004035   1.841  0.200
-    ## Site_type                1 0.004277 0.004277   1.951  0.188
-    ## oxygen_median:Site_type  1 0.000012 0.000012   0.005  0.942
-    ## Residuals               12 0.026307 0.002192
-
-``` r
-# Linear model
-FD_FDisp_MS_lm_oxy <- lm(Dispersion ~ oxygen_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_MS_lm_oxy))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_MS_lm_oxy)
-    ## W = 0.98083, p-value = 0.9698
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_MS_lm_oxy) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value  Pr(>F)  
-    ## group  1  5.8528 0.02975 *
-    ##       14                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_MS_lm_oxy)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## OTM 2.310878           0.039413      0.63062
-
-``` r
-# Plot residuals
-plot(FD_FDisp_MS_lm_oxy)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-54.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_MS_am_oxy <- aov(Dispersion ~ oxygen_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Anova outputs
-summary(FD_FDisp_MS_am_temp)
-```
-
-    ##                    Df  Sum Sq   Mean Sq F value Pr(>F)
-    ## temperature_median  1 0.00262 0.0026165   1.067  0.320
-    ## Site_type           1 0.00014 0.0001363   0.056  0.817
-    ## Residuals          13 0.03188 0.0024522
-
-``` r
-summary(FD_FDisp_MS_am_sal)
-```
-
-    ##                 Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## salinity_median  1 0.002479 0.002479   1.182  0.297
-    ## Site_type        1 0.004885 0.004885   2.329  0.151
-    ## Residuals       13 0.027267 0.002097
-
-``` r
-summary(FD_FDisp_MS_am_oxy)
-```
-
-    ##               Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## oxygen_median  1 0.004035 0.004035   1.993  0.181
-    ## Site_type      1 0.004277 0.004277   2.113  0.170
-    ## Residuals     13 0.026319 0.002025
-
-``` r
-# p-values
-temp_p_values <- summary(FD_FDisp_MS_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(FD_FDisp_MS_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(FD_FDisp_MS_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 1.00000 1.00000      NA 1.00000 0.90551      NA 1.00000 1.00000      NA
-
-``` r
-## Ocean sites and mixed lakes
-# Temperature
-# Interaction
-FD_FDisp_OM_am_temp <- aov(Dispersion ~ temperature_median * Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-summary(FD_FDisp_OM_am_temp)
-```
-
-    ##                              Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## temperature_median            1 0.000003 0.000003   0.005 0.9459  
-    ## Site_type                     1 0.004539 0.004539   6.494 0.0382 *
-    ## temperature_median:Site_type  1 0.000359 0.000359   0.513 0.4969  
-    ## Residuals                     7 0.004892 0.000699                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_OM_lm_temp <- lm(Dispersion ~ temperature_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_OM_lm_temp))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_OM_lm_temp)
-    ## W = 0.97186, p-value = 0.9047
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_OM_lm_temp) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  1.0817 0.3255
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_OM_lm_temp)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## NLU 1.903691           0.098669           NA
-
-``` r
-# Plot residuals
-plot(FD_FDisp_OM_lm_temp)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-55.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_OM_am_temp <- aov(Dispersion ~ temperature_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-
-# Salinity
-# Interaction
-FD_FDisp_OM_am_sal <- aov(Dispersion ~ salinity_median * Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-summary(FD_FDisp_OM_am_sal)
-```
-
-    ##                           Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## salinity_median            1 0.005085 0.005085  10.132 0.0154 *
-    ## Site_type                  1 0.000854 0.000854   1.702 0.2333  
-    ## salinity_median:Site_type  1 0.000341 0.000341   0.679 0.4372  
-    ## Residuals                  7 0.003513 0.000502                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_OM_lm_sal <- lm(Dispersion ~ salinity_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_OM_lm_sal))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_OM_lm_sal)
-    ## W = 0.96583, p-value = 0.8416
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_OM_lm_sal) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.9523 0.3546
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_OM_lm_sal)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## LLN -1.742885            0.12488           NA
-
-``` r
-# Plot residuals
-plot(FD_FDisp_OM_lm_sal)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-56.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_OM_am_sal <- aov(Dispersion ~ salinity_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-
-# Oxygen
-# Interaction
-FD_FDisp_OM_am_oxy <- aov(Dispersion ~ oxygen_median * Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-summary(FD_FDisp_OM_am_oxy)
-```
-
-    ##                         Df   Sum Sq  Mean Sq F value  Pr(>F)   
-    ## oxygen_median            1 0.006643 0.006643  16.478 0.00481 **
-    ## Site_type                1 0.000268 0.000268   0.665 0.44151   
-    ## oxygen_median:Site_type  1 0.000061 0.000061   0.150 0.70992   
-    ## Residuals                7 0.002822 0.000403                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_OM_lm_oxy <- lm(Dispersion ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_OM_lm_oxy))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_OM_lm_oxy)
-    ## W = 0.94099, p-value = 0.5322
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_OM_lm_oxy) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  1.2894 0.2855
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_OM_lm_oxy)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## OLO 2.954334           0.021276      0.23403
-
-``` r
-# Plot residuals
-plot(FD_FDisp_OM_lm_oxy)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-57.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_OM_am_oxy <- aov(Dispersion ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
-
-# Anova outputs
-summary(FD_FDisp_OM_am_temp)
-```
-
-    ##                    Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## temperature_median  1 0.000003 0.000003   0.005 0.9440  
-    ## Site_type           1 0.004539 0.004539   6.915 0.0302 *
-    ## Residuals           8 0.005251 0.000656                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FDisp_OM_am_sal)
-```
-
-    ##                 Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## salinity_median  1 0.005085 0.005085  10.556 0.0117 *
-    ## Site_type        1 0.000854 0.000854   1.773 0.2197  
-    ## Residuals        8 0.003854 0.000482                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FDisp_OM_am_oxy)
-```
-
-    ##               Df   Sum Sq  Mean Sq F value  Pr(>F)   
-    ## oxygen_median  1 0.006643 0.006643  18.437 0.00264 **
-    ## Site_type      1 0.000268 0.000268   0.745 0.41333   
-    ## Residuals      8 0.002882 0.000360                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-temp_p_values <- summary(FD_FDisp_OM_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(FD_FDisp_OM_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(FD_FDisp_OM_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 1.00000000 0.18117311         NA 0.07030811 1.00000000         NA 0.01582623
-    ## [8] 1.00000000         NA
-
-``` r
-## Stratified lakes and ocean sites
-# Temperature
-# Interaction
-FD_FDisp_SO_am_temp <- aov(Dispersion ~ temperature_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-summary(FD_FDisp_SO_am_temp)
-```
-
-    ##                              Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## temperature_median            1 0.003002 0.003002   0.766  0.410
-    ## Site_type                     1 0.003938 0.003938   1.005  0.350
-    ## temperature_median:Site_type  1 0.000376 0.000376   0.096  0.766
-    ## Residuals                     7 0.027435 0.003919
-
-``` r
-# Linear model
-FD_FDisp_SO_lm_temp <- lm(Dispersion ~ temperature_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_SO_lm_temp))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_SO_lm_temp)
-    ## W = 0.9371, p-value = 0.487
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_SO_lm_temp) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  1.3811 0.2701
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_SO_lm_temp)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## CLM -2.726506           0.029487      0.32436
-
-``` r
-# Plot residuals
-plot(FD_FDisp_SO_lm_temp)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-58.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_SO_am_temp <- aov(Dispersion ~ temperature_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-
-# Salinity
-# Interaction
-FD_FDisp_SO_am_sal <- aov(Dispersion ~ salinity_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-summary(FD_FDisp_SO_am_sal)
-```
-
-    ##                           Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## salinity_median            1 0.000267 0.000267   0.088 0.7754  
-    ## Site_type                  1 0.013175 0.013175   4.347 0.0755 .
-    ## salinity_median:Site_type  1 0.000094 0.000094   0.031 0.8649  
-    ## Residuals                  7 0.021216 0.003031                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_SO_lm_sal <- lm(Dispersion ~ salinity_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_SO_lm_sal))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_SO_lm_sal)
-    ## W = 0.97823, p-value = 0.9555
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_SO_lm_sal) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  3.2807 0.1035
-    ##        9
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_SO_lm_sal)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## OTM 2.436466           0.044992      0.49491
-
-``` r
-# Plot residuals
-plot(FD_FDisp_SO_lm_sal)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-59.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_SO_am_sal <- aov(Dispersion ~ salinity_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-
-# Oxygen
-# Interaction
-FD_FDisp_SO_am_oxy <- aov(Dispersion ~ oxygen_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-summary(FD_FDisp_SO_am_oxy)
-```
-
-    ##                         Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## oxygen_median            1 0.010229 0.010229   3.009  0.126
-    ## Site_type                1 0.000683 0.000683   0.201  0.667
-    ## oxygen_median:Site_type  1 0.000043 0.000043   0.013  0.913
-    ## Residuals                7 0.023796 0.003399
-
-``` r
-# Linear model
-FD_FDisp_SO_lm_oxy <- lm(Dispersion ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_SO_lm_oxy))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_SO_lm_oxy)
-    ## W = 0.9649, p-value = 0.831
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_SO_lm_oxy) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value  Pr(>F)  
-    ## group  1  3.5959 0.09042 .
-    ##        9                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_SO_lm_oxy)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## OTM 1.949468            0.09224           NA
-
-``` r
-# Plot residuals
-plot(FD_FDisp_SO_lm_oxy)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-60.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_SO_am_oxy <- aov(Dispersion ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-
-# Anova outputs
-summary(FD_FDisp_SO_am_temp)
-```
-
-    ##                    Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## temperature_median  1 0.003002 0.003002   0.864  0.380
-    ## Site_type           1 0.003938 0.003938   1.133  0.318
-    ## Residuals           8 0.027812 0.003476
-
-``` r
-summary(FD_FDisp_SO_am_sal)
-```
-
-    ##                 Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## salinity_median  1 0.000267 0.000267   0.100 0.7598  
-    ## Site_type        1 0.013175 0.013175   4.946 0.0568 .
-    ## Residuals        8 0.021311 0.002664                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FDisp_SO_am_oxy)
-```
-
-    ##               Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## oxygen_median  1 0.010229 0.010229   3.433  0.101
-    ## Site_type      1 0.000683 0.000683   0.229  0.645
-    ## Residuals      8 0.023839 0.002980
-
-``` r
-# p-values
-temp_p_values <- summary(FD_FDisp_SO_am_temp)[[1]][, "Pr(>F)"]
-sal_p_values <- summary(FD_FDisp_SO_am_sal)[[1]][, "Pr(>F)"]
-oxy_p_values <- summary(FD_FDisp_SO_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 1.0000000 1.0000000        NA 1.0000000 0.3410095        NA 0.6062790
-    ## [8] 1.0000000        NA
-
-``` r
-## Ocean sites
-FD_FDisp_env_O_lm <- lm(Dispersion ~ salinity_median + oxygen_median + temperature_median, straits_sespd_env[ocean_sites_env,])
-summary(FD_FDisp_env_O_lm)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = Dispersion ~ salinity_median + oxygen_median + temperature_median, 
-    ##     data = straits_sespd_env[ocean_sites_env, ])
-    ## 
-    ## Residuals:
-    ## ALL 3 residuals are 0: no residual degrees of freedom!
-    ## 
-    ## Coefficients: (1 not defined because of singularities)
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)        -1.58466        NaN     NaN      NaN
-    ## salinity_median     0.06696        NaN     NaN      NaN
-    ## oxygen_median      -0.02475        NaN     NaN      NaN
-    ## temperature_median       NA         NA      NA       NA
-    ## 
-    ## Residual standard error: NaN on 0 degrees of freedom
-    ## Multiple R-squared:      1,  Adjusted R-squared:    NaN 
-    ## F-statistic:   NaN on 2 and 0 DF,  p-value: NA
-
-``` r
-p_values <- summary(FD_FDisp_env_O_lm)$coefficients[, "Pr(>|t|)"]
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ##     (Intercept) salinity_median   oxygen_median 
-    ##             NaN             NaN             NaN
-
-``` r
-## Mixed lakes
+### Mixed lakes
 FD_FDisp_env_M_lm <- lm(Dispersion ~ salinity_median + oxygen_median + temperature_median, straits_sespd_env[mixed_lakes,])
 summary(FD_FDisp_env_M_lm)
 ```
@@ -6356,7 +2734,7 @@ p_values <- summary(FD_FDisp_env_M_lm)$coefficients[, "Pr(>|t|)"]
     ##          1.0000000          1.0000000          0.7614088          1.0000000
 
 ``` r
-## Stratified lakes
+### Stratified lakes
 FD_FDisp_env_S_lm <- lm(Dispersion ~ salinity_median + oxygen_median + temperature_median, straits_sespd_env[stratified_lakes,])
 summary(FD_FDisp_env_S_lm)
 ```
@@ -6405,38 +2783,81 @@ p_values <- summary(FD_FDisp_env_S_lm)$coefficients[, "Pr(>|t|)"]
 
 ``` r
 #### Geographical
-### FDisp ANOVA
-## Surveyed sites
-# Distance
+### Surveyed sites
+## Distance
 # Interaction
-FD_FDisp_am_dist <- aov(Dispersion ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[surveyed_sites,])
-summary(FD_FDisp_am_dist)
-```
-
-    ##                                   Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## distance_to_ocean_min_m            1 0.000117 0.000117   0.070 0.7946  
-    ## Site_type                          2 0.014962 0.007481   4.474 0.0286 *
-    ## distance_to_ocean_min_m:Site_type  2 0.003445 0.001723   1.030 0.3795  
-    ## Residuals                         16 0.026754 0.001672                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_lm_dist <- lm(Dispersion ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[surveyed_sites,])
+FD_FDisp_am_dist <- aov(Dispersion ~ Site_type * distance_to_ocean_min_m, data = straits_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_lm_dist))
+shapiro.test(residuals(FD_FDisp_am_dist))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FDisp_lm_dist)
+    ## data:  residuals(FD_FDisp_am_dist)
+    ## W = 0.98183, p-value = 0.9422
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(FD_FDisp_am_dist) ~ straits_sespd_env[surveyed_sites,"Site_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value  Pr(>F)  
+    ## group  2  3.3094 0.05846 .
+    ##       19                  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# Check for outliers
+outlierTest(FD_FDisp_am_dist)
+```
+
+    ## No Studentized residuals with Bonferroni p < 0.05
+    ## Largest |rstudent|:
+    ##     rstudent unadjusted p-value Bonferroni p
+    ## OTM 2.315624           0.035146      0.73806
+
+``` r
+# Plot residuals
+plot(FD_FDisp_am_dist)
+```
+
+    ## Warning: not plotting observations with leverage one:
+    ##   19
+
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-19.png)<!-- -->
+
+``` r
+# Summarize the ANOVA results
+summary(FD_FDisp_am_dist)
+```
+
+    ##                                   Df   Sum Sq  Mean Sq F value Pr(>F)  
+    ## Site_type                          2 0.008264 0.004132   2.471 0.1161  
+    ## distance_to_ocean_min_m            1 0.006815 0.006815   4.075 0.0606 .
+    ## Site_type:distance_to_ocean_min_m  2 0.003445 0.001723   1.030 0.3795  
+    ## Residuals                         16 0.026754 0.001672                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# ANCOVA
+FD_FDisp_am_dist <- aov(Dispersion ~ Site_type + distance_to_ocean_min_m, data = straits_sespd_env[surveyed_sites,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FDisp_am_dist))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(FD_FDisp_am_dist)
     ## W = 0.99307, p-value = 0.9998
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_lm_dist) ~ straits_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(FD_FDisp_am_dist) ~ straits_sespd_env[surveyed_sites,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -6446,7 +2867,7 @@ car::leveneTest(residuals(FD_FDisp_lm_dist) ~ straits_sespd_env[surveyed_sites,"
 
 ``` r
 # Check for outliers
-outlierTest(FD_FDisp_lm_dist)
+outlierTest(FD_FDisp_am_dist)
 ```
 
     ## No Studentized residuals with Bonferroni p < 0.05
@@ -6456,43 +2877,81 @@ outlierTest(FD_FDisp_lm_dist)
 
 ``` r
 # Plot residuals
-plot(FD_FDisp_lm_dist)
+plot(FD_FDisp_am_dist)
 ```
 
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-61.png)<!-- -->
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-20.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FDisp_am_dist <- aov(Dispersion ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[surveyed_sites,])
-
-# Max depth
+## Max Depth
 # Interaction
-FD_FDisp_am_mxd <- aov(Dispersion ~ max_depth * Site_type, data = straits_sespd_env[surveyed_sites,])
-summary(FD_FDisp_am_mxd)
-```
-
-    ##                     Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## max_depth            1 0.000605 0.000605   0.335  0.571
-    ## Site_type            2 0.007720 0.003860   2.140  0.150
-    ## max_depth:Site_type  2 0.008090 0.004045   2.242  0.139
-    ## Residuals           16 0.028863 0.001804
-
-``` r
-# Linear model
-FD_FDisp_lm_mxd <- lm(Dispersion ~ max_depth + Site_type, data = straits_sespd_env[surveyed_sites,])
+FD_FDisp_am_mxd <- aov(Dispersion ~ Site_type * max_depth, data = straits_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_lm_mxd))
+shapiro.test(residuals(FD_FDisp_am_mxd))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FDisp_lm_mxd)
+    ## data:  residuals(FD_FDisp_am_mxd)
+    ## W = 0.92965, p-value = 0.1207
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(FD_FDisp_am_mxd) ~ straits_sespd_env[surveyed_sites,"Site_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value  Pr(>F)  
+    ## group  2  3.4962 0.05095 .
+    ##       19                  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# Check for outliers
+outlierTest(FD_FDisp_am_mxd)
+```
+
+    ## No Studentized residuals with Bonferroni p < 0.05
+    ## Largest |rstudent|:
+    ##      rstudent unadjusted p-value Bonferroni p
+    ## CLM -3.596628          0.0026439     0.058165
+
+``` r
+# Plot residuals
+plot(FD_FDisp_am_mxd)
+```
+
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-21.png)<!-- -->
+
+``` r
+# Summarize the ANOVA results
+summary(FD_FDisp_am_mxd)
+```
+
+    ##                     Df   Sum Sq  Mean Sq F value Pr(>F)
+    ## Site_type            2 0.008264 0.004132   2.291  0.133
+    ## max_depth            1 0.000061 0.000061   0.034  0.856
+    ## Site_type:max_depth  2 0.008090 0.004045   2.242  0.139
+    ## Residuals           16 0.028863 0.001804
+
+``` r
+# ANCOVA
+FD_FDisp_am_mxd <- aov(Dispersion ~ Site_type + max_depth, data = straits_sespd_env[surveyed_sites,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FDisp_am_mxd))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(FD_FDisp_am_mxd)
     ## W = 0.91994, p-value = 0.07581
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_lm_mxd) ~ straits_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(FD_FDisp_am_mxd) ~ straits_sespd_env[surveyed_sites,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -6502,7 +2961,7 @@ car::leveneTest(residuals(FD_FDisp_lm_mxd) ~ straits_sespd_env[surveyed_sites,"S
 
 ``` r
 # Check for outliers
-outlierTest(FD_FDisp_lm_mxd)
+outlierTest(FD_FDisp_am_mxd)
 ```
 
     ## No Studentized residuals with Bonferroni p < 0.05
@@ -6512,45 +2971,81 @@ outlierTest(FD_FDisp_lm_mxd)
 
 ``` r
 # Plot residuals
-plot(FD_FDisp_lm_mxd)
+plot(FD_FDisp_am_mxd)
 ```
 
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-62.png)<!-- -->
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-22.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FDisp_am_mxd <- aov(Dispersion ~ max_depth + Site_type, data = straits_sespd_env[surveyed_sites,])
-
-# Log area
+## Log Area
 # Interaction
-FD_FDisp_am_lga <- aov(Dispersion ~ logArea * Site_type, data = straits_sespd_env[surveyed_sites,])
-summary(FD_FDisp_am_lga)
-```
-
-    ##                   Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## logArea            1 0.002406 0.002406   1.417 0.2513  
-    ## Site_type          2 0.006035 0.003017   1.777 0.2009  
-    ## logArea:Site_type  2 0.009671 0.004835   2.848 0.0875 .
-    ## Residuals         16 0.027167 0.001698                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_lm_lga <- lm(Dispersion ~ logArea + Site_type, data = straits_sespd_env[surveyed_sites,])
+FD_FDisp_am_lga <- aov(Dispersion ~ Site_type * logArea, data = straits_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_lm_lga))
+shapiro.test(residuals(FD_FDisp_am_lga))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(FD_FDisp_lm_lga)
+    ## data:  residuals(FD_FDisp_am_lga)
+    ## W = 0.91287, p-value = 0.05419
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(FD_FDisp_am_lga) ~ straits_sespd_env[surveyed_sites,"Site_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value  Pr(>F)  
+    ## group  2  3.0074 0.07333 .
+    ##       19                  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# Check for outliers
+outlierTest(FD_FDisp_am_lga)
+```
+
+    ##      rstudent unadjusted p-value Bonferroni p
+    ## CLM -3.955096          0.0012703     0.027946
+
+``` r
+# Plot residuals
+plot(FD_FDisp_am_lga)
+```
+
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-23.png)<!-- -->
+
+``` r
+# Summarize the ANOVA results
+summary(FD_FDisp_am_lga)
+```
+
+    ##                   Df   Sum Sq  Mean Sq F value Pr(>F)  
+    ## Site_type          2 0.008264 0.004132   2.434 0.1195  
+    ## logArea            1 0.000176 0.000176   0.104 0.7514  
+    ## Site_type:logArea  2 0.009671 0.004835   2.848 0.0875 .
+    ## Residuals         16 0.027167 0.001698                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# ANCOVA
+FD_FDisp_am_lga <- aov(Dispersion ~ Site_type + logArea, data = straits_sespd_env[surveyed_sites,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FDisp_am_lga))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(FD_FDisp_am_lga)
     ## W = 0.90519, p-value = 0.03781
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_lm_lga) ~ straits_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(FD_FDisp_am_lga) ~ straits_sespd_env[surveyed_sites,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -6560,7 +3055,7 @@ car::leveneTest(residuals(FD_FDisp_lm_lga) ~ straits_sespd_env[surveyed_sites,"S
 
 ``` r
 # Check for outliers
-outlierTest(FD_FDisp_lm_lga)
+outlierTest(FD_FDisp_am_lga)
 ```
 
     ## No Studentized residuals with Bonferroni p < 0.05
@@ -6570,43 +3065,76 @@ outlierTest(FD_FDisp_lm_lga)
 
 ``` r
 # Plot residuals
-plot(FD_FDisp_lm_lga)
+plot(FD_FDisp_am_lga)
 ```
 
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-63.png)<!-- -->
+![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-24.png)<!-- -->
 
 ``` r
-# Test relationship
-FD_FDisp_am_lga <- aov(Dispersion ~ logArea + Site_type, data = straits_sespd_env[surveyed_sites,])
-
-# Anova outputs
+# Summarize ANOVA results and calculate pairwise comparisons
 summary(FD_FDisp_am_dist)
 ```
 
     ##                         Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## distance_to_ocean_min_m  1 0.000117 0.000117   0.070 0.7946  
-    ## Site_type                2 0.014962 0.007481   4.459 0.0267 *
+    ## Site_type                2 0.008264 0.004132   2.463  0.113  
+    ## distance_to_ocean_min_m  1 0.006815 0.006815   4.062  0.059 .
     ## Residuals               18 0.030199 0.001678                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+FD_FDisp_amp_dist <- emmeans(FD_FDisp_am_dist, pairwise ~ Site_type, adjust = "bonferroni")
+FD_FDisp_amp_dist$contrasts
+```
+
+    ##  contrast           estimate     SE df t.ratio p.value
+    ##  Ocean - Mixed       -0.0662 0.0253 18  -2.619  0.0522
+    ##  Ocean - Stratified  -0.1030 0.0362 18  -2.844  0.0323
+    ##  Mixed - Stratified  -0.0369 0.0263 18  -1.402  0.5335
+    ## 
+    ## P value adjustment: bonferroni method for 3 tests
 
 ``` r
 summary(FD_FDisp_am_mxd)
 ```
 
     ##             Df  Sum Sq  Mean Sq F value Pr(>F)
-    ## max_depth    1 0.00061 0.000605   0.295  0.594
-    ## Site_type    2 0.00772 0.003860   1.880  0.181
+    ## Site_type    2 0.00826 0.004132   2.013  0.163
+    ## max_depth    1 0.00006 0.000061   0.030  0.865
     ## Residuals   18 0.03695 0.002053
+
+``` r
+FD_FDisp_amp_mxd <- emmeans(FD_FDisp_am_mxd, pairwise ~ Site_type, adjust = "bonferroni")
+FD_FDisp_amp_mxd$contrasts
+```
+
+    ##  contrast           estimate     SE df t.ratio p.value
+    ##  Ocean - Mixed       -0.0418 0.0245 18  -1.704  0.3166
+    ##  Ocean - Stratified  -0.0437 0.0261 18  -1.675  0.3338
+    ##  Mixed - Stratified  -0.0019 0.0249 18  -0.077  1.0000
+    ## 
+    ## P value adjustment: bonferroni method for 3 tests
 
 ``` r
 summary(FD_FDisp_am_lga)
 ```
 
     ##             Df  Sum Sq  Mean Sq F value Pr(>F)
-    ## logArea      1 0.00241 0.002406   1.175  0.293
-    ## Site_type    2 0.00603 0.003017   1.474  0.255
+    ## Site_type    2 0.00826 0.004132   2.019  0.162
+    ## logArea      1 0.00018 0.000176   0.086  0.772
     ## Residuals   18 0.03684 0.002047
+
+``` r
+FD_FDisp_amp_lga <- emmeans(FD_FDisp_am_lga, pairwise ~ Site_type, adjust = "bonferroni")
+FD_FDisp_amp_lga$contrasts
+```
+
+    ##  contrast           estimate     SE df t.ratio p.value
+    ##  Ocean - Mixed      -0.03803 0.0272 18  -1.398  0.5377
+    ##  Ocean - Stratified -0.04274 0.0258 18  -1.654  0.3461
+    ##  Mixed - Stratified -0.00472 0.0229 18  -0.206  1.0000
+    ## 
+    ## P value adjustment: bonferroni method for 3 tests
 
 ``` r
 # p-values
@@ -6617,695 +3145,11 @@ p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## [1] 1.0000000 0.1604208        NA 1.0000000 1.0000000        NA 1.0000000
+    ## [1] 0.6803005 0.3542655        NA 0.9756095 1.0000000        NA 0.9706062
     ## [8] 1.0000000        NA
 
 ``` r
-## Mixed and stratified lakes
-# Distance
-# Interaction
-FD_FDisp_MS_am_dist <- aov(Dispersion ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FDisp_MS_am_dist)
-```
-
-    ##                                   Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## distance_to_ocean_min_m            1 0.003506 0.003506   1.724  0.214
-    ## Site_type                          1 0.003278 0.003278   1.612  0.228
-    ## distance_to_ocean_min_m:Site_type  1 0.003443 0.003443   1.693  0.218
-    ## Residuals                         12 0.024404 0.002034
-
-``` r
-# Linear model
-FD_FDisp_MS_lm_dist <- lm(Dispersion ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_MS_lm_dist))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_MS_lm_dist)
-    ## W = 0.99028, p-value = 0.9994
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_MS_lm_dist) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  1.3419 0.2661
-    ##       14
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_MS_lm_dist)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## OTM 2.213472           0.046986      0.75178
-
-``` r
-# Plot residuals
-plot(FD_FDisp_MS_lm_dist)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-64.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_MS_am_dist <- aov(Dispersion ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Max depth
-# Interaction
-FD_FDisp_MS_am_mxd <- aov(Dispersion ~ max_depth * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FDisp_MS_am_mxd)
-```
-
-    ##                     Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## max_depth            1 0.000631 0.000631   0.281  0.606
-    ## Site_type            1 0.000027 0.000027   0.012  0.914
-    ## max_depth:Site_type  1 0.007000 0.007000   3.115  0.103
-    ## Residuals           12 0.026972 0.002248
-
-``` r
-# Linear model
-FD_FDisp_MS_lm_mxd <- lm(Dispersion ~ max_depth + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_MS_lm_mxd))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_MS_lm_mxd)
-    ## W = 0.94767, p-value = 0.4537
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_MS_lm_mxd) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.6612 0.4297
-    ##       14
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_MS_lm_mxd)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## OTM 2.398326           0.033621      0.53794
-
-``` r
-# Plot residuals
-plot(FD_FDisp_MS_lm_mxd)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-65.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_MS_am_mxd <- aov(Dispersion ~ max_depth + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Log area
-# Interaction
-FD_FDisp_MS_am_lga <- aov(Dispersion ~ logArea * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-summary(FD_FDisp_MS_am_lga)
-```
-
-    ##                   Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## logArea            1 0.000108 0.000108   0.051  0.825  
-    ## Site_type          1 0.000025 0.000025   0.012  0.914  
-    ## logArea:Site_type  1 0.009117 0.009117   4.311  0.060 .
-    ## Residuals         12 0.025380 0.002115                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_MS_lm_lga <- lm(Dispersion ~ logArea + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_MS_lm_lga))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_MS_lm_lga)
-    ## W = 0.92704, p-value = 0.2188
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_MS_lm_lga) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.8763 0.3651
-    ##       14
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_MS_lm_lga)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## SLN -2.541718           0.025856       0.4137
-
-``` r
-# Plot residuals
-plot(FD_FDisp_MS_lm_lga)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-66.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_MS_am_lga <- aov(Dispersion ~ logArea + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
-
-# Anova outputs
-summary(FD_FDisp_MS_am_dist)
-```
-
-    ##                         Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## distance_to_ocean_min_m  1 0.003506 0.003506   1.636  0.223
-    ## Site_type                1 0.003278 0.003278   1.530  0.238
-    ## Residuals               13 0.027848 0.002142
-
-``` r
-summary(FD_FDisp_MS_am_mxd)
-```
-
-    ##             Df  Sum Sq   Mean Sq F value Pr(>F)
-    ## max_depth    1 0.00063 0.0006312   0.242  0.631
-    ## Site_type    1 0.00003 0.0000270   0.010  0.921
-    ## Residuals   13 0.03397 0.0026133
-
-``` r
-summary(FD_FDisp_MS_am_lga)
-```
-
-    ##             Df  Sum Sq   Mean Sq F value Pr(>F)
-    ## logArea      1 0.00011 0.0001081   0.041  0.843
-    ## Site_type    1 0.00003 0.0000255   0.010  0.923
-    ## Residuals   13 0.03450 0.0026537
-
-``` r
-# p-values
-dist_p_values <- summary(FD_FDisp_MS_am_dist)[[1]][, "Pr(>F)"]
-mxd_p_values <- summary(FD_FDisp_MS_am_mxd)[[1]][, "Pr(>F)"]
-lga_p_values <- summary(FD_FDisp_MS_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1]  1  1 NA  1  1 NA  1  1 NA
-
-``` r
-## Ocean sites and mixed lakes
-# Distance
-# Interaction
-FD_FDisp_OM_am_dist <- aov(Dispersion ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-summary(FD_FDisp_OM_am_dist)
-```
-
-    ##                                   Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## distance_to_ocean_min_m            1 0.005482 0.005482   7.813  0.019 *
-    ## Site_type                          1 0.000822 0.000822   1.171  0.305  
-    ## distance_to_ocean_min_m:Site_type  1 0.000213 0.000213   0.304  0.593  
-    ## Residuals                         10 0.007017 0.000702                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_OM_lm_dist <- lm(Dispersion ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_OM_lm_dist))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_OM_lm_dist)
-    ## W = 0.9771, p-value = 0.9545
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_OM_lm_dist) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.0199 0.8903
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_OM_lm_dist)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## LLN -2.176443           0.054573      0.76402
-
-``` r
-# Plot residuals
-plot(FD_FDisp_OM_lm_dist)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-67.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_OM_am_dist <- aov(Dispersion ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-
-# Max depth
-# Interaction
-FD_FDisp_OM_am_mxd <- aov(Dispersion ~ max_depth * Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-summary(FD_FDisp_OM_am_mxd)
-```
-
-    ##                     Df   Sum Sq  Mean Sq F value Pr(>F)   
-    ## max_depth            1 0.003304 0.003304   7.559 0.0205 * 
-    ## Site_type            1 0.005362 0.005362  12.267 0.0057 **
-    ## max_depth:Site_type  1 0.000498 0.000498   1.140 0.3107   
-    ## Residuals           10 0.004371 0.000437                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_OM_lm_mxd <- lm(Dispersion ~ max_depth + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_OM_lm_mxd))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_OM_lm_mxd)
-    ## W = 0.90139, p-value = 0.1181
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_OM_lm_mxd) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.3027 0.5923
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_OM_lm_mxd)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## OOO -2.482124           0.032425      0.45395
-
-``` r
-# Plot residuals
-plot(FD_FDisp_OM_lm_mxd)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-68.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_OM_am_mxd <- aov(Dispersion ~ max_depth + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-
-# Log area
-# Interaction
-FD_FDisp_OM_am_lga <- aov(Dispersion ~ logArea * Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-summary(FD_FDisp_OM_am_lga)
-```
-
-    ##                   Df   Sum Sq  Mean Sq F value  Pr(>F)   
-    ## logArea            1 0.006607 0.006607  15.852 0.00259 **
-    ## Site_type          1 0.001901 0.001901   4.562 0.05845 . 
-    ## logArea:Site_type  1 0.000859 0.000859   2.060 0.18173   
-    ## Residuals         10 0.004168 0.000417                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_OM_lm_lga <- lm(Dispersion ~ logArea + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_OM_lm_lga))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_OM_lm_lga)
-    ## W = 0.97093, p-value = 0.8889
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_OM_lm_lga) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  0.0949 0.7633
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_OM_lm_lga)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## OLO 1.872443           0.090643           NA
-
-``` r
-# Plot residuals
-plot(FD_FDisp_OM_lm_lga)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-69.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_OM_am_lga <- aov(Dispersion ~ logArea + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
-
-# Anova outputs
-summary(FD_FDisp_OM_am_dist)
-```
-
-    ##                         Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## distance_to_ocean_min_m  1 0.005482 0.005482   8.341 0.0148 *
-    ## Site_type                1 0.000822 0.000822   1.251 0.2873  
-    ## Residuals               11 0.007230 0.000657                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FDisp_OM_am_mxd)
-```
-
-    ##             Df   Sum Sq  Mean Sq F value  Pr(>F)   
-    ## max_depth    1 0.003304 0.003304   7.464 0.01951 * 
-    ## Site_type    1 0.005362 0.005362  12.113 0.00515 **
-    ## Residuals   11 0.004869 0.000443                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FDisp_OM_am_lga)
-```
-
-    ##             Df   Sum Sq  Mean Sq F value  Pr(>F)   
-    ## logArea      1 0.006607 0.006607  14.459 0.00293 **
-    ## Site_type    1 0.001901 0.001901   4.161 0.06613 . 
-    ## Residuals   11 0.005026 0.000457                   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# p-values
-dist_p_values <- summary(FD_FDisp_OM_am_dist)[[1]][, "Pr(>F)"]
-mxd_p_values <- summary(FD_FDisp_OM_am_mxd)[[1]][, "Pr(>F)"]
-lga_p_values <- summary(FD_FDisp_OM_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 0.08854794 1.00000000         NA 0.11704932 0.03087392         NA 0.01758501
-    ## [8] 0.39679023         NA
-
-``` r
-## Stratified lakes and ocean sites
-# Distance
-# Interaction
-FD_FDisp_SO_am_dist <- aov(Dispersion ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-summary(FD_FDisp_SO_am_dist)
-```
-
-    ##                                   Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## distance_to_ocean_min_m            1 0.000119 0.000119   0.054 0.8211  
-    ## Site_type                          1 0.016634 0.016634   7.531 0.0207 *
-    ## distance_to_ocean_min_m:Site_type  1 0.000001 0.000001   0.001 0.9821  
-    ## Residuals                         10 0.022088 0.002209                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Linear model
-FD_FDisp_SO_lm_dist <- lm(Dispersion ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_SO_lm_dist))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_SO_lm_dist)
-    ## W = 0.97831, p-value = 0.9638
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_SO_lm_dist) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value  Pr(>F)  
-    ## group  1   4.086 0.06612 .
-    ##       12                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_SO_lm_dist)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## OTM 2.163914            0.05574      0.78036
-
-``` r
-# Plot residuals
-plot(FD_FDisp_SO_lm_dist)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-70.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_SO_am_dist <- aov(Dispersion ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-
-# Max depth
-# Interaction
-FD_FDisp_SO_am_mxd <- aov(Dispersion ~ max_depth * Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-summary(FD_FDisp_SO_am_mxd)
-```
-
-    ##                     Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## max_depth            1 0.004769 0.004769   1.808  0.209
-    ## Site_type            1 0.003794 0.003794   1.438  0.258
-    ## max_depth:Site_type  1 0.003896 0.003896   1.477  0.252
-    ## Residuals           10 0.026383 0.002638
-
-``` r
-# Linear model
-FD_FDisp_SO_lm_mxd <- lm(Dispersion ~ max_depth + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_SO_lm_mxd))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_SO_lm_mxd)
-    ## W = 0.94056, p-value = 0.4255
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_SO_lm_mxd) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1    0.66 0.4324
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_SO_lm_mxd)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##      rstudent unadjusted p-value Bonferroni p
-    ## CLM -2.427231           0.035618      0.49866
-
-``` r
-# Plot residuals
-plot(FD_FDisp_SO_lm_mxd)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-71.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_SO_am_mxd <- aov(Dispersion ~ max_depth + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-
-# Log area
-# Interaction
-FD_FDisp_SO_am_lga <- aov(Dispersion ~ logArea * Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-summary(FD_FDisp_SO_am_lga)
-```
-
-    ##                   Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## logArea            1 0.000260 0.000260   0.105  0.753
-    ## Site_type          1 0.007010 0.007010   2.828  0.124
-    ## logArea:Site_type  1 0.006786 0.006786   2.738  0.129
-    ## Residuals         10 0.024786 0.002479
-
-``` r
-# Linear model
-FD_FDisp_SO_lm_lga <- lm(Dispersion ~ logArea + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FDisp_SO_lm_lga))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(FD_FDisp_SO_lm_lga)
-    ## W = 0.89553, p-value = 0.09716
-
-``` r
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FDisp_SO_lm_lga) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
-```
-
-    ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1   0.952 0.3485
-    ##       12
-
-``` r
-# Check for outliers
-outlierTest(FD_FDisp_SO_lm_lga)
-```
-
-    ## No Studentized residuals with Bonferroni p < 0.05
-    ## Largest |rstudent|:
-    ##     rstudent unadjusted p-value Bonferroni p
-    ## OTM  2.37025            0.03926      0.54965
-
-``` r
-# Plot residuals
-plot(FD_FDisp_SO_lm_lga)
-```
-
-![](FD_analyses_files/figure-gfm/FD%20alpha%20lm%20&%20ANOVA-72.png)<!-- -->
-
-``` r
-# Test relationship
-FD_FDisp_SO_am_lga <- aov(Dispersion ~ logArea + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
-
-# Anova outputs
-summary(FD_FDisp_SO_am_dist)
-```
-
-    ##                         Df   Sum Sq  Mean Sq F value Pr(>F)  
-    ## distance_to_ocean_min_m  1 0.000119 0.000119   0.059  0.812  
-    ## Site_type                1 0.016634 0.016634   8.283  0.015 *
-    ## Residuals               11 0.022089 0.002008                 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-summary(FD_FDisp_SO_am_mxd)
-```
-
-    ##             Df   Sum Sq  Mean Sq F value Pr(>F)
-    ## max_depth    1 0.004769 0.004769   1.732  0.215
-    ## Site_type    1 0.003794 0.003794   1.378  0.265
-    ## Residuals   11 0.030279 0.002753
-
-``` r
-summary(FD_FDisp_SO_am_lga)
-```
-
-    ##             Df  Sum Sq Mean Sq F value Pr(>F)
-    ## logArea      1 0.00026 0.00026   0.090  0.769
-    ## Site_type    1 0.00701 0.00701   2.442  0.146
-    ## Residuals   11 0.03157 0.00287
-
-``` r
-# p-values
-dist_p_values <- summary(FD_FDisp_SO_am_dist)[[1]][, "Pr(>F)"]
-mxd_p_values <- summary(FD_FDisp_SO_am_mxd)[[1]][, "Pr(>F)"]
-lga_p_values <- summary(FD_FDisp_SO_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ## [1] 1.00000000 0.09013511         NA 1.00000000 1.00000000         NA 1.00000000
-    ## [8] 0.87828987         NA
-
-``` r
-## Ocean sites
-FD_FDisp_geo_O_lm <- lm(Dispersion ~ distance_to_ocean_min_m + max_depth + logArea, straits_sespd_env[ocean_sites,])
-summary(FD_FDisp_geo_O_lm)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = Dispersion ~ distance_to_ocean_min_m + max_depth + 
-    ##     logArea, data = straits_sespd_env[ocean_sites, ])
-    ## 
-    ## Residuals:
-    ##        IBK        LCN        NCN        OOO        OOM        RCA 
-    ##  6.035e-03  1.518e-02 -1.292e-02 -2.317e-02  1.488e-02 -2.775e-18 
-    ## 
-    ## Coefficients:
-    ##                           Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)              0.6038352  0.0625241   9.658   0.0106 *
-    ## distance_to_ocean_min_m -0.0011203  0.0014851  -0.754   0.5294  
-    ## max_depth               -0.0002503  0.0011219  -0.223   0.8442  
-    ## logArea                 -0.0059648  0.0055640  -1.072   0.3959  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.02441 on 2 degrees of freedom
-    ## Multiple R-squared:  0.5108, Adjusted R-squared:  -0.223 
-    ## F-statistic: 0.6961 on 3 and 2 DF,  p-value: 0.6349
-
-``` r
-p_values <- summary(FD_FDisp_geo_O_lm)$coefficients[, "Pr(>|t|)"]
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ##             (Intercept) distance_to_ocean_min_m               max_depth 
-    ##              0.04220869              1.00000000              1.00000000 
-    ##                 logArea 
-    ##              1.00000000
-
-``` r
-## Mixed lakes
+### Mixed lakes
 FD_FDisp_geo_M_lm <- lm(Dispersion ~ distance_to_ocean_min_m + max_depth + logArea, straits_sespd_env[mixed_lakes,])
 summary(FD_FDisp_geo_M_lm)
 ```
@@ -7359,7 +3203,7 @@ p_values <- summary(FD_FDisp_geo_M_lm)$coefficients[, "Pr(>|t|)"]
     ##             1.000000000
 
 ``` r
-## Stratified lakes
+### Stratified lakes
 FD_FDisp_geo_S_lm <- lm(Dispersion ~ distance_to_ocean_min_m + max_depth + logArea, straits_sespd_env[stratified_lakes,])
 summary(FD_FDisp_geo_S_lm)
 ```
@@ -7596,7 +3440,7 @@ FD_beta_BS <- BAT::beta(surveyed_sites_lake, straits[, "BodyShapeI", drop = FALS
     ## 
     ## adonis2(formula = FD_beta_BS$Btotal ~ env[surveyed_sites, 19], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)
-    ## Model     2  0.12409 0.14828 1.6539  0.172
+    ## Model     2  0.12409 0.14828 1.6539  0.181
     ## Residual 19  0.71278 0.85172              
     ## Total    21  0.83687 1.00000
 
@@ -7722,7 +3566,7 @@ FD_beta_ML <- BAT::beta(surveyed_sites_lake, straits[, "MaxLengthTL", drop = FAL
     ## 
     ## adonis2(formula = FD_beta_ML$Btotal ~ env[surveyed_sites, 19], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)  
-    ## Model     2  0.11024 0.18889 2.2124  0.099 .
+    ## Model     2  0.11024 0.18889 2.2124  0.095 .
     ## Residual 19  0.47339 0.81111                
     ## Total    21  0.58364 1.00000                
     ## ---
@@ -7790,10 +3634,10 @@ FD_beta_T <- BAT::beta(surveyed_sites_lake, straits[, "Troph", drop = FALSE], ab
     ## Number of permutations: 999
     ## 
     ## adonis2(formula = FD_beta_T$Btotal ~ env[surveyed_sites, 19], permutations = 999)
-    ##          Df SumOfSqs     R2      F Pr(>F)    
-    ## Model     2  0.98446 0.4003 6.3411  0.001 ***
-    ## Residual 19  1.47488 0.5997                  
-    ## Total    21  2.45934 1.0000                  
+    ##          Df SumOfSqs     R2      F Pr(>F)   
+    ## Model     2  0.98446 0.4003 6.3411  0.002 **
+    ## Residual 19  1.47488 0.5997                 
+    ## Total    21  2.45934 1.0000                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -7915,7 +3759,7 @@ FD_beta_DMax <- BAT::beta(surveyed_sites_lake, straits_clean[, "DepthMax", drop 
     ## 
     ## adonis2(formula = FD_beta_DMax$Btotal ~ env[surveyed_sites, 19], permutations = 999)
     ##          Df SumOfSqs      R2    F Pr(>F)
-    ## Model     2 0.022436 0.09265 0.97  0.274
+    ## Model     2 0.022436 0.09265 0.97  0.267
     ## Residual 19 0.219727 0.90735            
     ## Total    21 0.242163 1.00000
 
@@ -8108,7 +3952,7 @@ FD_beta_FP <- BAT::beta(surveyed_sites_lake, straits[, "FeedingPath", drop = FAL
     ## 
     ## adonis2(formula = FD_beta_FP$Btotal ~ env[surveyed_sites, 19], permutations = 999)
     ##          Df SumOfSqs    R2      F Pr(>F)
-    ## Model     2  0.07955 0.175 2.0152  0.313
+    ## Model     2  0.07955 0.175 2.0152  0.328
     ## Residual 19  0.37500 0.825              
     ## Total    21  0.45455 1.000
 
@@ -8174,7 +4018,7 @@ FD_beta_RG <- BAT::beta(surveyed_sites_lake, straits[, "RepGuild2", drop = FALSE
     ## 
     ## adonis2(formula = FD_beta_RG$Btotal ~ env[surveyed_sites, 19], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)   
-    ## Model     2  0.36130 0.28601 3.8055  0.004 **
+    ## Model     2  0.36130 0.28601 3.8055  0.008 **
     ## Residual 19  0.90194 0.71399                 
     ## Total    21  1.26324 1.00000                 
     ## ---
@@ -8389,7 +4233,7 @@ adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
 adjusted_p_values
 ```
 
-    ##  [1] 1.000 1.000 1.000 0.013 1.000 1.000 0.013 0.078 1.000 0.052 0.013 0.117
+    ##  [1] 1.000 1.000 1.000 0.026 1.000 1.000 0.013 0.078 1.000 0.104 0.013 0.117
     ## [13] 0.026
 
 ``` r
@@ -8478,14 +4322,14 @@ FD_beta_ref_dist <- BAT::beta(presabs_lake, traits[,traits_keep], abund = F)
 
     ##                     pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted
     ## 1     Stratified vs Mixed  1 1.3638470 6.386376 0.3132669   0.001      0.006
-    ## 2     Stratified vs Ocean  1 1.2705416 5.257780 0.3046614   0.001      0.006
-    ## 3 Stratified vs Reference  1 0.6491367 2.500782 0.2632186   0.105      0.630
-    ## 4          Mixed vs Ocean  1 0.2773129 1.475364 0.1094860   0.102      0.612
-    ## 5      Mixed vs Reference  1 0.6155581 3.674142 0.3442096   0.104      0.624
-    ## 6      Ocean vs Reference  1 0.5747831 2.654192 0.3467632   0.142      0.852
+    ## 2     Stratified vs Ocean  1 1.2705416 5.257780 0.3046614   0.003      0.018
+    ## 3 Stratified vs Reference  1 0.6491367 2.500782 0.2632186   0.115      0.690
+    ## 4          Mixed vs Ocean  1 0.2773129 1.475364 0.1094860   0.100      0.600
+    ## 5      Mixed vs Reference  1 0.6155581 3.674142 0.3442096   0.126      0.756
+    ## 6      Ocean vs Reference  1 0.5747831 2.654192 0.3467632   0.127      0.762
     ##   sig
     ## 1   *
-    ## 2   *
+    ## 2   .
     ## 3    
     ## 4    
     ## 5    
@@ -8562,8 +4406,8 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
 
     ##                 pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted sig
     ## 1 Stratified vs Mixed  1 1.2933447 6.065453 0.3022834   0.001      0.003   *
-    ## 2 Stratified vs Ocean  1 1.2283632 5.202464 0.3024255   0.003      0.009   *
-    ## 3      Mixed vs Ocean  1 0.3169502 1.530099 0.1130885   0.105      0.315
+    ## 2 Stratified vs Ocean  1 1.2283632 5.202464 0.3024255   0.001      0.003   *
+    ## 3      Mixed vs Ocean  1 0.3169502 1.530099 0.1130885   0.086      0.258
 
 ``` r
 # A subset of traits that are significant
@@ -8635,9 +4479,9 @@ FD_beta_sub_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_sub_keep], a
 ```
 
     ##                 pairs Df SumsOfSqs   F.Model         R2 p.value p.adjusted sig
-    ## 1 Stratified vs Mixed  1 1.5753973 10.669131 0.43248912   0.001      0.003   *
+    ## 1 Stratified vs Mixed  1 1.5753973 10.669131 0.43248912   0.002      0.006   *
     ## 2 Stratified vs Ocean  1 1.4358446  8.923915 0.42649356   0.001      0.003   *
-    ## 3      Mixed vs Ocean  1 0.1824607  1.327119 0.09958037   0.148      0.444
+    ## 3      Mixed vs Ocean  1 0.1824607  1.327119 0.09958037   0.143      0.429
 
 ``` r
 # Without LCN
@@ -8711,8 +4555,8 @@ FD_beta_wo_LCN_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_LCN,], st
 
     ##                 pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted sig
     ## 1 Stratified vs Mixed  1 1.2933447 6.065453 0.3022834   0.001      0.003   *
-    ## 2 Stratified vs Ocean  1 1.2747220 5.676102 0.3403734   0.001      0.003   *
-    ## 3      Mixed vs Ocean  1 0.4148743 2.149883 0.1634907   0.009      0.027   .
+    ## 2 Stratified vs Ocean  1 1.2747220 5.676102 0.3403734   0.002      0.006   *
+    ## 3      Mixed vs Ocean  1 0.4148743 2.149883 0.1634907   0.011      0.033   .
 
 ``` r
 # Without TLN and HLM
@@ -8786,8 +4630,8 @@ FD_beta_wo_TLN_HLM_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_TLN_H
 
     ##                 pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted sig
     ## 1 Stratified vs Mixed  1 1.4720254 7.546050 0.3860652   0.001      0.003   *
-    ## 2 Stratified vs Ocean  1 1.3280216 6.066877 0.3776015   0.003      0.009   *
-    ## 3      Mixed vs Ocean  1 0.3169502 1.530099 0.1130885   0.092      0.276
+    ## 2 Stratified vs Ocean  1 1.3280216 6.066877 0.3776015   0.004      0.012   .
+    ## 3      Mixed vs Ocean  1 0.3169502 1.530099 0.1130885   0.093      0.279
 
 ``` r
 # Mixed and stratified lakes
@@ -9020,7 +4864,7 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                                   NMDS1    NMDS2     r2 Pr(>r)  
-    ## env[surveyed_sites_env, c(34)] 0.999910 0.013055 0.7819  0.026 *
+    ## env[surveyed_sites_env, c(34)] 0.999920 0.013003 0.7819  0.025 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9037,7 +4881,7 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                                   NMDS1    NMDS2     r2 Pr(>r)  
-    ## env[surveyed_sites_env, c(34)] 0.999910 0.013055 0.7819  0.026 *
+    ## env[surveyed_sites_env, c(34)] 0.999920 0.013003 0.7819  0.025 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9054,7 +4898,7 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                                   NMDS1    NMDS2     r2 Pr(>r)   
-    ## env[surveyed_sites_env, c(34)]  0.91532 -0.40274 0.8141   0.01 **
+    ## env[surveyed_sites_env, c(34)]  0.91533 -0.40269 0.8141   0.01 **
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9071,7 +4915,7 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                                   NMDS1    NMDS2     r2 Pr(>r)   
-    ## env[surveyed_sites_env, c(34)]  0.91532 -0.40274 0.8141   0.01 **
+    ## env[surveyed_sites_env, c(34)]  0.91533 -0.40269 0.8141   0.01 **
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9087,9 +4931,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.27072 -0.96266 0.1290  0.521  
-    ## salinity_median     0.99991  0.01306 0.7819  0.033 *
-    ## oxygen_median       0.56288  0.82654 0.5918  0.532  
+    ## temperature_median -0.27078 -0.96264 0.1290  0.529  
+    ## salinity_median     0.99992  0.01300 0.7819  0.017 *
+    ## oxygen_median       0.56288  0.82654 0.5918  0.537  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9106,8 +4950,8 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.27072 -0.96266 0.1290  1.000  
-    ## salinity_median     0.99991  0.01306 0.7819  0.099 .
+    ## temperature_median -0.27078 -0.96264 0.1290  1.000  
+    ## salinity_median     0.99992  0.01300 0.7819  0.051 .
     ## oxygen_median       0.56288  0.82654 0.5918  1.000  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -9124,9 +4968,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.24086 -0.97056 0.2282  0.386  
-    ## salinity_median     0.98138  0.19210 0.7759  0.022 *
-    ## oxygen_median       0.47935  0.87762 0.4513  0.634  
+    ## temperature_median -0.24077 -0.97058 0.2281  0.352  
+    ## salinity_median     0.98131  0.19246 0.7759  0.030 *
+    ## oxygen_median       0.47921  0.87770 0.4513  0.632  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9143,9 +4987,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.24086 -0.97056 0.2282  1.000  
-    ## salinity_median     0.98138  0.19210 0.7759  0.066 .
-    ## oxygen_median       0.47935  0.87762 0.4513  1.000  
+    ## temperature_median -0.24077 -0.97058 0.2281   1.00  
+    ## salinity_median     0.98131  0.19246 0.7759   0.09 .
+    ## oxygen_median       0.47921  0.87770 0.4513   1.00  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9160,10 +5004,10 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ## ***VECTORS
     ## 
-    ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.13802  0.99043 0.1165  0.573  
-    ## salinity_median    -0.78184 -0.62348 0.7761  0.013 *
-    ## oxygen_median      -0.98750 -0.15759 0.7007  0.043 *
+    ##                       NMDS1    NMDS2     r2 Pr(>r)   
+    ## temperature_median -0.13802  0.99043 0.1165  0.546   
+    ## salinity_median    -0.78183 -0.62349 0.7761  0.010 **
+    ## oxygen_median      -0.98750 -0.15760 0.7007  0.052 . 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9181,8 +5025,8 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
     ## temperature_median -0.13802  0.99043 0.1165  1.000  
-    ## salinity_median    -0.78184 -0.62348 0.7761  0.039 *
-    ## oxygen_median      -0.98750 -0.15759 0.7007  0.129  
+    ## salinity_median    -0.78183 -0.62349 0.7761  0.030 *
+    ## oxygen_median      -0.98750 -0.15760 0.7007  0.156  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9198,9 +5042,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median  0.11111 -0.99381 0.2427  0.203  
-    ## salinity_median    -0.99549  0.09488 0.7716  0.036 *
-    ## oxygen_median      -0.54284  0.83984 0.5013  0.840  
+    ## temperature_median  0.11112 -0.99381 0.2427  0.222  
+    ## salinity_median    -0.99549  0.09484 0.7716  0.039 *
+    ## oxygen_median      -0.54283  0.83984 0.5013  0.843  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9217,9 +5061,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)
-    ## temperature_median  0.11111 -0.99381 0.2427  0.609
-    ## salinity_median    -0.99549  0.09488 0.7716  0.108
-    ## oxygen_median      -0.54284  0.83984 0.5013  1.000
+    ## temperature_median  0.11112 -0.99381 0.2427  0.666
+    ## salinity_median    -0.99549  0.09484 0.7716  0.117
+    ## oxygen_median      -0.54283  0.83984 0.5013  1.000
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9232,12 +5076,10 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ## ***VECTORS
     ## 
-    ##                          NMDS1       NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.00021571  1.00000000 0.0697  0.823  
-    ## salinity_median     0.00066550 -1.00000000 0.4773  0.237  
-    ## oxygen_median       0.00119470 -1.00000000 0.6280  0.096 .
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##                          NMDS1       NMDS2     r2 Pr(>r)
+    ## temperature_median -0.00010974 -1.00000000 0.2009  0.552
+    ## salinity_median     0.00086314 -1.00000000 0.4339  0.245
+    ## oxygen_median       0.00264484 -1.00000000 0.5900  0.102
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -9251,9 +5093,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                          NMDS1       NMDS2     r2 Pr(>r)
-    ## temperature_median -0.00021571  1.00000000 0.0697  1.000
-    ## salinity_median     0.00066550 -1.00000000 0.4773  0.711
-    ## oxygen_median       0.00119470 -1.00000000 0.6280  0.288
+    ## temperature_median -0.00010974 -1.00000000 0.2009  1.000
+    ## salinity_median     0.00086314 -1.00000000 0.4339  0.735
+    ## oxygen_median       0.00264484 -1.00000000 0.5900  0.306
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -9266,12 +5108,12 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                             NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median       -0.91991  0.39213 0.5767  0.071 .
-    ## salinity_median           0.45831  0.88879 0.6024  0.092 .
-    ## oxygen_median            -0.24381 -0.96982 0.6770  0.059 .
-    ## distance_to_ocean_mean_m -0.98372  0.17971 0.3436  0.417  
-    ## max_depth                -0.82902  0.55923 0.5584  0.154  
-    ## logArea                  -0.85170  0.52404 0.5527  0.127  
+    ## temperature_median       -0.91986  0.39225 0.5767  0.093 .
+    ## salinity_median           0.45838  0.88876 0.6024  0.096 .
+    ## oxygen_median            -0.24391 -0.96980 0.6769  0.062 .
+    ## distance_to_ocean_mean_m -0.98370  0.17982 0.3436  0.372  
+    ## max_depth                -0.82900  0.55926 0.5585  0.138  
+    ## logArea                  -0.85166  0.52409 0.5528  0.119  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
@@ -9287,12 +5129,12 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                             NMDS1    NMDS2     r2 Pr(>r)
-    ## temperature_median       -0.91991  0.39213 0.5767  0.426
-    ## salinity_median           0.45831  0.88879 0.6024  0.552
-    ## oxygen_median            -0.24381 -0.96982 0.6770  0.354
-    ## distance_to_ocean_mean_m -0.98372  0.17971 0.3436  1.000
-    ## max_depth                -0.82902  0.55923 0.5584  0.924
-    ## logArea                  -0.85170  0.52404 0.5527  0.762
+    ## temperature_median       -0.91986  0.39225 0.5767  0.558
+    ## salinity_median           0.45838  0.88876 0.6024  0.576
+    ## oxygen_median            -0.24391 -0.96980 0.6769  0.372
+    ## distance_to_ocean_mean_m -0.98370  0.17982 0.3436  1.000
+    ## max_depth                -0.82900  0.55926 0.5585  0.828
+    ## logArea                  -0.85166  0.52409 0.5528  0.714
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -9307,9 +5149,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m -0.81969 -0.57281 0.6240  0.078 .
-    ## max_depth               -0.87041  0.49233 0.0216  0.998  
-    ## logArea                  0.28188  0.95945 0.1375  0.237  
+    ## distance_to_ocean_min_m -0.81970 -0.57280 0.6240  0.069 .
+    ## max_depth               -0.87041  0.49232 0.0216  0.999  
+    ## logArea                  0.28188  0.95945 0.1375  0.246  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9326,9 +5168,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.81969 -0.57281 0.6240  0.234
-    ## max_depth               -0.87041  0.49233 0.0216  1.000
-    ## logArea                  0.28188  0.95945 0.1375  0.711
+    ## distance_to_ocean_min_m -0.81970 -0.57280 0.6240  0.207
+    ## max_depth               -0.87041  0.49232 0.0216  1.000
+    ## logArea                  0.28188  0.95945 0.1375  0.738
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9343,9 +5185,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m -0.89447 -0.44713 0.6680  0.037 *
-    ## max_depth               -0.39700  0.91782 0.1065  0.908  
-    ## logArea                  0.13969  0.99020 0.1972  0.098 .
+    ## distance_to_ocean_min_m -0.89445 -0.44717 0.6680  0.030 *
+    ## max_depth               -0.39700  0.91782 0.1065  0.915  
+    ## logArea                  0.13968  0.99020 0.1971  0.137  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9361,10 +5203,12 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ## ***VECTORS
     ## 
-    ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.89447 -0.44713 0.6680  0.111
-    ## max_depth               -0.39700  0.91782 0.1065  1.000
-    ## logArea                  0.13969  0.99020 0.1972  0.294
+    ##                            NMDS1    NMDS2     r2 Pr(>r)  
+    ## distance_to_ocean_min_m -0.89445 -0.44717 0.6680  0.090 .
+    ## max_depth               -0.39700  0.91782 0.1065  1.000  
+    ## logArea                  0.13968  0.99020 0.1971  0.411  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9378,9 +5222,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m -0.81969 -0.57281 0.6240  0.081 .
-    ## max_depth               -0.87041  0.49233 0.0216  0.997  
-    ## logArea                  0.28188  0.95945 0.1375  0.258  
+    ## distance_to_ocean_min_m -0.81970 -0.57280 0.6240  0.089 .
+    ## max_depth               -0.87041  0.49232 0.0216  0.999  
+    ## logArea                  0.28188  0.95945 0.1375  0.234  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9397,9 +5241,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.81969 -0.57281 0.6240  0.243
-    ## max_depth               -0.87041  0.49233 0.0216  1.000
-    ## logArea                  0.28188  0.95945 0.1375  0.774
+    ## distance_to_ocean_min_m -0.81970 -0.57280 0.6240  0.267
+    ## max_depth               -0.87041  0.49232 0.0216  1.000
+    ## logArea                  0.28188  0.95945 0.1375  0.702
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9413,9 +5257,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.83845 -0.54497 0.5385  0.141
-    ## max_depth               -0.99994 -0.01091 0.0552  0.966
-    ## logArea                 -0.06130  0.99812 0.0122  0.947
+    ## distance_to_ocean_min_m -0.83850 -0.54490 0.5385  0.137
+    ## max_depth               -0.99994 -0.01061 0.0552  0.975
+    ## logArea                 -0.06136  0.99812 0.0122  0.931
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9430,9 +5274,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.83845 -0.54497 0.5385  0.423
-    ## max_depth               -0.99994 -0.01091 0.0552  1.000
-    ## logArea                 -0.06130  0.99812 0.0122  1.000
+    ## distance_to_ocean_min_m -0.83850 -0.54490 0.5385  0.411
+    ## max_depth               -0.99994 -0.01061 0.0552  1.000
+    ## logArea                 -0.06136  0.99812 0.0122  1.000
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9446,9 +5290,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m  0.49145 -0.87091 0.4051  0.050 *
-    ## max_depth               -0.97142 -0.23738 0.5902  0.012 *
-    ## logArea                 -0.69406  0.71992 0.3102  0.235  
+    ## distance_to_ocean_min_m  0.49145 -0.87091 0.4051  0.046 *
+    ## max_depth               -0.97142 -0.23737 0.5902  0.014 *
+    ## logArea                 -0.69405  0.71992 0.3102  0.233  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9465,9 +5309,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m  0.49145 -0.87091 0.4051  0.150  
-    ## max_depth               -0.97142 -0.23738 0.5902  0.036 *
-    ## logArea                 -0.69406  0.71992 0.3102  0.705  
+    ## distance_to_ocean_min_m  0.49145 -0.87091 0.4051  0.138  
+    ## max_depth               -0.97142 -0.23737 0.5902  0.042 *
+    ## logArea                 -0.69405  0.71992 0.3102  0.699  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -9483,9 +5327,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m  0.83953 -0.54331 0.7036  0.142
-    ## max_depth                0.22388 -0.97462 0.0872  0.856
-    ## logArea                 -0.95838  0.28548 0.1510  0.645
+    ## distance_to_ocean_min_m  0.83951 -0.54334 0.7036  0.139
+    ## max_depth                0.22386 -0.97462 0.0872  0.842
+    ## logArea                 -0.95841  0.28541 0.1510  0.615
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9500,9 +5344,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m  0.83953 -0.54331 0.7036  0.426
-    ## max_depth                0.22388 -0.97462 0.0872  1.000
-    ## logArea                 -0.95838  0.28548 0.1510  1.000
+    ## distance_to_ocean_min_m  0.83951 -0.54334 0.7036  0.417
+    ## max_depth                0.22386 -0.97462 0.0872  1.000
+    ## logArea                 -0.95841  0.28541 0.1510  1.000
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9515,10 +5359,10 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ## ***VECTORS
     ## 
-    ##                              NMDS1      NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m -0.0050328 -0.9999900 0.3113  0.419  
-    ## max_depth                0.0016932  1.0000000 0.7078  0.067 .
-    ## logArea                  0.0010346 -1.0000000 0.6626  0.047 *
+    ##                               NMDS1       NMDS2     r2 Pr(>r)  
+    ## distance_to_ocean_min_m -0.00017614  1.00000000 0.7279  0.048 *
+    ## max_depth                0.00081658 -1.00000000 0.7469  0.042 *
+    ## logArea                  0.00040660  1.00000000 0.8145  0.020 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
@@ -9533,10 +5377,12 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ## ***VECTORS
     ## 
-    ##                              NMDS1      NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.0050328 -0.9999900 0.3113  1.000
-    ## max_depth                0.0016932  1.0000000 0.7078  0.201
-    ## logArea                  0.0010346 -1.0000000 0.6626  0.141
+    ##                               NMDS1       NMDS2     r2 Pr(>r)  
+    ## distance_to_ocean_min_m -0.00017614  1.00000000 0.7279  0.144  
+    ## max_depth                0.00081658 -1.00000000 0.7469  0.126  
+    ## logArea                  0.00040660  1.00000000 0.8145  0.060 .
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -9556,11 +5402,11 @@ env_dist_t <- dist(scaled_env[surveyed_sites_env,c(1)], method = "euclidean")
     ## mantel(xdis = FD_beta_env_dist$Btotal, ydis = env_dist_t, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, 19],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2958 
-    ##       Significance: 0.209 
+    ##       Significance: 0.213 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.350 0.388 0.415 0.426 
+    ## 0.347 0.385 0.419 0.438 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9581,7 +5427,7 @@ env_dist_s <- dist(scaled_env[surveyed_sites_env,c(2)], method = "euclidean")
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.610 0.655 0.682 0.715 
+    ## 0.611 0.647 0.675 0.713 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9598,11 +5444,11 @@ env_dist_o <- dist(scaled_env[surveyed_sites_env,c(3)], method = "euclidean")
     ## mantel(xdis = FD_beta_env_dist$Btotal, ydis = env_dist_o, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, 19],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4174 
-    ##       Significance: 0.601 
+    ##       Significance: 0.595 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.582 0.623 0.656 0.691 
+    ## 0.577 0.613 0.640 0.668 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9614,7 +5460,7 @@ FD_beta_env_mant_pv <- FD_beta_env_mant_pv[,1]
 (FD_beta_env_mant_pv <- p.adjust(FD_beta_env_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.627 0.027 1.000
+    ## [1] 0.639 0.027 1.000
 
 ``` r
 # Mixed and stratified lakes
@@ -9629,11 +5475,11 @@ env_MS_dist_t <- dist(scaled_env[mixed_stratified_lakes,c(1)], method = "euclide
     ## mantel(xdis = FD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_t,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2965 
-    ##       Significance: 0.248 
+    ##       Significance: 0.234 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.377 0.421 0.456 0.509 
+    ## 0.366 0.411 0.439 0.473 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9654,7 +5500,7 @@ env_MS_dist_s <- dist(scaled_env[mixed_stratified_lakes,c(2)], method = "euclide
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.584 0.636 0.671 0.714 
+    ## 0.584 0.635 0.682 0.721 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9671,11 +5517,11 @@ env_MS_dist_o <- dist(scaled_env[mixed_stratified_lakes,c(3)], method = "euclide
     ## mantel(xdis = FD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_o,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2429 
-    ##       Significance: 0.723 
+    ##       Significance: 0.768 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.506 0.546 0.585 0.621 
+    ## 0.494 0.539 0.598 0.646 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9687,7 +5533,7 @@ FD_beta_env_MS_mant_pv <- FD_beta_env_MS_mant_pv[,1]
 (FD_beta_env_MS_mant_pv <- p.adjust(FD_beta_env_MS_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.744 0.057 1.000
+    ## [1] 0.702 0.057 1.000
 
 ``` r
 # Ocean sites and mixed lakes
@@ -9702,11 +5548,11 @@ env_OM_dist_t <- dist(scaled_env[ocean_mixed_sites_env,c(1)], method = "euclidea
     ## mantel(xdis = FD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.07165 
-    ##       Significance: 0.603 
+    ##       Significance: 0.615 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.152 0.212 0.271 0.369 
+    ## 0.147 0.218 0.258 0.367 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9723,11 +5569,11 @@ env_OM_dist_s <- dist(scaled_env[ocean_mixed_sites_env,c(2)], method = "euclidea
     ## mantel(xdis = FD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4251 
-    ##       Significance: 0.024 
+    ##       Significance: 0.039 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.315 0.378 0.418 0.484 
+    ## 0.319 0.396 0.457 0.533 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9744,11 +5590,11 @@ env_OM_dist_o <- dist(scaled_env[ocean_mixed_sites_env,c(3)], method = "euclidea
     ## mantel(xdis = FD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5302 
-    ##       Significance: 0.03 
+    ##       Significance: 0.034 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.338 0.451 0.548 0.616 
+    ## 0.310 0.439 0.555 0.614 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9760,7 +5606,7 @@ FD_beta_env_OM_mant_pv <- FD_beta_env_OM_mant_pv[,1]
 (FD_beta_env_OM_mant_pv <- p.adjust(FD_beta_env_OM_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.072 0.090
+    ## [1] 1.000 0.117 0.102
 
 ``` r
 # Stratified lakes and ocean sites
@@ -9775,11 +5621,11 @@ env_SO_dist_t <- dist(scaled_env[ocean_stratified_sites_env,c(1)], method = "euc
     ## mantel(xdis = FD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.005267 
-    ##       Significance: 0.325 
+    ##       Significance: 0.328 
     ## 
     ## Upper quantiles of permutations (null model):
-    ##   90%   95% 97.5%   99% 
-    ## 0.106 0.138 0.157 0.187 
+    ##    90%    95%  97.5%    99% 
+    ## 0.0924 0.1284 0.1533 0.1800 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9796,11 +5642,11 @@ env_SO_dist_s <- dist(scaled_env[ocean_stratified_sites_env,c(2)], method = "euc
     ## mantel(xdis = FD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5652 
-    ##       Significance: 0.023 
+    ##       Significance: 0.019 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.463 0.518 0.558 0.605 
+    ## 0.452 0.501 0.540 0.599 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9817,11 +5663,11 @@ env_SO_dist_o <- dist(scaled_env[ocean_stratified_sites_env,c(3)], method = "euc
     ## mantel(xdis = FD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.6221 
-    ##       Significance: 0.251 
+    ##       Significance: 0.301 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.688 0.723 0.755 0.791 
+    ## 0.686 0.732 0.763 0.802 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9833,7 +5679,7 @@ FD_beta_env_SO_mant_pv <- FD_beta_env_SO_mant_pv[,1]
 (FD_beta_env_SO_mant_pv <- p.adjust(FD_beta_env_SO_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.975 0.069 0.753
+    ## [1] 0.984 0.057 0.903
 
 ``` r
 # Mixed lakes
@@ -9848,11 +5694,11 @@ env_M_dist_t <- dist(scaled_env[mixed_lakes,c(1)], method = "euclidean")
     ## mantel(xdis = FD_beta_env_M_dist$Btotal, ydis = env_M_dist_t,      method = "spearman", permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.1609 
-    ##       Significance: 0.804 
+    ##       Significance: 0.816 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.279 0.395 0.534 0.673 
+    ## 0.270 0.374 0.533 0.679 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -9868,11 +5714,11 @@ env_M_dist_s <- dist(scaled_env[mixed_lakes,c(2)], method = "euclidean")
     ## mantel(xdis = FD_beta_env_M_dist$Btotal, ydis = env_M_dist_s,      method = "spearman", permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1713 
-    ##       Significance: 0.212 
+    ##       Significance: 0.175 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.287 0.385 0.439 0.490 
+    ## 0.268 0.371 0.428 0.482 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -9888,11 +5734,11 @@ env_M_dist_o <- dist(scaled_env[mixed_lakes,c(3)], method = "euclidean")
     ## mantel(xdis = FD_beta_env_M_dist$Btotal, ydis = env_M_dist_o,      method = "spearman", permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1719 
-    ##       Significance: 0.15 
+    ##       Significance: 0.152 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.287 0.489 0.568 0.689 
+    ## 0.284 0.451 0.549 0.604 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -9903,7 +5749,7 @@ FD_beta_env_M_mant_pv <- FD_beta_env_M_mant_pv[,1]
 (FD_beta_env_M_mant_pv <- p.adjust(FD_beta_env_M_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.636 0.450
+    ## [1] 1.000 0.525 0.456
 
 ``` r
 # Stratified lakes
@@ -9918,11 +5764,11 @@ env_geo_S_dist <- dist(scaled_env[stratified_lakes,c(1:3,9,14:15)], method = "eu
     ## mantel(xdis = FD_beta_S_dist$Btotal, ydis = env_geo_S_dist, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2501 
-    ##       Significance: 0.146 
+    ##       Significance: 0.121 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.288 0.376 0.434 0.470 
+    ## 0.278 0.347 0.410 0.464 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -9940,11 +5786,11 @@ geo_dist_dmean <- dist(scaled_env[surveyed_sites,c(9)], method = "euclidean")
     ## mantel(xdis = FD_beta_geo_dist$Btotal, ydis = geo_dist_dmean,      method = "spearman", permutations = 999, strata = env[surveyed_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4088 
-    ##       Significance: 0.463 
+    ##       Significance: 0.447 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.537 0.562 0.591 0.611 
+    ## 0.529 0.567 0.596 0.622 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9961,11 +5807,11 @@ geo_dist_md <- dist(scaled_env[surveyed_sites,c(14)], method = "euclidean")
     ## mantel(xdis = FD_beta_geo_dist$Btotal, ydis = geo_dist_md, method = "spearman",      permutations = 999, strata = env[surveyed_sites, 19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.08001 
-    ##       Significance: 0.614 
+    ##       Significance: 0.609 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.225 0.264 0.283 0.308 
+    ## 0.223 0.255 0.288 0.313 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9982,11 +5828,11 @@ geo_dist_la <- dist(scaled_env[surveyed_sites,c(15)], method = "euclidean")
     ## mantel(xdis = FD_beta_geo_dist$Btotal, ydis = geo_dist_la, method = "spearman",      permutations = 999, strata = env[surveyed_sites, 19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.04732 
-    ##       Significance: 0.153 
+    ##       Significance: 0.155 
     ## 
     ## Upper quantiles of permutations (null model):
     ##    90%    95%  97.5%    99% 
-    ## 0.0565 0.0725 0.0934 0.1005 
+    ## 0.0573 0.0727 0.0872 0.0990 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -9998,7 +5844,7 @@ FD_beta_geo_mant_pv <- FD_beta_geo_mant_pv[,1]
 (FD_beta_geo_mant_pv <- p.adjust(FD_beta_geo_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 1.000 0.459
+    ## [1] 1.000 1.000 0.465
 
 ``` r
 # Mixed and stratified lakes 
@@ -10013,11 +5859,11 @@ geo_MS_dist_dmean <- dist(scaled_env[mixed_stratified_lakes,c(9)], method = "euc
     ## mantel(xdis = FD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_dmean,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2878 
-    ##       Significance: 0.476 
+    ##       Significance: 0.484 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.465 0.525 0.564 0.607 
+    ## 0.480 0.519 0.552 0.605 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -10034,11 +5880,11 @@ geo_MS_dist_md <- dist(scaled_env[mixed_stratified_lakes,c(14)], method = "eucli
     ## mantel(xdis = FD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_md,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.0198 
-    ##       Significance: 0.736 
+    ##       Significance: 0.734 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.233 0.271 0.303 0.365 
+    ## 0.239 0.285 0.318 0.340 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -10055,11 +5901,11 @@ geo_MS_dist_la <- dist(scaled_env[mixed_stratified_lakes,c(15)], method = "eucli
     ## mantel(xdis = FD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_la,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.001 
-    ##       Significance: 0.365 
+    ##       Significance: 0.387 
     ## 
     ## Upper quantiles of permutations (null model):
     ##    90%    95%  97.5%    99% 
-    ## 0.0708 0.0988 0.1331 0.1870 
+    ## 0.0736 0.1088 0.1347 0.1687 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -10086,11 +5932,11 @@ geo_OM_dist_dmean <- dist(scaled_env[ocean_mixed_sites,c(9)], method = "euclidea
     ## mantel(xdis = FD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_dmean,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.04424 
-    ##       Significance: 0.567 
+    ##       Significance: 0.589 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.174 0.201 0.224 0.252 
+    ## 0.181 0.206 0.230 0.256 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -10107,11 +5953,11 @@ geo_OM_dist_md <- dist(scaled_env[ocean_mixed_sites,c(14)], method = "euclidean"
     ## mantel(xdis = FD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2662 
-    ##       Significance: 0.036 
+    ##       Significance: 0.054 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.192 0.242 0.285 0.346 
+    ## 0.199 0.271 0.328 0.447 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -10132,7 +5978,7 @@ geo_OM_dist_la <- dist(scaled_env[ocean_mixed_sites,c(15)], method = "euclidean"
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.226 0.267 0.307 0.354 
+    ## 0.224 0.269 0.299 0.335 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -10144,7 +5990,7 @@ FD_beta_geo_OM_mant_pv <- FD_beta_geo_OM_mant_pv[,1]
 (FD_beta_geo_OM_mant_pv <- p.adjust(FD_beta_geo_OM_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.108 0.258
+    ## [1] 1.000 0.162 0.258
 
 ``` r
 # Stratified lakes and ocean sites
@@ -10159,11 +6005,11 @@ geo_SO_dist_dmean <- dist(scaled_env[ocean_stratified_sites,c(9)], method = "euc
     ## mantel(xdis = FD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_dmean,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5579 
-    ##       Significance: 0.381 
+    ##       Significance: 0.369 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.662 0.698 0.732 0.774 
+    ## 0.656 0.695 0.731 0.768 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -10180,11 +6026,11 @@ geo_SO_dist_md <- dist(scaled_env[ocean_stratified_sites,c(14)], method = "eucli
     ## mantel(xdis = FD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.02172 
-    ##       Significance: 0.674 
+    ##       Significance: 0.7 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.150 0.194 0.230 0.259 
+    ## 0.159 0.191 0.225 0.247 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -10201,11 +6047,11 @@ geo_SO_dist_la <- dist(scaled_env[ocean_stratified_sites,c(15)], method = "eucli
     ## mantel(xdis = FD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2541 
-    ##       Significance: 0.116 
+    ##       Significance: 0.136 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.261 0.290 0.318 0.342 
+    ## 0.268 0.302 0.321 0.349 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -10217,7 +6063,7 @@ FD_beta_geo_SO_mant_pv <- FD_beta_geo_SO_mant_pv[,1]
 (FD_beta_geo_SO_mant_pv <- p.adjust(FD_beta_geo_SO_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 1.000 0.348
+    ## [1] 1.000 1.000 0.408
 
 ``` r
 # Stratified lakes and ocean sites
@@ -10232,11 +6078,11 @@ geo_M_dist_dmean <- dist(scaled_env[mixed_lakes,c(9)], method = "euclidean")
     ## mantel(xdis = FD_beta_geo_M_dist$Btotal, ydis = geo_M_dist_dmean,      method = "spearman", permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1262 
-    ##       Significance: 0.181 
+    ##       Significance: 0.178 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.225 0.367 0.506 0.609 
+    ## 0.226 0.372 0.478 0.674 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -10252,11 +6098,11 @@ geo_M_dist_md <- dist(scaled_env[mixed_lakes,c(14)], method = "euclidean")
     ## mantel(xdis = FD_beta_geo_M_dist$Btotal, ydis = geo_M_dist_md,      method = "spearman", permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.6274 
-    ##       Significance: 0.013 
+    ##       Significance: 0.006 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.288 0.389 0.538 0.634 
+    ## 0.294 0.400 0.500 0.586 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -10276,7 +6122,7 @@ geo_M_dist_la <- dist(scaled_env[mixed_lakes,c(15)], method = "euclidean")
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.269 0.382 0.478 0.562 
+    ## 0.245 0.388 0.461 0.555 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -10287,7 +6133,7 @@ FD_beta_geo_M_mant_pv <- FD_beta_geo_M_mant_pv[,1]
 (FD_beta_geo_M_mant_pv <- p.adjust(FD_beta_geo_M_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.543 0.039 0.132
+    ## [1] 0.534 0.018 0.132
 
 ### FD beta NMDS ordination plots
 
@@ -10837,56 +6683,56 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] MASS_7.3-65          pairwiseAdonis_0.4.1 cluster_2.1.8       
-    ##  [4] BAT_2.9.6            caret_7.0-1          ggrepel_0.9.6       
-    ##  [7] ggplot2_3.5.1        picante_1.8.2        nlme_3.1-167        
-    ## [10] vegan_2.6-10         lattice_0.22-6       permute_0.9-7       
-    ## [13] car_3.1-3            carData_3.0-5        tidyr_1.3.1         
-    ## [16] phytools_2.4-4       maps_3.4.2.1         ape_5.8-1           
-    ## [19] reshape2_1.4.4       stringr_1.5.1        dplyr_1.1.4         
-    ## [22] knitr_1.49          
+    ##  [1] MASS_7.3-65          emmeans_1.10.7       pairwiseAdonis_0.4.1
+    ##  [4] cluster_2.1.8        BAT_2.9.6            caret_7.0-1         
+    ##  [7] ggrepel_0.9.6        ggplot2_3.5.1        picante_1.8.2       
+    ## [10] nlme_3.1-167         vegan_2.6-10         lattice_0.22-6      
+    ## [13] permute_0.9-7        car_3.1-3            carData_3.0-5       
+    ## [16] tidyr_1.3.1          phytools_2.4-4       maps_3.4.2.1        
+    ## [19] ape_5.8-1            reshape2_1.4.4       stringr_1.5.1       
+    ## [22] dplyr_1.1.4          knitr_1.49          
     ## 
     ## loaded via a namespace (and not attached):
     ##   [1] rstudioapi_0.17.1       magrittr_2.0.3          TH.data_1.1-3          
-    ##   [4] farver_2.1.2            rmarkdown_2.29          ragg_1.3.3             
-    ##   [7] vctrs_0.6.5             base64enc_0.1-3         terra_1.8-29           
-    ##  [10] polspline_1.1.25        htmltools_0.5.8.1       progress_1.2.3         
-    ##  [13] DEoptim_2.2-8           Formula_1.2-5           pROC_1.18.5            
-    ##  [16] parallelly_1.42.0       pracma_2.4.4            KernSmooth_2.23-26     
-    ##  [19] htmlwidgets_1.6.4       sandwich_3.1-1          plyr_1.8.9             
-    ##  [22] zoo_1.8-13              palmerpenguins_0.1.1    lubridate_1.9.4        
-    ##  [25] igraph_2.1.4            lifecycle_1.0.4         iterators_1.0.14       
-    ##  [28] pkgconfig_2.0.3         Matrix_1.7-2            R6_2.6.1               
-    ##  [31] fastmap_1.2.0           future_1.34.0           magic_1.6-1            
-    ##  [34] digest_0.6.37           numDeriv_2016.8-1.1     colorspace_2.1-1       
-    ##  [37] textshaping_1.0.0       Hmisc_5.2-2             pdist_1.2.1            
-    ##  [40] labeling_0.4.3          clusterGeneration_1.3.8 timechange_0.3.0       
-    ##  [43] abind_1.4-8             mgcv_1.9-1              compiler_4.4.3         
-    ##  [46] proxy_0.4-27            withr_3.0.2             doParallel_1.0.17      
-    ##  [49] htmlTable_2.4.3         backports_1.5.0         optimParallel_1.0-2    
-    ##  [52] lava_1.8.1              quantreg_6.00           scatterplot3d_0.3-44   
-    ##  [55] ModelMetrics_1.2.2.2    tools_4.4.3             foreign_0.8-88         
-    ##  [58] future.apply_1.11.3     nnet_7.3-20             glue_1.8.0             
-    ##  [61] quadprog_1.5-8          grid_4.4.3              checkmate_2.3.2        
-    ##  [64] generics_0.1.3          recipes_1.1.1           gtable_0.3.6           
-    ##  [67] class_7.3-23            data.table_1.17.0       hms_1.1.3              
-    ##  [70] foreach_1.5.2           pillar_1.10.1           splines_4.4.3          
-    ##  [73] survival_3.8-3          SparseM_1.84-2          ks_1.14.3              
-    ##  [76] tidyselect_1.2.1        rms_7.0-0               gridExtra_2.3          
-    ##  [79] stats4_4.4.3            xfun_0.51               expm_1.0-0             
-    ##  [82] hardhat_1.4.1           timeDate_4041.110       proto_1.0.0            
-    ##  [85] stringi_1.8.4           yaml_2.3.10             evaluate_1.0.3         
-    ##  [88] codetools_0.2-20        tibble_3.2.1            cli_3.6.4              
-    ##  [91] rpart_4.1.24            nls2_0.3-4              systemfonts_1.2.1      
-    ##  [94] geometry_0.5.2          munsell_0.5.1           Rcpp_1.0.14            
-    ##  [97] globals_0.16.3          coda_0.19-4.1           fastcluster_1.2.6      
-    ## [100] MatrixModels_0.5-3      gower_1.0.2             prettyunits_1.2.0      
-    ## [103] mclust_6.1.1            listenv_0.9.1           phangorn_2.12.1        
-    ## [106] mvtnorm_1.3-3           ipred_0.9-15            scales_1.3.0           
-    ## [109] prodlim_2024.06.25      e1071_1.7-16            purrr_1.0.4            
-    ## [112] crayon_1.5.3            combinat_0.0-8          rlang_1.1.5            
-    ## [115] multcomp_1.4-28         fastmatch_1.1-6         mnormt_2.1.1           
-    ## [118] hypervolume_3.1.5
+    ##   [4] estimability_1.5.1      farver_2.1.2            rmarkdown_2.29         
+    ##   [7] ragg_1.3.3              vctrs_0.6.5             base64enc_0.1-3        
+    ##  [10] terra_1.8-29            polspline_1.1.25        htmltools_0.5.8.1      
+    ##  [13] progress_1.2.3          DEoptim_2.2-8           Formula_1.2-5          
+    ##  [16] pROC_1.18.5             parallelly_1.42.0       pracma_2.4.4           
+    ##  [19] KernSmooth_2.23-26      htmlwidgets_1.6.4       plyr_1.8.9             
+    ##  [22] sandwich_3.1-1          palmerpenguins_0.1.1    zoo_1.8-13             
+    ##  [25] lubridate_1.9.4         igraph_2.1.4            lifecycle_1.0.4        
+    ##  [28] iterators_1.0.14        pkgconfig_2.0.3         Matrix_1.7-2           
+    ##  [31] R6_2.6.1                fastmap_1.2.0           future_1.34.0          
+    ##  [34] magic_1.6-1             digest_0.6.37           numDeriv_2016.8-1.1    
+    ##  [37] colorspace_2.1-1        textshaping_1.0.0       Hmisc_5.2-2            
+    ##  [40] pdist_1.2.1             labeling_0.4.3          clusterGeneration_1.3.8
+    ##  [43] timechange_0.3.0        abind_1.4-8             mgcv_1.9-1             
+    ##  [46] compiler_4.4.3          proxy_0.4-27            withr_3.0.2            
+    ##  [49] doParallel_1.0.17       backports_1.5.0         htmlTable_2.4.3        
+    ##  [52] optimParallel_1.0-2     quantreg_6.00           lava_1.8.1             
+    ##  [55] scatterplot3d_0.3-44    ModelMetrics_1.2.2.2    tools_4.4.3            
+    ##  [58] foreign_0.8-88          future.apply_1.11.3     nnet_7.3-20            
+    ##  [61] glue_1.8.0              quadprog_1.5-8          grid_4.4.3             
+    ##  [64] checkmate_2.3.2         generics_0.1.3          recipes_1.1.1          
+    ##  [67] gtable_0.3.6            class_7.3-23            data.table_1.17.0      
+    ##  [70] hms_1.1.3               foreach_1.5.2           pillar_1.10.1          
+    ##  [73] splines_4.4.3           survival_3.8-3          SparseM_1.84-2         
+    ##  [76] ks_1.14.3               tidyselect_1.2.1        rms_7.0-0              
+    ##  [79] gridExtra_2.3           stats4_4.4.3            xfun_0.51              
+    ##  [82] expm_1.0-0              hardhat_1.4.1           timeDate_4041.110      
+    ##  [85] proto_1.0.0             stringi_1.8.4           yaml_2.3.10            
+    ##  [88] evaluate_1.0.3          codetools_0.2-20        tibble_3.2.1           
+    ##  [91] cli_3.6.4               rpart_4.1.24            nls2_0.3-4             
+    ##  [94] systemfonts_1.2.1       xtable_1.8-4            geometry_0.5.2         
+    ##  [97] munsell_0.5.1           Rcpp_1.0.14             globals_0.16.3         
+    ## [100] coda_0.19-4.1           fastcluster_1.2.6       MatrixModels_0.5-3     
+    ## [103] gower_1.0.2             prettyunits_1.2.0       mclust_6.1.1           
+    ## [106] listenv_0.9.1           phangorn_2.12.1         mvtnorm_1.3-3          
+    ## [109] ipred_0.9-15            scales_1.3.0            prodlim_2024.06.25     
+    ## [112] e1071_1.7-16            purrr_1.0.4             crayon_1.5.3           
+    ## [115] combinat_0.0-8          rlang_1.1.5             fastmatch_1.1-6        
+    ## [118] multcomp_1.4-28         mnormt_2.1.1            hypervolume_3.1.5
 
 #### straits z score vs p value plots
 
