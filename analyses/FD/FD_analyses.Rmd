@@ -489,6 +489,10 @@ outlierTest(FD_FRicz_am_temp)
 plot(FD_FRicz_am_temp)
 # Summarize the ANOVA results
 summary(FD_FRicz_am_temp)
+# p-values
+temp_p_values <- summary(FD_FRicz_am_temp)[[1]][, "Pr(>F)"]
+p_values <- c(temp_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 FD_FRicz_am_temp <- aov(pd.obs.z ~ Site_type + temperature_median, data = straits_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
@@ -513,6 +517,10 @@ outlierTest(FD_FRicz_am_sal)
 plot(FD_FRicz_am_sal)
 # Summarize the ANOVA results
 summary(FD_FRicz_am_sal)
+# p-values
+sal_p_values <- summary(FD_FRicz_am_sal)[[1]][, "Pr(>F)"]
+p_values <- c(sal_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 FD_FRicz_am_sal <- aov(pd.obs.z ~ Site_type + salinity_median, data = straits_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
@@ -537,6 +545,10 @@ outlierTest(FD_FRicz_am_oxy)
 plot(FD_FRicz_am_oxy)
 # Summarize the ANOVA results
 summary(FD_FRicz_am_oxy)
+# p-values
+oxy_p_values <- summary(FD_FRicz_am_oxy)[[1]][, "Pr(>F)"]
+p_values <- c(oxy_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 FD_FRicz_am_oxy <- aov(pd.obs.z ~ Site_type + oxygen_median, data = straits_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
@@ -594,6 +606,10 @@ outlierTest(FD_FRicz_am_dist)
 plot(FD_FRicz_am_dist)
 # Summarize the ANOVA results
 summary(FD_FRicz_am_dist)
+# p-values
+dist_p_values <- summary(FD_FRicz_am_dist)[[1]][, "Pr(>F)"]
+p_values <- c(dist_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 FD_FRicz_am_dist <- aov(pd.obs.z ~ Site_type + distance_to_ocean_min_m, data = straits_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
@@ -618,6 +634,10 @@ outlierTest(FD_FRicz_am_mxd)
 plot(FD_FRicz_am_mxd)
 # Summarize the ANOVA results
 summary(FD_FRicz_am_mxd)
+# p-values
+mxd_p_values <- summary(FD_FRicz_am_mxd)[[1]][, "Pr(>F)"]
+p_values <- c(mxd_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 FD_FRicz_am_mxd <- aov(pd.obs.z ~ Site_type + max_depth, data = straits_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
@@ -642,6 +662,10 @@ outlierTest(FD_FRicz_am_lga)
 plot(FD_FRicz_am_lga)
 # Summarize the ANOVA results
 summary(FD_FRicz_am_lga)
+# p-values
+lga_p_values <- summary(FD_FRicz_am_lga)[[1]][, "Pr(>F)"]
+p_values <- c(lga_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 FD_FRicz_am_lga <- aov(pd.obs.z ~ Site_type + logArea, data = straits_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
