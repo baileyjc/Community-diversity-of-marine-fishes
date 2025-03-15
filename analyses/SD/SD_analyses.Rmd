@@ -420,6 +420,10 @@ outlierTest(SD_logSRic_am_temp)
 plot(SD_logSRic_am_temp)
 # Summarize the ANOVA results
 summary(SD_logSRic_am_temp)
+# p-values
+temp_p_values <- summary(SD_logSRic_am_temp)[[1]][, "Pr(>F)"]
+p_values <- c(temp_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 SD_logSRic_am_temp <- aov(log(row_sum) ~ Site_type + temperature_median, data = SR_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
@@ -444,6 +448,10 @@ outlierTest(SD_logSRic_am_sal)
 plot(SD_logSRic_am_sal)
 # Summarize the ANOVA results
 summary(SD_logSRic_am_sal)
+# p-values
+sal_p_values <- summary(SD_logSRic_am_sal)[[1]][, "Pr(>F)"]
+p_values <- c(sal_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 SD_logSRic_am_sal <- aov(log(row_sum) ~ Site_type + salinity_median, data = SR_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
@@ -468,6 +476,10 @@ outlierTest(SD_logSRic_am_oxy)
 plot(SD_logSRic_am_oxy)
 # Summarize the ANOVA results
 summary(SD_logSRic_am_oxy)
+# p-values
+oxy_p_values <- summary(SD_logSRic_am_oxy)[[1]][, "Pr(>F)"]
+p_values <- c(oxy_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 SD_logSRic_am_oxy <- aov(log(row_sum) ~ Site_type + oxygen_median, data = SR_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
@@ -525,6 +537,10 @@ outlierTest(SD_logSRic_am_dist)
 plot(SD_logSRic_am_dist)
 # Summarize the ANOVA results
 summary(SD_logSRic_am_dist)
+# p-values
+dist_p_values <- summary(SD_logSRic_am_dist)[[1]][, "Pr(>F)"]
+p_values <- c(dist_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 SD_logSRic_am_dist <- aov(log(row_sum) ~ Site_type + distance_to_ocean_min_m, data = SR_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
@@ -549,6 +565,10 @@ outlierTest(SD_logSRic_am_mxd)
 plot(SD_logSRic_am_mxd)
 # Summarize the ANOVA results
 summary(SD_logSRic_am_mxd)
+# p-values
+mxd_p_values <- summary(SD_logSRic_am_mxd)[[1]][, "Pr(>F)"]
+p_values <- c(mxd_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 SD_logSRic_am_mxd <- aov(log(row_sum) ~ Site_type + max_depth, data = SR_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
@@ -573,6 +593,10 @@ outlierTest(SD_logSRic_am_lga)
 plot(SD_logSRic_am_lga)
 # Summarize the ANOVA results
 summary(SD_logSRic_am_lga)
+# p-values
+lga_p_values <- summary(SD_logSRic_am_lga)[[1]][, "Pr(>F)"]
+p_values <- c(lga_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 # ANCOVA
 SD_logSRic_am_lga <- aov(log(row_sum) ~ Site_type + logArea, data = SR_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
