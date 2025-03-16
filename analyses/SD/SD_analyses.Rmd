@@ -1348,8 +1348,8 @@ USE <- sqrt((MS/2)*((1/6)+(1/8)))
 group <- SD_beta_THSD$group
 
 (OM_q <- (abs(group[1,1]))/USE)
-(MS_q <- (abs(group[2,1]))/BSE)
-(SO_q <- (abs(group[3,1]))/USE)
+(SO_q <- (abs(group[2,1]))/USE)
+(MS_q <- (abs(group[3,1]))/BSE)
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
 ```
 
