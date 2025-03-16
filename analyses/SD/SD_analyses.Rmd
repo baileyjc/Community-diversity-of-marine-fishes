@@ -703,7 +703,7 @@ SD_logSRic_amp_oxy$contrasts
 temp_p_values <- summary(SD_logSRic_am_temp)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_logSRic_am_sal)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_logSRic_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
+p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 # Summarize OM lm results
@@ -788,18 +788,18 @@ outlierTest(SD_logSRic_am_dist)
 plot(SD_logSRic_am_dist)
 
 ### Ocean & Mixed sites
-SD_logSRic_OM_lm_dist <- lm(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[ocean_mixed_sites_env,])
+SD_logSRic_OM_lm_dist <- lm(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(SD_logSRic_OM_lm_dist))
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OM_lm_dist) ~ SR_env[ocean_mixed_sites_env,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OM_lm_dist) ~ SR_env[ocean_mixed_sites,"Site_type"])
 
 ### Ocean & Stratified sites
-SD_logSRic_OS_lm_dist <- lm(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[ocean_stratified_sites_env,])
+SD_logSRic_OS_lm_dist <- lm(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(SD_logSRic_OS_lm_dist))
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OS_lm_dist) ~ SR_env[ocean_stratified_sites_env,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OS_lm_dist) ~ SR_env[ocean_stratified_sites,"Site_type"])
 
 ### Mixed & Stratified lakes
 SD_logSRic_MS_lm_dist <- lm(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[mixed_stratified_lakes,])
@@ -837,18 +837,18 @@ outlierTest(SD_logSRic_am_mxd)
 plot(SD_logSRic_am_mxd)
 
 ### Ocean & Mixed sites
-SD_logSRic_OM_lm_mxd <- lm(log(row_sum) ~ max_depth, data = SR_env[ocean_mixed_sites_env,])
+SD_logSRic_OM_lm_mxd <- lm(log(row_sum) ~ max_depth, data = SR_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(SD_logSRic_OM_lm_mxd))
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OM_lm_mxd) ~ SR_env[ocean_mixed_sites_env,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OM_lm_mxd) ~ SR_env[ocean_mixed_sites,"Site_type"])
 
 ### Ocean & Stratified sites
-SD_logSRic_OS_lm_mxd <- lm(log(row_sum) ~ max_depth, data = SR_env[ocean_stratified_sites_env,])
+SD_logSRic_OS_lm_mxd <- lm(log(row_sum) ~ max_depth, data = SR_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(SD_logSRic_OS_lm_mxd))
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OS_lm_mxd) ~ SR_env[ocean_stratified_sites_env,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OS_lm_mxd) ~ SR_env[ocean_stratified_sites,"Site_type"])
 
 ### Mixed & Stratified lakes
 SD_logSRic_MS_lm_mxd <- lm(log(row_sum) ~ max_depth, data = SR_env[mixed_stratified_lakes,])
@@ -886,18 +886,18 @@ outlierTest(SD_logSRic_am_lga)
 plot(SD_logSRic_am_lga)
 
 ### Ocean & Mixed sites
-SD_logSRic_OM_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[ocean_mixed_sites_env,])
+SD_logSRic_OM_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(SD_logSRic_OM_lm_lga))
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OM_lm_lga) ~ SR_env[ocean_mixed_sites_env,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OM_lm_lga) ~ SR_env[ocean_mixed_sites,"Site_type"])
 
 ### Ocean & Stratified sites
-SD_logSRic_OS_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[ocean_stratified_sites_env,])
+SD_logSRic_OS_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(SD_logSRic_OS_lm_lga))
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OS_lm_lga) ~ SR_env[ocean_stratified_sites_env,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OS_lm_lga) ~ SR_env[ocean_stratified_sites,"Site_type"])
 
 ### Mixed & Stratified lakes
 SD_logSRic_MS_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[mixed_stratified_lakes,])
@@ -920,7 +920,7 @@ SD_logSRic_amp_lga$contrasts
 dist_p_values <- summary(SD_logSRic_am_dist)[[1]][, "Pr(>F)"]
 mxd_p_values <- summary(SD_logSRic_am_mxd)[[1]][, "Pr(>F)"]
 lga_p_values <- summary(SD_logSRic_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
+p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 # Summarize OM lm results
