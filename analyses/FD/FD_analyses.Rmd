@@ -660,6 +660,16 @@ shapiro.test(residuals(FD_FRicz_MS_lm_temp))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_MS_lm_temp) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
 
+### Mixed lakes
+FD_FRicz_M_lm_temp <- lm(pd.obs.z ~ temperature_median, data = straits_sespd_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_M_lm_temp))
+
+### Stratified lakes
+FD_FRicz_S_lm_temp <- lm(pd.obs.z ~ temperature_median, data = straits_sespd_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_S_lm_temp))
+
 ## Salinity
 # Interaction
 FD_FRicz_am_sal <- aov(pd.obs.z ~ salinity_median * Site_type, data = straits_sespd_env[surveyed_sites_env,])
@@ -708,6 +718,16 @@ FD_FRicz_MS_lm_sal <- lm(pd.obs.z ~ salinity_median, data = straits_sespd_env[mi
 shapiro.test(residuals(FD_FRicz_MS_lm_sal))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_MS_lm_sal) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
+
+### Mixed lakes
+FD_FRicz_M_lm_sal <- lm(pd.obs.z ~ salinity_median, data = straits_sespd_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_M_lm_sal))
+
+### Stratified lakes
+FD_FRicz_S_lm_sal <- lm(pd.obs.z ~ salinity_median, data = straits_sespd_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_S_lm_sal))
 
 ## Oxygen
 # Interaction
@@ -758,6 +778,16 @@ shapiro.test(residuals(FD_FRicz_MS_lm_oxy))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_MS_lm_oxy) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
 
+### Mixed lakes
+FD_FRicz_M_lm_oxy <- lm(pd.obs.z ~ oxygen_median, data = straits_sespd_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_M_lm_oxy))
+
+### Stratified lakes
+FD_FRicz_S_lm_oxy <- lm(pd.obs.z ~ oxygen_median, data = straits_sespd_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_S_lm_oxy))
+
 # Summarize ANOVA results and calculate pairwise comparisons
 summary(FD_FRicz_am_temp)
 FD_FRicz_amp_temp <- emmeans(FD_FRicz_am_temp, pairwise ~ Site_type, adjust = "bonferroni")
@@ -772,7 +802,7 @@ FD_FRicz_amp_oxy$contrasts
 temp_p_values <- summary(FD_FRicz_am_temp)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(FD_FRicz_am_sal)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(FD_FRicz_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
+p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 # Summarize OM lm results
@@ -808,22 +838,26 @@ oxy_p_values <- summary(FD_FRicz_MS_lm_oxy)$coefficients[, "Pr(>|t|)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
-### Mixed lakes
-FD_FRicz_env_M_lm <- lm(pd.obs.z ~ salinity_median + oxygen_median + temperature_median, straits_sespd_env[mixed_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_env_M_lm))
-summary(FD_FRicz_env_M_lm)
-Anova(FD_FRicz_env_M_lm, type = 3)
-p_values <- summary(FD_FRicz_env_M_lm)$coefficients[, "Pr(>|t|)"]
+# Summarize M lm results
+summary(FD_FRicz_M_lm_temp)
+summary(FD_FRicz_M_lm_sal)
+summary(FD_FRicz_M_lm_oxy)
+# p-values
+temp_p_values <- summary(FD_FRicz_M_lm_temp)$coefficients[, "Pr(>|t|)"]
+sal_p_values <- summary(FD_FRicz_M_lm_sal)$coefficients[, "Pr(>|t|)"]
+oxy_p_values <- summary(FD_FRicz_M_lm_oxy)$coefficients[, "Pr(>|t|)"]
+p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
-### Stratified lakes
-FD_FRicz_env_S_lm <- lm(pd.obs.z ~ salinity_median + oxygen_median + temperature_median, straits_sespd_env[stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_env_S_lm))
-summary(FD_FRicz_env_S_lm)
-Anova(FD_FRicz_env_S_lm, type = 3)
-p_values <- summary(FD_FRicz_env_S_lm)$coefficients[, "Pr(>|t|)"]
+# Summarize S lm results
+summary(FD_FRicz_S_lm_temp)
+summary(FD_FRicz_S_lm_sal)
+summary(FD_FRicz_S_lm_oxy)
+# p-values
+temp_p_values <- summary(FD_FRicz_S_lm_temp)$coefficients[, "Pr(>|t|)"]
+sal_p_values <- summary(FD_FRicz_S_lm_sal)$coefficients[, "Pr(>|t|)"]
+oxy_p_values <- summary(FD_FRicz_S_lm_oxy)$coefficients[, "Pr(>|t|)"]
+p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 #### Geographical
@@ -877,6 +911,16 @@ shapiro.test(residuals(FD_FRicz_MS_lm_dist))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_MS_lm_dist) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
 
+### Mixed lakes
+FD_FRicz_M_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = straits_sespd_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_M_lm_dist))
+
+### Stratified lakes
+FD_FRicz_S_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = straits_sespd_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_S_lm_dist))
+
 ## Max Depth
 # Interaction
 FD_FRicz_am_mxd <- aov(pd.obs.z ~ max_depth * Site_type, data = straits_sespd_env[surveyed_sites,])
@@ -925,6 +969,16 @@ FD_FRicz_MS_lm_mxd <- lm(pd.obs.z ~ max_depth, data = straits_sespd_env[mixed_st
 shapiro.test(residuals(FD_FRicz_MS_lm_mxd))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_MS_lm_mxd) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
+
+### Mixed lakes
+FD_FRicz_M_lm_mxd <- lm(pd.obs.z ~ max_depth, data = straits_sespd_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_M_lm_mxd))
+
+### Stratified lakes
+FD_FRicz_S_lm_mxd <- lm(pd.obs.z ~ max_depth, data = straits_sespd_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_S_lm_mxd))
 
 ## Log Area
 # Interaction
@@ -975,6 +1029,16 @@ shapiro.test(residuals(FD_FRicz_MS_lm_lga))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_MS_lm_lga) ~ straits_sespd_env[mixed_stratified_lakes,"Site_type"])
 
+### Mixed lakes
+FD_FRicz_M_lm_lga <- lm(pd.obs.z ~ logArea, data = straits_sespd_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_M_lm_lga))
+
+### Stratified lakes
+FD_FRicz_S_lm_lga <- lm(pd.obs.z ~ logArea, data = straits_sespd_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(FD_FRicz_S_lm_lga))
+
 # Summarize ANOVA results and calculate pairwise comparisons
 summary(FD_FRicz_am_dist)
 FD_FRicz_amp_dist <- emmeans(FD_FRicz_am_dist, pairwise ~ Site_type, adjust = "bonferroni")
@@ -989,7 +1053,7 @@ FD_FRicz_amp_lga$contrasts
 dist_p_values <- summary(FD_FRicz_am_dist)[[1]][, "Pr(>F)"]
 mxd_p_values <- summary(FD_FRicz_am_mxd)[[1]][, "Pr(>F)"]
 lga_p_values <- summary(FD_FRicz_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
+p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 # Summarize OM lm results
@@ -1025,22 +1089,26 @@ lga_p_values <- summary(FD_FRicz_MS_lm_lga)$coefficients[, "Pr(>|t|)"]
 p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
-### Mixed lakes
-FD_FRicz_geo_M_lm <- lm(pd.obs.z ~ distance_to_ocean_min_m + max_depth + logArea, straits_sespd_env[mixed_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_geo_M_lm))
-summary(FD_FRicz_geo_M_lm)
-Anova(FD_FRicz_geo_M_lm, type = 3)
-p_values <- summary(FD_FRicz_geo_M_lm)$coefficients[, "Pr(>|t|)"]
+# Summarize M lm results
+summary(FD_FRicz_M_lm_dist)
+summary(FD_FRicz_M_lm_mxd)
+summary(FD_FRicz_M_lm_lga)
+# p-values
+dist_p_values <- summary(FD_FRicz_M_lm_dist)$coefficients[, "Pr(>|t|)"]
+mxd_p_values <- summary(FD_FRicz_M_lm_mxd)$coefficients[, "Pr(>|t|)"]
+lga_p_values <- summary(FD_FRicz_M_lm_lga)$coefficients[, "Pr(>|t|)"]
+p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
-### Stratified lakes
-FD_FRicz_geo_S_lm <- lm(pd.obs.z ~ distance_to_ocean_min_m + max_depth + logArea, straits_sespd_env[stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(FD_FRicz_geo_S_lm))
-summary(FD_FRicz_geo_S_lm)
-Anova(FD_FRicz_geo_S_lm, type = 3)
-p_values <- summary(FD_FRicz_geo_S_lm)$coefficients[, "Pr(>|t|)"]
+# Summarize S lm results
+summary(FD_FRicz_S_lm_dist)
+summary(FD_FRicz_S_lm_mxd)
+summary(FD_FRicz_S_lm_lga)
+# p-values
+dist_p_values <- summary(FD_FRicz_S_lm_dist)$coefficients[, "Pr(>|t|)"]
+mxd_p_values <- summary(FD_FRicz_S_lm_mxd)$coefficients[, "Pr(>|t|)"]
+lga_p_values <- summary(FD_FRicz_S_lm_lga)$coefficients[, "Pr(>|t|)"]
+p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 
