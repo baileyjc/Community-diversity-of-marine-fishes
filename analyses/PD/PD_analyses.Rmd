@@ -994,7 +994,7 @@ PD_PRicz_amp_lga$contrasts
 dist_p_values <- summary(PD_PRicz_am_dist)[[1]][, "Pr(>F)"]
 mxd_p_values <- summary(PD_PRicz_am_mxd)[[1]][, "Pr(>F)"]
 lga_p_values <- summary(PD_PRicz_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
+p_values <- c(dist_p_values[1:2], mxd_p_values[1:3], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 # Summarize OM lm results
@@ -1380,8 +1380,8 @@ USE <- sqrt((MS/2)*((1/6)+(1/8)))
 group <- PD_beta_THSD$group
 
 (OM_q <- (abs(group[1,1]))/USE)
-(MS_q <- (abs(group[2,1]))/BSE)
-(SO_q <- (abs(group[3,1]))/USE)
+(SO_q <- (abs(group[2,1]))/USE)
+(MS_q <- (abs(group[3,1]))/BSE)
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
 ```
 
