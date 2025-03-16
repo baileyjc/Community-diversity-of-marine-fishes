@@ -591,6 +591,16 @@ shapiro.test(residuals(SD_logSRic_MS_lm_temp))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(SD_logSRic_MS_lm_temp) ~ SR_env[mixed_stratified_lakes,"Site_type"])
 
+### Mixed lakes
+SD_logSRic_M_lm_temp <- lm(log(row_sum) ~ temperature_median, data = SR_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(SD_logSRic_M_lm_temp))
+
+### Stratified lakes
+SD_logSRic_S_lm_temp <- lm(log(row_sum) ~ temperature_median, data = SR_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(SD_logSRic_S_lm_temp))
+
 ## Salinity
 # Interaction
 SD_logSRic_am_sal <- aov(log(row_sum) ~ salinity_median * Site_type, data = SR_env[surveyed_sites_env,])
@@ -640,6 +650,16 @@ shapiro.test(residuals(SD_logSRic_MS_lm_sal))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(SD_logSRic_MS_lm_sal) ~ SR_env[mixed_stratified_lakes,"Site_type"])
 
+### Mixed lakes
+SD_logSRic_M_lm_sal <- lm(log(row_sum) ~ salinity_median, data = SR_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(SD_logSRic_M_lm_sal))
+
+### Stratified lakes
+SD_logSRic_S_lm_sal <- lm(log(row_sum) ~ salinity_median, data = SR_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(SD_logSRic_S_lm_sal))
+
 ## Oxygen
 # Interaction
 SD_logSRic_am_oxy <- aov(log(row_sum) ~ oxygen_median * Site_type, data = SR_env[surveyed_sites_env,])
@@ -688,6 +708,16 @@ SD_logSRic_MS_lm_oxy <- lm(log(row_sum) ~ oxygen_median, data = SR_env[mixed_str
 shapiro.test(residuals(SD_logSRic_MS_lm_oxy))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(SD_logSRic_MS_lm_oxy) ~ SR_env[mixed_stratified_lakes,"Site_type"])
+
+### Mixed lakes
+SD_logSRic_M_lm_oxy <- lm(log(row_sum) ~ oxygen_median, data = SR_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(SD_logSRic_M_lm_oxy))
+
+### Stratified lakes
+SD_logSRic_S_lm_oxy <- lm(log(row_sum) ~ oxygen_median, data = SR_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(SD_logSRic_S_lm_oxy))
 
 # Summarize ANOVA results and calculate pairwise comparisons
 summary(SD_logSRic_am_temp)
@@ -739,22 +769,26 @@ oxy_p_values <- summary(SD_logSRic_MS_lm_oxy)$coefficients[, "Pr(>|t|)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
-### Mixed lakes
-SD_logSRic_env_M_lm <- lm(log(row_sum) ~ salinity_median + oxygen_median + temperature_median, SR_env[mixed_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_env_M_lm))
-summary(SD_logSRic_env_M_lm)
-Anova(SD_logSRic_env_M_lm, type = 3)
-p_values <- summary(SD_logSRic_env_M_lm)$coefficients[, "Pr(>|t|)"]
+# Summarize M lm results
+summary(SD_logSRic_M_lm_temp)
+summary(SD_logSRic_M_lm_sal)
+summary(SD_logSRic_M_lm_oxy)
+# p-values
+temp_p_values <- summary(SD_logSRic_M_lm_temp)$coefficients[, "Pr(>|t|)"]
+sal_p_values <- summary(SD_logSRic_M_lm_sal)$coefficients[, "Pr(>|t|)"]
+oxy_p_values <- summary(SD_logSRic_M_lm_oxy)$coefficients[, "Pr(>|t|)"]
+p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
-### Stratified lakes
-SD_logSRic_env_S_lm <- lm(log(row_sum) ~ salinity_median + oxygen_median + temperature_median, SR_env[stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_env_S_lm))
-summary(SD_logSRic_env_S_lm)
-Anova(SD_logSRic_env_S_lm, type = 3)
-p_values <- summary(SD_logSRic_env_S_lm)$coefficients[, "Pr(>|t|)"]
+# Summarize S lm results
+summary(SD_logSRic_S_lm_temp)
+summary(SD_logSRic_S_lm_sal)
+summary(SD_logSRic_S_lm_oxy)
+# p-values
+temp_p_values <- summary(SD_logSRic_S_lm_temp)$coefficients[, "Pr(>|t|)"]
+sal_p_values <- summary(SD_logSRic_S_lm_sal)$coefficients[, "Pr(>|t|)"]
+oxy_p_values <- summary(SD_logSRic_S_lm_oxy)$coefficients[, "Pr(>|t|)"]
+p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 #### Geographical
@@ -808,6 +842,16 @@ shapiro.test(residuals(SD_logSRic_MS_lm_dist))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(SD_logSRic_MS_lm_dist) ~ SR_env[mixed_stratified_lakes,"Site_type"])
 
+### Mixed lakes
+SD_logSRic_M_lm_dist <- lm(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(SD_logSRic_M_lm_dist))
+
+### Stratified lakes
+SD_logSRic_S_lm_dist <- lm(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(SD_logSRic_S_lm_dist))
+
 ## Max Depth
 # Interaction
 SD_logSRic_am_mxd <- aov(log(row_sum) ~ max_depth * Site_type, data = SR_env[surveyed_sites,])
@@ -857,6 +901,16 @@ shapiro.test(residuals(SD_logSRic_MS_lm_mxd))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(SD_logSRic_MS_lm_mxd) ~ SR_env[mixed_stratified_lakes,"Site_type"])
 
+### Mixed lakes
+SD_logSRic_M_lm_mxd <- lm(log(row_sum) ~ max_depth, data = SR_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(SD_logSRic_M_lm_mxd))
+
+### Stratified lakes
+SD_logSRic_S_lm_mxd <- lm(log(row_sum) ~ max_depth, data = SR_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(SD_logSRic_S_lm_mxd))
+
 ## Log Area
 # Interaction
 SD_logSRic_am_lga <- aov(log(row_sum) ~ logArea * Site_type, data = SR_env[surveyed_sites,])
@@ -905,6 +959,16 @@ SD_logSRic_MS_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[mixed_stratifie
 shapiro.test(residuals(SD_logSRic_MS_lm_lga))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(SD_logSRic_MS_lm_lga) ~ SR_env[mixed_stratified_lakes,"Site_type"])
+
+### Mixed lakes
+SD_logSRic_M_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(SD_logSRic_M_lm_lga))
+
+### Stratified lakes
+SD_logSRic_S_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(SD_logSRic_S_lm_lga))
 
 # Summarize ANOVA results and calculate pairwise comparisons
 summary(SD_logSRic_am_dist)
@@ -956,22 +1020,26 @@ lga_p_values <- summary(SD_logSRic_MS_lm_lga)$coefficients[, "Pr(>|t|)"]
 p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
-### Mixed lakes
-SD_logSRic_geo_M_lm <- lm(log(row_sum) ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[mixed_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_geo_M_lm))
-summary(SD_logSRic_geo_M_lm)
-Anova(SD_logSRic_geo_M_lm, type = 3)
-p_values <- summary(SD_logSRic_geo_M_lm)$coefficients[, "Pr(>|t|)"]
+# Summarize M lm results
+summary(SD_logSRic_M_lm_dist)
+summary(SD_logSRic_M_lm_mxd)
+summary(SD_logSRic_M_lm_lga)
+# p-values
+dist_p_values <- summary(SD_logSRic_M_lm_dist)$coefficients[, "Pr(>|t|)"]
+mxd_p_values <- summary(SD_logSRic_M_lm_mxd)$coefficients[, "Pr(>|t|)"]
+lga_p_values <- summary(SD_logSRic_M_lm_lga)$coefficients[, "Pr(>|t|)"]
+p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
-### Stratified lakes
-SD_logSRic_geo_S_lm <- lm(log(row_sum) ~ distance_to_ocean_min_m + max_depth + logArea, SR_env[stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_geo_S_lm))
-summary(SD_logSRic_geo_S_lm)
-Anova(SD_logSRic_geo_S_lm, type = 3)
-p_values <- summary(SD_logSRic_geo_S_lm)$coefficients[, "Pr(>|t|)"]
+# Summarize S lm results
+summary(SD_logSRic_S_lm_dist)
+summary(SD_logSRic_S_lm_mxd)
+summary(SD_logSRic_S_lm_lga)
+# p-values
+dist_p_values <- summary(SD_logSRic_S_lm_dist)$coefficients[, "Pr(>|t|)"]
+mxd_p_values <- summary(SD_logSRic_S_lm_mxd)$coefficients[, "Pr(>|t|)"]
+lga_p_values <- summary(SD_logSRic_S_lm_lga)$coefficients[, "Pr(>|t|)"]
+p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 
 
