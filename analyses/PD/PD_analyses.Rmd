@@ -889,16 +889,6 @@ summary(PD_PRicz_am_mxd)
 mxd_p_values <- summary(PD_PRicz_am_mxd)[[1]][, "Pr(>F)"]
 p_values <- c(mxd_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-# ANCOVA
-PD_PRicz_am_mxd <- aov(pd.obs.z ~ max_depth + Site_type, data = stree_sespd_env[surveyed_sites,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(PD_PRicz_am_mxd))
-# Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_mxd) ~ stree_sespd_env[surveyed_sites,"Site_type"])
-# Check for outliers
-outlierTest(PD_PRicz_am_mxd)
-# Plot residuals
-plot(PD_PRicz_am_mxd)
 
 ### Ocean & Mixed sites
 PD_PRicz_OM_lm_mxd <- lm(pd.obs.z ~ max_depth, data = stree_sespd_env[ocean_mixed_sites,])
