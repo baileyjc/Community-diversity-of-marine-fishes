@@ -1516,6 +1516,32 @@ car::leveneTest(residuals(PD_PRicz_MS_lm_temp) ~ stree_sespd_env[mixed_stratifie
     ##       14
 
 ``` r
+### Mixed lakes
+PD_PRicz_M_lm_temp <- lm(pd.obs.z ~ temperature_median, data = stree_sespd_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(PD_PRicz_M_lm_temp))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(PD_PRicz_M_lm_temp)
+    ## W = 0.8956, p-value = 0.2636
+
+``` r
+### Stratified lakes
+PD_PRicz_S_lm_temp <- lm(pd.obs.z ~ temperature_median, data = stree_sespd_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(PD_PRicz_S_lm_temp))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(PD_PRicz_S_lm_temp)
+    ## W = 0.93131, p-value = 0.5281
+
+``` r
 ## Salinity
 # Interaction
 PD_PRicz_am_sal <- aov(pd.obs.z ~ salinity_median * Site_type, data = stree_sespd_env[surveyed_sites_env,])
@@ -1686,6 +1712,32 @@ car::leveneTest(residuals(PD_PRicz_MS_lm_sal) ~ stree_sespd_env[mixed_stratified
     ##       Df F value Pr(>F)
     ## group  1  0.0028 0.9584
     ##       14
+
+``` r
+### Mixed lakes
+PD_PRicz_M_lm_sal <- lm(pd.obs.z ~ salinity_median, data = stree_sespd_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(PD_PRicz_M_lm_sal))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(PD_PRicz_M_lm_sal)
+    ## W = 0.98202, p-value = 0.9722
+
+``` r
+### Stratified lakes
+PD_PRicz_S_lm_sal <- lm(pd.obs.z ~ salinity_median, data = stree_sespd_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(PD_PRicz_S_lm_sal))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(PD_PRicz_S_lm_sal)
+    ## W = 0.93149, p-value = 0.5297
 
 ``` r
 ## Oxygen
@@ -1863,6 +1915,32 @@ car::leveneTest(residuals(PD_PRicz_MS_lm_oxy) ~ stree_sespd_env[mixed_stratified
     ##       14
 
 ``` r
+### Mixed lakes
+PD_PRicz_M_lm_oxy <- lm(pd.obs.z ~ oxygen_median, data = stree_sespd_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(PD_PRicz_M_lm_oxy))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(PD_PRicz_M_lm_oxy)
+    ## W = 0.90058, p-value = 0.2925
+
+``` r
+### Stratified lakes
+PD_PRicz_S_lm_oxy <- lm(pd.obs.z ~ oxygen_median, data = stree_sespd_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(PD_PRicz_S_lm_oxy))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(PD_PRicz_S_lm_oxy)
+    ## W = 0.96366, p-value = 0.8442
+
+``` r
 # Summarize ANOVA results and calculate pairwise comparisons
 summary(PD_PRicz_am_temp)
 ```
@@ -1935,12 +2013,11 @@ PD_PRicz_amp_oxy$contrasts
 temp_p_values <- summary(PD_PRicz_am_temp)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(PD_PRicz_am_sal)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(PD_PRicz_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
+p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## [1] 1.0000000 0.3528936        NA 0.9301078 0.5261841        NA 1.0000000
-    ## [8] 0.8142227        NA
+    ## [1] 1.0000000 0.3528936 0.9301078 0.5261841 1.0000000 0.8142227
 
 ``` r
 # Summarize OM lm results
@@ -2192,122 +2269,168 @@ p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
     ##                  1                  1
 
 ``` r
-### Mixed lakes
-PD_PRicz_env_M_lm <- lm(pd.obs.z ~ salinity_median + oxygen_median + temperature_median, stree_sespd_env[mixed_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(PD_PRicz_env_M_lm))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(PD_PRicz_env_M_lm)
-    ## W = 0.94569, p-value = 0.6678
-
-``` r
-summary(PD_PRicz_env_M_lm)
+# Summarize M lm results
+summary(PD_PRicz_M_lm_temp)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ salinity_median + oxygen_median + temperature_median, 
-    ##     data = stree_sespd_env[mixed_lakes, ])
+    ## lm(formula = pd.obs.z ~ temperature_median, data = stree_sespd_env[mixed_lakes, 
+    ##     ])
     ## 
     ## Residuals:
-    ##     FLK     HLO     LLN     MLN     NLN     NLU     OLO     ULN 
-    ## -0.6311 -0.9440 -0.1008  0.4796  0.7484  0.1079  0.1433  0.1967 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.53609 -0.19358 -0.02412  0.58689  0.81938 
     ## 
     ## Coefficients:
     ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)         18.8693    34.6682   0.544    0.615
-    ## salinity_median     -0.7909     0.8060  -0.981    0.382
-    ## oxygen_median       -0.6458     0.6519  -0.991    0.378
-    ## temperature_median   0.3083     0.5003   0.616    0.571
+    ## (Intercept)        -18.8030    15.2831  -1.230    0.265
+    ## temperature_median   0.5919     0.5026   1.178    0.283
     ## 
-    ## Residual standard error: 0.7349 on 4 degrees of freedom
-    ## Multiple R-squared:  0.5607, Adjusted R-squared:  0.2313 
-    ## F-statistic: 1.702 on 3 and 4 DF,  p-value: 0.3034
+    ## Residual standard error: 0.816 on 6 degrees of freedom
+    ## Multiple R-squared:  0.1878, Adjusted R-squared:  0.0524 
+    ## F-statistic: 1.387 on 1 and 6 DF,  p-value: 0.2835
 
 ``` r
-Anova(PD_PRicz_env_M_lm, type = 3)
-```
-
-    ## Anova Table (Type III tests)
-    ## 
-    ## Response: pd.obs.z
-    ##                     Sum Sq Df F value Pr(>F)
-    ## (Intercept)        0.16000  1  0.2962 0.6152
-    ## salinity_median    0.52010  1  0.9630 0.3820
-    ## oxygen_median      0.52992  1  0.9811 0.3780
-    ## temperature_median 0.20518  1  0.3799 0.5710
-    ## Residuals          2.16043  4
-
-``` r
-p_values <- summary(PD_PRicz_env_M_lm)$coefficients[, "Pr(>|t|)"]
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ##        (Intercept)    salinity_median      oxygen_median temperature_median 
-    ##                  1                  1                  1                  1
-
-``` r
-### Stratified lakes
-PD_PRicz_env_S_lm <- lm(pd.obs.z ~ salinity_median + oxygen_median + temperature_median, stree_sespd_env[stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(PD_PRicz_env_S_lm))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(PD_PRicz_env_S_lm)
-    ## W = 0.92213, p-value = 0.4474
-
-``` r
-summary(PD_PRicz_env_S_lm)
+summary(PD_PRicz_M_lm_sal)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ salinity_median + oxygen_median + temperature_median, 
-    ##     data = stree_sespd_env[stratified_lakes, ])
+    ## lm(formula = pd.obs.z ~ salinity_median, data = stree_sespd_env[mixed_lakes, 
+    ##     ])
     ## 
     ## Residuals:
-    ##     BCM     CLM     GLK     HLM     NLK     OTM     SLN     TLN 
-    ##  0.6329 -0.5528  0.2931  0.0925 -0.7839  1.2305 -0.4533 -0.4590 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.11617 -0.21878 -0.02018  0.35710  0.94608 
     ## 
     ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)        -9.36668   10.11196  -0.926    0.407
-    ## salinity_median     0.03683    0.15704   0.235    0.826
-    ## oxygen_median       0.57919    0.69238   0.837    0.450
-    ## temperature_median  0.18240    0.22397   0.814    0.461
+    ##                 Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)      41.8703    20.4158   2.051   0.0861 .
+    ## salinity_median  -1.2959     0.6199  -2.091   0.0815 .
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.9145 on 4 degrees of freedom
-    ## Multiple R-squared:  0.3152, Adjusted R-squared:  -0.1983 
-    ## F-statistic: 0.6138 on 3 and 4 DF,  p-value: 0.6412
+    ## Residual standard error: 0.6887 on 6 degrees of freedom
+    ## Multiple R-squared:  0.4214, Adjusted R-squared:  0.325 
+    ## F-statistic:  4.37 on 1 and 6 DF,  p-value: 0.08154
 
 ``` r
-Anova(PD_PRicz_env_S_lm, type = 3)
+summary(PD_PRicz_M_lm_oxy)
 ```
 
-    ## Anova Table (Type III tests)
     ## 
-    ## Response: pd.obs.z
-    ##                    Sum Sq Df F value Pr(>F)
-    ## (Intercept)        0.7176  1  0.8580 0.4067
-    ## salinity_median    0.0460  1  0.0550 0.8261
-    ## oxygen_median      0.5853  1  0.6998 0.4499
-    ## temperature_median 0.5547  1  0.6633 0.4611
-    ## Residuals          3.3454  4
+    ## Call:
+    ## lm(formula = pd.obs.z ~ oxygen_median, data = stree_sespd_env[mixed_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -0.7662 -0.4494 -0.1399  0.2484  1.1668 
+    ## 
+    ## Coefficients:
+    ##               Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)     3.8213     2.7869   1.371    0.219
+    ## oxygen_median  -0.9946     0.5962  -1.668    0.146
+    ## 
+    ## Residual standard error: 0.7483 on 6 degrees of freedom
+    ## Multiple R-squared:  0.3169, Adjusted R-squared:  0.203 
+    ## F-statistic: 2.783 on 1 and 6 DF,  p-value: 0.1463
 
 ``` r
-p_values <- summary(PD_PRicz_env_S_lm)$coefficients[, "Pr(>|t|)"]
+# p-values
+temp_p_values <- summary(PD_PRicz_M_lm_temp)$coefficients[, "Pr(>|t|)"]
+sal_p_values <- summary(PD_PRicz_M_lm_sal)$coefficients[, "Pr(>|t|)"]
+oxy_p_values <- summary(PD_PRicz_M_lm_oxy)$coefficients[, "Pr(>|t|)"]
+p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ##        (Intercept)    salinity_median      oxygen_median temperature_median 
-    ##                  1                  1                  1                  1
+    ##        (Intercept) temperature_median        (Intercept)    salinity_median 
+    ##          1.0000000          1.0000000          0.5168283          0.4892244 
+    ##        (Intercept)      oxygen_median 
+    ##          1.0000000          0.8778926
+
+``` r
+# Summarize S lm results
+summary(PD_PRicz_S_lm_temp)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ temperature_median, data = stree_sespd_env[stratified_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.1852 -0.4197 -0.1385  0.7597  0.9752 
+    ## 
+    ## Coefficients:
+    ##                    Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)         -6.6853     6.3244  -1.057    0.331
+    ## temperature_median   0.1881     0.2021   0.931    0.388
+    ## 
+    ## Residual standard error: 0.8435 on 6 degrees of freedom
+    ## Multiple R-squared:  0.1261, Adjusted R-squared:  -0.01952 
+    ## F-statistic: 0.866 on 1 and 6 DF,  p-value: 0.388
+
+``` r
+summary(PD_PRicz_S_lm_sal)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ salinity_median, data = stree_sespd_env[stratified_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.03927 -0.53892 -0.02702  0.67130  1.07138 
+    ## 
+    ## Coefficients:
+    ##                 Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)      1.31354    2.55641   0.514    0.626
+    ## salinity_median -0.07721    0.09245  -0.835    0.436
+    ## 
+    ## Residual standard error: 0.8541 on 6 degrees of freedom
+    ## Multiple R-squared:  0.1041, Adjusted R-squared:  -0.04517 
+    ## F-statistic: 0.6975 on 1 and 6 DF,  p-value: 0.4356
+
+``` r
+summary(PD_PRicz_S_lm_oxy)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ oxygen_median, data = stree_sespd_env[stratified_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.0709 -0.4296 -0.1780  0.4385  1.2404 
+    ## 
+    ## Coefficients:
+    ##               Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)    -2.3349     1.2775  -1.828    0.117
+    ## oxygen_median   0.4791     0.3904   1.227    0.266
+    ## 
+    ## Residual standard error: 0.8067 on 6 degrees of freedom
+    ## Multiple R-squared:  0.2007, Adjusted R-squared:  0.06747 
+    ## F-statistic: 1.506 on 1 and 6 DF,  p-value: 0.2656
+
+``` r
+# p-values
+temp_p_values <- summary(PD_PRicz_S_lm_temp)$coefficients[, "Pr(>|t|)"]
+sal_p_values <- summary(PD_PRicz_S_lm_sal)$coefficients[, "Pr(>|t|)"]
+oxy_p_values <- summary(PD_PRicz_S_lm_oxy)$coefficients[, "Pr(>|t|)"]
+p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
+```
+
+    ##        (Intercept) temperature_median        (Intercept)    salinity_median 
+    ##          1.0000000          1.0000000          1.0000000          1.0000000 
+    ##        (Intercept)      oxygen_median 
+    ##          0.7041175          1.0000000
 
 ``` r
 #### Geographical
@@ -2485,6 +2608,32 @@ car::leveneTest(residuals(PD_PRicz_MS_lm_dist) ~ stree_sespd_env[mixed_stratifie
     ##       14
 
 ``` r
+### Mixed lakes
+PD_PRicz_M_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = stree_sespd_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(PD_PRicz_M_lm_dist))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(PD_PRicz_M_lm_dist)
+    ## W = 0.95228, p-value = 0.7341
+
+``` r
+### Stratified lakes
+PD_PRicz_S_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = stree_sespd_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(PD_PRicz_S_lm_dist))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(PD_PRicz_S_lm_dist)
+    ## W = 0.89282, p-value = 0.2486
+
+``` r
 ## Max Depth
 # Interaction
 PD_PRicz_am_mxd <- aov(pd.obs.z ~ max_depth * Site_type, data = stree_sespd_env[surveyed_sites,])
@@ -2657,6 +2806,32 @@ car::leveneTest(residuals(PD_PRicz_MS_lm_mxd) ~ stree_sespd_env[mixed_stratified
     ##       14
 
 ``` r
+### Mixed lakes
+PD_PRicz_M_lm_mxd <- lm(pd.obs.z ~ max_depth, data = stree_sespd_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(PD_PRicz_M_lm_mxd))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(PD_PRicz_M_lm_mxd)
+    ## W = 0.88917, p-value = 0.2299
+
+``` r
+### Stratified lakes
+PD_PRicz_S_lm_mxd <- lm(pd.obs.z ~ max_depth, data = stree_sespd_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(PD_PRicz_S_lm_mxd))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(PD_PRicz_S_lm_mxd)
+    ## W = 0.82676, p-value = 0.05493
+
+``` r
 ## Log Area
 # Interaction
 PD_PRicz_am_lga <- aov(pd.obs.z ~ logArea * Site_type, data = stree_sespd_env[surveyed_sites,])
@@ -2827,6 +3002,32 @@ car::leveneTest(residuals(PD_PRicz_MS_lm_lga) ~ stree_sespd_env[mixed_stratified
     ##       14
 
 ``` r
+### Mixed lakes
+PD_PRicz_M_lm_lga <- lm(pd.obs.z ~ logArea, data = stree_sespd_env[mixed_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(PD_PRicz_M_lm_lga))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(PD_PRicz_M_lm_lga)
+    ## W = 0.92692, p-value = 0.4885
+
+``` r
+### Stratified lakes
+PD_PRicz_S_lm_lga <- lm(pd.obs.z ~ logArea, data = stree_sespd_env[stratified_lakes,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(PD_PRicz_S_lm_lga))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(PD_PRicz_S_lm_lga)
+    ## W = 0.88816, p-value = 0.225
+
+``` r
 # Summarize ANOVA results and calculate pairwise comparisons
 summary(PD_PRicz_am_dist)
 ```
@@ -2895,11 +3096,11 @@ PD_PRicz_amp_lga$contrasts
 dist_p_values <- summary(PD_PRicz_am_dist)[[1]][, "Pr(>F)"]
 mxd_p_values <- summary(PD_PRicz_am_mxd)[[1]][, "Pr(>F)"]
 lga_p_values <- summary(PD_PRicz_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
+p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## [1]  1  1 NA  1  1 NA  1  1 NA
+    ## [1] 1 1 1 1 1 1
 
 ``` r
 # Summarize OM lm results
@@ -3155,130 +3356,170 @@ p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
     ##               1.0000000               1.0000000               1.0000000
 
 ``` r
-### Mixed lakes
-PD_PRicz_geo_M_lm <- lm(pd.obs.z ~ distance_to_ocean_min_m + max_depth + logArea, stree_sespd_env[mixed_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(PD_PRicz_geo_M_lm))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(PD_PRicz_geo_M_lm)
-    ## W = 0.91024, p-value = 0.3557
-
-``` r
-summary(PD_PRicz_geo_M_lm)
+# Summarize M lm results
+summary(PD_PRicz_M_lm_dist)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m + max_depth + 
-    ##     logArea, data = stree_sespd_env[mixed_lakes, ])
+    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m, data = stree_sespd_env[mixed_lakes, 
+    ##     ])
     ## 
     ## Residuals:
-    ##     FLK     HLO     LLN     MLN     NLN     NLU     OLO     ULN 
-    ## -0.2123 -0.7466 -0.5777  0.4045  1.3559 -0.0301  0.3621 -0.5558 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.0243 -0.4274 -0.1570  0.5157  1.4248 
     ## 
     ## Coefficients:
     ##                          Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)             -0.746784   2.562853  -0.291    0.785
-    ## distance_to_ocean_min_m -0.003258   0.015157  -0.215    0.840
-    ## max_depth               -0.066912   0.066221  -1.010    0.369
-    ## logArea                  0.106039   0.339921   0.312    0.771
+    ## (Intercept)             -1.305436   0.783943  -1.665    0.147
+    ## distance_to_ocean_min_m  0.007299   0.010553   0.692    0.515
     ## 
-    ## Residual standard error: 0.9192 on 4 degrees of freedom
-    ## Multiple R-squared:  0.3129, Adjusted R-squared:  -0.2024 
-    ## F-statistic: 0.6072 on 3 and 4 DF,  p-value: 0.6446
+    ## Residual standard error: 0.8713 on 6 degrees of freedom
+    ## Multiple R-squared:  0.07385,    Adjusted R-squared:  -0.08051 
+    ## F-statistic: 0.4784 on 1 and 6 DF,  p-value: 0.515
 
 ``` r
-Anova(PD_PRicz_geo_M_lm, type = 3)
-```
-
-    ## Anova Table (Type III tests)
-    ## 
-    ## Response: pd.obs.z
-    ##                         Sum Sq Df F value Pr(>F)
-    ## (Intercept)             0.0717  1  0.0849 0.7852
-    ## distance_to_ocean_min_m 0.0390  1  0.0462 0.8403
-    ## max_depth               0.8626  1  1.0210 0.3694
-    ## logArea                 0.0822  1  0.0973 0.7707
-    ## Residuals               3.3794  4
-
-``` r
-p_values <- summary(PD_PRicz_geo_M_lm)$coefficients[, "Pr(>|t|)"]
-(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-```
-
-    ##             (Intercept) distance_to_ocean_min_m               max_depth 
-    ##                       1                       1                       1 
-    ##                 logArea 
-    ##                       1
-
-``` r
-### Stratified lakes
-PD_PRicz_geo_S_lm <- lm(pd.obs.z ~ distance_to_ocean_min_m + max_depth + logArea, stree_sespd_env[stratified_lakes,])
-# Shapiro-Wilk test on residuals
-shapiro.test(residuals(PD_PRicz_geo_S_lm))
-```
-
-    ## 
-    ##  Shapiro-Wilk normality test
-    ## 
-    ## data:  residuals(PD_PRicz_geo_S_lm)
-    ## W = 0.9434, p-value = 0.6448
-
-``` r
-summary(PD_PRicz_geo_S_lm)
+summary(PD_PRicz_M_lm_mxd)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m + max_depth + 
-    ##     logArea, data = stree_sespd_env[stratified_lakes, ])
+    ## lm(formula = pd.obs.z ~ max_depth, data = stree_sespd_env[mixed_lakes, 
+    ##     ])
     ## 
     ## Residuals:
-    ##      BCM      CLM      GLK      HLM      NLK      OTM      SLN      TLN 
-    ## -0.12449 -0.24694  0.59937 -0.58482  0.07139  0.72921  0.18406 -0.62777 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -0.7687 -0.4093 -0.2295  0.3064  1.4550 
     ## 
     ## Coefficients:
-    ##                           Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)             -10.973624   4.064548  -2.700   0.0541 .
-    ## distance_to_ocean_min_m  -0.000481   0.003454  -0.139   0.8960  
-    ## max_depth                -0.079262   0.049056  -1.616   0.1815  
-    ## logArea                   1.180681   0.502819   2.348   0.0787 .
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##             Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept) -0.16200    0.48749  -0.332    0.751
+    ## max_depth   -0.05008    0.03159  -1.585    0.164
     ## 
-    ## Residual standard error: 0.66 on 4 degrees of freedom
-    ## Multiple R-squared:  0.6433, Adjusted R-squared:  0.3758 
-    ## F-statistic: 2.405 on 3 and 4 DF,  p-value: 0.2079
+    ## Residual standard error: 0.7601 on 6 degrees of freedom
+    ## Multiple R-squared:  0.2952, Adjusted R-squared:  0.1778 
+    ## F-statistic: 2.513 on 1 and 6 DF,  p-value: 0.164
 
 ``` r
-Anova(PD_PRicz_geo_S_lm, type = 3)
+summary(PD_PRicz_M_lm_lga)
 ```
 
-    ## Anova Table (Type III tests)
     ## 
-    ## Response: pd.obs.z
-    ##                         Sum Sq Df F value  Pr(>F)  
-    ## (Intercept)             3.1755  1  7.2891 0.05410 .
-    ## distance_to_ocean_min_m 0.0084  1  0.0194 0.89597  
-    ## max_depth               1.1373  1  2.6106 0.18145  
-    ## logArea                 2.4020  1  5.5137 0.07868 .
-    ## Residuals               1.7426  4                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## Call:
+    ## lm(formula = pd.obs.z ~ logArea, data = stree_sespd_env[mixed_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.2837 -0.3197 -0.1088  0.1667  1.4300 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)   0.6069     2.1750   0.279    0.790
+    ## logArea      -0.1464     0.2229  -0.657    0.536
+    ## 
+    ## Residual standard error: 0.8745 on 6 degrees of freedom
+    ## Multiple R-squared:  0.06705,    Adjusted R-squared:  -0.08845 
+    ## F-statistic: 0.4312 on 1 and 6 DF,  p-value: 0.5358
 
 ``` r
-p_values <- summary(PD_PRicz_geo_S_lm)$coefficients[, "Pr(>|t|)"]
+# p-values
+dist_p_values <- summary(PD_PRicz_M_lm_dist)$coefficients[, "Pr(>|t|)"]
+mxd_p_values <- summary(PD_PRicz_M_lm_mxd)$coefficients[, "Pr(>|t|)"]
+lga_p_values <- summary(PD_PRicz_M_lm_lga)$coefficients[, "Pr(>|t|)"]
+p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ##             (Intercept) distance_to_ocean_min_m               max_depth 
-    ##               0.2164135               1.0000000               0.7258090 
-    ##                 logArea 
-    ##               0.3147069
+    ##             (Intercept) distance_to_ocean_min_m             (Intercept) 
+    ##               0.8815363               1.0000000               1.0000000 
+    ##               max_depth             (Intercept)                 logArea 
+    ##               0.9838544               1.0000000               1.0000000
+
+``` r
+# Summarize S lm results
+summary(PD_PRicz_S_lm_dist)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m, data = stree_sespd_env[stratified_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -0.9743 -0.6014 -0.1746  0.8176  1.0988 
+    ## 
+    ## Coefficients:
+    ##                          Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)             -1.097706   0.763111  -1.438     0.20
+    ## distance_to_ocean_min_m  0.001877   0.004482   0.419     0.69
+    ## 
+    ## Residual standard error: 0.8895 on 6 degrees of freedom
+    ## Multiple R-squared:  0.0284, Adjusted R-squared:  -0.1335 
+    ## F-statistic: 0.1754 on 1 and 6 DF,  p-value: 0.69
+
+``` r
+summary(PD_PRicz_S_lm_mxd)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ max_depth, data = stree_sespd_env[stratified_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -0.8070 -0.5694 -0.3054  0.8264  0.9710 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept) -1.42259    0.68666  -2.072   0.0837 .
+    ## max_depth    0.02608    0.02623   0.994   0.3586  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.8361 on 6 degrees of freedom
+    ## Multiple R-squared:  0.1414, Adjusted R-squared:  -0.001713 
+    ## F-statistic: 0.988 on 1 and 6 DF,  p-value: 0.3586
+
+``` r
+summary(PD_PRicz_S_lm_lga)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ logArea, data = stree_sespd_env[stratified_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -0.6730 -0.5637 -0.1283  0.5633  0.9345 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)  -5.4089     2.2651  -2.388   0.0542 .
+    ## logArea       0.4486     0.2195   2.044   0.0870 .
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.6929 on 6 degrees of freedom
+    ## Multiple R-squared:  0.4104, Adjusted R-squared:  0.3122 
+    ## F-statistic: 4.177 on 1 and 6 DF,  p-value: 0.08698
+
+``` r
+# p-values
+dist_p_values <- summary(PD_PRicz_S_lm_dist)$coefficients[, "Pr(>|t|)"]
+mxd_p_values <- summary(PD_PRicz_S_lm_mxd)$coefficients[, "Pr(>|t|)"]
+lga_p_values <- summary(PD_PRicz_S_lm_lga)$coefficients[, "Pr(>|t|)"]
+p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
+```
+
+    ##             (Intercept) distance_to_ocean_min_m             (Intercept) 
+    ##               1.0000000               1.0000000               0.5021123 
+    ##               max_depth             (Intercept)                 logArea 
+    ##               1.0000000               0.3250849               0.5218944
 
 ``` r
 ##### PDisp ANOVAs
@@ -4326,10 +4567,10 @@ PD_beta_ref_dist <- BAT::beta(presabs_lake, tree, abund = F)
     ##                     pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted
     ## 1     Stratified vs Mixed  1 1.2940870 9.415922 0.4021162   0.001      0.006
     ## 2     Stratified vs Ocean  1 1.1858559 8.357071 0.4105242   0.001      0.006
-    ## 3 Stratified vs Reference  1 0.7729479 7.110647 0.5039207   0.118      0.708
-    ## 4          Mixed vs Ocean  1 0.2573592 1.467099 0.1089395   0.096      0.576
-    ## 5      Mixed vs Reference  1 0.6592270 3.967203 0.3617334   0.088      0.528
-    ## 6      Ocean vs Reference  1 0.6319662 3.354877 0.4015472   0.157      0.942
+    ## 3 Stratified vs Reference  1 0.7729479 7.110647 0.5039207   0.125      0.750
+    ## 4          Mixed vs Ocean  1 0.2573592 1.467099 0.1089395   0.110      0.660
+    ## 5      Mixed vs Reference  1 0.6592270 3.967203 0.3617334   0.108      0.648
+    ## 6      Ocean vs Reference  1 0.6319662 3.354877 0.4015472   0.131      0.786
     ##   sig
     ## 1   *
     ## 2   *
@@ -4412,7 +4653,7 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ##                 pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted sig
     ## 1 Stratified vs Mixed  1 1.2940870 9.415922 0.4021162   0.001      0.003   *
     ## 2 Stratified vs Ocean  1 1.1858559 8.357071 0.4105242   0.001      0.003   *
-    ## 3      Mixed vs Ocean  1 0.2573592 1.467099 0.1089395   0.107      0.321
+    ## 3      Mixed vs Ocean  1 0.2573592 1.467099 0.1089395   0.099      0.297
 
 ``` r
 # Without LCN
@@ -4486,8 +4727,8 @@ PD_beta_wo_LCN_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_LCN,], st
 
     ##                 pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted sig
     ## 1 Stratified vs Mixed  1 1.2940870 9.415922 0.4021162   0.001      0.003   *
-    ## 2 Stratified vs Ocean  1 1.2083230 9.439158 0.4618174   0.002      0.006   *
-    ## 3      Mixed vs Ocean  1 0.3347638 2.034034 0.1560556   0.008      0.024   .
+    ## 2 Stratified vs Ocean  1 1.2083230 9.439158 0.4618174   0.001      0.003   *
+    ## 3      Mixed vs Ocean  1 0.3347638 2.034034 0.1560556   0.020      0.060
 
 ``` r
 # Without TLN and HLM
@@ -4562,9 +4803,9 @@ PD_beta_wo_TLN_HLM_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_TLN_H
 ```
 
     ##                 pairs Df SumsOfSqs   F.Model        R2 p.value p.adjusted sig
-    ## 1 Stratified vs Mixed  1 1.3499033 10.500850 0.4666868   0.001      0.003   *
-    ## 2 Stratified vs Ocean  1 1.2146330  9.192717 0.4789690   0.002      0.006   *
-    ## 3      Mixed vs Ocean  1 0.2573592  1.467099 0.1089395   0.088      0.264
+    ## 1 Stratified vs Mixed  1 1.3499033 10.500850 0.4666868   0.003      0.009   *
+    ## 2 Stratified vs Ocean  1 1.2146330  9.192717 0.4789690   0.003      0.009   *
+    ## 3      Mixed vs Ocean  1 0.2573592  1.467099 0.1089395   0.104      0.312
 
 ``` r
 # Mixed and stratified lakes
@@ -4794,8 +5035,8 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ## ***VECTORS
     ## 
-    ##                                  NMDS1   NMDS2    r2 Pr(>r)   
-    ## env[surveyed_sites_env, c(34)] 0.94799 0.31830 0.699  0.008 **
+    ##                                  NMDS1   NMDS2    r2 Pr(>r)  
+    ## env[surveyed_sites_env, c(34)] 0.94798 0.31834 0.699  0.013 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4811,8 +5052,8 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ## ***VECTORS
     ## 
-    ##                                  NMDS1   NMDS2    r2 Pr(>r)   
-    ## env[surveyed_sites_env, c(34)] 0.94799 0.31830 0.699  0.008 **
+    ##                                  NMDS1   NMDS2    r2 Pr(>r)  
+    ## env[surveyed_sites_env, c(34)] 0.94798 0.31834 0.699  0.013 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4828,9 +5069,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.75821 -0.65201 0.0724  0.681  
-    ## salinity_median     0.94799  0.31830 0.6990  0.017 *
-    ## oxygen_median       0.57185 -0.82036 0.6836  0.131  
+    ## temperature_median -0.75819 -0.65203 0.0724  0.700  
+    ## salinity_median     0.94798  0.31834 0.6990  0.016 *
+    ## oxygen_median       0.57185 -0.82036 0.6836  0.124  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4847,9 +5088,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.75821 -0.65201 0.0724  1.000  
-    ## salinity_median     0.94799  0.31830 0.6990  0.051 .
-    ## oxygen_median       0.57185 -0.82036 0.6836  0.393  
+    ## temperature_median -0.75819 -0.65203 0.0724  1.000  
+    ## salinity_median     0.94798  0.31834 0.6990  0.048 *
+    ## oxygen_median       0.57185 -0.82036 0.6836  0.372  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4865,9 +5106,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.92682  0.37550 0.0954  0.756  
-    ## salinity_median     0.90470  0.42605 0.6840  0.026 *
-    ## oxygen_median       0.44477 -0.89564 0.5837  0.217  
+    ## temperature_median -0.92688  0.37535 0.0954  0.762  
+    ## salinity_median     0.90475  0.42595 0.6840  0.019 *
+    ## oxygen_median       0.44477 -0.89565 0.5836  0.208  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4884,9 +5125,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.92682  0.37550 0.0954  1.000  
-    ## salinity_median     0.90470  0.42605 0.6840  0.078 .
-    ## oxygen_median       0.44477 -0.89564 0.5837  0.651  
+    ## temperature_median -0.92688  0.37535 0.0954  1.000  
+    ## salinity_median     0.90475  0.42595 0.6840  0.057 .
+    ## oxygen_median       0.44477 -0.89565 0.5836  0.624  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4903,8 +5144,8 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
     ## temperature_median -0.52519 -0.85098 0.0223  0.893  
-    ## salinity_median    -0.79785 -0.60286 0.7269  0.020 *
-    ## oxygen_median      -0.91393 -0.40587 0.8026  0.015 *
+    ## salinity_median    -0.79785 -0.60286 0.7269  0.023 *
+    ## oxygen_median      -0.91393 -0.40587 0.8026  0.017 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4922,8 +5163,8 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
     ## temperature_median -0.52519 -0.85098 0.0223  1.000  
-    ## salinity_median    -0.79785 -0.60286 0.7269  0.060 .
-    ## oxygen_median      -0.91393 -0.40587 0.8026  0.045 *
+    ## salinity_median    -0.79785 -0.60286 0.7269  0.069 .
+    ## oxygen_median      -0.91393 -0.40587 0.8026  0.051 .
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4938,12 +5179,10 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ## ***VECTORS
     ## 
-    ##                          NMDS1       NMDS2     r2 Pr(>r)  
-    ## temperature_median  0.00066830  1.00000000 0.0377  0.785  
-    ## salinity_median    -0.00067294  1.00000000 0.6091  0.070 .
-    ## oxygen_median      -0.00243057 -1.00000000 0.7258  0.455  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##                         NMDS1      NMDS2     r2 Pr(>r)
+    ## temperature_median  0.0003120 -1.0000000 0.0711  0.586
+    ## salinity_median    -0.0056601  0.9999800 0.4841  0.868
+    ## oxygen_median      -0.0011377  1.0000000 0.7858  0.135
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -4957,10 +5196,10 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ## ***VECTORS
     ## 
-    ##                          NMDS1       NMDS2     r2 Pr(>r)
-    ## temperature_median  0.00066830  1.00000000 0.0377   1.00
-    ## salinity_median    -0.00067294  1.00000000 0.6091   0.21
-    ## oxygen_median      -0.00243057 -1.00000000 0.7258   1.00
+    ##                         NMDS1      NMDS2     r2 Pr(>r)
+    ## temperature_median  0.0003120 -1.0000000 0.0711  1.000
+    ## salinity_median    -0.0056601  0.9999800 0.4841  1.000
+    ## oxygen_median      -0.0011377  1.0000000 0.7858  0.405
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -4974,9 +5213,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                          NMDS1       NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.00007168  1.00000000 0.1397  0.659  
-    ## salinity_median     0.00058682 -1.00000000 0.4123  0.245  
-    ## oxygen_median       0.00069035 -1.00000000 0.6183  0.091 .
+    ## temperature_median -0.00010280  1.00000000 0.0923  0.774  
+    ## salinity_median     0.00062285 -1.00000000 0.4158  0.274  
+    ## oxygen_median       0.00056763 -1.00000000 0.6498  0.080 .
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
@@ -4992,9 +5231,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                          NMDS1       NMDS2     r2 Pr(>r)
-    ## temperature_median -0.00007168  1.00000000 0.1397  1.000
-    ## salinity_median     0.00058682 -1.00000000 0.4123  0.735
-    ## oxygen_median       0.00069035 -1.00000000 0.6183  0.273
+    ## temperature_median -0.00010280  1.00000000 0.0923  1.000
+    ## salinity_median     0.00062285 -1.00000000 0.4158  0.822
+    ## oxygen_median       0.00056763 -1.00000000 0.6498  0.240
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5007,12 +5246,12 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                             NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median       -0.39651 -0.91803 0.0381  0.889  
-    ## salinity_median          -0.96164  0.27433 0.5830  0.102  
-    ## oxygen_median             0.83740  0.54659 0.7450  0.028 *
-    ## distance_to_ocean_mean_m -0.09986  0.99500 0.0319  0.933  
-    ## max_depth                -0.87450  0.48503 0.1022  0.770  
-    ## logArea                  -0.40926  0.91242 0.2148  0.569  
+    ## temperature_median       -0.39654 -0.91802 0.0381  0.902  
+    ## salinity_median          -0.96163  0.27433 0.5830  0.103  
+    ## oxygen_median             0.83739  0.54660 0.7450  0.039 *
+    ## distance_to_ocean_mean_m -0.09988  0.99500 0.0319  0.927  
+    ## max_depth                -0.87443  0.48515 0.1022  0.747  
+    ## logArea                  -0.40923  0.91243 0.2149  0.529  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
@@ -5028,12 +5267,12 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                             NMDS1    NMDS2     r2 Pr(>r)
-    ## temperature_median       -0.39651 -0.91803 0.0381  1.000
-    ## salinity_median          -0.96164  0.27433 0.5830  0.612
-    ## oxygen_median             0.83740  0.54659 0.7450  0.168
-    ## distance_to_ocean_mean_m -0.09986  0.99500 0.0319  1.000
-    ## max_depth                -0.87450  0.48503 0.1022  1.000
-    ## logArea                  -0.40926  0.91242 0.2148  1.000
+    ## temperature_median       -0.39654 -0.91802 0.0381  1.000
+    ## salinity_median          -0.96163  0.27433 0.5830  0.618
+    ## oxygen_median             0.83739  0.54660 0.7450  0.234
+    ## distance_to_ocean_mean_m -0.09988  0.99500 0.0319  1.000
+    ## max_depth                -0.87443  0.48515 0.1022  1.000
+    ## logArea                  -0.40923  0.91243 0.2149  1.000
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5048,9 +5287,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m -0.82791  0.56087 0.5558  0.065 .
-    ## max_depth               -0.20870 -0.97798 0.0858  0.877  
-    ## logArea                  0.25301 -0.96746 0.2012  0.293  
+    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.086 .
+    ## max_depth               -0.20870 -0.97798 0.0858  0.885  
+    ## logArea                  0.25301 -0.96746 0.2012  0.312  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5067,9 +5306,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.82791  0.56087 0.5558  0.195
+    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.258
     ## max_depth               -0.20870 -0.97798 0.0858  1.000
-    ## logArea                  0.25301 -0.96746 0.2012  0.879
+    ## logArea                  0.25301 -0.96746 0.2012  0.936
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5083,9 +5322,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m -0.82791  0.56087 0.5558  0.081 .
-    ## max_depth               -0.20870 -0.97798 0.0858  0.896  
-    ## logArea                  0.25301 -0.96746 0.2012  0.289  
+    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.066 .
+    ## max_depth               -0.20870 -0.97798 0.0858  0.889  
+    ## logArea                  0.25301 -0.96746 0.2012  0.285  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5102,9 +5341,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.82791  0.56087 0.5558  0.243
+    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.198
     ## max_depth               -0.20870 -0.97798 0.0858  1.000
-    ## logArea                  0.25301 -0.96746 0.2012  0.867
+    ## logArea                  0.25301 -0.96746 0.2012  0.855
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5118,9 +5357,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.76298  0.64643 0.4671  0.142
-    ## max_depth               -0.34712 -0.93782 0.0777  0.964
-    ## logArea                  0.55395  0.83255 0.0074  0.959
+    ## distance_to_ocean_min_m -0.76297  0.64643 0.4671  0.141
+    ## max_depth               -0.34722 -0.93778 0.0777  0.970
+    ## logArea                  0.55392  0.83257 0.0074  0.958
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5135,9 +5374,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.76298  0.64643 0.4671  0.426
-    ## max_depth               -0.34712 -0.93782 0.0777  1.000
-    ## logArea                  0.55395  0.83255 0.0074  1.000
+    ## distance_to_ocean_min_m -0.76297  0.64643 0.4671  0.423
+    ## max_depth               -0.34722 -0.93778 0.0777  1.000
+    ## logArea                  0.55392  0.83257 0.0074  1.000
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5150,10 +5389,10 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ## ***VECTORS
     ## 
-    ##                            NMDS1    NMDS2     r2 Pr(>r)    
-    ## distance_to_ocean_min_m  0.45616 -0.88990 0.4273  0.181    
-    ## max_depth               -0.94118 -0.33789 0.6682  0.001 ***
-    ## logArea                 -0.86398  0.50353 0.2339  0.447    
+    ##                            NMDS1    NMDS2     r2 Pr(>r)   
+    ## distance_to_ocean_min_m  0.45615 -0.88990 0.4273  0.180   
+    ## max_depth               -0.94119 -0.33789 0.6682  0.004 **
+    ## logArea                 -0.86397  0.50355 0.2339  0.442   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5169,10 +5408,10 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## 
     ## ***VECTORS
     ## 
-    ##                            NMDS1    NMDS2     r2 Pr(>r)   
-    ## distance_to_ocean_min_m  0.45616 -0.88990 0.4273  0.543   
-    ## max_depth               -0.94118 -0.33789 0.6682  0.003 **
-    ## logArea                 -0.86398  0.50353 0.2339  1.000   
+    ##                            NMDS1    NMDS2     r2 Pr(>r)  
+    ## distance_to_ocean_min_m  0.45615 -0.88990 0.4273  0.540  
+    ## max_depth               -0.94119 -0.33789 0.6682  0.012 *
+    ## logArea                 -0.86397  0.50355 0.2339  1.000  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5188,9 +5427,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m  0.99474  0.10246 0.6338  0.243
-    ## max_depth                0.73011  0.68333 0.0374  0.971
-    ## logArea                 -0.39133  0.92025 0.3079  0.312
+    ## distance_to_ocean_min_m  0.99475  0.10238 0.6338  0.251
+    ## max_depth                0.73044  0.68298 0.0374  0.977
+    ## logArea                 -0.39148  0.92019 0.3078  0.330
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5205,9 +5444,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m  0.99474  0.10246 0.6338  0.729
-    ## max_depth                0.73011  0.68333 0.0374  1.000
-    ## logArea                 -0.39133  0.92025 0.3079  0.936
+    ## distance_to_ocean_min_m  0.99475  0.10238 0.6338  0.753
+    ## max_depth                0.73044  0.68298 0.0374  1.000
+    ## logArea                 -0.39148  0.92019 0.3078  0.990
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5221,9 +5460,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                               NMDS1       NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m -0.00031195 -1.00000000 0.4405  0.246  
-    ## max_depth                0.00073513 -1.00000000 0.7557  0.039 *
-    ## logArea                  0.00088768 -1.00000000 0.6843  0.043 *
+    ## distance_to_ocean_min_m -0.00012317  1.00000000 0.6152  0.099 .
+    ## max_depth                0.00086995 -1.00000000 0.7169  0.052 .
+    ## logArea                  0.00032015  1.00000000 0.7451  0.038 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
@@ -5239,9 +5478,9 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
     ## ***VECTORS
     ## 
     ##                               NMDS1       NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.00031195 -1.00000000 0.4405  0.738
-    ## max_depth                0.00073513 -1.00000000 0.7557  0.117
-    ## logArea                  0.00088768 -1.00000000 0.6843  0.129
+    ## distance_to_ocean_min_m -0.00012317  1.00000000 0.6152  0.297
+    ## max_depth                0.00086995 -1.00000000 0.7169  0.156
+    ## logArea                  0.00032015  1.00000000 0.7451  0.114
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5261,11 +5500,11 @@ env_dist_t <- dist(scaled_env[surveyed_sites_env,c(1)], method = "euclidean")
     ## mantel(xdis = PD_beta_env_dist$Btotal, ydis = env_dist_t, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, 19],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1792 
-    ##       Significance: 0.213 
+    ##       Significance: 0.203 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.219 0.246 0.272 0.302 
+    ## 0.208 0.235 0.254 0.280 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5282,11 +5521,11 @@ env_dist_s <- dist(scaled_env[surveyed_sites_env,c(2)], method = "euclidean")
     ## mantel(xdis = PD_beta_env_dist$Btotal, ydis = env_dist_s, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, 19],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5142 
-    ##       Significance: 0.008 
+    ##       Significance: 0.01 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.434 0.457 0.473 0.498 
+    ## 0.443 0.467 0.486 0.509 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5303,11 +5542,11 @@ env_dist_o <- dist(scaled_env[surveyed_sites_env,c(3)], method = "euclidean")
     ## mantel(xdis = PD_beta_env_dist$Btotal, ydis = env_dist_o, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, 19],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.462 
-    ##       Significance: 0.246 
+    ##       Significance: 0.266 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.511 0.556 0.581 0.608 
+    ## 0.522 0.555 0.582 0.610 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5319,7 +5558,7 @@ PD_beta_env_mant_pv <- PD_beta_env_mant_pv[,1]
 (PD_beta_env_mant_pv <- p.adjust(PD_beta_env_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.639 0.024 0.738
+    ## [1] 0.609 0.030 0.798
 
 ``` r
 # Mixed and stratified lakes
@@ -5334,11 +5573,11 @@ env_MS_dist_t <- dist(scaled_env[mixed_stratified_lakes,c(1)], method = "euclide
     ## mantel(xdis = PD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_t,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1644 
-    ##       Significance: 0.243 
+    ##       Significance: 0.236 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.217 0.251 0.283 0.315 
+    ## 0.213 0.253 0.276 0.305 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5355,11 +5594,11 @@ env_MS_dist_s <- dist(scaled_env[mixed_stratified_lakes,c(2)], method = "euclide
     ## mantel(xdis = PD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_s,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4638 
-    ##       Significance: 0.01 
+    ##       Significance: 0.013 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.373 0.410 0.436 0.460 
+    ## 0.371 0.416 0.449 0.469 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5376,11 +5615,11 @@ env_MS_dist_o <- dist(scaled_env[mixed_stratified_lakes,c(3)], method = "euclide
     ## mantel(xdis = PD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_o,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3305 
-    ##       Significance: 0.316 
+    ##       Significance: 0.297 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.414 0.449 0.492 0.547 
+    ## 0.422 0.470 0.500 0.535 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5392,7 +5631,7 @@ PD_beta_env_MS_mant_pv <- PD_beta_env_MS_mant_pv[,1]
 (PD_beta_env_MS_mant_pv <- p.adjust(PD_beta_env_MS_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.729 0.030 0.948
+    ## [1] 0.708 0.039 0.891
 
 ``` r
 # Ocean sites and mixed lakes
@@ -5407,11 +5646,11 @@ env_OM_dist_t <- dist(scaled_env[ocean_mixed_sites_env,c(1)], method = "euclidea
     ## mantel(xdis = PD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.03824 
-    ##       Significance: 0.503 
+    ##       Significance: 0.504 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.140 0.194 0.242 0.391 
+    ## 0.143 0.196 0.252 0.360 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5428,11 +5667,11 @@ env_OM_dist_s <- dist(scaled_env[ocean_mixed_sites_env,c(2)], method = "euclidea
     ## mantel(xdis = PD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4565 
-    ##       Significance: 0.022 
+    ##       Significance: 0.017 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.303 0.364 0.442 0.499 
+    ## 0.299 0.371 0.437 0.502 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5449,11 +5688,11 @@ env_OM_dist_o <- dist(scaled_env[ocean_mixed_sites_env,c(3)], method = "euclidea
     ## mantel(xdis = PD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5527 
-    ##       Significance: 0.015 
+    ##       Significance: 0.01 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.314 0.394 0.463 0.602 
+    ## 0.336 0.406 0.471 0.535 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5465,7 +5704,7 @@ PD_beta_env_OM_mant_pv <- PD_beta_env_OM_mant_pv[,1]
 (PD_beta_env_OM_mant_pv <- p.adjust(PD_beta_env_OM_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.066 0.045
+    ## [1] 1.000 0.051 0.030
 
 ``` r
 # Stratified lakes and ocean sites
@@ -5480,11 +5719,11 @@ env_SO_dist_t <- dist(scaled_env[ocean_stratified_sites_env,c(1)], method = "euc
     ## mantel(xdis = PD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.07569 
-    ##       Significance: 0.448 
+    ##       Significance: 0.459 
     ## 
     ## Upper quantiles of permutations (null model):
     ##    90%    95%  97.5%    99% 
-    ## 0.0417 0.0824 0.1015 0.1313 
+    ## 0.0439 0.0784 0.1049 0.1415 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5501,11 +5740,11 @@ env_SO_dist_s <- dist(scaled_env[ocean_stratified_sites_env,c(2)], method = "euc
     ## mantel(xdis = PD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4755 
-    ##       Significance: 0.02 
+    ##       Significance: 0.024 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.387 0.436 0.461 0.489 
+    ## 0.393 0.437 0.469 0.517 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5522,11 +5761,11 @@ env_SO_dist_o <- dist(scaled_env[ocean_stratified_sites_env,c(3)], method = "euc
     ## mantel(xdis = PD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.6587 
-    ##       Significance: 0.232 
+    ##       Significance: 0.217 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.692 0.717 0.743 0.768 
+    ## 0.689 0.717 0.735 0.774 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5538,7 +5777,7 @@ PD_beta_env_SO_mant_pv <- PD_beta_env_SO_mant_pv[,1]
 (PD_beta_env_SO_mant_pv <- p.adjust(PD_beta_env_SO_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.060 0.696
+    ## [1] 1.000 0.072 0.651
 
 ``` r
 # Mixed lakes
@@ -5553,11 +5792,11 @@ env_M_dist_t <- dist(scaled_env[mixed_lakes,c(1)], method = "euclidean")
     ## mantel(xdis = PD_beta_env_M_dist$Btotal, ydis = env_M_dist_t,      method = "spearman", permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.1368 
-    ##       Significance: 0.769 
+    ##       Significance: 0.748 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.289 0.381 0.482 0.695 
+    ## 0.264 0.347 0.421 0.592 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5573,11 +5812,11 @@ env_M_dist_s <- dist(scaled_env[mixed_lakes,c(2)], method = "euclidean")
     ## mantel(xdis = PD_beta_env_M_dist$Btotal, ydis = env_M_dist_s,      method = "spearman", permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1095 
-    ##       Significance: 0.271 
+    ##       Significance: 0.248 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.226 0.293 0.348 0.394 
+    ## 0.206 0.267 0.298 0.365 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5593,11 +5832,11 @@ env_M_dist_o <- dist(scaled_env[mixed_lakes,c(3)], method = "euclidean")
     ## mantel(xdis = PD_beta_env_M_dist$Btotal, ydis = env_M_dist_o,      method = "spearman", permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2748 
-    ##       Significance: 0.082 
+    ##       Significance: 0.094 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.240 0.333 0.391 0.456 
+    ## 0.262 0.371 0.481 0.584 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5608,7 +5847,7 @@ PD_beta_env_M_mant_pv <- PD_beta_env_M_mant_pv[,1]
 (PD_beta_env_M_mant_pv <- p.adjust(PD_beta_env_M_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.813 0.246
+    ## [1] 1.000 0.744 0.282
 
 ``` r
 # Stratified lakes
@@ -5623,11 +5862,11 @@ env_geo_S_dist <- dist(scaled_env[stratified_lakes,c(1:3,9,14:15)], method = "eu
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = env_geo_S_dist, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1511 
-    ##       Significance: 0.298 
+    ##       Significance: 0.278 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.352 0.422 0.505 0.580 
+    ## 0.349 0.431 0.497 0.563 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5645,11 +5884,11 @@ geo_dist_dmean <- dist(scaled_env[surveyed_sites,c(9)], method = "euclidean")
     ## mantel(xdis = PD_beta_geo_dist$Btotal, ydis = geo_dist_dmean,      method = "spearman", permutations = 999, strata = env[surveyed_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3483 
-    ##       Significance: 0.584 
+    ##       Significance: 0.575 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.457 0.478 0.494 0.518 
+    ## 0.451 0.477 0.500 0.521 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5666,11 +5905,11 @@ geo_dist_md <- dist(scaled_env[surveyed_sites,c(14)], method = "euclidean")
     ## mantel(xdis = PD_beta_geo_dist$Btotal, ydis = geo_dist_md, method = "spearman",      permutations = 999, strata = env[surveyed_sites, 19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.0242 
-    ##       Significance: 0.773 
+    ##       Significance: 0.759 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.164 0.193 0.216 0.236 
+    ## 0.168 0.198 0.218 0.247 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5691,7 +5930,7 @@ geo_dist_la <- dist(scaled_env[surveyed_sites,c(15)], method = "euclidean")
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.114 0.130 0.142 0.153 
+    ## 0.115 0.129 0.149 0.166 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5718,11 +5957,11 @@ geo_MS_dist_dmean <- dist(scaled_env[mixed_stratified_lakes,c(9)], method = "euc
     ## mantel(xdis = PD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_dmean,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1391 
-    ##       Significance: 0.686 
+    ##       Significance: 0.639 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.311 0.346 0.375 0.409 
+    ## 0.296 0.335 0.369 0.397 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5739,11 +5978,11 @@ geo_MS_dist_md <- dist(scaled_env[mixed_stratified_lakes,c(14)], method = "eucli
     ## mantel(xdis = PD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_md,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.05502 
-    ##       Significance: 0.916 
+    ##       Significance: 0.912 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.153 0.185 0.215 0.239 
+    ## 0.157 0.191 0.236 0.259 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5760,11 +5999,11 @@ geo_MS_dist_la <- dist(scaled_env[mixed_stratified_lakes,c(15)], method = "eucli
     ## mantel(xdis = PD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_la,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.06883 
-    ##       Significance: 0.891 
+    ##       Significance: 0.877 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.128 0.156 0.178 0.197 
+    ## 0.125 0.157 0.179 0.220 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5791,11 +6030,11 @@ geo_OM_dist_dmean <- dist(scaled_env[ocean_mixed_sites,c(9)], method = "euclidea
     ## mantel(xdis = PD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_dmean,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.06927 
-    ##       Significance: 0.407 
+    ##       Significance: 0.402 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.170 0.201 0.228 0.270 
+    ## 0.168 0.201 0.227 0.268 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5812,11 +6051,11 @@ geo_OM_dist_md <- dist(scaled_env[ocean_mixed_sites,c(14)], method = "euclidean"
     ## mantel(xdis = PD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3135 
-    ##       Significance: 0.02 
+    ##       Significance: 0.014 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.172 0.218 0.276 0.347 
+    ## 0.160 0.219 0.285 0.328 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5833,11 +6072,11 @@ geo_OM_dist_la <- dist(scaled_env[ocean_mixed_sites,c(15)], method = "euclidean"
     ## mantel(xdis = PD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1943 
-    ##       Significance: 0.059 
+    ##       Significance: 0.067 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.172 0.200 0.237 0.257 
+    ## 0.172 0.205 0.239 0.277 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5849,7 +6088,7 @@ PD_beta_geo_OM_mant_pv <- PD_beta_geo_OM_mant_pv[,1]
 (PD_beta_geo_OM_mant_pv <- p.adjust(PD_beta_geo_OM_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.060 0.177
+    ## [1] 1.000 0.042 0.201
 
 ``` r
 # Stratified lakes and ocean sites
@@ -5864,11 +6103,11 @@ geo_SO_dist_dmean <- dist(scaled_env[ocean_stratified_sites,c(9)], method = "euc
     ## mantel(xdis = PD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_dmean,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5262 
-    ##       Significance: 0.539 
+    ##       Significance: 0.528 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.617 0.640 0.665 0.685 
+    ## 0.625 0.647 0.668 0.692 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5885,11 +6124,11 @@ geo_SO_dist_md <- dist(scaled_env[ocean_stratified_sites,c(14)], method = "eucli
     ## mantel(xdis = PD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.04194 
-    ##       Significance: 0.797 
+    ##       Significance: 0.784 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.117 0.144 0.180 0.217 
+    ## 0.123 0.156 0.178 0.199 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5906,11 +6145,11 @@ geo_SO_dist_la <- dist(scaled_env[ocean_stratified_sites,c(15)], method = "eucli
     ## mantel(xdis = PD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          19], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3193 
-    ##       Significance: 0.191 
+    ##       Significance: 0.211 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.367 0.396 0.417 0.434 
+    ## 0.367 0.393 0.413 0.432 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5922,7 +6161,7 @@ PD_beta_geo_SO_mant_pv <- PD_beta_geo_SO_mant_pv[,1]
 (PD_beta_geo_SO_mant_pv <- p.adjust(PD_beta_geo_SO_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 1.000 0.573
+    ## [1] 1.000 1.000 0.633
 
 ``` r
 # Mixed lakes
@@ -5937,11 +6176,11 @@ geo_M_dist_dmean <- dist(scaled_env[mixed_lakes,c(9)], method = "euclidean")
     ## mantel(xdis = PD_beta_geo_M_dist$Btotal, ydis = geo_M_dist_dmean,      method = "spearman", permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.1161 
-    ##       Significance: 0.694 
+    ##       Significance: 0.718 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.256 0.330 0.423 0.689 
+    ## 0.242 0.316 0.381 0.637 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5957,11 +6196,11 @@ geo_M_dist_md <- dist(scaled_env[mixed_lakes,c(14)], method = "euclidean")
     ## mantel(xdis = PD_beta_geo_M_dist$Btotal, ydis = geo_M_dist_md,      method = "spearman", permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5985 
-    ##       Significance: 0.017 
+    ##       Significance: 0.015 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.278 0.447 0.553 0.625 
+    ## 0.253 0.370 0.547 0.603 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5977,11 +6216,11 @@ geo_M_dist_la <- dist(scaled_env[mixed_lakes,c(15)], method = "euclidean")
     ## mantel(xdis = PD_beta_geo_M_dist$Btotal, ydis = geo_M_dist_la,      method = "spearman", permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4007 
-    ##       Significance: 0.018 
+    ##       Significance: 0.013 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.197 0.269 0.349 0.440 
+    ## 0.193 0.294 0.362 0.417 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5992,7 +6231,7 @@ PD_beta_geo_M_mant_pv <- PD_beta_geo_M_mant_pv[,1]
 (PD_beta_geo_M_mant_pv <- p.adjust(PD_beta_geo_M_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.051 0.054
+    ## [1] 1.000 0.045 0.039
 
 ### PD beta NMDS ordination plots
 
