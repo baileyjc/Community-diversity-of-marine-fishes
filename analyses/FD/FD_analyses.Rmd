@@ -857,18 +857,18 @@ outlierTest(FD_FRicz_am_dist)
 plot(FD_FRicz_am_dist)
 
 ### Ocean & Mixed sites
-FD_FRicz_OM_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = straits_sespd_env[ocean_mixed_sites_env,])
+FD_FRicz_OM_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = straits_sespd_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OM_lm_dist))
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_OM_lm_dist) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_OM_lm_dist) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
 
 ### Ocean & Stratified sites
-FD_FRicz_OS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = straits_sespd_env[ocean_stratified_sites_env,])
+FD_FRicz_OS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = straits_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OS_lm_dist))
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_OS_lm_dist) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_OS_lm_dist) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
 
 ### Mixed & Stratified lakes
 FD_FRicz_MS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = straits_sespd_env[mixed_stratified_lakes,])
@@ -906,18 +906,18 @@ outlierTest(FD_FRicz_am_mxd)
 plot(FD_FRicz_am_mxd)
 
 ### Ocean & Mixed sites
-FD_FRicz_OM_lm_mxd <- lm(pd.obs.z ~ max_depth, data = straits_sespd_env[ocean_mixed_sites_env,])
+FD_FRicz_OM_lm_mxd <- lm(pd.obs.z ~ max_depth, data = straits_sespd_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OM_lm_mxd))
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_OM_lm_mxd) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_OM_lm_mxd) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
 
 ### Ocean & Stratified sites
-FD_FRicz_OS_lm_mxd <- lm(pd.obs.z ~ max_depth, data = straits_sespd_env[ocean_stratified_sites_env,])
+FD_FRicz_OS_lm_mxd <- lm(pd.obs.z ~ max_depth, data = straits_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OS_lm_mxd))
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_OS_lm_mxd) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_OS_lm_mxd) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
 
 ### Mixed & Stratified lakes
 FD_FRicz_MS_lm_mxd <- lm(pd.obs.z ~ max_depth, data = straits_sespd_env[mixed_stratified_lakes,])
@@ -955,18 +955,18 @@ outlierTest(FD_FRicz_am_lga)
 plot(FD_FRicz_am_lga)
 
 ### Ocean & Mixed sites
-FD_FRicz_OM_lm_lga <- lm(pd.obs.z ~ logArea, data = straits_sespd_env[ocean_mixed_sites_env,])
+FD_FRicz_OM_lm_lga <- lm(pd.obs.z ~ logArea, data = straits_sespd_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OM_lm_lga))
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_OM_lm_lga) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_OM_lm_lga) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
 
 ### Ocean & Stratified sites
-FD_FRicz_OS_lm_lga <- lm(pd.obs.z ~ logArea, data = straits_sespd_env[ocean_stratified_sites_env,])
+FD_FRicz_OS_lm_lga <- lm(pd.obs.z ~ logArea, data = straits_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OS_lm_lga))
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(FD_FRicz_OS_lm_lga) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
+car::leveneTest(residuals(FD_FRicz_OS_lm_lga) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
 
 ### Mixed & Stratified lakes
 FD_FRicz_MS_lm_lga <- lm(pd.obs.z ~ logArea, data = straits_sespd_env[mixed_stratified_lakes,])
