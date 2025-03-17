@@ -403,6 +403,24 @@ Site_type <- tukey_SRic_result$Site_type
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
 ```
 
+### SD alpha env and geo variance partitioning
+```{r}
+envgeo_var <- env[surveyed_sites_env,c(environment, geography)]
+surveyed_sites_lake_env <- surveyed_sites_lake[surveyed_sites_env,]
+cca_var_all <- cca(surveyed_sites_lake_env ~ ., envgeo_var)
+anova(cca_var_all)  # 0.001 *** - it is significant
+adjR2_cca <- RsquareAdj(cca_var_all)$adj.r.squared # 0.10 - adjusted R2 explained by the 6 variables is 10%
+cca_var_0 <- cca(surveyed_sites_lake_env ~ 1, data = envgeo_var)
+
+# Run forward selection
+SD_alpha_os_R2 <- ordiR2step(cca_var_0, scope = formula (cca_var_all), R2scope = adjR2_cca, direction = 'forward', permutations = 999)
+SD_alpha_os_R2
+SD_alpha_os_R2$anova
+SD_alpha_os_R2_adj <- SD_alpha_os_R2
+SD_alpha_os_R2_adj$anova$`Pr(>F)` <- p.adjust(SD_alpha_os_R2$anova$`Pr(>F)`, method = 'holm', n = ncol(envgeo_var))
+SD_alpha_os_R2_adj$anova
+```
+
 ### SD alpha env and geo plots
 ```{r, SD alpha lm plots}
 # Temperature
@@ -1457,6 +1475,26 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
   cat ('Adjustment of significance by', method, 'method')
   return (x.new)
 }
+```
+
+### FD beta varitation partitioning of env and geo variables
+```{r}
+env_var <- env[surveyed_sites_env,environment]
+geo_var <- env[surveyed_sites_env,geography]
+SD_beta_varpart <- varpart(SD_beta_env_dist$Btotal, env_var, geo_var)
+SD_beta_varpart$part
+
+# Open a jpg device
+png("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_varpart.jpg", width = 4.5, height = 4.5, units = "in", res = 300, type = "cairo")
+# Plot the variation partitioning results
+plot(SD_beta_varpart,
+     Xnames = c("Environmental", "Geographical"), # name the partitions
+     
+     bg = c("mediumpurple", "orange"), alpha = 80, # colour the circles
+     digits = 1, # only show 2 digits
+     cex = 1)
+# Close the jpg device
+dev.off()
 ```
 
 ### SD beta with env and geo correlated variables using envfit
