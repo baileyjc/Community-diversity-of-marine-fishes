@@ -15,7 +15,7 @@ knit("/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_col
     ## 
     ## processing file: /Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.Rmd
 
-    ##   |                  |          |   0%  |                  |          |   3%                                                                          |                  |.         |   7% [Bringing everything together load modifying files packages]             |                  |.         |  10%                                                                          |                  |.         |  13% [Bringing everything together load in modifying files]                   |                  |..        |  17%                                                                          |                  |..        |  20% [Check species names across files]                                       |                  |..        |  23%                                                                          |                  |...       |  27% [Modify environment data]                                                |                  |...       |  30%                                                                          |                  |...       |  33% [Modify incidence matrices]                                              |                  |....      |  37%                                                                          |                  |....      |  40% [Modify phylogeny]                                                       |                  |....      |  43%                                                                          |                  |.....     |  47% [Modify trait data]                                                      |                  |.....     |  50%                                                                          |                  |.....     |  53% [Modify Site_type data frames]                                           |                  |......    |  57%                                                                          |                  |......    |  60% [Modify Site_type trait data]                                            |                  |......    |  63%                                                                          |                  |.......   |  67% [Site_type trait data tests]                                             |                  |.......   |  70%                                                                          |                  |.......   |  73% [Modify site trait data frames]                                          |                  |........  |  77%                                                                          |                  |........  |  80% [Site trait data tests]                                                  |                  |........  |  83%                                                                          |                  |......... |  87% [unnamed-chunk-5]                                                        |                  |......... |  90%                                                                          |                  |......... |  93% [unnamed-chunk-6]                                                        |                  |..........|  97%                                                                          |                  |..........| 100% [Bringing everything together load out modified files and session info]
+    ##   |                  |          |   0%  |                  |          |   3%                                                                          |                  |.         |   7% [Bringing everything together load modifying files packages]             |                  |.         |  10%                                                                          |                  |.         |  13% [Bringing everything together load in modifying files]                   |                  |..        |  17%                                                                          |                  |..        |  20% [Check species names across files]                                       |                  |..        |  23%                                                                          |                  |...       |  27% [Modify environment data]                                                |                  |...       |  30%                                                                          |                  |...       |  33% [Modify incidence matrices]                                              |                  |....      |  37%                                                                          |                  |....      |  40% [Modify phylogeny]                                                       |                  |....      |  43%                                                                          |                  |.....     |  47% [Modify trait data]                                                      |                  |.....     |  50%                                                                          |                  |.....     |  53% [Modify Site_type data frames]                                           |                  |......    |  57%                                                                          |                  |......    |  60% [Modify Site_type trait data]                                            |                  |......    |  63%                                                                          |                  |.......   |  67% [Site_type trait data tests]                                             |                  |.......   |  70%                                                                          |                  |.......   |  73% [Modify site trait data frames]                                          |                  |........  |  77%                                                                          |                  |........  |  80% [Site trait data tests]                                                  |                  |........  |  83%                                                                          |                  |......... |  87% [unnamed-chunk-6]                                                        |                  |......... |  90%                                                                          |                  |......... |  93% [unnamed-chunk-7]                                                        |                  |..........|  97%                                                                          |                  |..........| 100% [Bringing everything together load out modified files and session info]
 
     ## output file: /Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md
 
@@ -4986,6 +4986,48 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
 }
 ```
 
+### PD beta varitation partitioning of env and geo variables
+
+``` r
+env_var <- env[surveyed_sites_env,environment]
+geo_var <- env[surveyed_sites_env,geography]
+PD_beta_varpart <- varpart(PD_beta_env_dist$Btotal, env_var, geo_var)
+PD_beta_varpart$part
+```
+
+    ## No. of explanatory tables: 2 
+    ## Total variation (SS): 4.0404 
+    ## No. of observations: 19 
+    ## 
+    ## Partition table:
+    ##                      Df R.squared Adj.R.squared Testable
+    ## [a+c] = X1            3   0.47525       0.37029     TRUE
+    ## [b+c] = X2            3   0.37226       0.24671     TRUE
+    ## [a+b+c] = X1+X2       6   0.61810       0.42715     TRUE
+    ## Individual fractions                                    
+    ## [a] = X1|X2           3                 0.18044     TRUE
+    ## [b] = X2|X1           3                 0.05686     TRUE
+    ## [c]                   0                 0.18986    FALSE
+    ## [d] = Residuals                         0.57285    FALSE
+    ## ---
+    ## Use function 'dbrda' to test significance of fractions of interest
+
+``` r
+# Open a jpg device
+png("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_varpart.jpg", width = 4.5, height = 4.5, units = "in", res = 300, type = "cairo")
+# Plot the variation partitioning results
+plot(PD_beta_varpart,
+     Xnames = c("Environmental", "Geographical"), # name the partitions
+     bg = c("mediumpurple", "orange"), alpha = 80, # colour the circles
+     digits = 1, # only show 2 digits
+     cex = 1)
+# Close the jpg device
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
 ### PD beta env and geo correlated variables using envfit
 
 ``` r
@@ -6852,7 +6894,7 @@ stree_sesmpd_plot
     ## Warning: ggrepel: 3 unlabeled data points (too many overlaps). Consider
     ## increasing max.overlaps
 
-![](PD_analyses_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](PD_analyses_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sesmpd_plot_z.jpg", stree_sesmpd_plot, width = 5, height = 4, units = "in")
@@ -6888,7 +6930,7 @@ stree_sesmntd_plot
     ## Warning: ggrepel: 9 unlabeled data points (too many overlaps). Consider
     ## increasing max.overlaps
 
-![](PD_analyses_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->
+![](PD_analyses_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sesmntd_plot_z.jpg", stree_sesmntd_plot, width = 5, height = 4, units = "in")
@@ -6924,7 +6966,7 @@ stree_sespd_plot
     ## Warning: ggrepel: 9 unlabeled data points (too many overlaps). Consider
     ## increasing max.overlaps
 
-![](PD_analyses_files/figure-gfm/unnamed-chunk-1-3.png)<!-- -->
+![](PD_analyses_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sespd_plot_z.jpg", stree_sespd_plot, width = 5, height = 4, units = "in")
@@ -6961,7 +7003,7 @@ stree_sesmpd_plot
     ## Warning: Removed 22 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
-![](PD_analyses_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](PD_analyses_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sesmpd_plot_obs+z.jpg", stree_sesmpd_plot, width = 5, height = 4, units = "in")
@@ -6996,7 +7038,7 @@ stree_sesmntd_plot
     ## Warning: Removed 22 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
-![](PD_analyses_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
+![](PD_analyses_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sesmntd_plot_obs+z.jpg", stree_sesmntd_plot, width = 5, height = 4, units = "in")
@@ -7031,7 +7073,7 @@ stree_sespd_plot
     ## Warning: Removed 22 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
-![](PD_analyses_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
+![](PD_analyses_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sespd_plot_obs+z.jpg", stree_sespd_plot, width = 5, height = 4, units = "in")

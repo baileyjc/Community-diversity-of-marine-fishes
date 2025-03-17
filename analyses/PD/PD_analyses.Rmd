@@ -1491,6 +1491,25 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
 }
 ```
 
+### PD beta varitation partitioning of env and geo variables
+```{r}
+env_var <- env[surveyed_sites_env,environment]
+geo_var <- env[surveyed_sites_env,geography]
+PD_beta_varpart <- varpart(PD_beta_env_dist$Btotal, env_var, geo_var)
+PD_beta_varpart$part
+
+# Open a jpg device
+png("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_varpart.jpg", width = 4.5, height = 4.5, units = "in", res = 300, type = "cairo")
+# Plot the variation partitioning results
+plot(PD_beta_varpart,
+     Xnames = c("Environmental", "Geographical"), # name the partitions
+     bg = c("mediumpurple", "orange"), alpha = 80, # colour the circles
+     digits = 1, # only show 2 digits
+     cex = 1)
+# Close the jpg device
+dev.off()
+```
+
 ### PD beta env and geo correlated variables using envfit
 ```{r, PD beta envfit}
 ### Environmental
