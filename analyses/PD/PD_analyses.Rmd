@@ -54,6 +54,8 @@ stratified_lakes <- c("BCM", "CLM", "GLK", "HLM", "NLK", "OTM", "SLN", "TLN")
 custom_colors <- c("Reference" = "black", "Ocean" = "#EE6363", "Mixed" = "#87CEFA", "Stratified" = "#6E8B3D")
 
 env_cont <- "orange"
+
+set.seed(123)
 ```
 
 ### Edit input files
