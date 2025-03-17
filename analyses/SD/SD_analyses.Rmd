@@ -1300,6 +1300,8 @@ SD_beta_MS_dist<- BAT::beta(surveyed_sites_lake[mixed_stratified_lakes,], abund 
 SD_beta_OM_dist<- BAT::beta(surveyed_sites_lake[ocean_mixed_sites,], abund = F)
 # Stratified lakes and ocean sites
 SD_beta_SO_dist<- BAT::beta(surveyed_sites_lake[ocean_stratified_sites,], abund = F)
+# Mixed lakes
+SD_beta_M_dist<- BAT::beta(surveyed_sites_lake[mixed_lakes,], abund = F)
 # Stratified lakes
 SD_beta_S_dist<- BAT::beta(surveyed_sites_lake[stratified_lakes,], abund = F)
 
@@ -1313,8 +1315,6 @@ SD_beta_env_MS_dist<- BAT::beta(surveyed_sites_lake[mixed_stratified_lakes,], ab
 SD_beta_env_OM_dist<- BAT::beta(surveyed_sites_lake[ocean_mixed_sites_env,], abund = F)
 # Stratified lakes and ocean sites
 SD_beta_env_SO_dist<- BAT::beta(surveyed_sites_lake[ocean_stratified_sites_env,], abund = F)
-# Mixed lakes
-SD_beta_env_M_dist<- BAT::beta(surveyed_sites_lake[mixed_lakes,], abund = F)
 
 
 ### Geographic
@@ -1326,8 +1326,6 @@ SD_beta_geo_MS_dist<- BAT::beta(surveyed_sites_lake[mixed_stratified_lakes,], ab
 SD_beta_geo_OM_dist<- BAT::beta(surveyed_sites_lake[ocean_mixed_sites,], abund = F)
 # Stratified lakes and ocean sites
 SD_beta_geo_SO_dist<- BAT::beta(surveyed_sites_lake[ocean_stratified_sites,], abund = F)
-# Mixed lakes
-SD_beta_geo_M_dist<- BAT::beta(surveyed_sites_lake[mixed_lakes,], abund = F)
 ```
 
 ### SD beta q values of dispersion statistics
@@ -1406,6 +1404,8 @@ SD_beta_MS_NMDS <- metaMDS(SD_beta_MS_dist$Btotal, try = 1000, parallel = 4, try
 SD_beta_OM_NMDS <- metaMDS(SD_beta_OM_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # Stratified lakes and ocean sites
 SD_beta_SO_NMDS <- metaMDS(SD_beta_SO_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Mixed lakes
+SD_beta_M_NMDS <- metaMDS(SD_beta_M_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # Stratified lakes
 SD_beta_S_NMDS <- metaMDS(SD_beta_S_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 
@@ -1419,8 +1419,6 @@ SD_beta_env_MS_NMDS <- metaMDS(SD_beta_env_MS_dist$Btotal, try = 1000, parallel 
 SD_beta_env_OM_NMDS <- metaMDS(SD_beta_env_OM_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # Stratified lakes and ocean sites
 SD_beta_env_SO_NMDS <- metaMDS(SD_beta_env_SO_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
-# Mixed lakes
-SD_beta_env_M_NMDS <- metaMDS(SD_beta_env_M_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 
 
 ### Geographic
@@ -1432,8 +1430,6 @@ SD_beta_geo_MS_NMDS <- metaMDS(SD_beta_geo_MS_dist$Btotal, try = 1000, parallel 
 SD_beta_geo_OM_NMDS <- metaMDS(SD_beta_geo_OM_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # Stratified lakes and ocean sites
 SD_beta_geo_SO_NMDS <- metaMDS(SD_beta_geo_SO_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
-# Mixed lakes
-SD_beta_geo_M_NMDS <- metaMDS(SD_beta_geo_M_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 ```
 
 ### Load an envfit analysis function for adjusting p-values
@@ -1482,9 +1478,11 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
 # Stratified lakes and ocean sites
 (SD_beta_env_SO_ef <- envfit(SD_beta_env_SO_NMDS, env[ocean_stratified_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
 (SD_beta_env_SO_efp <- p.adjust.envfit(SD_beta_env_SO_ef))
+
+
 # Mixed lakes
-(SD_beta_env_M_ef <- envfit(SD_beta_env_M_NMDS, env[mixed_lakes,environment], permutations = 999, na.rm = TRUE))
-(SD_beta_env_M_efp <- p.adjust.envfit(SD_beta_env_M_ef))
+(SD_beta_M_ef <- envfit(SD_beta_M_NMDS, env[mixed_lakes,c(2,6,8,26,31:32)], permutations = 999, na.rm = TRUE))
+(SD_beta_M_efp <- p.adjust.envfit(SD_beta_M_ef))
 
 
 # Stratified lakes
@@ -1509,9 +1507,6 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
 # Stratified lakes and ocean sites
 (SD_beta_geo_SO_ef <- envfit(SD_beta_geo_SO_NMDS, env[ocean_stratified_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
 (SD_beta_geo_SO_efp <- p.adjust.envfit(SD_beta_geo_SO_ef))
-# Mixed lakes
-(SD_beta_geo_M_ef <- envfit(SD_beta_geo_M_NMDS, env[mixed_lakes,geography], permutations = 999, na.rm = TRUE))
-(SD_beta_geo_M_efp <- p.adjust.envfit(SD_beta_geo_M_ef))
 ```
 
 ### SD beta Mantel correlation tests
@@ -1565,22 +1560,43 @@ SD_beta_env_SO_mant_pv <- rbind(SD_beta_env_SO_mant_t$signif, SD_beta_env_SO_man
 SD_beta_env_SO_mant_pv <- SD_beta_env_SO_mant_pv[,1]
 (SD_beta_env_SO_mant_pv <- p.adjust(SD_beta_env_SO_mant_pv, method = "bonferroni"))
 
+
 # Mixed lakes
 env_M_dist_t <- dist(scaled_env[mixed_lakes,c(1)], method = "euclidean")
-(SD_beta_env_M_mant_t <- mantel(SD_beta_env_M_dist$Btotal, env_M_dist_t, method = "spearman", permutations = 999, na.rm = TRUE))
+(SD_beta_M_mant_t <- mantel(SD_beta_M_dist$Btotal, env_M_dist_t, method = "spearman", permutations = 999, na.rm = TRUE))
 env_M_dist_s <- dist(scaled_env[mixed_lakes,c(2)], method = "euclidean")
-(SD_beta_env_M_mant_s <- mantel(SD_beta_env_M_dist$Btotal, env_M_dist_s, method = "spearman", permutations = 999, na.rm = TRUE))
+(SD_beta_M_mant_s <- mantel(SD_beta_M_dist$Btotal, env_M_dist_s, method = "spearman", permutations = 999, na.rm = TRUE))
 env_M_dist_o <- dist(scaled_env[mixed_lakes,c(3)], method = "euclidean")
-(SD_beta_env_M_mant_o <- mantel(SD_beta_env_M_dist$Btotal, env_M_dist_o, method = "spearman", permutations = 999, na.rm = TRUE))
+(SD_beta_M_mant_o <- mantel(SD_beta_M_dist$Btotal, env_M_dist_o, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_M_dist_dmean <- dist(scaled_env[mixed_lakes,c(9)], method = "euclidean")
+(SD_beta_M_mant_dmean <- mantel(SD_beta_M_dist$Btotal, geo_M_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_M_dist_md <- dist(scaled_env[mixed_lakes,c(14)], method = "euclidean")
+(SD_beta_M_mant_md <- mantel(SD_beta_M_dist$Btotal, geo_M_dist_md, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_M_dist_la <- dist(scaled_env[mixed_lakes,c(15)], method = "euclidean")
+(SD_beta_M_mant_la <- mantel(SD_beta_M_dist$Btotal, geo_M_dist_la, method = "spearman", permutations = 999, na.rm = TRUE))
 # Adjust p-values
-SD_beta_env_M_mant_pv <- rbind(SD_beta_env_M_mant_t$signif, SD_beta_env_M_mant_s$signif, SD_beta_env_M_mant_o$signif)
-SD_beta_env_M_mant_pv <- SD_beta_env_M_mant_pv[,1]
-(SD_beta_env_M_mant_pv <- p.adjust(SD_beta_env_M_mant_pv, method = "bonferroni"))
+SD_beta_M_mant_pv <- rbind(SD_beta_M_mant_t$signif, SD_beta_M_mant_s$signif, SD_beta_M_mant_o$signif, SD_beta_M_mant_dmean$signif, SD_beta_M_mant_md$signif, SD_beta_M_mant_la$signif)
+SD_beta_M_mant_pv <- SD_beta_M_mant_pv[,1]
+(SD_beta_M_mant_pv <- p.adjust(SD_beta_M_mant_pv, method = "bonferroni"))
 
 
 # Stratified lakes
-env_geo_S_dist <- dist(scaled_env[stratified_lakes,c(1:3,9,14:15)], method = "euclidean")
-(SD_beta_S_mant <- mantel(SD_beta_S_dist$Btotal, env_geo_S_dist, method = "spearman", permutations = 999, na.rm = TRUE))
+env_S_dist_t <- dist(scaled_env[stratified_lakes,c(1)], method = "euclidean")
+(SD_beta_S_mant_t <- mantel(SD_beta_S_dist$Btotal, env_S_dist_t, method = "spearman", permutations = 999, na.rm = TRUE))
+env_S_dist_s <- dist(scaled_env[stratified_lakes,c(2)], method = "euclidean")
+(SD_beta_S_mant_s <- mantel(SD_beta_S_dist$Btotal, env_S_dist_s, method = "spearman", permutations = 999, na.rm = TRUE))
+env_S_dist_o <- dist(scaled_env[stratified_lakes,c(3)], method = "euclidean")
+(SD_beta_S_mant_o <- mantel(SD_beta_S_dist$Btotal, env_S_dist_o, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_S_dist_dmean <- dist(scaled_env[stratified_lakes,c(9)], method = "euclidean")
+(SD_beta_S_mant_dmean <- mantel(SD_beta_S_dist$Btotal, geo_S_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_S_dist_md <- dist(scaled_env[stratified_lakes,c(14)], method = "euclidean")
+(SD_beta_S_mant_md <- mantel(SD_beta_S_dist$Btotal, geo_S_dist_md, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_S_dist_la <- dist(scaled_env[stratified_lakes,c(15)], method = "euclidean")
+(SD_beta_S_mant_la <- mantel(SD_beta_S_dist$Btotal, geo_S_dist_la, method = "spearman", permutations = 999, na.rm = TRUE))
+# Adjust p-values
+SD_beta_S_mant_pv <- rbind(SD_beta_S_mant_t$signif, SD_beta_S_mant_s$signif, SD_beta_S_mant_o$signif, SD_beta_S_mant_dmean$signif, SD_beta_S_mant_md$signif, SD_beta_S_mant_la$signif)
+SD_beta_S_mant_pv <- SD_beta_S_mant_pv[,1]
+(SD_beta_S_mant_pv <- p.adjust(SD_beta_S_mant_pv, method = "bonferroni"))
 
 
 ### Geographic
@@ -1631,18 +1647,6 @@ geo_SO_dist_la <- dist(scaled_env[ocean_stratified_sites,c(15)], method = "eucli
 SD_beta_geo_SO_mant_pv <- rbind( SD_beta_geo_SO_mant_dmean$signif, SD_beta_geo_SO_mant_md$signif, SD_beta_geo_SO_mant_la$signif)
 SD_beta_geo_SO_mant_pv <- SD_beta_geo_SO_mant_pv[,1]
 (SD_beta_geo_SO_mant_pv <- p.adjust(SD_beta_geo_SO_mant_pv, method = "bonferroni"))
-
-# Mixed lakes
-geo_M_dist_dmean <- dist(scaled_env[mixed_lakes,c(9)], method = "euclidean")
-(SD_beta_geo_M_mant_dmean <- mantel(SD_beta_geo_M_dist$Btotal, geo_M_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE))
-geo_M_dist_md <- dist(scaled_env[mixed_lakes,c(14)], method = "euclidean")
-(SD_beta_geo_M_mant_md <- mantel(SD_beta_geo_M_dist$Btotal, geo_M_dist_md, method = "spearman", permutations = 999, na.rm = TRUE))
-geo_M_dist_la <- dist(scaled_env[mixed_lakes,c(15)], method = "euclidean")
-(SD_beta_geo_M_mant_la <- mantel(SD_beta_geo_M_dist$Btotal, geo_M_dist_la, method = "spearman", permutations = 999, na.rm = TRUE))
-# Adjust p-values
-SD_beta_geo_M_mant_pv <- rbind( SD_beta_geo_M_mant_dmean$signif, SD_beta_geo_M_mant_md$signif, SD_beta_geo_M_mant_la$signif)
-SD_beta_geo_M_mant_pv <- SD_beta_geo_M_mant_pv[,1]
-(SD_beta_geo_M_mant_pv <- p.adjust(SD_beta_geo_M_mant_pv, method = "bonferroni"))
 ```
 
 ### SD beta NMDS ordination plots
