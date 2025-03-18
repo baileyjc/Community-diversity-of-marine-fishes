@@ -332,7 +332,7 @@ row.names(outlier_SD_alpha) <- outlier_SD_alpha$X
     axis.text = element_text(color = "black", size = 16)) +
   scale_y_continuous(expand = c(0,0)) +
   guides(fill = "none") + 
-  labs(y = "Species Richness", x = "Site type", color = "Outlier:", tag = "a"))
+  labs(y = "SRic", x = "Site type", color = "Outlier:", tag = "a"))
 ```
 
 ![](SD_analyses_files/figure-gfm/SD%20alpha%20outliers-1.png)<!-- -->
@@ -1267,7 +1267,7 @@ SD_alpha_T_plot <- ggplot(data = SR_env[surveyed_sites_env,], mapping = aes(y = 
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Temperature (ºC)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Temperature (ºC)", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "a")
 (SD_alpha_T_plot <- SD_alpha_T_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1300,7 +1300,7 @@ SD_alpha_S_plot <- ggplot(data = SR_env[surveyed_sites_env,], mapping = aes(y = 
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Salinity (ppt)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Salinity (ppt)", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "b")
 (SD_alpha_S_plot <- SD_alpha_S_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1366,7 +1366,7 @@ SD_alpha_D_plot <- ggplot(data = SR_env[surveyed_sites,], mapping = aes(y = log(
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Isolation (m)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Isolation (m)", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "a")
 (SD_alpha_D_plot <- SD_alpha_D_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1399,7 +1399,7 @@ SD_alpha_MD_plot <- ggplot(data = SR_env[surveyed_sites,], mapping = aes(y = log
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Age (m)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Age (m)", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "b")
 (SD_alpha_MD_plot <- SD_alpha_MD_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
