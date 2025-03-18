@@ -146,8 +146,8 @@ env <- env[order(env$X),]
 presabs_lake <- presabs_lake[order(row.names(presabs_lake)),]
 surveyed_sites_lake <- surveyed_sites_lake[order(row.names(surveyed_sites_lake)),]
 
-Site_type_group_ref <- env[,19]
-Site_type_group <- env[surveyed_sites,19]
+Site_type_group_ref <- env[,"Site_type"]
+Site_type_group <- env[surveyed_sites,"Site_type"]
 
 straits_na <- which(rowSums(is.na(straits)) > 0)
 straits_clean <- straits[-straits_na, ]
@@ -532,8 +532,8 @@ row.names(outlier_FD_alpha) <- outlier_FD_alpha$X
         panel.border = element_blank(),
         axis.text = element_text(color = "black", size = 16)) +
   scale_y_continuous(expand = c(0,0)) +
-  labs(y = "FD Alpha z-scores", x = "Site type", color = "Outlier:", tag = "c")) +
-  guides(fill = "none")
+  labs(y = "FRic z-score", x = "Site type", color = "Outlier:", tag = "c") +
+  guides(fill = "none"))
 ```
 
 ![](FD_analyses_files/figure-gfm/FD%20alpha%20outliers-1.png)<!-- -->
@@ -1392,7 +1392,7 @@ FD_alpha_T_plot <- ggplot(data = straits_sespd_env[surveyed_sites_env,], mapping
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Temperature (ºC)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Temperature (ºC)", y="FRic z-score", colour = "Site type:", fill = "Site type:", tag = "a")
 (FD_alpha_T_plot <- FD_alpha_T_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1425,7 +1425,7 @@ FD_alpha_S_plot <- ggplot(data = straits_sespd_env[surveyed_sites_env,], mapping
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Salinity (ppt)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Salinity (ppt)", y="FRic z-score", colour = "Site type:", fill = "Site type:", tag = "b")
 (FD_alpha_S_plot <- FD_alpha_S_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1458,7 +1458,7 @@ FD_alpha_O_plot <- ggplot(data = straits_sespd_env[surveyed_sites_env,], mapping
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Oxygen (mg/L)", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(x="Oxygen (mg/L)", y="FRic z-score", colour = "Site type:", fill = "Site type:", tag = "c")
 (FD_alpha_O_plot <- FD_alpha_O_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1491,7 +1491,7 @@ FD_alpha_D_plot <- ggplot(data = straits_sespd_env[surveyed_sites,], mapping = a
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Isolation (m)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Isolation (m)", y="FRic z-score", colour = "Site type:", fill = "Site type:", tag = "a")
 (FD_alpha_D_plot <- FD_alpha_D_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1524,7 +1524,7 @@ FD_alpha_MD_plot <- ggplot(data = straits_sespd_env[surveyed_sites,], mapping = 
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Age (m)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Age (m)", y="FRic z-score", colour = "Site type:", fill = "Site type:", tag = "b")
 (FD_alpha_MD_plot <- FD_alpha_MD_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1557,7 +1557,7 @@ FD_alpha_LA_plot <- ggplot(data = straits_sespd_env[surveyed_sites,], mapping = 
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Log Area (m"^"2"~")", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(x="Log Area (m"^"2"~")", y="FRic z-score", colour = "Site type:", fill = "Site type:", tag = "c")
 (FD_alpha_LA_plot <- FD_alpha_LA_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -4807,14 +4807,14 @@ FD_beta_BS <- BAT::beta(surveyed_sites_lake, straits[, "BodyShapeI", drop = FALS
     ## Stratified-Mixed 0.04567992 -0.1537353 0.2450952 0.8313064
 
 ``` r
-(FD_beta_BS_PM <- adonis2(FD_beta_BS$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_BS_PM <- adonis2(FD_beta_BS$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_BS$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_BS$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)
     ## Model     2  0.12409 0.14828 1.6539    0.2
     ## Residual 19  0.71278 0.85172              
@@ -4868,14 +4868,14 @@ FD_beta_OP <- BAT::beta(surveyed_sites_lake, straits[, "OperculumPresent", drop 
     ## Stratified-Mixed 6.250000e-02 -0.07379436 0.1987944 0.4876159
 
 ``` r
-(FD_beta_OP_PM <- adonis2(FD_beta_OP$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_OP_PM <- adonis2(FD_beta_OP$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_OP$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_OP$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)
     ## Model     2 0.019886 0.08333 0.8636      1
     ## Residual 19 0.218750 0.91667              
@@ -4933,14 +4933,14 @@ FD_beta_ML <- BAT::beta(surveyed_sites_lake, straits[, "MaxLengthTL", drop = FAL
     ## Stratified-Mixed -0.14911044 -0.3166854 0.01846455 0.0864317
 
 ``` r
-(FD_beta_ML_PM <- adonis2(FD_beta_ML$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_ML_PM <- adonis2(FD_beta_ML$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_ML$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_ML$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)
     ## Model     2  0.11024 0.18889 2.2124  0.105
     ## Residual 19  0.47339 0.81111              
@@ -5000,14 +5000,14 @@ FD_beta_T <- BAT::beta(surveyed_sites_lake, straits[, "Troph", drop = FALSE], ab
     ## Stratified-Mixed  0.41032707  0.3279140 0.49274014 0.0000000
 
 ``` r
-(FD_beta_T_PM <- adonis2(FD_beta_T$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_T_PM <- adonis2(FD_beta_T$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_T$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_T$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs     R2      F Pr(>F)   
     ## Model     2  0.98446 0.4003 6.3411  0.004 **
     ## Residual 19  1.47488 0.5997                 
@@ -5063,14 +5063,14 @@ FD_beta_DMin <- BAT::beta(surveyed_sites_lake, straits[, "DepthMin", drop = FALS
     ## Stratified-Mixed 0.054166667 -0.08333386 0.1916672 0.5853185
 
 ``` r
-(FD_beta_DMin_PM <- adonis2(FD_beta_DMin$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_DMin_PM <- adonis2(FD_beta_DMin$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_DMin$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_DMin$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)
     ## Model     2 0.018472 0.07661 0.7882      1
     ## Residual 19 0.222639 0.92339              
@@ -5124,14 +5124,14 @@ FD_beta_DMax <- BAT::beta(surveyed_sites_lake, straits_clean[, "DepthMax", drop 
     ## Stratified-Mixed -0.058475855 -0.19503330 0.07808159 0.5328699
 
 ``` r
-(FD_beta_DMax_PM <- adonis2(FD_beta_DMax$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_DMax_PM <- adonis2(FD_beta_DMax$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_DMax$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_DMax$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2    F Pr(>F)
     ## Model     2 0.022436 0.09265 0.97  0.279
     ## Residual 19 0.219727 0.90735            
@@ -5188,14 +5188,14 @@ FD_beta_TMin <- BAT::beta(surveyed_sites_lake, straits[, "TempPrefMin", drop = F
     ## Stratified-Mixed 0.14203242 -0.006970676 0.2910355 0.0633188
 
 ``` r
-(FD_beta_TMin_PM <- adonis2(FD_beta_TMin$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_TMin_PM <- adonis2(FD_beta_TMin$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_TMin$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_TMin$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)    
     ## Model     2   1.1730 0.48719 9.0255  0.001 ***
     ## Residual 19   1.2346 0.51281                  
@@ -5254,14 +5254,14 @@ FD_beta_TMax <- BAT::beta(surveyed_sites_lake, straits[, "TempPrefMax", drop = F
     ## Stratified-Mixed -0.09233029 -0.3813648 0.1967042 0.7006019
 
 ``` r
-(FD_beta_TMax_PM <- adonis2(FD_beta_TMax$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_TMax_PM <- adonis2(FD_beta_TMax$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_TMax$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_TMax$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)   
     ## Model     2  0.63483 0.30603 4.1894  0.009 **
     ## Residual 19  1.43955 0.69397                 
@@ -5317,14 +5317,14 @@ FD_beta_FP <- BAT::beta(surveyed_sites_lake, straits[, "FeedingPath", drop = FAL
     ## Stratified-Mixed  1.250000e-01 -0.05345121 0.3034512 0.2031343
 
 ``` r
-(FD_beta_FP_PM <- adonis2(FD_beta_FP$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_FP_PM <- adonis2(FD_beta_FP$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_FP$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_FP$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs    R2      F Pr(>F)
     ## Model     2  0.07955 0.175 2.0152  0.327
     ## Residual 19  0.37500 0.825              
@@ -5383,14 +5383,14 @@ FD_beta_RG <- BAT::beta(surveyed_sites_lake, straits[, "RepGuild2", drop = FALSE
     ## Stratified-Mixed  0.16615083 -0.009923979 0.3422256 0.0664123
 
 ``` r
-(FD_beta_RG_PM <- adonis2(FD_beta_RG$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_RG_PM <- adonis2(FD_beta_RG$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_RG$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_RG$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)   
     ## Model     2  0.36130 0.28601 3.8055  0.005 **
     ## Residual 19  0.90194 0.71399                 
@@ -5449,14 +5449,14 @@ FD_beta_PC <- BAT::beta(surveyed_sites_lake, straits[, "ParentalCare", drop = FA
     ## Stratified-Mixed -0.009803389 -0.2481544 0.2285476 0.9940008
 
 ``` r
-(FD_beta_PC_PM <- adonis2(FD_beta_PC$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_PC_PM <- adonis2(FD_beta_PC$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_PC$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_PC$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs     R2      F Pr(>F)    
     ## Model     2  0.83237 0.4772 8.6714  0.001 ***
     ## Residual 19  0.91191 0.5228                  
@@ -5517,14 +5517,14 @@ FD_beta_WP <- BAT::beta(surveyed_sites_lake, straits_augmented[, "WaterPref", dr
     ## Stratified-Mixed  0.090787756 -0.1166089 0.2981844 0.5185089
 
 ``` r
-(FD_beta_WP_PM <- adonis2(FD_beta_WP$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_WP_PM <- adonis2(FD_beta_WP$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_WP$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_WP$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)   
     ## Model     2  0.24876 0.25704 3.2867  0.006 **
     ## Residual 19  0.71904 0.74296                 
@@ -5586,14 +5586,14 @@ FD_beta_DS <- BAT::beta(surveyed_sites_lake, straits[, "DorsalSpinesMean", drop 
     ## Stratified-Mixed  0.41519519  0.2805487 0.5498417 0.0000007
 
 ``` r
-(FD_beta_DS_PM <- adonis2(FD_beta_DS$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_DS_PM <- adonis2(FD_beta_DS$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_DS$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_DS$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)   
     ## Model     2   1.1927 0.37257 5.6411  0.003 **
     ## Residual 19   2.0086 0.62743                 
@@ -5673,14 +5673,14 @@ FD_beta_ref_dist <- BAT::beta(presabs_lake, traits[,traits_keep], abund = F)
     ## Stratified-Mixed      0.09318834 -0.02618758 0.21256426 0.1604943
 
 ``` r
-(FD_beta_ref_PM <- adonis2(FD_beta_ref_dist$Btotal ~ env[,19], permutations = 999))
+(FD_beta_ref_PM <- adonis2(FD_beta_ref_dist$Btotal ~ env[,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_ref_dist$Btotal ~ env[, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_ref_dist$Btotal ~ env[, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)    
     ## Model     3   2.5608 0.38604 3.9823  0.001 ***
     ## Residual 19   4.0726 0.61396                  
@@ -5689,7 +5689,7 @@ FD_beta_ref_dist <- BAT::beta(presabs_lake, traits[,traits_keep], abund = F)
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(FD_beta_ref_PM_pair <- pairwise.adonis(FD_beta_ref_dist$Btotal, env[,19], p.adjust.m = "bonferroni", perm = 999))
+(FD_beta_ref_PM_pair <- pairwise.adonis(FD_beta_ref_dist$Btotal, env[,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ## Set of permutations < 'minperm'. Generating entire set.
@@ -5759,14 +5759,14 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
     ## Stratified-Mixed  0.04449404 -0.0730380 0.1620261 0.6091140
 
 ``` r
-(FD_beta_PM <- adonis2(FD_beta_dist$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_PM <- adonis2(FD_beta_dist$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_dist$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_dist$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2     F Pr(>F)    
     ## Model     2   1.9240 0.31665 4.402  0.001 ***
     ## Residual 19   4.1522 0.68335                 
@@ -5775,7 +5775,7 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(FD_beta_PM_pair <- pairwise.adonis(FD_beta_dist$Btotal, env[surveyed_sites,19], p.adjust.m = "bonferroni", perm = 999))
+(FD_beta_PM_pair <- pairwise.adonis(FD_beta_dist$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted sig
@@ -5833,14 +5833,14 @@ FD_beta_sub_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_sub_keep], a
     ## Stratified-Mixed  0.04202087 -0.06513125 0.14917298 0.5880639
 
 ``` r
-(FD_beta_sub_PM <- adonis2(FD_beta_sub_dist$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_sub_PM <- adonis2(FD_beta_sub_dist$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_sub_dist$Btotal ~ env[surveyed_sites, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_sub_dist$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)    
     ## Model     2   2.1756 0.43516 7.3189  0.001 ***
     ## Residual 19   2.8239 0.56484                  
@@ -5849,7 +5849,7 @@ FD_beta_sub_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_sub_keep], a
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(FD_beta_sub_PM_pair <- pairwise.adonis(FD_beta_sub_dist$Btotal, env[surveyed_sites,19], p.adjust.m = "bonferroni", perm = 999))
+(FD_beta_sub_PM_pair <- pairwise.adonis(FD_beta_sub_dist$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df SumsOfSqs   F.Model         R2 p.value p.adjusted sig
@@ -5908,14 +5908,14 @@ FD_beta_wo_LCN_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_LCN,], st
     ## Stratified-Mixed 0.04449404 -0.06999796 0.1589860 0.5912362
 
 ``` r
-(FD_beta_wo_LCN_PM <- adonis2(FD_beta_wo_LCN_dist$Btotal ~ env[surveyed_sites_wo_LCN,19], permutations = 999))
+(FD_beta_wo_LCN_PM <- adonis2(FD_beta_wo_LCN_dist$Btotal ~ env[surveyed_sites_wo_LCN,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_wo_LCN_dist$Btotal ~ env[surveyed_sites_wo_LCN, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_wo_LCN_dist$Btotal ~ env[surveyed_sites_wo_LCN, "Site_type"], permutations = 999)
     ##          Df SumOfSqs    R2      F Pr(>F)    
     ## Model     2   2.0313 0.349 4.8249  0.001 ***
     ## Residual 18   3.7892 0.651                  
@@ -5924,7 +5924,7 @@ FD_beta_wo_LCN_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_LCN,], st
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(FD_beta_wo_LCN_PM_pair <- pairwise.adonis(FD_beta_wo_LCN_dist$Btotal, env[surveyed_sites_wo_LCN,19], p.adjust.m = "bonferroni", perm = 999))
+(FD_beta_wo_LCN_PM_pair <- pairwise.adonis(FD_beta_wo_LCN_dist$Btotal, env[surveyed_sites_wo_LCN,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted sig
@@ -5983,14 +5983,14 @@ FD_beta_wo_TLN_HLM_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_TLN_H
     ## Stratified-Mixed  0.0004809588 -0.1333520 0.1343140 0.9999531
 
 ``` r
-(FD_beta_wo_TLN_HLM_PM <- adonis2(FD_beta_wo_TLN_HLM_dist$Btotal ~ env[surveyed_sites_wo_TLN_HLM,19], permutations = 999))
+(FD_beta_wo_TLN_HLM_PM <- adonis2(FD_beta_wo_TLN_HLM_dist$Btotal ~ env[surveyed_sites_wo_TLN_HLM,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = FD_beta_wo_TLN_HLM_dist$Btotal ~ env[surveyed_sites_wo_TLN_HLM, 19], permutations = 999)
+    ## adonis2(formula = FD_beta_wo_TLN_HLM_dist$Btotal ~ env[surveyed_sites_wo_TLN_HLM, "Site_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)    
     ## Model     2   2.0491 0.36875 4.9653  0.001 ***
     ## Residual 17   3.5078 0.63125                  
@@ -5999,7 +5999,7 @@ FD_beta_wo_TLN_HLM_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_TLN_H
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(FD_beta_wo_TLN_HLM_PM_pair <- pairwise.adonis(FD_beta_wo_TLN_HLM_dist$Btotal, env[surveyed_sites_wo_TLN_HLM,19], p.adjust.m = "bonferroni", perm = 999))
+(FD_beta_wo_TLN_HLM_PM_pair <- pairwise.adonis(FD_beta_wo_TLN_HLM_dist$Btotal, env[surveyed_sites_wo_TLN_HLM,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted sig
@@ -6268,14 +6268,14 @@ dev.off()
 ### Environmental
 # Surveyed sites 
 # For figure
-(FD_beta_env_ef <- envfit(FD_beta_env_NMDS, env[surveyed_sites_env,c(34)], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+(FD_beta_env_ef <- envfit(FD_beta_env_NMDS, env[surveyed_sites_env,"S"], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
 ```
 
     ## 
     ## ***VECTORS
     ## 
-    ##                                   NMDS1    NMDS2     r2 Pr(>r)  
-    ## env[surveyed_sites_env, c(34)] 0.999920 0.013027 0.7819  0.027 *
+    ##                                 NMDS1    NMDS2     r2 Pr(>r)  
+    ## env[surveyed_sites_env, "S"] 0.999920 0.013027 0.7819  0.027 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -6291,8 +6291,8 @@ dev.off()
     ## 
     ## ***VECTORS
     ## 
-    ##                                   NMDS1    NMDS2     r2 Pr(>r)  
-    ## env[surveyed_sites_env, c(34)] 0.999920 0.013027 0.7819  0.027 *
+    ##                                 NMDS1    NMDS2     r2 Pr(>r)  
+    ## env[surveyed_sites_env, "S"] 0.999920 0.013027 0.7819  0.027 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -6302,14 +6302,14 @@ dev.off()
 ``` r
 # A subset of traits that are significant
 # For figure
-(FD_beta_sub_env_ef <- envfit(FD_beta_sub_env_NMDS, env[surveyed_sites_env,c(34)], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+(FD_beta_sub_env_ef <- envfit(FD_beta_sub_env_NMDS, env[surveyed_sites_env,"S"], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
 ```
 
     ## 
     ## ***VECTORS
     ## 
-    ##                                   NMDS1    NMDS2     r2 Pr(>r)   
-    ## env[surveyed_sites_env, c(34)]  0.91530 -0.40276 0.8141  0.004 **
+    ##                                 NMDS1    NMDS2     r2 Pr(>r)   
+    ## env[surveyed_sites_env, "S"]  0.91530 -0.40276 0.8141  0.004 **
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -6325,8 +6325,8 @@ dev.off()
     ## 
     ## ***VECTORS
     ## 
-    ##                                   NMDS1    NMDS2     r2 Pr(>r)   
-    ## env[surveyed_sites_env, c(34)]  0.91530 -0.40276 0.8141  0.004 **
+    ##                                 NMDS1    NMDS2     r2 Pr(>r)   
+    ## env[surveyed_sites_env, "S"]  0.91530 -0.40276 0.8141  0.004 **
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -6335,7 +6335,7 @@ dev.off()
 
 ``` r
 # Surveyed sites by Site_type
-(FD_beta_env_A_ef <- envfit(FD_beta_env_NMDS, env[surveyed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+(FD_beta_env_A_ef <- envfit(FD_beta_env_NMDS, env[surveyed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
 ```
 
     ## 
@@ -6372,7 +6372,7 @@ dev.off()
 
 ``` r
 # Mixed and stratified lakes
-(FD_beta_env_MS_ef <- envfit(FD_beta_env_MS_NMDS, env[mixed_stratified_lakes,environment], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+(FD_beta_env_MS_ef <- envfit(FD_beta_env_MS_NMDS, env[mixed_stratified_lakes,environment], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
 ```
 
     ## 
@@ -6409,7 +6409,7 @@ dev.off()
 
 ``` r
 # Ocean sites and mixed lakes
-(FD_beta_env_OM_ef <- envfit(FD_beta_env_OM_NMDS, env[ocean_mixed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,19]))
+(FD_beta_env_OM_ef <- envfit(FD_beta_env_OM_NMDS, env[ocean_mixed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Site_type"]))
 ```
 
     ## 
@@ -6446,7 +6446,7 @@ dev.off()
 
 ``` r
 # Stratified lakes and ocean sites
-(FD_beta_env_SO_ef <- envfit(FD_beta_env_SO_NMDS, env[ocean_stratified_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
+(FD_beta_env_SO_ef <- envfit(FD_beta_env_SO_NMDS, env[ocean_stratified_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Site_type"]))
 ```
 
     ## 
@@ -6481,19 +6481,19 @@ dev.off()
 
 ``` r
 # Mixed lakes
-(FD_beta_M_ef <- envfit(FD_beta_M_NMDS, env[mixed_lakes,c(2,6,8,26,31:32)], permutations = 999, na.rm = TRUE))
+(FD_beta_M_ef <- envfit(FD_beta_M_NMDS, env[mixed_lakes,c("temperature_median","salinity_median","oxygen_median","distance_to_ocean_min_m","max_depth","logArea")], permutations = 999, na.rm = TRUE))
 ```
 
     ## 
     ## ***VECTORS
     ## 
-    ##                                NMDS1       NMDS2     r2 Pr(>r)  
-    ## temperature_median       -0.00007138  1.00000000 0.1264  0.684  
-    ## salinity_median           0.00055530 -1.00000000 0.4118  0.257  
-    ## oxygen_median             0.00023806 -1.00000000 0.8587  0.014 *
-    ## distance_to_ocean_mean_m -0.00001442  1.00000000 0.1019  0.744  
-    ## max_depth                 0.00047905 -1.00000000 0.7861  0.027 *
-    ## logArea                   0.00233658  1.00000000 0.6541  0.061 .
+    ##                               NMDS1       NMDS2     r2 Pr(>r)  
+    ## temperature_median      -0.00007138  1.00000000 0.1264  0.684  
+    ## salinity_median          0.00055530 -1.00000000 0.4118  0.257  
+    ## oxygen_median            0.00023806 -1.00000000 0.8587  0.014 *
+    ## distance_to_ocean_min_m -0.00038726  1.00000000 0.3673  0.330  
+    ## max_depth                0.00047905 -1.00000000 0.7861  0.027 *
+    ## logArea                  0.00233658  1.00000000 0.6541  0.061 .
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
@@ -6508,13 +6508,13 @@ dev.off()
     ## 
     ## ***VECTORS
     ## 
-    ##                                NMDS1       NMDS2     r2 Pr(>r)  
-    ## temperature_median       -0.00007138  1.00000000 0.1264  1.000  
-    ## salinity_median           0.00055530 -1.00000000 0.4118  1.000  
-    ## oxygen_median             0.00023806 -1.00000000 0.8587  0.084 .
-    ## distance_to_ocean_mean_m -0.00001442  1.00000000 0.1019  1.000  
-    ## max_depth                 0.00047905 -1.00000000 0.7861  0.162  
-    ## logArea                   0.00233658  1.00000000 0.6541  0.366  
+    ##                               NMDS1       NMDS2     r2 Pr(>r)  
+    ## temperature_median      -0.00007138  1.00000000 0.1264  1.000  
+    ## salinity_median          0.00055530 -1.00000000 0.4118  1.000  
+    ## oxygen_median            0.00023806 -1.00000000 0.8587  0.084 .
+    ## distance_to_ocean_min_m -0.00038726  1.00000000 0.3673  1.000  
+    ## max_depth                0.00047905 -1.00000000 0.7861  0.162  
+    ## logArea                  0.00233658  1.00000000 0.6541  0.366  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
@@ -6522,19 +6522,19 @@ dev.off()
 
 ``` r
 # Stratified lakes
-(FD_beta_S_ef <- envfit(FD_beta_S_NMDS, env[stratified_lakes,c(2,6,8,26,31:32)], permutations = 999, na.rm = TRUE))
+(FD_beta_S_ef <- envfit(FD_beta_S_NMDS, env[stratified_lakes,c("temperature_median","salinity_median","oxygen_median","distance_to_ocean_min_m","max_depth","logArea")], permutations = 999, na.rm = TRUE))
 ```
 
     ## 
     ## ***VECTORS
     ## 
-    ##                             NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median       -0.91978  0.39242 0.5769  0.092 .
-    ## salinity_median           0.45822  0.88884 0.6023  0.106  
-    ## oxygen_median            -0.24386 -0.96981 0.6770  0.071 .
-    ## distance_to_ocean_mean_m -0.98368  0.17993 0.3435  0.380  
-    ## max_depth                -0.82886  0.55946 0.5586  0.131  
-    ## logArea                  -0.85157  0.52424 0.5527  0.110  
+    ##                            NMDS1    NMDS2     r2 Pr(>r)  
+    ## temperature_median      -0.91978  0.39242 0.5769  0.092 .
+    ## salinity_median          0.45822  0.88884 0.6023  0.106  
+    ## oxygen_median           -0.24386 -0.96981 0.6770  0.071 .
+    ## distance_to_ocean_min_m -0.81460 -0.58003 0.4996  0.160  
+    ## max_depth               -0.82886  0.55946 0.5586  0.131  
+    ## logArea                 -0.85157  0.52424 0.5527  0.110  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
@@ -6549,13 +6549,13 @@ dev.off()
     ## 
     ## ***VECTORS
     ## 
-    ##                             NMDS1    NMDS2     r2 Pr(>r)
-    ## temperature_median       -0.91978  0.39242 0.5769  0.552
-    ## salinity_median           0.45822  0.88884 0.6023  0.636
-    ## oxygen_median            -0.24386 -0.96981 0.6770  0.426
-    ## distance_to_ocean_mean_m -0.98368  0.17993 0.3435  1.000
-    ## max_depth                -0.82886  0.55946 0.5586  0.786
-    ## logArea                  -0.85157  0.52424 0.5527  0.660
+    ##                            NMDS1    NMDS2     r2 Pr(>r)
+    ## temperature_median      -0.91978  0.39242 0.5769  0.552
+    ## salinity_median          0.45822  0.88884 0.6023  0.636
+    ## oxygen_median           -0.24386 -0.96981 0.6770  0.426
+    ## distance_to_ocean_min_m -0.81460 -0.58003 0.4996  0.960
+    ## max_depth               -0.82886  0.55946 0.5586  0.786
+    ## logArea                 -0.85157  0.52424 0.5527  0.660
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -6563,7 +6563,7 @@ dev.off()
 ### Geographic
 # Surveyed sites
 # For figure
-(FD_beta_geo_ef <- envfit(FD_beta_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,19]))
+(FD_beta_geo_ef <- envfit(FD_beta_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
 ```
 
     ## 
@@ -6599,7 +6599,7 @@ dev.off()
 ``` r
 # A subset of traits that are significant
 # For figure
-(FD_beta_sub_geo_ef <- envfit(FD_beta_sub_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,19]))
+(FD_beta_sub_geo_ef <- envfit(FD_beta_sub_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
 ```
 
     ## 
@@ -6634,7 +6634,7 @@ dev.off()
 
 ``` r
 # Surveyed sites by Site_type
-(FD_beta_geo_A_ef <- envfit(FD_beta_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,19]))
+(FD_beta_geo_A_ef <- envfit(FD_beta_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
 ```
 
     ## 
@@ -6669,7 +6669,7 @@ dev.off()
 
 ``` r
 # Mixed and stratified lakes
-(FD_beta_geo_MS_ef <- envfit(FD_beta_geo_MS_NMDS, env[mixed_stratified_lakes,geography], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+(FD_beta_geo_MS_ef <- envfit(FD_beta_geo_MS_NMDS, env[mixed_stratified_lakes,geography], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
 ```
 
     ## 
@@ -6702,7 +6702,7 @@ dev.off()
 
 ``` r
 # Ocean sites and mixed lakes
-(FD_beta_geo_OM_ef <- envfit(FD_beta_geo_OM_NMDS, env[ocean_mixed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,19]))
+(FD_beta_geo_OM_ef <- envfit(FD_beta_geo_OM_NMDS, env[ocean_mixed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Site_type"]))
 ```
 
     ## 
@@ -6739,7 +6739,7 @@ dev.off()
 
 ``` r
 # Stratified lakes and ocean sites
-(FD_beta_geo_SO_ef <- envfit(FD_beta_geo_SO_NMDS, env[ocean_stratified_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
+(FD_beta_geo_SO_ef <- envfit(FD_beta_geo_SO_NMDS, env[ocean_stratified_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Site_type"]))
 ```
 
     ## 
@@ -6775,15 +6775,15 @@ dev.off()
 ``` r
 ### Environmental
 # Surveyed sites
-env_dist_t <- dist(scaled_env[surveyed_sites_env,c(1)], method = "euclidean")
-(FD_beta_env_mant_t <- mantel(FD_beta_env_dist$Btotal, env_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+env_dist_t <- dist(scaled_env[surveyed_sites_env,"temperature_median"], method = "euclidean")
+(FD_beta_env_mant_t <- mantel(FD_beta_env_dist$Btotal, env_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_env_dist$Btotal, ydis = env_dist_t, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, 19],      na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_env_dist$Btotal, ydis = env_dist_t, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, "Site_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2958 
     ##       Significance: 0.197 
@@ -6796,15 +6796,15 @@ env_dist_t <- dist(scaled_env[surveyed_sites_env,c(1)], method = "euclidean")
     ## Number of permutations: 999
 
 ``` r
-env_dist_s <- dist(scaled_env[surveyed_sites_env,c(2)], method = "euclidean")
-(FD_beta_env_mant_s <- mantel(FD_beta_env_dist$Btotal, env_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+env_dist_s <- dist(scaled_env[surveyed_sites_env,"salinity_median"], method = "euclidean")
+(FD_beta_env_mant_s <- mantel(FD_beta_env_dist$Btotal, env_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_env_dist$Btotal, ydis = env_dist_s, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, 19],      na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_env_dist$Btotal, ydis = env_dist_s, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, "Site_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.7174 
     ##       Significance: 0.007 
@@ -6817,15 +6817,15 @@ env_dist_s <- dist(scaled_env[surveyed_sites_env,c(2)], method = "euclidean")
     ## Number of permutations: 999
 
 ``` r
-env_dist_o <- dist(scaled_env[surveyed_sites_env,c(3)], method = "euclidean")
-(FD_beta_env_mant_o <- mantel(FD_beta_env_dist$Btotal, env_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+env_dist_o <- dist(scaled_env[surveyed_sites_env,"oxygen_median"], method = "euclidean")
+(FD_beta_env_mant_o <- mantel(FD_beta_env_dist$Btotal, env_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_env_dist$Btotal, ydis = env_dist_o, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, 19],      na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_env_dist$Btotal, ydis = env_dist_o, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, "Site_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4174 
     ##       Significance: 0.594 
@@ -6848,15 +6848,15 @@ FD_beta_env_mant_pv <- FD_beta_env_mant_pv[,1]
 
 ``` r
 # Mixed and stratified lakes
-env_MS_dist_t <- dist(scaled_env[mixed_stratified_lakes,c(1)], method = "euclidean")
-(FD_beta_env_MS_mant_t <- mantel(FD_beta_env_MS_dist$Btotal, env_MS_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+env_MS_dist_t <- dist(scaled_env[mixed_stratified_lakes,"temperature_median"], method = "euclidean")
+(FD_beta_env_MS_mant_t <- mantel(FD_beta_env_MS_dist$Btotal, env_MS_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_t,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_t,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2965 
     ##       Significance: 0.24 
@@ -6869,15 +6869,15 @@ env_MS_dist_t <- dist(scaled_env[mixed_stratified_lakes,c(1)], method = "euclide
     ## Number of permutations: 999
 
 ``` r
-env_MS_dist_s <- dist(scaled_env[mixed_stratified_lakes,c(2)], method = "euclidean")
-(FD_beta_env_MS_mant_s <- mantel(FD_beta_env_MS_dist$Btotal, env_MS_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+env_MS_dist_s <- dist(scaled_env[mixed_stratified_lakes,"salinity_median"], method = "euclidean")
+(FD_beta_env_MS_mant_s <- mantel(FD_beta_env_MS_dist$Btotal, env_MS_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_s,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_s,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.6985 
     ##       Significance: 0.019 
@@ -6890,15 +6890,15 @@ env_MS_dist_s <- dist(scaled_env[mixed_stratified_lakes,c(2)], method = "euclide
     ## Number of permutations: 999
 
 ``` r
-env_MS_dist_o <- dist(scaled_env[mixed_stratified_lakes,c(3)], method = "euclidean")
-(FD_beta_env_MS_mant_o <- mantel(FD_beta_env_MS_dist$Btotal, env_MS_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+env_MS_dist_o <- dist(scaled_env[mixed_stratified_lakes,"oxygen_median"], method = "euclidean")
+(FD_beta_env_MS_mant_o <- mantel(FD_beta_env_MS_dist$Btotal, env_MS_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_o,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_o,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2429 
     ##       Significance: 0.76 
@@ -6921,15 +6921,15 @@ FD_beta_env_MS_mant_pv <- FD_beta_env_MS_mant_pv[,1]
 
 ``` r
 # Ocean sites and mixed lakes
-env_OM_dist_t <- dist(scaled_env[ocean_mixed_sites_env,c(1)], method = "euclidean")
-(FD_beta_env_OM_mant_t <- mantel(FD_beta_env_OM_dist$Btotal, env_OM_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,19]))
+env_OM_dist_t <- dist(scaled_env[ocean_mixed_sites_env,"temperature_median"], method = "euclidean")
+(FD_beta_env_OM_mant_t <- mantel(FD_beta_env_OM_dist$Btotal, env_OM_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.07165 
     ##       Significance: 0.588 
@@ -6942,15 +6942,15 @@ env_OM_dist_t <- dist(scaled_env[ocean_mixed_sites_env,c(1)], method = "euclidea
     ## Number of permutations: 999
 
 ``` r
-env_OM_dist_s <- dist(scaled_env[ocean_mixed_sites_env,c(2)], method = "euclidean")
-(FD_beta_env_OM_mant_s <- mantel(FD_beta_env_OM_dist$Btotal, env_OM_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,19]))
+env_OM_dist_s <- dist(scaled_env[ocean_mixed_sites_env,"salinity_median"], method = "euclidean")
+(FD_beta_env_OM_mant_s <- mantel(FD_beta_env_OM_dist$Btotal, env_OM_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4251 
     ##       Significance: 0.046 
@@ -6963,15 +6963,15 @@ env_OM_dist_s <- dist(scaled_env[ocean_mixed_sites_env,c(2)], method = "euclidea
     ## Number of permutations: 999
 
 ``` r
-env_OM_dist_o <- dist(scaled_env[ocean_mixed_sites_env,c(3)], method = "euclidean")
-(FD_beta_env_OM_mant_o <- mantel(FD_beta_env_OM_dist$Btotal, env_OM_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,19]))
+env_OM_dist_o <- dist(scaled_env[ocean_mixed_sites_env,"oxygen_median"], method = "euclidean")
+(FD_beta_env_OM_mant_o <- mantel(FD_beta_env_OM_dist$Btotal, env_OM_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5302 
     ##       Significance: 0.034 
@@ -6994,15 +6994,15 @@ FD_beta_env_OM_mant_pv <- FD_beta_env_OM_mant_pv[,1]
 
 ``` r
 # Stratified lakes and ocean sites
-env_SO_dist_t <- dist(scaled_env[ocean_stratified_sites_env,c(1)], method = "euclidean")
-(FD_beta_env_SO_mant_t <- mantel(FD_beta_env_SO_dist$Btotal, env_SO_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
+env_SO_dist_t <- dist(scaled_env[ocean_stratified_sites_env,"temperature_median"], method = "euclidean")
+(FD_beta_env_SO_mant_t <- mantel(FD_beta_env_SO_dist$Btotal, env_SO_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.005267 
     ##       Significance: 0.329 
@@ -7015,15 +7015,15 @@ env_SO_dist_t <- dist(scaled_env[ocean_stratified_sites_env,c(1)], method = "euc
     ## Number of permutations: 999
 
 ``` r
-env_SO_dist_s <- dist(scaled_env[ocean_stratified_sites_env,c(2)], method = "euclidean")
-(FD_beta_env_SO_mant_s <- mantel(FD_beta_env_SO_dist$Btotal, env_SO_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
+env_SO_dist_s <- dist(scaled_env[ocean_stratified_sites_env,"salinity_median"], method = "euclidean")
+(FD_beta_env_SO_mant_s <- mantel(FD_beta_env_SO_dist$Btotal, env_SO_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5652 
     ##       Significance: 0.025 
@@ -7036,15 +7036,15 @@ env_SO_dist_s <- dist(scaled_env[ocean_stratified_sites_env,c(2)], method = "euc
     ## Number of permutations: 999
 
 ``` r
-env_SO_dist_o <- dist(scaled_env[ocean_stratified_sites_env,c(3)], method = "euclidean")
-(FD_beta_env_SO_mant_o <- mantel(FD_beta_env_SO_dist$Btotal, env_SO_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
+env_SO_dist_o <- dist(scaled_env[ocean_stratified_sites_env,"oxygen_median"], method = "euclidean")
+(FD_beta_env_SO_mant_o <- mantel(FD_beta_env_SO_dist$Btotal, env_SO_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.6221 
     ##       Significance: 0.252 
@@ -7067,7 +7067,7 @@ FD_beta_env_SO_mant_pv <- FD_beta_env_SO_mant_pv[,1]
 
 ``` r
 # Mixed lakes
-env_M_dist_t <- dist(scaled_env[mixed_lakes,c(1)], method = "euclidean")
+env_M_dist_t <- dist(scaled_env[mixed_lakes,"temperature_median"], method = "euclidean")
 (FD_beta_M_mant_t <- mantel(FD_beta_M_dist$Btotal, env_M_dist_t, method = "spearman", permutations = 999, na.rm = TRUE))
 ```
 
@@ -7087,7 +7087,7 @@ env_M_dist_t <- dist(scaled_env[mixed_lakes,c(1)], method = "euclidean")
     ## Number of permutations: 999
 
 ``` r
-env_M_dist_s <- dist(scaled_env[mixed_lakes,c(2)], method = "euclidean")
+env_M_dist_s <- dist(scaled_env[mixed_lakes,"salinity_median"], method = "euclidean")
 (FD_beta_M_mant_s <- mantel(FD_beta_M_dist$Btotal, env_M_dist_s, method = "spearman", permutations = 999, na.rm = TRUE))
 ```
 
@@ -7107,7 +7107,7 @@ env_M_dist_s <- dist(scaled_env[mixed_lakes,c(2)], method = "euclidean")
     ## Number of permutations: 999
 
 ``` r
-env_M_dist_o <- dist(scaled_env[mixed_lakes,c(3)], method = "euclidean")
+env_M_dist_o <- dist(scaled_env[mixed_lakes,"oxygen_median"], method = "euclidean")
 (FD_beta_M_mant_o <- mantel(FD_beta_M_dist$Btotal, env_M_dist_o, method = "spearman", permutations = 999, na.rm = TRUE))
 ```
 
@@ -7127,27 +7127,27 @@ env_M_dist_o <- dist(scaled_env[mixed_lakes,c(3)], method = "euclidean")
     ## Number of permutations: 999
 
 ``` r
-geo_M_dist_dmean <- dist(scaled_env[mixed_lakes,c(9)], method = "euclidean")
-(FD_beta_M_mant_dmean <- mantel(FD_beta_M_dist$Btotal, geo_M_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_M_dist_dm <- dist(scaled_env[mixed_lakes,"distance_to_ocean_min_m"], method = "euclidean")
+(FD_beta_M_mant_dm <- mantel(FD_beta_M_dist$Btotal, geo_M_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_M_dist$Btotal, ydis = geo_M_dist_dmean,      method = "spearman", permutations = 999, na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_M_dist$Btotal, ydis = geo_M_dist_dm, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
-    ## Mantel statistic r: 0.1262 
-    ##       Significance: 0.179 
+    ## Mantel statistic r: 0.1681 
+    ##       Significance: 0.183 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.228 0.365 0.514 0.710 
+    ## 0.253 0.379 0.515 0.758 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
-geo_M_dist_md <- dist(scaled_env[mixed_lakes,c(14)], method = "euclidean")
+geo_M_dist_md <- dist(scaled_env[mixed_lakes,"max_depth"], method = "euclidean")
 (FD_beta_M_mant_md <- mantel(FD_beta_M_dist$Btotal, geo_M_dist_md, method = "spearman", permutations = 999, na.rm = TRUE))
 ```
 
@@ -7167,7 +7167,7 @@ geo_M_dist_md <- dist(scaled_env[mixed_lakes,c(14)], method = "euclidean")
     ## Number of permutations: 999
 
 ``` r
-geo_M_dist_la <- dist(scaled_env[mixed_lakes,c(15)], method = "euclidean")
+geo_M_dist_la <- dist(scaled_env[mixed_lakes,"logArea"], method = "euclidean")
 (FD_beta_M_mant_la <- mantel(FD_beta_M_dist$Btotal, geo_M_dist_la, method = "spearman", permutations = 999, na.rm = TRUE))
 ```
 
@@ -7188,7 +7188,7 @@ geo_M_dist_la <- dist(scaled_env[mixed_lakes,c(15)], method = "euclidean")
 
 ``` r
 # Adjust p-values
-FD_beta_M_mant_pv <- rbind(FD_beta_M_mant_t$signif, FD_beta_M_mant_s$signif, FD_beta_M_mant_o$signif, FD_beta_M_mant_dmean$signif, FD_beta_M_mant_md$signif, FD_beta_M_mant_la$signif)
+FD_beta_M_mant_pv <- rbind(FD_beta_M_mant_t$signif, FD_beta_M_mant_s$signif, FD_beta_M_mant_o$signif, FD_beta_M_mant_dm$signif, FD_beta_M_mant_md$signif, FD_beta_M_mant_la$signif)
 FD_beta_M_mant_pv <- FD_beta_M_mant_pv[,1]
 (FD_beta_M_mant_pv <- p.adjust(FD_beta_M_mant_pv, method = "bonferroni"))
 ```
@@ -7197,7 +7197,7 @@ FD_beta_M_mant_pv <- FD_beta_M_mant_pv[,1]
 
 ``` r
 # Stratified lakes
-env_S_dist_t <- dist(scaled_env[stratified_lakes,c(1)], method = "euclidean")
+env_S_dist_t <- dist(scaled_env[stratified_lakes,"temperature_median"], method = "euclidean")
 (FD_beta_S_mant_t <- mantel(FD_beta_S_dist$Btotal, env_S_dist_t, method = "spearman", permutations = 999, na.rm = TRUE))
 ```
 
@@ -7217,7 +7217,7 @@ env_S_dist_t <- dist(scaled_env[stratified_lakes,c(1)], method = "euclidean")
     ## Number of permutations: 999
 
 ``` r
-env_S_dist_s <- dist(scaled_env[stratified_lakes,c(2)], method = "euclidean")
+env_S_dist_s <- dist(scaled_env[stratified_lakes,"salinity_median"], method = "euclidean")
 (FD_beta_S_mant_s <- mantel(FD_beta_S_dist$Btotal, env_S_dist_s, method = "spearman", permutations = 999, na.rm = TRUE))
 ```
 
@@ -7237,7 +7237,7 @@ env_S_dist_s <- dist(scaled_env[stratified_lakes,c(2)], method = "euclidean")
     ## Number of permutations: 999
 
 ``` r
-env_S_dist_o <- dist(scaled_env[stratified_lakes,c(3)], method = "euclidean")
+env_S_dist_o <- dist(scaled_env[stratified_lakes,"oxygen_median"], method = "euclidean")
 (FD_beta_S_mant_o <- mantel(FD_beta_S_dist$Btotal, env_S_dist_o, method = "spearman", permutations = 999, na.rm = TRUE))
 ```
 
@@ -7257,27 +7257,27 @@ env_S_dist_o <- dist(scaled_env[stratified_lakes,c(3)], method = "euclidean")
     ## Number of permutations: 999
 
 ``` r
-geo_S_dist_dmean <- dist(scaled_env[stratified_lakes,c(9)], method = "euclidean")
-(FD_beta_S_mant_dmean <- mantel(FD_beta_S_dist$Btotal, geo_S_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_S_dist_dm <- dist(scaled_env[stratified_lakes,"distance_to_ocean_min_m"], method = "euclidean")
+(FD_beta_S_mant_dm <- mantel(FD_beta_S_dist$Btotal, geo_S_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_S_dist$Btotal, ydis = geo_S_dist_dmean,      method = "spearman", permutations = 999, na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_S_dist$Btotal, ydis = geo_S_dist_dm, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
-    ## Mantel statistic r: 0.08815 
-    ##       Significance: 0.332 
+    ## Mantel statistic r: 0.04488 
+    ##       Significance: 0.414 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.288 0.353 0.427 0.484 
+    ## 0.250 0.344 0.435 0.528 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
-geo_S_dist_md <- dist(scaled_env[stratified_lakes,c(14)], method = "euclidean")
+geo_S_dist_md <- dist(scaled_env[stratified_lakes,"max_depth"], method = "euclidean")
 (FD_beta_S_mant_md <- mantel(FD_beta_S_dist$Btotal, geo_S_dist_md, method = "spearman", permutations = 999, na.rm = TRUE))
 ```
 
@@ -7297,7 +7297,7 @@ geo_S_dist_md <- dist(scaled_env[stratified_lakes,c(14)], method = "euclidean")
     ## Number of permutations: 999
 
 ``` r
-geo_S_dist_la <- dist(scaled_env[stratified_lakes,c(15)], method = "euclidean")
+geo_S_dist_la <- dist(scaled_env[stratified_lakes,"logArea"], method = "euclidean")
 (FD_beta_S_mant_la <- mantel(FD_beta_S_dist$Btotal, geo_S_dist_la, method = "spearman", permutations = 999, na.rm = TRUE))
 ```
 
@@ -7318,7 +7318,7 @@ geo_S_dist_la <- dist(scaled_env[stratified_lakes,c(15)], method = "euclidean")
 
 ``` r
 # Adjust p-values
-FD_beta_S_mant_pv <- rbind(FD_beta_S_mant_t$signif, FD_beta_S_mant_s$signif, FD_beta_S_mant_o$signif, FD_beta_S_mant_dmean$signif, FD_beta_S_mant_md$signif, FD_beta_S_mant_la$signif)
+FD_beta_S_mant_pv <- rbind(FD_beta_S_mant_t$signif, FD_beta_S_mant_s$signif, FD_beta_S_mant_o$signif, FD_beta_S_mant_dm$signif, FD_beta_S_mant_md$signif, FD_beta_S_mant_la$signif)
 FD_beta_S_mant_pv <- FD_beta_S_mant_pv[,1]
 (FD_beta_S_mant_pv <- p.adjust(FD_beta_S_mant_pv, method = "bonferroni"))
 ```
@@ -7328,36 +7328,36 @@ FD_beta_S_mant_pv <- FD_beta_S_mant_pv[,1]
 ``` r
 ### Geographic
 # Surveyed sites
-geo_dist_dmean <- dist(scaled_env[surveyed_sites,c(9)], method = "euclidean")
-(FD_beta_geo_mant_dmean <- mantel(FD_beta_geo_dist$Btotal, geo_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,19]))
+geo_dist_dm <- dist(scaled_env[surveyed_sites,"distance_to_ocean_min_m"], method = "euclidean")
+(FD_beta_geo_mant_dm <- mantel(FD_beta_geo_dist$Btotal, geo_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_geo_dist$Btotal, ydis = geo_dist_dmean,      method = "spearman", permutations = 999, strata = env[surveyed_sites,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_geo_dist$Btotal, ydis = geo_dist_dm, method = "spearman",      permutations = 999, strata = env[surveyed_sites, "Site_type"],      na.rm = TRUE) 
     ## 
-    ## Mantel statistic r: 0.4088 
-    ##       Significance: 0.48 
+    ## Mantel statistic r: 0.4701 
+    ##       Significance: 0.101 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.535 0.561 0.590 0.613 
+    ## 0.470 0.513 0.539 0.567 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
-geo_dist_md <- dist(scaled_env[surveyed_sites,c(14)], method = "euclidean")
-(FD_beta_geo_mant_md <- mantel(FD_beta_geo_dist$Btotal, geo_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,19]))
+geo_dist_md <- dist(scaled_env[surveyed_sites,"max_depth"], method = "euclidean")
+(FD_beta_geo_mant_md <- mantel(FD_beta_geo_dist$Btotal, geo_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_geo_dist$Btotal, ydis = geo_dist_md, method = "spearman",      permutations = 999, strata = env[surveyed_sites, 19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_geo_dist$Btotal, ydis = geo_dist_md, method = "spearman",      permutations = 999, strata = env[surveyed_sites, "Site_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.08001 
     ##       Significance: 0.611 
@@ -7370,15 +7370,15 @@ geo_dist_md <- dist(scaled_env[surveyed_sites,c(14)], method = "euclidean")
     ## Number of permutations: 999
 
 ``` r
-geo_dist_la <- dist(scaled_env[surveyed_sites,c(15)], method = "euclidean")
-(FD_beta_geo_mant_la <- mantel(FD_beta_geo_dist$Btotal, geo_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,19]))
+geo_dist_la <- dist(scaled_env[surveyed_sites,"logArea"], method = "euclidean")
+(FD_beta_geo_mant_la <- mantel(FD_beta_geo_dist$Btotal, geo_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_geo_dist$Btotal, ydis = geo_dist_la, method = "spearman",      permutations = 999, strata = env[surveyed_sites, 19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_geo_dist$Btotal, ydis = geo_dist_la, method = "spearman",      permutations = 999, strata = env[surveyed_sites, "Site_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.04732 
     ##       Significance: 0.145 
@@ -7392,45 +7392,45 @@ geo_dist_la <- dist(scaled_env[surveyed_sites,c(15)], method = "euclidean")
 
 ``` r
 # Adjust p-values
-FD_beta_geo_mant_pv <- rbind(FD_beta_geo_mant_dmean$signif, FD_beta_geo_mant_md$signif, FD_beta_geo_mant_la$signif)
+FD_beta_geo_mant_pv <- rbind(FD_beta_geo_mant_dm$signif, FD_beta_geo_mant_md$signif, FD_beta_geo_mant_la$signif)
 FD_beta_geo_mant_pv <- FD_beta_geo_mant_pv[,1]
 (FD_beta_geo_mant_pv <- p.adjust(FD_beta_geo_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 1.000 0.435
+    ## [1] 0.303 1.000 0.435
 
 ``` r
 # Mixed and stratified lakes 
-geo_MS_dist_dmean <- dist(scaled_env[mixed_stratified_lakes,c(9)], method = "euclidean")
-(FD_beta_geo_MS_mant_dmean <- mantel(FD_beta_geo_MS_dist$Btotal, geo_MS_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+geo_MS_dist_dm <- dist(scaled_env[mixed_stratified_lakes,"distance_to_ocean_min_m"], method = "euclidean")
+(FD_beta_geo_MS_mant_dm <- mantel(FD_beta_geo_MS_dist$Btotal, geo_MS_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_dmean,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_dm,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
     ## 
-    ## Mantel statistic r: 0.2878 
-    ##       Significance: 0.461 
+    ## Mantel statistic r: 0.3376 
+    ##       Significance: 0.138 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.469 0.519 0.554 0.597 
+    ## 0.376 0.436 0.482 0.526 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
-geo_MS_dist_md <- dist(scaled_env[mixed_stratified_lakes,c(14)], method = "euclidean")
-(FD_beta_geo_MS_mant_md <- mantel(FD_beta_geo_MS_dist$Btotal, geo_MS_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+geo_MS_dist_md <- dist(scaled_env[mixed_stratified_lakes,"max_depth"], method = "euclidean")
+(FD_beta_geo_MS_mant_md <- mantel(FD_beta_geo_MS_dist$Btotal, geo_MS_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_md,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_md,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.0198 
     ##       Significance: 0.716 
@@ -7443,15 +7443,15 @@ geo_MS_dist_md <- dist(scaled_env[mixed_stratified_lakes,c(14)], method = "eucli
     ## Number of permutations: 999
 
 ``` r
-geo_MS_dist_la <- dist(scaled_env[mixed_stratified_lakes,c(15)], method = "euclidean")
-(FD_beta_geo_MS_mant_la <- mantel(FD_beta_geo_MS_dist$Btotal, geo_MS_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+geo_MS_dist_la <- dist(scaled_env[mixed_stratified_lakes,"logArea"], method = "euclidean")
+(FD_beta_geo_MS_mant_la <- mantel(FD_beta_geo_MS_dist$Btotal, geo_MS_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_la,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_la,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.001 
     ##       Significance: 0.367 
@@ -7465,45 +7465,45 @@ geo_MS_dist_la <- dist(scaled_env[mixed_stratified_lakes,c(15)], method = "eucli
 
 ``` r
 # Adjust p-values
-FD_beta_geo_MS_mant_pv <- rbind(FD_beta_geo_MS_mant_dmean$signif, FD_beta_geo_MS_mant_md$signif, FD_beta_geo_MS_mant_la$signif)
+FD_beta_geo_MS_mant_pv <- rbind(FD_beta_geo_MS_mant_dm$signif, FD_beta_geo_MS_mant_md$signif, FD_beta_geo_MS_mant_la$signif)
 FD_beta_geo_MS_mant_pv <- FD_beta_geo_MS_mant_pv[,1]
 (FD_beta_geo_MS_mant_pv <- p.adjust(FD_beta_geo_MS_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1 1 1
+    ## [1] 0.414 1.000 1.000
 
 ``` r
 # Ocean sites and mixed lakes
-geo_OM_dist_dmean <- dist(scaled_env[ocean_mixed_sites,c(9)], method = "euclidean")
-(FD_beta_geo_OM_mant_dmean <- mantel(FD_beta_geo_OM_dist$Btotal, geo_OM_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,19]))
+geo_OM_dist_dm <- dist(scaled_env[ocean_mixed_sites,"distance_to_ocean_min_m"], method = "euclidean")
+(FD_beta_geo_OM_mant_dm <- mantel(FD_beta_geo_OM_dist$Btotal, geo_OM_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_dmean,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_dm,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          "Site_type"], na.rm = TRUE) 
     ## 
-    ## Mantel statistic r: 0.04424 
-    ##       Significance: 0.562 
+    ## Mantel statistic r: 0.09946 
+    ##       Significance: 0.181 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.171 0.210 0.236 0.266 
+    ## 0.140 0.181 0.242 0.302 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
-geo_OM_dist_md <- dist(scaled_env[ocean_mixed_sites,c(14)], method = "euclidean")
-(FD_beta_geo_OM_mant_md <- mantel(FD_beta_geo_OM_dist$Btotal, geo_OM_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,19]))
+geo_OM_dist_md <- dist(scaled_env[ocean_mixed_sites,"max_depth"], method = "euclidean")
+(FD_beta_geo_OM_mant_md <- mantel(FD_beta_geo_OM_dist$Btotal, geo_OM_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2662 
     ##       Significance: 0.052 
@@ -7516,15 +7516,15 @@ geo_OM_dist_md <- dist(scaled_env[ocean_mixed_sites,c(14)], method = "euclidean"
     ## Number of permutations: 999
 
 ``` r
-geo_OM_dist_la <- dist(scaled_env[ocean_mixed_sites,c(15)], method = "euclidean")
-(FD_beta_geo_OM_mant_la <- mantel(FD_beta_geo_OM_dist$Btotal, geo_OM_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,19]))
+geo_OM_dist_la <- dist(scaled_env[ocean_mixed_sites,"logArea"], method = "euclidean")
+(FD_beta_geo_OM_mant_la <- mantel(FD_beta_geo_OM_dist$Btotal, geo_OM_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2378 
     ##       Significance: 0.09 
@@ -7538,45 +7538,45 @@ geo_OM_dist_la <- dist(scaled_env[ocean_mixed_sites,c(15)], method = "euclidean"
 
 ``` r
 # Adjust p-values
-FD_beta_geo_OM_mant_pv <- rbind( FD_beta_geo_OM_mant_dmean$signif, FD_beta_geo_OM_mant_md$signif, FD_beta_geo_OM_mant_la$signif)
+FD_beta_geo_OM_mant_pv <- rbind( FD_beta_geo_OM_mant_dm$signif, FD_beta_geo_OM_mant_md$signif, FD_beta_geo_OM_mant_la$signif)
 FD_beta_geo_OM_mant_pv <- FD_beta_geo_OM_mant_pv[,1]
 (FD_beta_geo_OM_mant_pv <- p.adjust(FD_beta_geo_OM_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.156 0.270
+    ## [1] 0.543 0.156 0.270
 
 ``` r
 # Stratified lakes and ocean sites
-geo_SO_dist_dmean <- dist(scaled_env[ocean_stratified_sites,c(9)], method = "euclidean")
-(FD_beta_geo_SO_mant_dmean <- mantel(FD_beta_geo_SO_dist$Btotal, geo_SO_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
+geo_SO_dist_dm <- dist(scaled_env[ocean_stratified_sites,"distance_to_ocean_min_m"], method = "euclidean")
+(FD_beta_geo_SO_mant_dm <- mantel(FD_beta_geo_SO_dist$Btotal, geo_SO_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_dmean,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_dm,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          "Site_type"], na.rm = TRUE) 
     ## 
-    ## Mantel statistic r: 0.5579 
-    ##       Significance: 0.388 
+    ## Mantel statistic r: 0.5542 
+    ##       Significance: 0.133 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.666 0.699 0.731 0.768 
+    ## 0.577 0.619 0.655 0.687 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
-geo_SO_dist_md <- dist(scaled_env[ocean_stratified_sites,c(14)], method = "euclidean")
-(FD_beta_geo_SO_mant_md <- mantel(FD_beta_geo_SO_dist$Btotal, geo_SO_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
+geo_SO_dist_md <- dist(scaled_env[ocean_stratified_sites,"max_depth"], method = "euclidean")
+(FD_beta_geo_SO_mant_md <- mantel(FD_beta_geo_SO_dist$Btotal, geo_SO_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.02172 
     ##       Significance: 0.687 
@@ -7589,15 +7589,15 @@ geo_SO_dist_md <- dist(scaled_env[ocean_stratified_sites,c(14)], method = "eucli
     ## Number of permutations: 999
 
 ``` r
-geo_SO_dist_la <- dist(scaled_env[ocean_stratified_sites,c(15)], method = "euclidean")
-(FD_beta_geo_SO_mant_la <- mantel(FD_beta_geo_SO_dist$Btotal, geo_SO_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
+geo_SO_dist_la <- dist(scaled_env[ocean_stratified_sites,"logArea"], method = "euclidean")
+(FD_beta_geo_SO_mant_la <- mantel(FD_beta_geo_SO_dist$Btotal, geo_SO_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Site_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = FD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          19], na.rm = TRUE) 
+    ## mantel(xdis = FD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2541 
     ##       Significance: 0.122 
@@ -7611,19 +7611,19 @@ geo_SO_dist_la <- dist(scaled_env[ocean_stratified_sites,c(15)], method = "eucli
 
 ``` r
 # Adjust p-values
-FD_beta_geo_SO_mant_pv <- rbind( FD_beta_geo_SO_mant_dmean$signif, FD_beta_geo_SO_mant_md$signif, FD_beta_geo_SO_mant_la$signif)
+FD_beta_geo_SO_mant_pv <- rbind( FD_beta_geo_SO_mant_dm$signif, FD_beta_geo_SO_mant_md$signif, FD_beta_geo_SO_mant_la$signif)
 FD_beta_geo_SO_mant_pv <- FD_beta_geo_SO_mant_pv[,1]
 (FD_beta_geo_SO_mant_pv <- p.adjust(FD_beta_geo_SO_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 1.000 0.366
+    ## [1] 0.399 1.000 0.366
 
 ### FD beta NMDS ordination plots
 
 ``` r
 # FD beta total NMDS scores
 FD_beta_NMDS_data.scores <- as.data.frame(scores(FD_beta_NMDS))
-FD_beta_NMDS_data.scores$Site_type <- env[surveyed_sites,19]
+FD_beta_NMDS_data.scores$Site_type <- env[surveyed_sites,"Site_type"]
 FD_beta_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
 FD_beta_NMDS_data.scores$Site_type <- factor(FD_beta_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
 
@@ -7712,7 +7712,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_NM
 
 # FD beta total NMDS scores for the subset of traits
 FD_beta_sub_NMDS_data.scores <- as.data.frame(scores(FD_beta_sub_NMDS))
-FD_beta_sub_NMDS_data.scores$Site_type <- env[surveyed_sites,19]
+FD_beta_sub_NMDS_data.scores$Site_type <- env[surveyed_sites,"Site_type"]
 FD_beta_sub_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
 FD_beta_sub_NMDS_data.scores$Site_type <- factor(FD_beta_sub_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
 
@@ -7760,7 +7760,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_su
 
 # FD beta replacement NMDS scores
 FD_beta_rep_NMDS_data.scores <- as.data.frame(scores(FD_beta_rep_NMDS))
-FD_beta_rep_NMDS_data.scores$Site_type <- env[surveyed_sites,19]
+FD_beta_rep_NMDS_data.scores$Site_type <- env[surveyed_sites,"Site_type"]
 FD_beta_rep_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
 FD_beta_rep_NMDS_data.scores$Site_type <- factor(FD_beta_rep_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
 
@@ -7798,7 +7798,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_re
 
 # FD beta richness NMDS scores
 FD_beta_ric_NMDS_data.scores <- as.data.frame(scores(FD_beta_ric_NMDS))
-FD_beta_ric_NMDS_data.scores$Site_type <- env[surveyed_sites,19]
+FD_beta_ric_NMDS_data.scores$Site_type <- env[surveyed_sites,"Site_type"]
 FD_beta_ric_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
 FD_beta_ric_NMDS_data.scores$Site_type <- factor(FD_beta_ric_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
 
@@ -7836,7 +7836,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_ri
 
 # FD beta ref NMDS scores
 FD_beta_ref_NMDS_data.scores <- as.data.frame(scores(FD_beta_ref_NMDS))
-FD_beta_ref_NMDS_data.scores$Site_type <- env[,19]
+FD_beta_ref_NMDS_data.scores$Site_type <- env[,"Site_type"]
 FD_beta_ref_NMDS_data.scores$Lakes <- env[,1]
 FD_beta_ref_NMDS_data.scores$Site_type <- factor(FD_beta_ref_NMDS_data.scores$Site_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
 
@@ -8056,7 +8056,7 @@ FD_beta_mean_dist <- FD_beta_mean_dist[,-1]
 FD_beta_mean_dist <- as.data.frame(t(FD_beta_mean_dist))
 
 # Add Site_type column
-FD_beta_mean_dist$Site_type <- env[surveyed_sites,19]
+FD_beta_mean_dist$Site_type <- env[surveyed_sites,"Site_type"]
 FD_beta_mean_dist$Site_type <- factor(FD_beta_mean_dist$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
 
 
