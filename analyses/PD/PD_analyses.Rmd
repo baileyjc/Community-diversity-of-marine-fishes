@@ -207,8 +207,8 @@ row.names(outlier_PD_alpha) <- outlier_PD_alpha$X
         panel.border = element_blank(),
         axis.text = element_text(color = "black", size = 16)) +
   scale_y_continuous(expand = c(0,0)) +
-  labs(y = "PD alpha z-scores", x = "Site type", color = "Outlier:", tag = "b")) +
-  guides(fill = "none")
+  labs(y = "PRic z-scores", x = "Site type", color = "Outlier:", tag = "b") +
+  guides(fill = "none"))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/outlier_PD_alpha.jpg", outlier_PD_alpha_plot, width = 6.26, height = 6, units = "in")
 ```
 
@@ -443,7 +443,7 @@ PD_alpha_T_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping =
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Temperature (ºC)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Temperature (ºC)", y="PRic z-score", colour = "Site type:", fill = "Site type:", tag = "a")
 (PD_alpha_T_plot <- PD_alpha_T_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_T_plot.jpg", plot = PD_alpha_T_plot, width = 6.26, height = 6, units = "in")
 
@@ -465,7 +465,7 @@ PD_alpha_S_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping =
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Salinity (ppt)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Salinity (ppt)", y="PRic z-score", colour = "Site type:", fill = "Site type:", tag = "b")
 (PD_alpha_S_plot <- PD_alpha_S_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_S_plot.jpg", plot = PD_alpha_S_plot, width = 6.26, height = 6, units = "in")
 
@@ -487,7 +487,7 @@ PD_alpha_O_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping =
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Oxygen (mg/L)", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(x="Oxygen (mg/L)", y="PRic z-score", colour = "Site type:", fill = "Site type:", tag = "c")
 (PD_alpha_O_plot <- PD_alpha_O_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_O_plot.jpg", plot = PD_alpha_O_plot, width = 6.26, height = 6, units = "in")
 
@@ -509,7 +509,7 @@ PD_alpha_D_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = aes
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Isolation (m)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Isolation (m)", y="PRic z-score", colour = "Site type:", fill = "Site type:", tag = "a")
 (PD_alpha_D_plot <- PD_alpha_D_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_D_plot.jpg", plot = PD_alpha_D_plot, width = 6.26, height = 6, units = "in")
 
@@ -531,7 +531,7 @@ PD_alpha_MD_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = ae
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Age (m)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Age (m)", y="PRic z-score", colour = "Site type:", fill = "Site type:", tag = "b")
 (PD_alpha_MD_plot <- PD_alpha_MD_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_MD_plot.jpg", plot = PD_alpha_MD_plot, width = 6.26, height = 6, units = "in")
 
@@ -553,7 +553,7 @@ PD_alpha_LA_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = ae
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Log Area (m"^"2"~")", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(x="Log Area (m"^"2"~")", y="PRic z-score", colour = "Site type:", fill = "Site type:", tag = "c")
 (PD_alpha_LA_plot <- PD_alpha_LA_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_LA_plot.jpg", plot = PD_alpha_LA_plot, width = 6.26, height = 6, units = "in")
 ```
