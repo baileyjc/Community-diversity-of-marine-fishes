@@ -1267,7 +1267,7 @@ SD_alpha_T_plot <- ggplot(data = SR_env[surveyed_sites_env,], mapping = aes(y = 
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Temperature (ºC)", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Temperature (ºC)", y="Log-SRic", colour = "Site type:", fill = "Site type:", tag = "a")
 (SD_alpha_T_plot <- SD_alpha_T_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1300,7 +1300,7 @@ SD_alpha_S_plot <- ggplot(data = SR_env[surveyed_sites_env,], mapping = aes(y = 
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Salinity (ppt)", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Salinity (ppt)", y="Log-SRic", colour = "Site type:", fill = "Site type:", tag = "b")
 (SD_alpha_S_plot <- SD_alpha_S_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1333,7 +1333,7 @@ SD_alpha_O_plot <- ggplot(data = SR_env[surveyed_sites_env,], mapping = aes(y = 
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Oxygen (mg/L)", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(x="Oxygen (mg/L)", y="Log-SRic", colour = "Site type:", fill = "Site type:", tag = "c")
 (SD_alpha_O_plot <- SD_alpha_O_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1366,7 +1366,7 @@ SD_alpha_D_plot <- ggplot(data = SR_env[surveyed_sites,], mapping = aes(y = log(
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Isolation (m)", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Isolation (m)", y="Log-SRic", colour = "Site type:", fill = "Site type:", tag = "a")
 (SD_alpha_D_plot <- SD_alpha_D_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1399,7 +1399,7 @@ SD_alpha_MD_plot <- ggplot(data = SR_env[surveyed_sites,], mapping = aes(y = log
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Age (m)", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Age (m)", y="Log-SRic", colour = "Site type:", fill = "Site type:", tag = "b")
 (SD_alpha_MD_plot <- SD_alpha_MD_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1432,7 +1432,7 @@ SD_alpha_LA_plot <- ggplot(data = SR_env[surveyed_sites,], mapping = aes(y = log
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Log Area (m"^"2"~")", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(x="Log Area (m"^"2"~")", y="Log-SRic", colour = "Site type:", fill = "Site type:", tag = "c")
 (SD_alpha_LA_plot <- SD_alpha_LA_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -2122,6 +2122,15 @@ summary(SD_logSRic_MS_am_oxy)
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
+# p-values
+oxy_p_values <- summary(SD_logSRic_MS_am_oxy)[[1]][, "Pr(>F)"]
+p_values <- c(oxy_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
+```
+
+    ## [1] 0.0009353672 0.0003227032 0.0584685007
+
+``` r
 SD_logSRic_MS_am_oxy <- aov(log(row_sum) ~ oxygen_median + Site_type, data = SR_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(SD_logSRic_MS_am_oxy))
@@ -2247,12 +2256,12 @@ SD_logSRic_amp_oxy$contrasts
 temp_p_values <- summary(SD_logSRic_am_temp)[[1]][, "Pr(>F)"]
 sal_p_values <- summary(SD_logSRic_am_sal)[[1]][, "Pr(>F)"]
 oxy_p_values <- summary(SD_logSRic_am_oxy)[[1]][, "Pr(>F)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## [1] 1.685435e-01 2.117708e-04 7.873462e-07 1.693822e-01 4.112906e-04
-    ## [6] 5.310782e-03
+    ## [1] 1.685435e-01 2.117708e-04           NA 7.873462e-07 1.693822e-01
+    ## [6]           NA 4.112906e-04 5.310782e-03           NA
 
 ``` r
 # Summarize OM lm results
@@ -2288,14 +2297,15 @@ summary(SD_logSRic_OM_am_oxy)
 
 ``` r
 # p-values
-temp_p_values <- summary(SD_logSRic_OM_am_temp)$coefficients[, "Pr(>|t|)"]
-sal_p_values <- summary(SD_logSRic_OM_am_sal)$coefficients[, "Pr(>|t|)"]
-oxy_p_values <- summary(SD_logSRic_OM_am_oxy)$coefficients[, "Pr(>|t|)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+temp_p_values <- summary(SD_logSRic_OM_am_temp)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(SD_logSRic_OM_am_sal)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(SD_logSRic_OM_am_oxy)[[1]][, "Pr(>F)"]
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## numeric(0)
+    ## [1] 1.0000000 1.0000000        NA 0.3635379 1.0000000        NA 0.3166768
+    ## [8] 1.0000000        NA
 
 ``` r
 # Summarize OS lm results
@@ -2333,14 +2343,15 @@ summary(SD_logSRic_OS_am_oxy)
 
 ``` r
 # p-values
-temp_p_values <- summary(SD_logSRic_OS_am_temp)$coefficients[, "Pr(>|t|)"]
-sal_p_values <- summary(SD_logSRic_OS_am_sal)$coefficients[, "Pr(>|t|)"]
-oxy_p_values <- summary(SD_logSRic_OS_am_oxy)$coefficients[, "Pr(>|t|)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+temp_p_values <- summary(SD_logSRic_OS_am_temp)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(SD_logSRic_OS_am_sal)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(SD_logSRic_OS_am_oxy)[[1]][, "Pr(>F)"]
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## numeric(0)
+    ## [1] 1.0000000000 0.0067595020           NA 0.0002452472 0.0647207568
+    ## [6]           NA 0.0189993093 0.0047099840           NA
 
 ``` r
 # Summarize MS lm results
@@ -2378,14 +2389,15 @@ summary(SD_logSRic_MS_am_oxy)
 
 ``` r
 # p-values
-temp_p_values <- summary(SD_logSRic_MS_am_temp)$coefficients[, "Pr(>|t|)"]
-sal_p_values <- summary(SD_logSRic_MS_am_sal)$coefficients[, "Pr(>|t|)"]
-oxy_p_values <- summary(SD_logSRic_MS_am_oxy)$coefficients[, "Pr(>|t|)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+temp_p_values <- summary(SD_logSRic_MS_am_temp)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(SD_logSRic_MS_am_sal)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(SD_logSRic_MS_am_oxy)[[1]][, "Pr(>F)"]
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## numeric(0)
+    ## [1] 0.1840095285 0.0006926945           NA 0.0000144461 0.1119775178
+    ## [6]           NA 0.0074681089 0.0027764148           NA
 
 ``` r
 # Summarize M lm results
@@ -2414,14 +2426,15 @@ summary(SD_logSRic_M_am_oxy)
 
 ``` r
 # p-values
-temp_p_values <- summary(SD_logSRic_M_am_temp)$coefficients[, "Pr(>|t|)"]
-sal_p_values <- summary(SD_logSRic_M_am_sal)$coefficients[, "Pr(>|t|)"]
-oxy_p_values <- summary(SD_logSRic_M_am_oxy)$coefficients[, "Pr(>|t|)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+temp_p_values <- summary(SD_logSRic_M_am_temp)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(SD_logSRic_M_am_sal)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(SD_logSRic_M_am_oxy)[[1]][, "Pr(>F)"]
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## numeric(0)
+    ## [1] 1.0000000        NA        NA 0.3338286        NA        NA 0.3943524
+    ## [8]        NA        NA
 
 ``` r
 # Summarize S lm results
@@ -2454,14 +2467,15 @@ summary(SD_logSRic_S_am_oxy)
 
 ``` r
 # p-values
-temp_p_values <- summary(SD_logSRic_S_am_temp)$coefficients[, "Pr(>|t|)"]
-sal_p_values <- summary(SD_logSRic_S_am_sal)$coefficients[, "Pr(>|t|)"]
-oxy_p_values <- summary(SD_logSRic_S_am_oxy)$coefficients[, "Pr(>|t|)"]
-p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
+temp_p_values <- summary(SD_logSRic_S_am_temp)[[1]][, "Pr(>F)"]
+sal_p_values <- summary(SD_logSRic_S_am_sal)[[1]][, "Pr(>F)"]
+oxy_p_values <- summary(SD_logSRic_S_am_oxy)[[1]][, "Pr(>F)"]
+p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## numeric(0)
+    ## [1] 1.00000000         NA         NA 0.05462199         NA         NA 0.17470828
+    ## [8]         NA         NA
 
 ``` r
 #### Geographical
@@ -3255,12 +3269,12 @@ SD_logSRic_amp_lga$contrasts
 dist_p_values <- summary(SD_logSRic_am_dist)[[1]][, "Pr(>F)"]
 mxd_p_values <- summary(SD_logSRic_am_mxd)[[1]][, "Pr(>F)"]
 lga_p_values <- summary(SD_logSRic_am_lga)[[1]][, "Pr(>F)"]
-p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
+p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## [1] 8.024381e-06 1.048152e-02 4.530155e-01 1.312572e-05 6.136847e-01
-    ## [6] 1.909931e-05
+    ## [1] 8.024381e-06 1.048152e-02           NA 4.530155e-01 1.312572e-05
+    ## [6]           NA 6.136847e-01 1.909931e-05           NA
 
 ``` r
 # Summarize OM lm results
@@ -3294,14 +3308,15 @@ summary(SD_logSRic_OM_am_lga)
 
 ``` r
 # p-values
-dist_p_values <- summary(SD_logSRic_OM_am_dist)$coefficients[, "Pr(>|t|)"]
-mxd_p_values <- summary(SD_logSRic_OM_am_mxd)$coefficients[, "Pr(>|t|)"]
-lga_p_values <- summary(SD_logSRic_OM_am_lga)$coefficients[, "Pr(>|t|)"]
-p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
+dist_p_values <- summary(SD_logSRic_OM_am_dist)[[1]][, "Pr(>F)"]
+mxd_p_values <- summary(SD_logSRic_OM_am_mxd)[[1]][, "Pr(>F)"]
+lga_p_values <- summary(SD_logSRic_OM_am_lga)[[1]][, "Pr(>F)"]
+p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## numeric(0)
+    ## [1] 1.00000000 1.00000000         NA 0.09144026 1.00000000         NA 0.95466089
+    ## [8] 1.00000000         NA
 
 ``` r
 # Summarize OS lm results
@@ -3339,14 +3354,15 @@ summary(SD_logSRic_OS_am_lga)
 
 ``` r
 # p-values
-dist_p_values <- summary(SD_logSRic_OS_am_dist)$coefficients[, "Pr(>|t|)"]
-mxd_p_values <- summary(SD_logSRic_OS_am_mxd)$coefficients[, "Pr(>|t|)"]
-lga_p_values <- summary(SD_logSRic_OS_am_lga)$coefficients[, "Pr(>|t|)"]
-p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
+dist_p_values <- summary(SD_logSRic_OS_am_dist)[[1]][, "Pr(>F)"]
+mxd_p_values <- summary(SD_logSRic_OS_am_mxd)[[1]][, "Pr(>F)"]
+lga_p_values <- summary(SD_logSRic_OS_am_lga)[[1]][, "Pr(>F)"]
+p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## numeric(0)
+    ## [1] 0.0002413784 0.2592921788           NA 0.7913550208 0.0008113704
+    ## [6]           NA 0.2417842531 0.0015652516           NA
 
 ``` r
 # Summarize MS lm results
@@ -3384,14 +3400,15 @@ summary(SD_logSRic_MS_am_lga)
 
 ``` r
 # p-values
-dist_p_values <- summary(SD_logSRic_MS_am_dist)$coefficients[, "Pr(>|t|)"]
-mxd_p_values <- summary(SD_logSRic_MS_am_mxd)$coefficients[, "Pr(>|t|)"]
-lga_p_values <- summary(SD_logSRic_MS_am_lga)$coefficients[, "Pr(>|t|)"]
-p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
+dist_p_values <- summary(SD_logSRic_MS_am_dist)[[1]][, "Pr(>F)"]
+mxd_p_values <- summary(SD_logSRic_MS_am_mxd)[[1]][, "Pr(>F)"]
+lga_p_values <- summary(SD_logSRic_MS_am_lga)[[1]][, "Pr(>F)"]
+p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## numeric(0)
+    ## [1] 3.579803e-04 9.049388e-03           NA 4.057944e-01 3.043065e-04
+    ## [6]           NA 1.000000e+00 8.657848e-05           NA
 
 ``` r
 # Summarize M lm results
@@ -3424,14 +3441,15 @@ summary(SD_logSRic_M_am_lga)
 
 ``` r
 # p-values
-dist_p_values <- summary(SD_logSRic_M_am_dist)$coefficients[, "Pr(>|t|)"]
-mxd_p_values <- summary(SD_logSRic_M_am_mxd)$coefficients[, "Pr(>|t|)"]
-lga_p_values <- summary(SD_logSRic_M_am_lga)$coefficients[, "Pr(>|t|)"]
-p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
+dist_p_values <- summary(SD_logSRic_M_am_dist)[[1]][, "Pr(>F)"]
+mxd_p_values <- summary(SD_logSRic_M_am_mxd)[[1]][, "Pr(>F)"]
+lga_p_values <- summary(SD_logSRic_M_am_lga)[[1]][, "Pr(>F)"]
+p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## numeric(0)
+    ## [1] 1.00000000         NA         NA 0.17168212         NA         NA 0.03053609
+    ## [8]         NA         NA
 
 ``` r
 # Summarize S lm results
@@ -3460,14 +3478,15 @@ summary(SD_logSRic_S_am_lga)
 
 ``` r
 # p-values
-dist_p_values <- summary(SD_logSRic_S_am_dist)$coefficients[, "Pr(>|t|)"]
-mxd_p_values <- summary(SD_logSRic_S_am_mxd)$coefficients[, "Pr(>|t|)"]
-lga_p_values <- summary(SD_logSRic_S_am_lga)$coefficients[, "Pr(>|t|)"]
-p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
+dist_p_values <- summary(SD_logSRic_S_am_dist)[[1]][, "Pr(>F)"]
+mxd_p_values <- summary(SD_logSRic_S_am_mxd)[[1]][, "Pr(>F)"]
+lga_p_values <- summary(SD_logSRic_S_am_lga)[[1]][, "Pr(>F)"]
+p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## numeric(0)
+    ## [1] 0.352096       NA       NA 1.000000       NA       NA 1.000000       NA
+    ## [9]       NA
 
 ``` r
 ##### SRic ANOVAs
