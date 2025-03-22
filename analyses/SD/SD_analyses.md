@@ -1560,97 +1560,134 @@ plot(SD_logSRic_am_temp)
 
 ``` r
 ### Ocean & Mixed sites
-SD_logSRic_OM_lm_temp <- lm(log(row_sum) ~ temperature_median, data = SR_env[ocean_mixed_sites_env,])
+SD_logSRic_OM_am_temp <- aov(log(row_sum) ~ temperature_median * Site_type, data = SR_env[ocean_mixed_sites_env,])
+summary(SD_logSRic_OM_am_temp)
+```
+
+    ##                              Df Sum Sq Mean Sq F value Pr(>F)
+    ## temperature_median            1 0.0031  0.0031   0.009  0.927
+    ## Site_type                     1 0.2209  0.2209   0.637  0.451
+    ## temperature_median:Site_type  1 0.3722  0.3722   1.074  0.335
+    ## Residuals                     7 2.4265  0.3466
+
+``` r
+SD_logSRic_OM_am_temp <- aov(log(row_sum) ~ temperature_median + Site_type, data = SR_env[ocean_mixed_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_OM_lm_temp))
+shapiro.test(residuals(SD_logSRic_OM_am_temp))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_OM_lm_temp)
-    ## W = 0.90291, p-value = 0.2006
+    ## data:  residuals(SD_logSRic_OM_am_temp)
+    ## W = 0.91473, p-value = 0.2771
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OM_lm_temp) ~ SR_env[ocean_mixed_sites_env,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OM_am_temp) ~ SR_env[ocean_mixed_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  1.1767 0.3062
+    ## group  1  0.8649 0.3766
     ##        9
 
 ``` r
 ### Ocean & Stratified sites
-SD_logSRic_OS_lm_temp <- lm(log(row_sum) ~ temperature_median, data = SR_env[ocean_stratified_sites_env,])
+SD_logSRic_OS_am_temp <- aov(log(row_sum) ~ temperature_median * Site_type, data = SR_env[ocean_stratified_sites_env,])
+summary(SD_logSRic_OS_am_temp)
+```
+
+    ##                              Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## temperature_median            1  0.303   0.303   0.558 0.47939   
+    ## Site_type                     1 12.076  12.076  22.252 0.00216 **
+    ## temperature_median:Site_type  1  0.150   0.150   0.277 0.61486   
+    ## Residuals                     7  3.799   0.543                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_OS_am_temp <- aov(log(row_sum) ~ temperature_median + Site_type, data = SR_env[ocean_stratified_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_OS_lm_temp))
+shapiro.test(residuals(SD_logSRic_OS_am_temp))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_OS_lm_temp)
-    ## W = 0.93658, p-value = 0.4812
+    ## data:  residuals(SD_logSRic_OS_am_temp)
+    ## W = 0.85487, p-value = 0.0494
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OS_lm_temp) ~ SR_env[ocean_stratified_sites_env,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OS_am_temp) ~ SR_env[ocean_stratified_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  1.4457 0.2599
+    ## group  1  1.3348 0.2777
     ##        9
 
 ``` r
 ### Mixed & Stratified lakes
-SD_logSRic_MS_lm_temp <- lm(log(row_sum) ~ temperature_median, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_am_temp <- aov(log(row_sum) ~ temperature_median * Site_type, data = SR_env[mixed_stratified_lakes,])
+summary(SD_logSRic_MS_am_temp)
+```
+
+    ##                              Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## temperature_median            1  2.891   2.891   5.598 0.035656 *  
+    ## Site_type                     1 14.497  14.497  28.071 0.000189 ***
+    ## temperature_median:Site_type  1  0.199   0.199   0.385 0.546604    
+    ## Residuals                    12  6.198   0.516                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_MS_am_temp <- aov(log(row_sum) ~ temperature_median + Site_type, data = SR_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_MS_lm_temp))
+shapiro.test(residuals(SD_logSRic_MS_am_temp))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_MS_lm_temp)
-    ## W = 0.9426, p-value = 0.382
+    ## data:  residuals(SD_logSRic_MS_am_temp)
+    ## W = 0.93532, p-value = 0.2956
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_MS_lm_temp) ~ SR_env[mixed_stratified_lakes,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_MS_am_temp) ~ SR_env[mixed_stratified_lakes,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.9411 0.3484
+    ## group  1  0.1222 0.7319
     ##       14
 
 ``` r
 ### Mixed lakes
-SD_logSRic_M_lm_temp <- lm(log(row_sum) ~ temperature_median, data = SR_env[mixed_lakes,])
+SD_logSRic_M_am_temp <- aov(log(row_sum) ~ temperature_median, data = SR_env[mixed_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_M_lm_temp))
+shapiro.test(residuals(SD_logSRic_M_am_temp))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_M_lm_temp)
+    ## data:  residuals(SD_logSRic_M_am_temp)
     ## W = 0.8641, p-value = 0.1319
 
 ``` r
 ### Stratified lakes
-SD_logSRic_S_lm_temp <- lm(log(row_sum) ~ temperature_median, data = SR_env[stratified_lakes,])
+SD_logSRic_S_am_temp <- aov(log(row_sum) ~ temperature_median, data = SR_env[stratified_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_S_lm_temp))
+shapiro.test(residuals(SD_logSRic_S_am_temp))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_S_lm_temp)
+    ## data:  residuals(SD_logSRic_S_am_temp)
     ## W = 0.82865, p-value = 0.05748
 
 ``` r
@@ -1758,97 +1795,136 @@ plot(SD_logSRic_am_sal)
 
 ``` r
 ### Ocean & Mixed sites
-SD_logSRic_OM_lm_sal <- lm(log(row_sum) ~ salinity_median, data = SR_env[ocean_mixed_sites_env,])
+SD_logSRic_OM_am_sal <- aov(log(row_sum) ~ salinity_median * Site_type, data = SR_env[ocean_mixed_sites_env,])
+summary(SD_logSRic_OM_am_sal)
+```
+
+    ##                           Df Sum Sq Mean Sq F value Pr(>F)  
+    ## salinity_median            1 1.1092  1.1092   4.203 0.0795 .
+    ## Site_type                  1 0.0513  0.0513   0.194 0.6727  
+    ## salinity_median:Site_type  1 0.0150  0.0150   0.057 0.8181  
+    ## Residuals                  7 1.8472  0.2639                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_OM_am_sal <- aov(log(row_sum) ~ salinity_median + Site_type, data = SR_env[ocean_mixed_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_OM_lm_sal))
+shapiro.test(residuals(SD_logSRic_OM_am_sal))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_OM_lm_sal)
-    ## W = 0.97005, p-value = 0.887
+    ## data:  residuals(SD_logSRic_OM_am_sal)
+    ## W = 0.95831, p-value = 0.7505
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OM_lm_sal) ~ SR_env[ocean_mixed_sites_env,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OM_am_sal) ~ SR_env[ocean_mixed_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  1.2352 0.2952
+    ## group  1  1.0283  0.337
     ##        9
 
 ``` r
 ### Ocean & Stratified sites
-SD_logSRic_OS_lm_sal <- lm(log(row_sum) ~ salinity_median, data = SR_env[ocean_stratified_sites_env,])
+SD_logSRic_OS_am_sal <- aov(log(row_sum) ~ salinity_median * Site_type, data = SR_env[ocean_stratified_sites_env,])
+summary(SD_logSRic_OS_am_sal)
+```
+
+    ##                           Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## salinity_median            1 12.655  12.655  57.041 0.000131 ***
+    ## Site_type                  1  2.120   2.120   9.555 0.017539 *  
+    ## salinity_median:Site_type  1  0.000   0.000   0.000 0.982859    
+    ## Residuals                  7  1.553   0.222                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_OS_am_sal <- aov(log(row_sum) ~ salinity_median + Site_type, data = SR_env[ocean_stratified_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_OS_lm_sal))
+shapiro.test(residuals(SD_logSRic_OS_am_sal))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_OS_lm_sal)
-    ## W = 0.95306, p-value = 0.6832
+    ## data:  residuals(SD_logSRic_OS_am_sal)
+    ## W = 0.9724, p-value = 0.9097
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OS_lm_sal) ~ SR_env[ocean_stratified_sites_env,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OS_am_sal) ~ SR_env[ocean_stratified_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  2.4973 0.1485
+    ## group  1  0.5406 0.4809
     ##        9
 
 ``` r
 ### Mixed & Stratified lakes
-SD_logSRic_MS_lm_sal <- lm(log(row_sum) ~ salinity_median, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_am_sal <- aov(log(row_sum) ~ salinity_median * Site_type, data = SR_env[mixed_stratified_lakes,])
+summary(SD_logSRic_MS_am_sal)
+```
+
+    ##                           Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## salinity_median            1 18.016  18.016  70.319 2.31e-06 ***
+    ## Site_type                  1  2.060   2.060   8.039    0.015 *  
+    ## salinity_median:Site_type  1  0.635   0.635   2.478    0.141    
+    ## Residuals                 12  3.074   0.256                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_MS_am_sal <- aov(log(row_sum) ~ salinity_median + Site_type, data = SR_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_MS_lm_sal))
+shapiro.test(residuals(SD_logSRic_MS_am_sal))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_MS_lm_sal)
-    ## W = 0.97253, p-value = 0.8778
+    ## data:  residuals(SD_logSRic_MS_am_sal)
+    ## W = 0.94056, p-value = 0.3559
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_MS_lm_sal) ~ SR_env[mixed_stratified_lakes,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_MS_am_sal) ~ SR_env[mixed_stratified_lakes,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.2729 0.6096
+    ## group  1  0.5694  0.463
     ##       14
 
 ``` r
 ### Mixed lakes
-SD_logSRic_M_lm_sal <- lm(log(row_sum) ~ salinity_median, data = SR_env[mixed_lakes,])
+SD_logSRic_M_am_sal <- aov(log(row_sum) ~ salinity_median, data = SR_env[mixed_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_M_lm_sal))
+shapiro.test(residuals(SD_logSRic_M_am_sal))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_M_lm_sal)
+    ## data:  residuals(SD_logSRic_M_am_sal)
     ## W = 0.95338, p-value = 0.7452
 
 ``` r
 ### Stratified lakes
-SD_logSRic_S_lm_sal <- lm(log(row_sum) ~ salinity_median, data = SR_env[stratified_lakes,])
+SD_logSRic_S_am_sal <- aov(log(row_sum) ~ salinity_median, data = SR_env[stratified_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_S_lm_sal))
+shapiro.test(residuals(SD_logSRic_S_am_sal))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_S_lm_sal)
+    ## data:  residuals(SD_logSRic_S_am_sal)
     ## W = 0.9632, p-value = 0.84
 
 ``` r
@@ -1959,97 +2035,138 @@ plot(SD_logSRic_am_oxy)
 
 ``` r
 ### Ocean & Mixed sites
-SD_logSRic_OM_lm_oxy <- lm(log(row_sum) ~ oxygen_median, data = SR_env[ocean_mixed_sites_env,])
+SD_logSRic_OM_am_oxy <- aov(log(row_sum) ~ oxygen_median * Site_type, data = SR_env[ocean_mixed_sites_env,])
+summary(SD_logSRic_OM_am_oxy)
+```
+
+    ##                         Df Sum Sq Mean Sq F value Pr(>F)  
+    ## oxygen_median            1 1.1393  1.1393   4.518 0.0711 .
+    ## Site_type                1 0.1166  0.1166   0.462 0.5184  
+    ## oxygen_median:Site_type  1 0.0014  0.0014   0.005 0.9430  
+    ## Residuals                7 1.7653  0.2522                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_OM_am_oxy <- aov(log(row_sum) ~ oxygen_median + Site_type, data = SR_env[ocean_mixed_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_OM_lm_oxy))
+shapiro.test(residuals(SD_logSRic_OM_am_oxy))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_OM_lm_oxy)
-    ## W = 0.97168, p-value = 0.9029
+    ## data:  residuals(SD_logSRic_OM_am_oxy)
+    ## W = 0.93881, p-value = 0.5066
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OM_lm_oxy) ~ SR_env[ocean_mixed_sites_env,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OM_am_oxy) ~ SR_env[ocean_mixed_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
-    ##       Df F value Pr(>F)
-    ## group  1  2.6684 0.1368
-    ##        9
+    ##       Df F value  Pr(>F)  
+    ## group  1  4.1659 0.07164 .
+    ##        9                  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
 ### Ocean & Stratified sites
-SD_logSRic_OS_lm_oxy <- lm(log(row_sum) ~ oxygen_median, data = SR_env[ocean_stratified_sites_env,])
+SD_logSRic_OS_am_oxy <- aov(log(row_sum) ~ oxygen_median * Site_type, data = SR_env[ocean_stratified_sites_env,])
+summary(SD_logSRic_OS_am_oxy)
+```
+
+    ##                         Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## oxygen_median            1  5.357   5.357  18.894 0.003368 ** 
+    ## Site_type                1  8.495   8.495  29.962 0.000932 ***
+    ## oxygen_median:Site_type  1  0.492   0.492   1.736 0.229168    
+    ## Residuals                7  1.985   0.284                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_OS_am_oxy <- aov(log(row_sum) ~ oxygen_median + Site_type, data = SR_env[ocean_stratified_sites_env,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_OS_lm_oxy))
+shapiro.test(residuals(SD_logSRic_OS_am_oxy))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_OS_lm_oxy)
-    ## W = 0.91448, p-value = 0.2753
+    ## data:  residuals(SD_logSRic_OS_am_oxy)
+    ## W = 0.98379, p-value = 0.9835
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OS_lm_oxy) ~ SR_env[ocean_stratified_sites_env,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OS_am_oxy) ~ SR_env[ocean_stratified_sites_env,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  1.9509  0.196
+    ## group  1  0.1765 0.6842
     ##        9
 
 ``` r
 ### Mixed & Stratified lakes
-SD_logSRic_MS_lm_oxy <- lm(log(row_sum) ~ oxygen_median, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_am_oxy <- aov(log(row_sum) ~ oxygen_median * Site_type, data = SR_env[mixed_stratified_lakes,])
+summary(SD_logSRic_MS_am_oxy)
+```
+
+    ##                         Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## oxygen_median            1  7.797   7.797  24.952 0.000312 ***
+    ## Site_type                1  9.969   9.969  31.903 0.000108 ***
+    ## oxygen_median:Site_type  1  2.269   2.269   7.263 0.019490 *  
+    ## Residuals               12  3.750   0.312                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_MS_am_oxy <- aov(log(row_sum) ~ oxygen_median + Site_type, data = SR_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_MS_lm_oxy))
+shapiro.test(residuals(SD_logSRic_MS_am_oxy))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_MS_lm_oxy)
-    ## W = 0.94623, p-value = 0.4325
+    ## data:  residuals(SD_logSRic_MS_am_oxy)
+    ## W = 0.9435, p-value = 0.3941
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_MS_lm_oxy) ~ SR_env[mixed_stratified_lakes,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_MS_am_oxy) ~ SR_env[mixed_stratified_lakes,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  1.9922 0.1799
+    ## group  1  0.1231 0.7309
     ##       14
 
 ``` r
 ### Mixed lakes
-SD_logSRic_M_lm_oxy <- lm(log(row_sum) ~ oxygen_median, data = SR_env[mixed_lakes,])
+SD_logSRic_M_am_oxy <- aov(log(row_sum) ~ oxygen_median, data = SR_env[mixed_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_M_lm_oxy))
+shapiro.test(residuals(SD_logSRic_M_am_oxy))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_M_lm_oxy)
+    ## data:  residuals(SD_logSRic_M_am_oxy)
     ## W = 0.9463, p-value = 0.6739
 
 ``` r
 ### Stratified lakes
-SD_logSRic_S_lm_oxy <- lm(log(row_sum) ~ oxygen_median, data = SR_env[stratified_lakes,])
+SD_logSRic_S_am_oxy <- aov(log(row_sum) ~ oxygen_median, data = SR_env[stratified_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_S_lm_oxy))
+shapiro.test(residuals(SD_logSRic_S_am_oxy))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_S_lm_oxy)
+    ## data:  residuals(SD_logSRic_S_am_oxy)
     ## W = 0.97567, p-value = 0.9384
 
 ``` r
@@ -2139,424 +2256,212 @@ p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 
 ``` r
 # Summarize OM lm results
-summary(SD_logSRic_OM_lm_temp)
+summary(SD_logSRic_OM_am_temp)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ temperature_median, data = SR_env[ocean_mixed_sites_env, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -0.96281 -0.20516  0.06016  0.30303  0.71824 
-    ## 
-    ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)         4.73111    8.45610   0.559    0.589
-    ## temperature_median -0.02668    0.27722  -0.096    0.925
-    ## 
-    ## Residual standard error: 0.5792 on 9 degrees of freedom
-    ## Multiple R-squared:  0.001028,   Adjusted R-squared:  -0.11 
-    ## F-statistic: 0.009266 on 1 and 9 DF,  p-value: 0.9254
+    ##                    Df Sum Sq Mean Sq F value Pr(>F)
+    ## temperature_median  1 0.0031  0.0031   0.009  0.927
+    ## Site_type           1 0.2209  0.2209   0.631  0.450
+    ## Residuals           8 2.7986  0.3498
 
 ``` r
-summary(SD_logSRic_OM_lm_sal)
+summary(SD_logSRic_OM_am_sal)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ salinity_median, data = SR_env[ocean_mixed_sites_env, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -0.7043 -0.2713 -0.1286  0.2625  0.7790 
-    ## 
-    ## Coefficients:
-    ##                 Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)     -20.9765    10.8997  -1.924   0.0864 .
-    ## salinity_median   0.7524     0.3294   2.284   0.0482 *
+    ##                 Df Sum Sq Mean Sq F value Pr(>F)  
+    ## salinity_median  1 1.1092  1.1092   4.765 0.0606 .
+    ## Site_type        1 0.0513  0.0513   0.220 0.6514  
+    ## Residuals        8 1.8622  0.2328                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.4611 on 9 degrees of freedom
-    ## Multiple R-squared:  0.367,  Adjusted R-squared:  0.2966 
-    ## F-statistic: 5.217 on 1 and 9 DF,  p-value: 0.04824
 
 ``` r
-summary(SD_logSRic_OM_lm_oxy)
+summary(SD_logSRic_OM_am_oxy)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ oxygen_median, data = SR_env[ocean_mixed_sites_env, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -0.87884 -0.17418 -0.03221  0.25409  0.70010 
-    ## 
-    ## Coefficients:
-    ##               Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)     1.0027     1.2567   0.798   0.4455  
-    ## oxygen_median   0.5985     0.2565   2.333   0.0445 *
+    ##               Df Sum Sq Mean Sq F value Pr(>F)  
+    ## oxygen_median  1 1.1393  1.1393   5.159 0.0528 .
+    ## Site_type      1 0.1166  0.1166   0.528 0.4881  
+    ## Residuals      8 1.7667  0.2208                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.4574 on 9 degrees of freedom
-    ## Multiple R-squared:  0.3769, Adjusted R-squared:  0.3077 
-    ## F-statistic: 5.445 on 1 and 9 DF,  p-value: 0.0445
 
 ``` r
 # p-values
-temp_p_values <- summary(SD_logSRic_OM_lm_temp)$coefficients[, "Pr(>|t|)"]
-sal_p_values <- summary(SD_logSRic_OM_lm_sal)$coefficients[, "Pr(>|t|)"]
-oxy_p_values <- summary(SD_logSRic_OM_lm_oxy)$coefficients[, "Pr(>|t|)"]
+temp_p_values <- summary(SD_logSRic_OM_am_temp)$coefficients[, "Pr(>|t|)"]
+sal_p_values <- summary(SD_logSRic_OM_am_sal)$coefficients[, "Pr(>|t|)"]
+oxy_p_values <- summary(SD_logSRic_OM_am_oxy)$coefficients[, "Pr(>|t|)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ##        (Intercept) temperature_median        (Intercept)    salinity_median 
-    ##          1.0000000          1.0000000          0.5185914          0.2894393 
-    ##        (Intercept)      oxygen_median 
-    ##          1.0000000          0.2670139
+    ## numeric(0)
 
 ``` r
 # Summarize OS lm results
-summary(SD_logSRic_OS_lm_temp)
+summary(SD_logSRic_OS_am_temp)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ temperature_median, data = SR_env[ocean_stratified_sites_env, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -1.6842 -0.9443 -0.3813  0.9585  2.1365 
-    ## 
-    ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)          6.2834     9.4170   0.667    0.521
-    ## temperature_median  -0.1247     0.3024  -0.412    0.690
-    ## 
-    ## Residual standard error: 1.334 on 9 degrees of freedom
-    ## Multiple R-squared:  0.01855,    Adjusted R-squared:  -0.0905 
-    ## F-statistic: 0.1701 on 1 and 9 DF,  p-value: 0.6897
-
-``` r
-summary(SD_logSRic_OS_lm_sal)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ salinity_median, data = SR_env[ocean_stratified_sites_env, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -1.0945 -0.4396  0.1181  0.4071  0.8393 
-    ## 
-    ## Coefficients:
-    ##                 Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)     -5.66001    1.46076  -3.875 0.003762 ** 
-    ## salinity_median  0.27705    0.04975   5.569 0.000348 ***
+    ##                    Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## temperature_median  1  0.303   0.303   0.613 0.45604   
+    ## Site_type           1 12.076  12.076  24.463 0.00113 **
+    ## Residuals           8  3.949   0.494                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.6388 on 9 degrees of freedom
-    ## Multiple R-squared:  0.775,  Adjusted R-squared:  0.7501 
-    ## F-statistic: 31.01 on 1 and 9 DF,  p-value: 0.000348
 
 ``` r
-summary(SD_logSRic_OS_lm_oxy)
+summary(SD_logSRic_OS_am_sal)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ oxygen_median, data = SR_env[ocean_stratified_sites_env, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -1.3638 -0.8346 -0.2422  0.7962  1.6273 
-    ## 
-    ## Coefficients:
-    ##               Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)     0.1744     1.1142   0.157   0.8791  
-    ## oxygen_median   0.5858     0.2794   2.096   0.0655 .
+    ##                 Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## salinity_median  1 12.655  12.655   65.19 4.09e-05 ***
+    ## Site_type        1  2.120   2.120   10.92   0.0108 *  
+    ## Residuals        8  1.553   0.194                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 1.104 on 9 degrees of freedom
-    ## Multiple R-squared:  0.3281, Adjusted R-squared:  0.2534 
-    ## F-statistic: 4.394 on 1 and 9 DF,  p-value: 0.06552
+
+``` r
+summary(SD_logSRic_OS_am_oxy)
+```
+
+    ##               Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## oxygen_median  1  5.357   5.357   17.30 0.003167 ** 
+    ## Site_type      1  8.495   8.495   27.44 0.000785 ***
+    ## Residuals      8  2.477   0.310                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
 # p-values
-temp_p_values <- summary(SD_logSRic_OS_lm_temp)$coefficients[, "Pr(>|t|)"]
-sal_p_values <- summary(SD_logSRic_OS_lm_sal)$coefficients[, "Pr(>|t|)"]
-oxy_p_values <- summary(SD_logSRic_OS_lm_oxy)$coefficients[, "Pr(>|t|)"]
+temp_p_values <- summary(SD_logSRic_OS_am_temp)$coefficients[, "Pr(>|t|)"]
+sal_p_values <- summary(SD_logSRic_OS_am_sal)$coefficients[, "Pr(>|t|)"]
+oxy_p_values <- summary(SD_logSRic_OS_am_oxy)$coefficients[, "Pr(>|t|)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ##        (Intercept) temperature_median        (Intercept)    salinity_median 
-    ##         1.00000000         1.00000000         0.02257043         0.00208819 
-    ##        (Intercept)      oxygen_median 
-    ##         1.00000000         0.39309545
+    ## numeric(0)
 
 ``` r
 # Summarize MS lm results
-summary(SD_logSRic_MS_lm_temp)
+summary(SD_logSRic_MS_am_temp)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ temperature_median, data = SR_env[mixed_stratified_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -2.67398 -0.76481  0.03142  1.14502  1.51529 
-    ## 
-    ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)         13.7312     7.8634   1.746    0.103
-    ## temperature_median  -0.3547     0.2549  -1.392    0.186
-    ## 
-    ## Residual standard error: 1.222 on 14 degrees of freedom
-    ## Multiple R-squared:  0.1216, Adjusted R-squared:  0.05881 
-    ## F-statistic: 1.937 on 1 and 14 DF,  p-value: 0.1857
-
-``` r
-summary(SD_logSRic_MS_lm_sal)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ salinity_median, data = SR_env[mixed_stratified_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -1.14977 -0.46801  0.01146  0.48646  1.02783 
-    ## 
-    ## Coefficients:
-    ##                 Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)     -6.12581    1.35859  -4.509 0.000491 ***
-    ## salinity_median  0.29543    0.04468   6.612 1.17e-05 ***
+    ##                    Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## temperature_median  1  2.891   2.891   5.876 0.030668 *  
+    ## Site_type           1 14.497  14.497  29.465 0.000115 ***
+    ## Residuals          13  6.396   0.492                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.6419 on 14 degrees of freedom
-    ## Multiple R-squared:  0.7575, Adjusted R-squared:  0.7401 
-    ## F-statistic: 43.72 on 1 and 14 DF,  p-value: 1.166e-05
 
 ``` r
-summary(SD_logSRic_MS_lm_oxy)
+summary(SD_logSRic_MS_am_sal)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ oxygen_median, data = SR_env[mixed_stratified_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -1.6845 -0.8491  0.1892  0.8371  1.6275 
-    ## 
-    ## Coefficients:
-    ##               Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)   -0.08939    1.13563  -0.079   0.9384  
-    ## oxygen_median  0.73542    0.28145   2.613   0.0205 *
+    ##                 Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## salinity_median  1 18.016  18.016  63.141 2.41e-06 ***
+    ## Site_type        1  2.060   2.060   7.218   0.0187 *  
+    ## Residuals       13  3.709   0.285                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 1.069 on 14 degrees of freedom
-    ## Multiple R-squared:  0.3278, Adjusted R-squared:  0.2798 
-    ## F-statistic: 6.827 on 1 and 14 DF,  p-value: 0.02046
+
+``` r
+summary(SD_logSRic_MS_am_oxy)
+```
+
+    ##               Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## oxygen_median  1  7.797   7.797   16.84 0.001245 ** 
+    ## Site_type      1  9.969   9.969   21.53 0.000463 ***
+    ## Residuals     13  6.019   0.463                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
 # p-values
-temp_p_values <- summary(SD_logSRic_MS_lm_temp)$coefficients[, "Pr(>|t|)"]
-sal_p_values <- summary(SD_logSRic_MS_lm_sal)$coefficients[, "Pr(>|t|)"]
-oxy_p_values <- summary(SD_logSRic_MS_lm_oxy)$coefficients[, "Pr(>|t|)"]
+temp_p_values <- summary(SD_logSRic_MS_am_temp)$coefficients[, "Pr(>|t|)"]
+sal_p_values <- summary(SD_logSRic_MS_am_sal)$coefficients[, "Pr(>|t|)"]
+oxy_p_values <- summary(SD_logSRic_MS_am_oxy)$coefficients[, "Pr(>|t|)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ##        (Intercept) temperature_median        (Intercept)    salinity_median 
-    ##       6.159917e-01       1.000000e+00       2.944362e-03       6.994747e-05 
-    ##        (Intercept)      oxygen_median 
-    ##       1.000000e+00       1.227344e-01
+    ## numeric(0)
 
 ``` r
 # Summarize M lm results
-summary(SD_logSRic_M_lm_temp)
+summary(SD_logSRic_M_am_temp)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ temperature_median, data = SR_env[mixed_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -0.9648 -0.3696  0.2605  0.3674  0.5878 
-    ## 
-    ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)         13.1856    11.8770   1.110    0.309
-    ## temperature_median  -0.3075     0.3906  -0.787    0.461
-    ## 
-    ## Residual standard error: 0.6341 on 6 degrees of freedom
-    ## Multiple R-squared:  0.09365,    Adjusted R-squared:  -0.05741 
-    ## F-statistic:  0.62 on 1 and 6 DF,  p-value: 0.461
+    ##                    Df Sum Sq Mean Sq F value Pr(>F)
+    ## temperature_median  1 0.2493  0.2493    0.62  0.461
+    ## Residuals           6 2.4126  0.4021
 
 ``` r
-summary(SD_logSRic_M_lm_sal)
+summary(SD_logSRic_M_am_sal)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ salinity_median, data = SR_env[mixed_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -0.7282 -0.2657 -0.1268  0.3259  0.7302 
-    ## 
-    ## Coefficients:
-    ##                 Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)     -25.4735    15.7070  -1.622    0.156
-    ## salinity_median   0.8900     0.4769   1.866    0.111
-    ## 
-    ## Residual standard error: 0.5298 on 6 degrees of freedom
-    ## Multiple R-squared:  0.3672, Adjusted R-squared:  0.2618 
-    ## F-statistic: 3.482 on 1 and 6 DF,  p-value: 0.1113
+    ##                 Df Sum Sq Mean Sq F value Pr(>F)
+    ## salinity_median  1 0.9776  0.9776   3.482  0.111
+    ## Residuals        6 1.6843  0.2807
 
 ``` r
-summary(SD_logSRic_M_lm_oxy)
+summary(SD_logSRic_M_am_oxy)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ oxygen_median, data = SR_env[mixed_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -0.9356 -0.3015  0.1095  0.3326  0.6069 
-    ## 
-    ## Coefficients:
-    ##               Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)     0.3249     2.0200   0.161    0.877
-    ## oxygen_median   0.7544     0.4321   1.746    0.131
-    ## 
-    ## Residual standard error: 0.5424 on 6 degrees of freedom
-    ## Multiple R-squared:  0.3369, Adjusted R-squared:  0.2263 
-    ## F-statistic: 3.048 on 1 and 6 DF,  p-value: 0.1315
+    ##               Df Sum Sq Mean Sq F value Pr(>F)
+    ## oxygen_median  1 0.8967  0.8967   3.048  0.131
+    ## Residuals      6 1.7652  0.2942
 
 ``` r
 # p-values
-temp_p_values <- summary(SD_logSRic_M_lm_temp)$coefficients[, "Pr(>|t|)"]
-sal_p_values <- summary(SD_logSRic_M_lm_sal)$coefficients[, "Pr(>|t|)"]
-oxy_p_values <- summary(SD_logSRic_M_lm_oxy)$coefficients[, "Pr(>|t|)"]
+temp_p_values <- summary(SD_logSRic_M_am_temp)$coefficients[, "Pr(>|t|)"]
+sal_p_values <- summary(SD_logSRic_M_am_sal)$coefficients[, "Pr(>|t|)"]
+oxy_p_values <- summary(SD_logSRic_M_am_oxy)$coefficients[, "Pr(>|t|)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ##        (Intercept) temperature_median        (Intercept)    salinity_median 
-    ##          1.0000000          1.0000000          0.9358491          0.6676572 
-    ##        (Intercept)      oxygen_median 
-    ##          1.0000000          0.7887049
+    ## numeric(0)
 
 ``` r
 # Summarize S lm results
-summary(SD_logSRic_S_lm_temp)
+summary(SD_logSRic_S_am_temp)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ temperature_median, data = SR_env[stratified_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -0.6961 -0.6414 -0.1377  0.3152  1.1212 
-    ## 
-    ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)         2.15617    5.95484   0.362    0.730
-    ## temperature_median -0.01287    0.19029  -0.068    0.948
-    ## 
-    ## Residual standard error: 0.7942 on 6 degrees of freedom
-    ## Multiple R-squared:  0.0007622,  Adjusted R-squared:  -0.1658 
-    ## F-statistic: 0.004577 on 1 and 6 DF,  p-value: 0.9483
+    ##                    Df Sum Sq Mean Sq F value Pr(>F)
+    ## temperature_median  1  0.003  0.0029   0.005  0.948
+    ## Residuals           6  3.785  0.6308
 
 ``` r
-summary(SD_logSRic_S_lm_sal)
+summary(SD_logSRic_S_am_sal)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ salinity_median, data = SR_env[stratified_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -0.80394 -0.25450  0.08486  0.20591  0.61488 
-    ## 
-    ## Coefficients:
-    ##                 Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)      -2.8486     1.4407  -1.977   0.0954 .
-    ## salinity_median   0.1676     0.0521   3.217   0.0182 *
+    ##                 Df Sum Sq Mean Sq F value Pr(>F)  
+    ## salinity_median  1  2.398  2.3977   10.35 0.0182 *
+    ## Residuals        6  1.390  0.2317                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.4813 on 6 degrees of freedom
-    ## Multiple R-squared:  0.633,  Adjusted R-squared:  0.5718 
-    ## F-statistic: 10.35 on 1 and 6 DF,  p-value: 0.01821
 
 ``` r
-summary(SD_logSRic_S_lm_oxy)
+summary(SD_logSRic_S_am_oxy)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ oxygen_median, data = SR_env[stratified_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -0.97730 -0.24042  0.08955  0.24152  0.77904 
-    ## 
-    ## Coefficients:
-    ##               Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)     3.8265     0.9107   4.202  0.00567 **
-    ## oxygen_median  -0.6498     0.2783  -2.335  0.05824 . 
+    ##               Df Sum Sq Mean Sq F value Pr(>F)  
+    ## oxygen_median  1  1.803  1.8034   5.453 0.0582 .
+    ## Residuals      6  1.984  0.3307                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.5751 on 6 degrees of freedom
-    ## Multiple R-squared:  0.4761, Adjusted R-squared:  0.3888 
-    ## F-statistic: 5.453 on 1 and 6 DF,  p-value: 0.05824
 
 ``` r
 # p-values
-temp_p_values <- summary(SD_logSRic_S_lm_temp)$coefficients[, "Pr(>|t|)"]
-sal_p_values <- summary(SD_logSRic_S_lm_sal)$coefficients[, "Pr(>|t|)"]
-oxy_p_values <- summary(SD_logSRic_S_lm_oxy)$coefficients[, "Pr(>|t|)"]
+temp_p_values <- summary(SD_logSRic_S_am_temp)$coefficients[, "Pr(>|t|)"]
+sal_p_values <- summary(SD_logSRic_S_am_sal)$coefficients[, "Pr(>|t|)"]
+oxy_p_values <- summary(SD_logSRic_S_am_oxy)$coefficients[, "Pr(>|t|)"]
 p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ##        (Intercept) temperature_median        (Intercept)    salinity_median 
-    ##         1.00000000         1.00000000         0.57239624         0.10924398 
-    ##        (Intercept)      oxygen_median 
-    ##         0.03404202         0.34941657
+    ## numeric(0)
 
 ``` r
 #### Geographical
@@ -2668,97 +2573,134 @@ plot(SD_logSRic_am_dist)
 
 ``` r
 ### Ocean & Mixed sites
-SD_logSRic_OM_lm_dist <- lm(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[ocean_mixed_sites,])
+SD_logSRic_OM_am_dist <- aov(log(row_sum) ~ distance_to_ocean_min_m * Site_type, data = SR_env[ocean_mixed_sites,])
+summary(SD_logSRic_OM_am_dist)
+```
+
+    ##                                   Df Sum Sq Mean Sq F value Pr(>F)
+    ## distance_to_ocean_min_m            1  0.071  0.0712   0.190  0.672
+    ## Site_type                          1  0.076  0.0763   0.203  0.662
+    ## distance_to_ocean_min_m:Site_type  1  0.055  0.0554   0.147  0.709
+    ## Residuals                         10  3.757  0.3757
+
+``` r
+SD_logSRic_OM_am_dist <- aov(log(row_sum) ~ distance_to_ocean_min_m + Site_type, data = SR_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_OM_lm_dist))
+shapiro.test(residuals(SD_logSRic_OM_am_dist))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_OM_lm_dist)
-    ## W = 0.91719, p-value = 0.2003
+    ## data:  residuals(SD_logSRic_OM_am_dist)
+    ## W = 0.94615, p-value = 0.5028
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OM_lm_dist) ~ SR_env[ocean_mixed_sites,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OM_am_dist) ~ SR_env[ocean_mixed_sites,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.1906 0.6702
+    ## group  1  0.1052 0.7513
     ##       12
 
 ``` r
 ### Ocean & Stratified sites
-SD_logSRic_OS_lm_dist <- lm(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[ocean_stratified_sites,])
+SD_logSRic_OS_am_dist <- aov(log(row_sum) ~ distance_to_ocean_min_m * Site_type, data = SR_env[ocean_stratified_sites,])
+summary(SD_logSRic_OS_am_dist)
+```
+
+    ##                                   Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## distance_to_ocean_min_m            1 14.817  14.817  39.938 8.68e-05 ***
+    ## Site_type                          1  1.791   1.791   4.827   0.0527 .  
+    ## distance_to_ocean_min_m:Site_type  1  0.066   0.066   0.177   0.6830    
+    ## Residuals                         10  3.710   0.371                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_OS_am_dist <- aov(log(row_sum) ~ distance_to_ocean_min_m + Site_type, data = SR_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_OS_lm_dist))
+shapiro.test(residuals(SD_logSRic_OS_am_dist))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_OS_lm_dist)
-    ## W = 0.92442, p-value = 0.2545
+    ## data:  residuals(SD_logSRic_OS_am_dist)
+    ## W = 0.94979, p-value = 0.5574
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OS_lm_dist) ~ SR_env[ocean_stratified_sites,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OS_am_dist) ~ SR_env[ocean_stratified_sites,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.4236 0.5274
+    ## group  1  0.2878 0.6014
     ##       12
 
 ``` r
 ### Mixed & Stratified lakes
-SD_logSRic_MS_lm_dist <- lm(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_am_dist <- aov(log(row_sum) ~ distance_to_ocean_min_m * Site_type, data = SR_env[mixed_stratified_lakes,])
+summary(SD_logSRic_MS_am_dist)
+```
+
+    ##                                   Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## distance_to_ocean_min_m            1 12.814  12.814  31.294 0.000117 ***
+    ## Site_type                          1  6.055   6.055  14.788 0.002329 ** 
+    ## distance_to_ocean_min_m:Site_type  1  0.003   0.003   0.007 0.934494    
+    ## Residuals                         12  4.914   0.409                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_MS_am_dist <- aov(log(row_sum) ~ distance_to_ocean_min_m + Site_type, data = SR_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_MS_lm_dist))
+shapiro.test(residuals(SD_logSRic_MS_am_dist))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_MS_lm_dist)
-    ## W = 0.95495, p-value = 0.5718
+    ## data:  residuals(SD_logSRic_MS_am_dist)
+    ## W = 0.96462, p-value = 0.7457
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_MS_lm_dist) ~ SR_env[mixed_stratified_lakes,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_MS_am_dist) ~ SR_env[mixed_stratified_lakes,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.7787 0.3924
+    ## group  1  0.0556  0.817
     ##       14
 
 ``` r
 ### Mixed lakes
-SD_logSRic_M_lm_dist <- lm(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[mixed_lakes,])
+SD_logSRic_M_am_dist <- aov(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[mixed_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_M_lm_dist))
+shapiro.test(residuals(SD_logSRic_M_am_dist))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_M_lm_dist)
+    ## data:  residuals(SD_logSRic_M_am_dist)
     ## W = 0.94971, p-value = 0.7083
 
 ``` r
 ### Stratified lakes
-SD_logSRic_S_lm_dist <- lm(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[stratified_lakes,])
+SD_logSRic_S_am_dist <- aov(log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[stratified_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_S_lm_dist))
+shapiro.test(residuals(SD_logSRic_S_am_dist))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_S_lm_dist)
+    ## data:  residuals(SD_logSRic_S_am_dist)
     ## W = 0.96689, p-value = 0.8726
 
 ``` r
@@ -2866,97 +2808,136 @@ plot(SD_logSRic_am_mxd)
 
 ``` r
 ### Ocean & Mixed sites
-SD_logSRic_OM_lm_mxd <- lm(log(row_sum) ~ max_depth, data = SR_env[ocean_mixed_sites,])
+SD_logSRic_OM_am_mxd <- aov(log(row_sum) ~ max_depth * Site_type, data = SR_env[ocean_mixed_sites,])
+summary(SD_logSRic_OM_am_mxd)
+```
+
+    ##                     Df Sum Sq Mean Sq F value Pr(>F)  
+    ## max_depth            1 1.6952  1.6952   7.879 0.0186 *
+    ## Site_type            1 0.0010  0.0010   0.004 0.9483  
+    ## max_depth:Site_type  1 0.1124  0.1124   0.522 0.4864  
+    ## Residuals           10 2.1514  0.2151                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_OM_am_mxd <- aov(log(row_sum) ~ max_depth + Site_type, data = SR_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_OM_lm_mxd))
+shapiro.test(residuals(SD_logSRic_OM_am_mxd))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_OM_lm_mxd)
-    ## W = 0.92317, p-value = 0.2441
+    ## data:  residuals(SD_logSRic_OM_am_mxd)
+    ## W = 0.92331, p-value = 0.2453
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OM_lm_mxd) ~ SR_env[ocean_mixed_sites,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OM_am_mxd) ~ SR_env[ocean_mixed_sites,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.2913 0.5993
+    ## group  1  0.2914 0.5992
     ##       12
 
 ``` r
 ### Ocean & Stratified sites
-SD_logSRic_OS_lm_mxd <- lm(log(row_sum) ~ max_depth, data = SR_env[ocean_stratified_sites,])
+SD_logSRic_OS_am_mxd <- aov(log(row_sum) ~ max_depth * Site_type, data = SR_env[ocean_stratified_sites,])
+summary(SD_logSRic_OS_am_mxd)
+```
+
+    ##                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## max_depth            1  1.166   1.166   2.562 0.140513    
+    ## Site_type            1 14.375  14.375  31.590 0.000221 ***
+    ## max_depth:Site_type  1  0.291   0.291   0.641 0.442124    
+    ## Residuals           10  4.550   0.455                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_OS_am_mxd <- aov(log(row_sum) ~ max_depth + Site_type, data = SR_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_OS_lm_mxd))
+shapiro.test(residuals(SD_logSRic_OS_am_mxd))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_OS_lm_mxd)
-    ## W = 0.96521, p-value = 0.8069
+    ## data:  residuals(SD_logSRic_OS_am_mxd)
+    ## W = 0.93288, p-value = 0.3347
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OS_lm_mxd) ~ SR_env[ocean_stratified_sites,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OS_am_mxd) ~ SR_env[ocean_stratified_sites,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0536 0.8209
+    ## group  1  0.6516 0.4353
     ##       12
 
 ``` r
 ### Mixed & Stratified lakes
-SD_logSRic_MS_lm_mxd <- lm(log(row_sum) ~ max_depth, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_am_mxd <- aov(log(row_sum) ~ max_depth * Site_type, data = SR_env[mixed_stratified_lakes,])
+summary(SD_logSRic_MS_am_mxd)
+```
+
+    ##                     Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## max_depth            1  1.817   1.817   4.215   0.0625 .  
+    ## Site_type            1 16.023  16.023  37.164 5.37e-05 ***
+    ## max_depth:Site_type  1  0.771   0.771   1.788   0.2059    
+    ## Residuals           12  5.174   0.431                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_MS_am_mxd <- aov(log(row_sum) ~ max_depth + Site_type, data = SR_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_MS_lm_mxd))
+shapiro.test(residuals(SD_logSRic_MS_am_mxd))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_MS_lm_mxd)
-    ## W = 0.94236, p-value = 0.3789
+    ## data:  residuals(SD_logSRic_MS_am_mxd)
+    ## W = 0.94087, p-value = 0.3598
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_MS_lm_mxd) ~ SR_env[mixed_stratified_lakes,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_MS_am_mxd) ~ SR_env[mixed_stratified_lakes,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0044 0.9479
+    ## group  1  0.3162 0.5828
     ##       14
 
 ``` r
 ### Mixed lakes
-SD_logSRic_M_lm_mxd <- lm(log(row_sum) ~ max_depth, data = SR_env[mixed_lakes,])
+SD_logSRic_M_am_mxd <- aov(log(row_sum) ~ max_depth, data = SR_env[mixed_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_M_lm_mxd))
+shapiro.test(residuals(SD_logSRic_M_am_mxd))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_M_lm_mxd)
+    ## data:  residuals(SD_logSRic_M_am_mxd)
     ## W = 0.88788, p-value = 0.2236
 
 ``` r
 ### Stratified lakes
-SD_logSRic_S_lm_mxd <- lm(log(row_sum) ~ max_depth, data = SR_env[stratified_lakes,])
+SD_logSRic_S_am_mxd <- aov(log(row_sum) ~ max_depth, data = SR_env[stratified_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_S_lm_mxd))
+shapiro.test(residuals(SD_logSRic_S_am_mxd))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_S_lm_mxd)
+    ## data:  residuals(SD_logSRic_S_am_mxd)
     ## W = 0.81243, p-value = 0.03882
 
 ``` r
@@ -3064,97 +3045,136 @@ plot(SD_logSRic_am_lga)
 
 ``` r
 ### Ocean & Mixed sites
-SD_logSRic_OM_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[ocean_mixed_sites,])
+SD_logSRic_OM_am_lga <- aov(log(row_sum) ~ logArea * Site_type, data = SR_env[ocean_mixed_sites,])
+summary(SD_logSRic_OM_am_lga)
+```
+
+    ##                   Df Sum Sq Mean Sq F value Pr(>F)  
+    ## logArea            1 0.6565  0.6565   3.147 0.1065  
+    ## Site_type          1 0.1381  0.1381   0.662 0.4348  
+    ## logArea:Site_type  1 1.0791  1.0791   5.173 0.0462 *
+    ## Residuals         10 2.0862  0.2086                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_OM_am_lga <- aov(log(row_sum) ~ logArea + Site_type, data = SR_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_OM_lm_lga))
+shapiro.test(residuals(SD_logSRic_OM_am_lga))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_OM_lm_lga)
-    ## W = 0.89788, p-value = 0.1051
+    ## data:  residuals(SD_logSRic_OM_am_lga)
+    ## W = 0.88016, p-value = 0.05841
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OM_lm_lga) ~ SR_env[ocean_mixed_sites,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OM_am_lga) ~ SR_env[ocean_mixed_sites,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0034 0.9543
+    ## group  1  0.0289 0.8679
     ##       12
 
 ``` r
 ### Ocean & Stratified sites
-SD_logSRic_OS_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[ocean_stratified_sites,])
+SD_logSRic_OS_am_lga <- aov(log(row_sum) ~ logArea * Site_type, data = SR_env[ocean_stratified_sites,])
+summary(SD_logSRic_OS_am_lga)
+```
+
+    ##                   Df Sum Sq Mean Sq F value  Pr(>F)    
+    ## logArea            1  2.487   2.487   4.914 0.05097 .  
+    ## Site_type          1 12.831  12.831  25.354 0.00051 ***
+    ## logArea:Site_type  1  0.005   0.005   0.010 0.92382    
+    ## Residuals         10  5.061   0.506                    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_OS_am_lga <- aov(log(row_sum) ~ logArea + Site_type, data = SR_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_OS_lm_lga))
+shapiro.test(residuals(SD_logSRic_OS_am_lga))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_OS_lm_lga)
-    ## W = 0.92685, p-value = 0.2754
+    ## data:  residuals(SD_logSRic_OS_am_lga)
+    ## W = 0.89998, p-value = 0.1127
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_OS_lm_lga) ~ SR_env[ocean_stratified_sites,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_OS_am_lga) ~ SR_env[ocean_stratified_sites,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0291 0.8674
+    ## group  1  0.4666 0.5075
     ##       12
 
 ``` r
 ### Mixed & Stratified lakes
-SD_logSRic_MS_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[mixed_stratified_lakes,])
+SD_logSRic_MS_am_lga <- aov(log(row_sum) ~ logArea * Site_type, data = SR_env[mixed_stratified_lakes,])
+summary(SD_logSRic_MS_am_lga)
+```
+
+    ##                   Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## logArea            1  0.004   0.004   0.010    0.924    
+    ## Site_type          1 18.456  18.456  48.133 1.57e-05 ***
+    ## logArea:Site_type  1  0.724   0.724   1.888    0.195    
+    ## Residuals         12  4.601   0.383                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+SD_logSRic_MS_am_lga <- aov(log(row_sum) ~ logArea + Site_type, data = SR_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_MS_lm_lga))
+shapiro.test(residuals(SD_logSRic_MS_am_lga))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_MS_lm_lga)
-    ## W = 0.9034, p-value = 0.09113
+    ## data:  residuals(SD_logSRic_MS_am_lga)
+    ## W = 0.93763, p-value = 0.321
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(SD_logSRic_MS_lm_lga) ~ SR_env[mixed_stratified_lakes,"Site_type"])
+car::leveneTest(residuals(SD_logSRic_MS_am_lga) ~ SR_env[mixed_stratified_lakes,"Site_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0707 0.7942
+    ## group  1   1.588 0.2282
     ##       14
 
 ``` r
 ### Mixed lakes
-SD_logSRic_M_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[mixed_lakes,])
+SD_logSRic_M_am_lga <- aov(log(row_sum) ~ logArea, data = SR_env[mixed_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_M_lm_lga))
+shapiro.test(residuals(SD_logSRic_M_am_lga))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_M_lm_lga)
+    ## data:  residuals(SD_logSRic_M_am_lga)
     ## W = 0.60724, p-value = 0.0001932
 
 ``` r
 ### Stratified lakes
-SD_logSRic_S_lm_lga <- lm(log(row_sum) ~ logArea, data = SR_env[stratified_lakes,])
+SD_logSRic_S_am_lga <- aov(log(row_sum) ~ logArea, data = SR_env[stratified_lakes,])
 # Shapiro-Wilk test on residuals
-shapiro.test(residuals(SD_logSRic_S_lm_lga))
+shapiro.test(residuals(SD_logSRic_S_am_lga))
 ```
 
     ## 
     ##  Shapiro-Wilk normality test
     ## 
-    ## data:  residuals(SD_logSRic_S_lm_lga)
+    ## data:  residuals(SD_logSRic_S_am_lga)
     ## W = 0.81243, p-value = 0.03882
 
 ``` r
@@ -3244,432 +3264,210 @@ p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 
 ``` r
 # Summarize OM lm results
-summary(SD_logSRic_OM_lm_dist)
+summary(SD_logSRic_OM_am_dist)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[ocean_mixed_sites, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -0.7909 -0.5330  0.1024  0.3516  0.9163 
-    ## 
-    ## Coefficients:
-    ##                          Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)              3.922731   0.219256  17.891  5.1e-10 ***
-    ## distance_to_ocean_min_m -0.001820   0.003881  -0.469    0.648    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.5693 on 12 degrees of freedom
-    ## Multiple R-squared:  0.01799,    Adjusted R-squared:  -0.06384 
-    ## F-statistic: 0.2198 on 1 and 12 DF,  p-value: 0.6476
+    ##                         Df Sum Sq Mean Sq F value Pr(>F)
+    ## distance_to_ocean_min_m  1  0.071  0.0712   0.206  0.659
+    ## Site_type                1  0.076  0.0763   0.220  0.648
+    ## Residuals               11  3.812  0.3466
 
 ``` r
-summary(SD_logSRic_OM_lm_mxd)
+summary(SD_logSRic_OM_am_mxd)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ max_depth, data = SR_env[ocean_mixed_sites, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -0.5589 -0.2425 -0.1254  0.2306  0.7205 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)  3.35682    0.20104  16.697 1.13e-09 ***
-    ## max_depth    0.03663    0.01222   2.997   0.0111 *  
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## max_depth    1  1.695  1.6952   8.237 0.0152 *
+    ## Site_type    1  0.001  0.0010   0.005 0.9470  
+    ## Residuals   11  2.264  0.2058                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.4344 on 12 degrees of freedom
-    ## Multiple R-squared:  0.4281, Adjusted R-squared:  0.3804 
-    ## F-statistic: 8.982 on 1 and 12 DF,  p-value: 0.01113
 
 ``` r
-summary(SD_logSRic_OM_lm_lga)
+summary(SD_logSRic_OM_am_lga)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ logArea, data = SR_env[ocean_mixed_sites, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -1.0066 -0.3559  0.2006  0.3155  0.7021 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)  2.76905    0.71306   3.883  0.00217 **
-    ## logArea      0.10260    0.06644   1.544  0.14847   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.5247 on 12 degrees of freedom
-    ## Multiple R-squared:  0.1658, Adjusted R-squared:  0.09627 
-    ## F-statistic: 2.385 on 1 and 12 DF,  p-value: 0.1485
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## logArea      1  0.656  0.6565   2.281  0.159
+    ## Site_type    1  0.138  0.1381   0.480  0.503
+    ## Residuals   11  3.165  0.2878
 
 ``` r
 # p-values
-dist_p_values <- summary(SD_logSRic_OM_lm_dist)$coefficients[, "Pr(>|t|)"]
-mxd_p_values <- summary(SD_logSRic_OM_lm_mxd)$coefficients[, "Pr(>|t|)"]
-lga_p_values <- summary(SD_logSRic_OM_lm_lga)$coefficients[, "Pr(>|t|)"]
+dist_p_values <- summary(SD_logSRic_OM_am_dist)$coefficients[, "Pr(>|t|)"]
+mxd_p_values <- summary(SD_logSRic_OM_am_mxd)$coefficients[, "Pr(>|t|)"]
+lga_p_values <- summary(SD_logSRic_OM_am_lga)$coefficients[, "Pr(>|t|)"]
 p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ##             (Intercept) distance_to_ocean_min_m             (Intercept) 
-    ##            3.060843e-09            1.000000e+00            6.804972e-09 
-    ##               max_depth             (Intercept)                 logArea 
-    ##            6.676581e-02            1.304794e-02            8.908460e-01
+    ## numeric(0)
 
 ``` r
 # Summarize OS lm results
-summary(SD_logSRic_OS_lm_dist)
+summary(SD_logSRic_OS_am_dist)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[ocean_stratified_sites, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -1.4070 -0.3849  0.2322  0.5148  0.7964 
-    ## 
-    ## Coefficients:
-    ##                         Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)              3.66955    0.25514  14.382 6.28e-09 ***
-    ## distance_to_ocean_min_m -0.01119    0.00198  -5.652 0.000107 ***
+    ##                         Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## distance_to_ocean_min_m  1 14.817  14.817  43.168 4.02e-05 ***
+    ## Site_type                1  1.791   1.791   5.218   0.0432 *  
+    ## Residuals               11  3.776   0.343                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.6811 on 12 degrees of freedom
-    ## Multiple R-squared:  0.7269, Adjusted R-squared:  0.7042 
-    ## F-statistic: 31.94 on 1 and 12 DF,  p-value: 0.000107
 
 ``` r
-summary(SD_logSRic_OS_lm_mxd)
+summary(SD_logSRic_OS_am_mxd)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ max_depth, data = SR_env[ocean_stratified_sites, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -1.91221 -1.08760  0.08991  0.94071  2.17920 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)  3.13151    0.64875   4.827 0.000414 ***
-    ## max_depth   -0.02414    0.02829  -0.853 0.410201    
+    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## max_depth    1  1.166   1.166   2.649 0.131893    
+    ## Site_type    1 14.375  14.375  32.658 0.000135 ***
+    ## Residuals   11  4.842   0.440                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 1.265 on 12 degrees of freedom
-    ## Multiple R-squared:  0.05721,    Adjusted R-squared:  -0.02136 
-    ## F-statistic: 0.7281 on 1 and 12 DF,  p-value: 0.4102
 
 ``` r
-summary(SD_logSRic_OS_lm_lga)
+summary(SD_logSRic_OS_am_lga)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ logArea, data = SR_env[ocean_stratified_sites, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -1.59743 -0.92540 -0.01768  0.95373  1.78724 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)   0.2311     1.9083   0.121    0.906
-    ## logArea       0.2234     0.1730   1.291    0.221
-    ## 
-    ## Residual standard error: 1.221 on 12 degrees of freedom
-    ## Multiple R-squared:  0.122,  Adjusted R-squared:  0.04885 
-    ## F-statistic: 1.668 on 1 and 12 DF,  p-value: 0.2209
+    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## logArea      1  2.487   2.487   5.401 0.040297 *  
+    ## Site_type    1 12.831  12.831  27.863 0.000261 ***
+    ## Residuals   11  5.065   0.460                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
 # p-values
-dist_p_values <- summary(SD_logSRic_OS_lm_dist)$coefficients[, "Pr(>|t|)"]
-mxd_p_values <- summary(SD_logSRic_OS_lm_mxd)$coefficients[, "Pr(>|t|)"]
-lga_p_values <- summary(SD_logSRic_OS_lm_lga)$coefficients[, "Pr(>|t|)"]
+dist_p_values <- summary(SD_logSRic_OS_am_dist)$coefficients[, "Pr(>|t|)"]
+mxd_p_values <- summary(SD_logSRic_OS_am_mxd)$coefficients[, "Pr(>|t|)"]
+lga_p_values <- summary(SD_logSRic_OS_am_lga)$coefficients[, "Pr(>|t|)"]
 p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ##             (Intercept) distance_to_ocean_min_m             (Intercept) 
-    ##            3.767734e-08            6.419322e-04            2.484496e-03 
-    ##               max_depth             (Intercept)                 logArea 
-    ##            1.000000e+00            1.000000e+00            1.000000e+00
+    ## numeric(0)
 
 ``` r
 # Summarize MS lm results
-summary(SD_logSRic_MS_lm_dist)
+summary(SD_logSRic_MS_am_dist)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[mixed_stratified_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -1.79604 -0.54713  0.05745  0.60235  1.67162 
-    ## 
-    ## Coefficients:
-    ##                          Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)              4.242025   0.420837  10.080 8.46e-08 ***
-    ## distance_to_ocean_min_m -0.012956   0.003204  -4.044  0.00121 ** 
+    ##                         Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## distance_to_ocean_min_m  1 12.814  12.814   33.88 5.97e-05 ***
+    ## Site_type                1  6.055   6.055   16.01  0.00151 ** 
+    ## Residuals               13  4.916   0.378                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.8853 on 14 degrees of freedom
-    ## Multiple R-squared:  0.5387, Adjusted R-squared:  0.5058 
-    ## F-statistic: 16.35 on 1 and 14 DF,  p-value: 0.001208
 
 ``` r
-summary(SD_logSRic_MS_lm_mxd)
+summary(SD_logSRic_MS_am_mxd)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ max_depth, data = SR_env[mixed_stratified_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##    Min     1Q Median     3Q    Max 
-    ## -2.090 -1.074 -0.205  1.245  1.802 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)  3.33708    0.59342   5.624 6.28e-05 ***
-    ## max_depth   -0.02972    0.02762  -1.076      0.3    
+    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## max_depth    1  1.817   1.817   3.974   0.0676 .  
+    ## Site_type    1 16.023  16.023  35.040 5.07e-05 ***
+    ## Residuals   13  5.945   0.457                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 1.253 on 14 degrees of freedom
-    ## Multiple R-squared:  0.0764, Adjusted R-squared:  0.01043 
-    ## F-statistic: 1.158 on 1 and 14 DF,  p-value: 0.3001
 
 ``` r
-summary(SD_logSRic_MS_lm_lga)
+summary(SD_logSRic_MS_am_lga)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ logArea, data = SR_env[mixed_stratified_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -1.7086 -1.1881  0.1181  1.2223  1.8493 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)   2.6781     2.5278   1.059    0.307
-    ## logArea       0.0117     0.2517   0.046    0.964
-    ## 
-    ## Residual standard error: 1.303 on 14 degrees of freedom
-    ## Multiple R-squared:  0.0001544,  Adjusted R-squared:  -0.07126 
-    ## F-statistic: 0.002162 on 1 and 14 DF,  p-value: 0.9636
+    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## logArea      1  0.004   0.004   0.009    0.926    
+    ## Site_type    1 18.456  18.456  45.056 1.44e-05 ***
+    ## Residuals   13  5.325   0.410                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
 # p-values
-dist_p_values <- summary(SD_logSRic_MS_lm_dist)$coefficients[, "Pr(>|t|)"]
-mxd_p_values <- summary(SD_logSRic_MS_lm_mxd)$coefficients[, "Pr(>|t|)"]
-lga_p_values <- summary(SD_logSRic_MS_lm_lga)$coefficients[, "Pr(>|t|)"]
+dist_p_values <- summary(SD_logSRic_MS_am_dist)$coefficients[, "Pr(>|t|)"]
+mxd_p_values <- summary(SD_logSRic_MS_am_mxd)$coefficients[, "Pr(>|t|)"]
+lga_p_values <- summary(SD_logSRic_MS_am_lga)$coefficients[, "Pr(>|t|)"]
 p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ##             (Intercept) distance_to_ocean_min_m             (Intercept) 
-    ##            5.077769e-07            7.250058e-03            3.767546e-04 
-    ##               max_depth             (Intercept)                 logArea 
-    ##            1.000000e+00            1.000000e+00            1.000000e+00
+    ## numeric(0)
 
 ``` r
 # Summarize M lm results
-summary(SD_logSRic_M_lm_dist)
+summary(SD_logSRic_M_am_dist)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[mixed_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -0.87521 -0.28242  0.08552  0.27284  0.97336 
-    ## 
-    ## Coefficients:
-    ##                          Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)              4.188085   0.578483   7.240 0.000353 ***
-    ## distance_to_ocean_min_m -0.005161   0.007787  -0.663 0.532122    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.643 on 6 degrees of freedom
-    ## Multiple R-squared:  0.06821,    Adjusted R-squared:  -0.08709 
-    ## F-statistic: 0.4392 on 1 and 6 DF,  p-value: 0.5321
+    ##                         Df Sum Sq Mean Sq F value Pr(>F)
+    ## distance_to_ocean_min_m  1 0.1816  0.1816   0.439  0.532
+    ## Residuals                6 2.4804  0.4134
 
 ``` r
-summary(SD_logSRic_M_lm_mxd)
+summary(SD_logSRic_M_am_mxd)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ max_depth, data = SR_env[mixed_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -0.4747 -0.3426 -0.1230  0.2847  0.6813 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)  3.23141    0.30841  10.478 4.44e-05 ***
-    ## max_depth    0.04692    0.01999   2.348   0.0572 .  
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## max_depth    1  1.275  1.2746   5.512 0.0572 .
+    ## Residuals    6  1.387  0.2312                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.4809 on 6 degrees of freedom
-    ## Multiple R-squared:  0.4788, Adjusted R-squared:  0.392 
-    ## F-statistic: 5.512 on 1 and 6 DF,  p-value: 0.05723
 
 ``` r
-summary(SD_logSRic_M_lm_lga)
+summary(SD_logSRic_M_am_lga)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ logArea, data = SR_env[mixed_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -0.82627  0.03313  0.10586  0.15986  0.20691 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)  0.48846    0.91576   0.533   0.6129  
-    ## logArea      0.34660    0.09387   3.692   0.0102 *
+    ##             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## logArea      1 1.8485  1.8485   13.63 0.0102 *
+    ## Residuals    6 0.8134  0.1356                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.3682 on 6 degrees of freedom
-    ## Multiple R-squared:  0.6944, Adjusted R-squared:  0.6435 
-    ## F-statistic: 13.63 on 1 and 6 DF,  p-value: 0.01018
 
 ``` r
 # p-values
-dist_p_values <- summary(SD_logSRic_M_lm_dist)$coefficients[, "Pr(>|t|)"]
-mxd_p_values <- summary(SD_logSRic_M_lm_mxd)$coefficients[, "Pr(>|t|)"]
-lga_p_values <- summary(SD_logSRic_M_lm_lga)$coefficients[, "Pr(>|t|)"]
+dist_p_values <- summary(SD_logSRic_M_am_dist)$coefficients[, "Pr(>|t|)"]
+mxd_p_values <- summary(SD_logSRic_M_am_mxd)$coefficients[, "Pr(>|t|)"]
+lga_p_values <- summary(SD_logSRic_M_am_lga)$coefficients[, "Pr(>|t|)"]
 p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ##             (Intercept) distance_to_ocean_min_m             (Intercept) 
-    ##            0.0021153449            1.0000000000            0.0002661673 
-    ##               max_depth             (Intercept)                 logArea 
-    ##            0.3433642497            1.0000000000            0.0610721717
+    ## numeric(0)
 
 ``` r
 # Summarize S lm results
-summary(SD_logSRic_S_lm_dist)
+summary(SD_logSRic_S_am_dist)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ distance_to_ocean_min_m, data = SR_env[stratified_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -0.9550 -0.4329  0.0690  0.4278  0.8074 
-    ## 
-    ## Coefficients:
-    ##                          Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)              2.663595   0.546359   4.875  0.00278 **
-    ## distance_to_ocean_min_m -0.005865   0.003209  -1.828  0.11737   
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.6368 on 6 degrees of freedom
-    ## Multiple R-squared:  0.3576, Adjusted R-squared:  0.2506 
-    ## F-statistic:  3.34 on 1 and 6 DF,  p-value: 0.1174
+    ##                         Df Sum Sq Mean Sq F value Pr(>F)
+    ## distance_to_ocean_min_m  1  1.355  1.3547    3.34  0.117
+    ## Residuals                6  2.433  0.4055
 
 ``` r
-summary(SD_logSRic_S_lm_mxd)
+summary(SD_logSRic_S_am_mxd)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ max_depth, data = SR_env[stratified_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -0.6652 -0.6403 -0.1400  0.2895  1.1242 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept) 1.725476   0.652383   2.645   0.0383 *
-    ## max_depth   0.001197   0.024924   0.048   0.9633  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 0.7944 on 6 degrees of freedom
-    ## Multiple R-squared:  0.0003843,  Adjusted R-squared:  -0.1662 
-    ## F-statistic: 0.002307 on 1 and 6 DF,  p-value: 0.9633
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## max_depth    1  0.001  0.0015   0.002  0.963
+    ## Residuals    6  3.786  0.6311
 
 ``` r
-summary(SD_logSRic_S_lm_lga)
+summary(SD_logSRic_S_am_lga)
 ```
 
-    ## 
-    ## Call:
-    ## lm(formula = log(row_sum) ~ logArea, data = SR_env[stratified_lakes, 
-    ##     ])
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -0.6556 -0.6542 -0.1445  0.2983  1.1360 
-    ## 
-    ## Coefficients:
-    ##              Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept) 1.7470332  2.5976226   0.673    0.526
-    ## logArea     0.0006553  0.2516849   0.003    0.998
-    ## 
-    ## Residual standard error: 0.7946 on 6 degrees of freedom
-    ## Multiple R-squared:  1.13e-06,   Adjusted R-squared:  -0.1667 
-    ## F-statistic: 6.78e-06 on 1 and 6 DF,  p-value: 0.998
+    ##             Df Sum Sq Mean Sq F value Pr(>F)
+    ## logArea      1  0.000  0.0000       0  0.998
+    ## Residuals    6  3.788  0.6313
 
 ``` r
 # p-values
-dist_p_values <- summary(SD_logSRic_S_lm_dist)$coefficients[, "Pr(>|t|)"]
-mxd_p_values <- summary(SD_logSRic_S_lm_mxd)$coefficients[, "Pr(>|t|)"]
-lga_p_values <- summary(SD_logSRic_S_lm_lga)$coefficients[, "Pr(>|t|)"]
+dist_p_values <- summary(SD_logSRic_S_am_dist)$coefficients[, "Pr(>|t|)"]
+mxd_p_values <- summary(SD_logSRic_S_am_mxd)$coefficients[, "Pr(>|t|)"]
+lga_p_values <- summary(SD_logSRic_S_am_lga)$coefficients[, "Pr(>|t|)"]
 p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ##             (Intercept) distance_to_ocean_min_m             (Intercept) 
-    ##              0.01667858              0.70419208              0.22973808 
-    ##               max_depth             (Intercept)                 logArea 
-    ##              1.00000000              1.00000000              1.00000000
+    ## numeric(0)
 
 ``` r
 ##### SRic ANOVAs
@@ -5193,7 +4991,7 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
 }
 ```
 
-### FD beta varitation partitioning of env and geo variables
+### SD beta varitation partitioning of env and geo variables
 
 ``` r
 env_var <- env[surveyed_sites_env,environment]
@@ -5223,18 +5021,28 @@ SD_beta_varpart$part
 # Open a jpg device
 png("/Users/bailey/Documents/research/fish_biodiversity/figures/SD/SD_beta_varpart.jpg", width = 4.5, height = 4.5, units = "in", res = 300, type = "cairo")
 # Plot the variation partitioning results
+par(mar = c(3, 3, 3, 3) + 1)  # Increase bottom margin if needed
 plot(SD_beta_varpart,
-     Xnames = c("Environmental", "Geographical"), # name the partitions
-     
-     bg = c("mediumpurple", "orange"), alpha = 80, # colour the circles
-     digits = 1, # only show 2 digits
-     cex = 1)
+     Xnames = c("Env", "Geo"),
+     bg = c("mediumpurple", "orange"), alpha = 80,
+     digits = 1,
+     asp = 1)
 # Close the jpg device
 dev.off()
 ```
 
     ## quartz_off_screen 
     ##                 2
+
+``` r
+plot(SD_beta_varpart,
+     Xnames = c("Env", "Geo"),
+     bg = c("mediumpurple", "orange"), alpha = 80,
+     digits = 1,
+     asp = 1)
+```
+
+![](SD_analyses_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 ### SD beta with env and geo correlated variables using envfit
 
