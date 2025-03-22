@@ -295,7 +295,7 @@ row.names(outlier_PD_alpha) <- outlier_PD_alpha$X
         panel.border = element_blank(),
         axis.text = element_text(color = "black", size = 16)) +
   scale_y_continuous(expand = c(0,0)) +
-  labs(y = "PRic z-scores", x = "Site type", color = "Outlier:", tag = "b") +
+  labs(y = "PRic-z", x = "Site type", color = "Outlier:", tag = "b") +
   guides(fill = "none"))
 ```
 
@@ -1157,7 +1157,7 @@ PD_alpha_T_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping =
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Temperature (ºC)", y="PRic z-score", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Temperature (ºC)", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "a")
 (PD_alpha_T_plot <- PD_alpha_T_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1190,7 +1190,7 @@ PD_alpha_S_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping =
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Salinity (ppt)", y="PRic z-score", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Salinity (ppt)", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "b")
 (PD_alpha_S_plot <- PD_alpha_S_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1223,7 +1223,7 @@ PD_alpha_O_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping =
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Oxygen (mg/L)", y="PRic z-score", colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(x="Oxygen (mg/L)", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "c")
 (PD_alpha_O_plot <- PD_alpha_O_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1256,7 +1256,7 @@ PD_alpha_D_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = aes
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Isolation (m)", y="PRic z-score", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Isolation (m)", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "a")
 (PD_alpha_D_plot <- PD_alpha_D_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1289,7 +1289,7 @@ PD_alpha_MD_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = ae
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Age (m)", y="PRic z-score", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Age (m)", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "b")
 (PD_alpha_MD_plot <- PD_alpha_MD_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1322,7 +1322,7 @@ PD_alpha_LA_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = ae
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Log Area (m"^"2"~")", y="PRic z-score", colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(x="Log Area (m"^"2"~")", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "c")
 (PD_alpha_LA_plot <- PD_alpha_LA_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1450,7 +1450,32 @@ plot(PD_PRicz_am_temp)
 
 ``` r
 ### Ocean & Mixed sites
-PD_PRicz_OM_lm_temp <- lm(pd.obs.z ~ temperature_median, data = stree_sespd_env[ocean_mixed_sites_env,])
+PD_PRicz_OM_lm_temp <- lm(pd.obs.z ~ temperature_median * Site_type, data = stree_sespd_env[ocean_mixed_sites_env,])
+summary(PD_PRicz_OM_lm_temp)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ temperature_median * Site_type, data = stree_sespd_env[ocean_mixed_sites_env, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.5361 -0.2901 -0.1067  0.6289  0.9641 
+    ## 
+    ## Coefficients:
+    ##                                   Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)                        29.5835    22.4566   1.317    0.229
+    ## temperature_median                 -1.0375     0.7303  -1.421    0.198
+    ## Site_typeMixed                    -48.3865    27.9437  -1.732    0.127
+    ## temperature_median:Site_typeMixed   1.6294     0.9123   1.786    0.117
+    ## 
+    ## Residual standard error: 0.8879 on 7 degrees of freedom
+    ## Multiple R-squared:  0.5749, Adjusted R-squared:  0.3928 
+    ## F-statistic: 3.156 on 3 and 7 DF,  p-value: 0.09523
+
+``` r
+PD_PRicz_OM_lm_temp <- lm(pd.obs.z ~ temperature_median + Site_type, data = stree_sespd_env[ocean_mixed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OM_lm_temp))
 ```
@@ -1459,7 +1484,7 @@ shapiro.test(residuals(PD_PRicz_OM_lm_temp))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OM_lm_temp)
-    ## W = 0.98817, p-value = 0.995
+    ## W = 0.95149, p-value = 0.663
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -1468,12 +1493,37 @@ car::leveneTest(residuals(PD_PRicz_OM_lm_temp) ~ stree_sespd_env[ocean_mixed_sit
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1   3e-04 0.9858
+    ## group  1  0.2594 0.6228
     ##        9
 
 ``` r
 ### Ocean & Stratified sites
-PD_PRicz_OS_lm_temp <- lm(pd.obs.z ~ temperature_median, data = stree_sespd_env[ocean_stratified_sites_env,])
+PD_PRicz_OS_lm_temp <- lm(pd.obs.z ~ temperature_median * Site_type, data = stree_sespd_env[ocean_stratified_sites_env,])
+summary(PD_PRicz_OS_lm_temp)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ temperature_median * Site_type, data = stree_sespd_env[ocean_stratified_sites_env, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.1852 -0.5242 -0.2281  0.7705  0.9752 
+    ## 
+    ## Coefficients:
+    ##                                        Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)                             29.5835    23.0084   1.286    0.239
+    ## temperature_median                      -1.0375     0.7482  -1.387    0.208
+    ## Site_typeStratified                    -36.2688    23.9979  -1.511    0.174
+    ## temperature_median:Site_typeStratified   1.2256     0.7793   1.573    0.160
+    ## 
+    ## Residual standard error: 0.9097 on 7 degrees of freedom
+    ## Multiple R-squared:  0.5527, Adjusted R-squared:  0.361 
+    ## F-statistic: 2.883 on 3 and 7 DF,  p-value: 0.1123
+
+``` r
+PD_PRicz_OS_lm_temp <- lm(pd.obs.z ~ temperature_median + Site_type, data = stree_sespd_env[ocean_stratified_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_lm_temp))
 ```
@@ -1482,7 +1532,7 @@ shapiro.test(residuals(PD_PRicz_OS_lm_temp))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OS_lm_temp)
-    ## W = 0.92833, p-value = 0.3942
+    ## W = 0.94168, p-value = 0.5404
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -1491,12 +1541,37 @@ car::leveneTest(residuals(PD_PRicz_OS_lm_temp) ~ stree_sespd_env[ocean_stratifie
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.5857 0.4637
+    ## group  1   0.444 0.5219
     ##        9
 
 ``` r
 ### Mixed & Stratified lakes
-PD_PRicz_MS_lm_temp <- lm(pd.obs.z ~ temperature_median, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_lm_temp <- lm(pd.obs.z ~ temperature_median * Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+summary(PD_PRicz_MS_lm_temp)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ temperature_median * Site_type, data = stree_sespd_env[mixed_stratified_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.53609 -0.32234 -0.05262  0.72193  0.97521 
+    ## 
+    ## Coefficients:
+    ##                                        Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)                            -18.8030    15.5434  -1.210    0.250
+    ## temperature_median                       0.5919     0.5111   1.158    0.269
+    ## Site_typeStratified                     12.1177    16.7425   0.724    0.483
+    ## temperature_median:Site_typeStratified  -0.4038     0.5485  -0.736    0.476
+    ## 
+    ## Residual standard error: 0.8299 on 12 degrees of freedom
+    ## Multiple R-squared:  0.157,  Adjusted R-squared:  -0.05369 
+    ## F-statistic: 0.7452 on 3 and 12 DF,  p-value: 0.5456
+
+``` r
+PD_PRicz_MS_lm_temp <- lm(pd.obs.z ~ temperature_median + Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_MS_lm_temp))
 ```
@@ -1505,7 +1580,7 @@ shapiro.test(residuals(PD_PRicz_MS_lm_temp))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_MS_lm_temp)
-    ## W = 0.9519, p-value = 0.5204
+    ## W = 0.95281, p-value = 0.5355
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -1514,7 +1589,7 @@ car::leveneTest(residuals(PD_PRicz_MS_lm_temp) ~ stree_sespd_env[mixed_stratifie
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0295  0.866
+    ## group  1  0.0446 0.8357
     ##       14
 
 ``` r
@@ -1648,7 +1723,32 @@ plot(PD_PRicz_am_sal)
 
 ``` r
 ### Ocean & Mixed sites
-PD_PRicz_OM_lm_sal <- lm(pd.obs.z ~ salinity_median, data = stree_sespd_env[ocean_mixed_sites_env,])
+PD_PRicz_OM_lm_sal <- lm(pd.obs.z ~ salinity_median * Site_type, data = stree_sespd_env[ocean_mixed_sites_env,])
+summary(PD_PRicz_OM_lm_sal)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ salinity_median * Site_type, data = stree_sespd_env[ocean_mixed_sites_env, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.32058 -0.32192  0.04066  0.51619  0.94608 
+    ## 
+    ## Coefficients:
+    ##                                Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)                    -118.944    159.588  -0.745    0.480
+    ## salinity_median                   3.482      4.765   0.731    0.489
+    ## Site_typeMixed                  160.814    161.752   0.994    0.353
+    ## salinity_median:Site_typeMixed   -4.778      4.831  -0.989    0.356
+    ## 
+    ## Residual standard error: 0.8894 on 7 degrees of freedom
+    ## Multiple R-squared:  0.5734, Adjusted R-squared:  0.3906 
+    ## F-statistic: 3.137 on 3 and 7 DF,  p-value: 0.09633
+
+``` r
+PD_PRicz_OM_lm_sal <- lm(pd.obs.z ~ salinity_median + Site_type, data = stree_sespd_env[ocean_mixed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OM_lm_sal))
 ```
@@ -1657,7 +1757,7 @@ shapiro.test(residuals(PD_PRicz_OM_lm_sal))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OM_lm_sal)
-    ## W = 0.94825, p-value = 0.6216
+    ## W = 0.96289, p-value = 0.8072
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -1666,12 +1766,37 @@ car::leveneTest(residuals(PD_PRicz_OM_lm_sal) ~ stree_sespd_env[ocean_mixed_site
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  1.0846 0.3248
+    ## group  1  1.3639 0.2729
     ##        9
 
 ``` r
 ### Ocean & Stratified sites
-PD_PRicz_OS_lm_sal <- lm(pd.obs.z ~ salinity_median, data = stree_sespd_env[ocean_stratified_sites_env,])
+PD_PRicz_OS_lm_sal <- lm(pd.obs.z ~ salinity_median * Site_type, data = stree_sespd_env[ocean_stratified_sites_env,])
+summary(PD_PRicz_OS_lm_sal)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ salinity_median * Site_type, data = stree_sespd_env[ocean_stratified_sites_env, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.3206 -0.6754  0.2397  0.6863  1.0714 
+    ## 
+    ## Coefficients:
+    ##                                     Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)                         -118.944    180.306  -0.660    0.531
+    ## salinity_median                        3.482      5.383   0.647    0.538
+    ## Site_typeStratified                  120.257    180.331   0.667    0.526
+    ## salinity_median:Site_typeStratified   -3.559      5.384  -0.661    0.530
+    ## 
+    ## Residual standard error: 1.005 on 7 degrees of freedom
+    ## Multiple R-squared:  0.4542, Adjusted R-squared:  0.2203 
+    ## F-statistic: 1.942 on 3 and 7 DF,  p-value: 0.2115
+
+``` r
+PD_PRicz_OS_lm_sal <- lm(pd.obs.z ~ salinity_median + Site_type, data = stree_sespd_env[ocean_stratified_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_lm_sal))
 ```
@@ -1680,7 +1805,7 @@ shapiro.test(residuals(PD_PRicz_OS_lm_sal))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OS_lm_sal)
-    ## W = 0.9441, p-value = 0.5698
+    ## W = 0.94609, p-value = 0.5945
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -1689,12 +1814,39 @@ car::leveneTest(residuals(PD_PRicz_OS_lm_sal) ~ stree_sespd_env[ocean_stratified
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.1375 0.7194
+    ## group  1   0.286 0.6058
     ##        9
 
 ``` r
 ### Mixed & Stratified lakes
-PD_PRicz_MS_lm_sal <- lm(pd.obs.z ~ salinity_median, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_lm_sal <- lm(pd.obs.z ~ salinity_median * Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+summary(PD_PRicz_MS_lm_sal)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ salinity_median * Site_type, data = stree_sespd_env[mixed_stratified_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.11617 -0.43390 -0.02018  0.58947  1.07138 
+    ## 
+    ## Coefficients:
+    ##                                     Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)                          41.8703    22.9987   1.821   0.0937 .
+    ## salinity_median                      -1.2959     0.6983  -1.856   0.0882 .
+    ## Site_typeStratified                 -40.5567    23.1156  -1.755   0.1048  
+    ## salinity_median:Site_typeStratified   1.2187     0.7034   1.733   0.1087  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.7758 on 12 degrees of freedom
+    ## Multiple R-squared:  0.2633, Adjusted R-squared:  0.07915 
+    ## F-statistic:  1.43 on 3 and 12 DF,  p-value: 0.2826
+
+``` r
+PD_PRicz_MS_lm_sal <- lm(pd.obs.z ~ salinity_median + Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_MS_lm_sal))
 ```
@@ -1703,7 +1855,7 @@ shapiro.test(residuals(PD_PRicz_MS_lm_sal))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_MS_lm_sal)
-    ## W = 0.96007, p-value = 0.6631
+    ## W = 0.97155, p-value = 0.8631
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -1712,7 +1864,7 @@ car::leveneTest(residuals(PD_PRicz_MS_lm_sal) ~ stree_sespd_env[mixed_stratified
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0028 0.9584
+    ## group  1  0.0847 0.7753
     ##       14
 
 ``` r
@@ -1849,7 +2001,34 @@ plot(PD_PRicz_am_oxy)
 
 ``` r
 ### Ocean & Mixed sites
-PD_PRicz_OM_lm_oxy <- lm(pd.obs.z ~ oxygen_median, data = stree_sespd_env[ocean_mixed_sites_env,])
+PD_PRicz_OM_lm_oxy <- lm(pd.obs.z ~ oxygen_median * Site_type, data = stree_sespd_env[ocean_mixed_sites_env,])
+summary(PD_PRicz_OM_lm_oxy)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ oxygen_median * Site_type, data = stree_sespd_env[ocean_mixed_sites_env, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -0.76620 -0.47705 -0.05916  0.28754  1.16680 
+    ## 
+    ## Coefficients:
+    ##                              Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)                    15.497      8.464   1.831   0.1098  
+    ## oxygen_median                  -3.270      1.552  -2.107   0.0731 .
+    ## Site_typeMixed                -11.676      8.916  -1.310   0.2317  
+    ## oxygen_median:Site_typeMixed    2.276      1.664   1.368   0.2136  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.7523 on 7 degrees of freedom
+    ## Multiple R-squared:  0.6948, Adjusted R-squared:  0.564 
+    ## F-statistic: 5.313 on 3 and 7 DF,  p-value: 0.0319
+
+``` r
+PD_PRicz_OM_lm_oxy <- lm(pd.obs.z ~ oxygen_median + Site_type, data = stree_sespd_env[ocean_mixed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OM_lm_oxy))
 ```
@@ -1858,7 +2037,7 @@ shapiro.test(residuals(PD_PRicz_OM_lm_oxy))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OM_lm_oxy)
-    ## W = 0.94905, p-value = 0.6318
+    ## W = 0.90199, p-value = 0.1955
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -1867,12 +2046,39 @@ car::leveneTest(residuals(PD_PRicz_OM_lm_oxy) ~ stree_sespd_env[ocean_mixed_site
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0462 0.8345
+    ## group  1  0.0037 0.9531
     ##        9
 
 ``` r
 ### Ocean & Stratified sites
-PD_PRicz_OS_lm_oxy <- lm(pd.obs.z ~ oxygen_median, data = stree_sespd_env[ocean_stratified_sites_env,])
+PD_PRicz_OS_lm_oxy <- lm(pd.obs.z ~ oxygen_median * Site_type, data = stree_sespd_env[ocean_stratified_sites_env,])
+summary(PD_PRicz_OS_lm_oxy)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ oxygen_median * Site_type, data = stree_sespd_env[ocean_stratified_sites_env, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.07094 -0.44566  0.04024  0.42772  1.24037 
+    ## 
+    ## Coefficients:
+    ##                                   Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)                         15.497      9.027   1.717   0.1297  
+    ## oxygen_median                       -3.270      1.655  -1.976   0.0888 .
+    ## Site_typeStratified                -17.832      9.116  -1.956   0.0913 .
+    ## oxygen_median:Site_typeStratified    3.750      1.700   2.205   0.0633 .
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.8024 on 7 degrees of freedom
+    ## Multiple R-squared:  0.652,  Adjusted R-squared:  0.5029 
+    ## F-statistic: 4.372 on 3 and 7 DF,  p-value: 0.04939
+
+``` r
+PD_PRicz_OS_lm_oxy <- lm(pd.obs.z ~ oxygen_median + Site_type, data = stree_sespd_env[ocean_stratified_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_lm_oxy))
 ```
@@ -1881,7 +2087,7 @@ shapiro.test(residuals(PD_PRicz_OS_lm_oxy))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OS_lm_oxy)
-    ## W = 0.92614, p-value = 0.3731
+    ## W = 0.96578, p-value = 0.841
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -1890,12 +2096,39 @@ car::leveneTest(residuals(PD_PRicz_OS_lm_oxy) ~ stree_sespd_env[ocean_stratified
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0441 0.8384
+    ## group  1  0.6295 0.4479
     ##        9
 
 ``` r
 ### Mixed & Stratified lakes
-PD_PRicz_MS_lm_oxy <- lm(pd.obs.z ~ oxygen_median, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_lm_oxy <- lm(pd.obs.z ~ oxygen_median * Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+summary(PD_PRicz_MS_lm_oxy)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ oxygen_median * Site_type, data = stree_sespd_env[mixed_stratified_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.0709 -0.4296 -0.1399  0.4385  1.2404 
+    ## 
+    ## Coefficients:
+    ##                                   Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)                         3.8213     2.8977   1.319   0.2119  
+    ## oxygen_median                      -0.9946     0.6199  -1.604   0.1346  
+    ## Site_typeStratified                -6.1562     3.1488  -1.955   0.0743 .
+    ## oxygen_median:Site_typeStratified   1.4737     0.7253   2.032   0.0649 .
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.7781 on 12 degrees of freedom
+    ## Multiple R-squared:  0.259,  Adjusted R-squared:  0.07371 
+    ## F-statistic: 1.398 on 3 and 12 DF,  p-value: 0.2912
+
+``` r
+PD_PRicz_MS_lm_oxy <- lm(pd.obs.z ~ oxygen_median + Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_MS_lm_oxy))
 ```
@@ -1904,7 +2137,7 @@ shapiro.test(residuals(PD_PRicz_MS_lm_oxy))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_MS_lm_oxy)
-    ## W = 0.96227, p-value = 0.7032
+    ## W = 0.96627, p-value = 0.7752
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -1913,7 +2146,7 @@ car::leveneTest(residuals(PD_PRicz_MS_lm_oxy) ~ stree_sespd_env[mixed_stratified
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1   4e-04 0.9845
+    ## group  1  0.0325 0.8596
     ##       14
 
 ``` r
@@ -2028,21 +2261,24 @@ summary(PD_PRicz_OM_lm_temp)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ temperature_median, data = stree_sespd_env[ocean_mixed_sites_env, 
+    ## lm(formula = pd.obs.z ~ temperature_median + Site_type, data = stree_sespd_env[ocean_mixed_sites_env, 
     ##     ])
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -2.0239 -0.6850  0.0355  0.6083  1.8880 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.32817 -0.51951 -0.02818  0.60113  1.29325 
     ## 
     ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)          6.3892    17.3492   0.368    0.721
-    ## temperature_median  -0.2494     0.5688  -0.439    0.671
+    ##                     Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)        -2.511411  15.198859  -0.165   0.8729  
+    ## temperature_median  0.006456   0.494025   0.013   0.9899  
+    ## Site_typeMixed      1.508304   0.698807   2.158   0.0629 .
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 1.188 on 9 degrees of freedom
-    ## Multiple R-squared:  0.02092,    Adjusted R-squared:  -0.08786 
-    ## F-statistic: 0.1923 on 1 and 9 DF,  p-value: 0.6713
+    ## Residual standard error: 1.002 on 8 degrees of freedom
+    ## Multiple R-squared:  0.3812, Adjusted R-squared:  0.2266 
+    ## F-statistic: 2.465 on 2 and 8 DF,  p-value: 0.1466
 
 ``` r
 summary(PD_PRicz_OM_lm_sal)
@@ -2050,23 +2286,22 @@ summary(PD_PRicz_OM_lm_sal)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ salinity_median, data = stree_sespd_env[ocean_mixed_sites_env, 
+    ## lm(formula = pd.obs.z ~ salinity_median + Site_type, data = stree_sespd_env[ocean_mixed_sites_env, 
     ##     ])
     ## 
     ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -1.58869 -0.50494  0.01269  0.69810  1.06212 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.2015 -0.3708 -0.0206  0.3841  1.4005 
     ## 
     ## Coefficients:
-    ##                 Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)       54.953     21.340   2.575   0.0299 *
-    ## salinity_median   -1.698      0.645  -2.632   0.0273 *
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##                 Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)      36.6985    26.4138   1.389    0.202
+    ## salinity_median  -1.1647     0.7885  -1.477    0.178
+    ## Site_typeMixed    0.8510     0.7472   1.139    0.288
     ## 
-    ## Residual standard error: 0.9028 on 9 degrees of freedom
-    ## Multiple R-squared:  0.435,  Adjusted R-squared:  0.3722 
-    ## F-statistic: 6.929 on 1 and 9 DF,  p-value: 0.02725
+    ## Residual standard error: 0.8882 on 8 degrees of freedom
+    ## Multiple R-squared:  0.5138, Adjusted R-squared:  0.3923 
+    ## F-statistic: 4.228 on 2 and 8 DF,  p-value: 0.05586
 
 ``` r
 summary(PD_PRicz_OM_lm_oxy)
@@ -2074,23 +2309,24 @@ summary(PD_PRicz_OM_lm_oxy)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ oxygen_median, data = stree_sespd_env[ocean_mixed_sites_env, 
+    ## lm(formula = pd.obs.z ~ oxygen_median + Site_type, data = stree_sespd_env[ocean_mixed_sites_env, 
     ##     ])
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -1.0136 -0.4863 -0.1402  0.5264  1.1680 
+    ## -0.8871 -0.4993 -0.2465  0.5294  1.1277 
     ## 
     ## Coefficients:
-    ##               Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)     6.3449     2.1105   3.006   0.0148 * 
-    ## oxygen_median  -1.5530     0.4308  -3.605   0.0057 **
+    ##                Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)      4.7116     3.2388   1.455   0.1838  
+    ## oxygen_median   -1.2899     0.5888  -2.191   0.0598 .
+    ## Site_typeMixed   0.4840     0.7108   0.681   0.5151  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.7682 on 9 degrees of freedom
-    ## Multiple R-squared:  0.5908, Adjusted R-squared:  0.5454 
-    ## F-statistic:    13 on 1 and 9 DF,  p-value: 0.005703
+    ## Residual standard error: 0.7922 on 8 degrees of freedom
+    ## Multiple R-squared:  0.6133, Adjusted R-squared:  0.5166 
+    ## F-statistic: 6.343 on 2 and 8 DF,  p-value: 0.02237
 
 ``` r
 # p-values
@@ -2102,9 +2338,9 @@ p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 ```
 
     ##        (Intercept) temperature_median        (Intercept)    salinity_median 
-    ##         1.00000000         1.00000000         0.17962741         0.16352425 
+    ##          1.0000000          1.0000000          1.0000000          1.0000000 
     ##        (Intercept)      oxygen_median 
-    ##         0.08881661         0.03421828
+    ##          1.0000000          0.3590697
 
 ``` r
 # Summarize OS lm results
@@ -2113,21 +2349,24 @@ summary(PD_PRicz_OS_lm_temp)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ temperature_median, data = stree_sespd_env[ocean_stratified_sites_env, 
+    ## lm(formula = pd.obs.z ~ temperature_median + Site_type, data = stree_sespd_env[ocean_stratified_sites_env, 
     ##     ])
     ## 
     ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -2.43136 -0.56672  0.08977  0.75433  1.36298 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.3205 -0.5809 -0.1132  0.8197  1.2905 
     ## 
     ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)         -6.7061     8.2654  -0.811    0.438
-    ## temperature_median   0.1764     0.2654   0.665    0.523
+    ##                     Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)         -5.14778    7.02373  -0.733   0.4845  
+    ## temperature_median   0.09221    0.22771   0.405   0.6961  
+    ## Site_typeStratified  1.45890    0.68036   2.144   0.0643 .
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 1.171 on 9 degrees of freedom
-    ## Multiple R-squared:  0.04679,    Adjusted R-squared:  -0.05912 
-    ## F-statistic: 0.4418 on 1 and 9 DF,  p-value: 0.5229
+    ## Residual standard error: 0.9899 on 8 degrees of freedom
+    ## Multiple R-squared:  0.3947, Adjusted R-squared:  0.2434 
+    ## F-statistic: 2.608 on 2 and 8 DF,  p-value: 0.1342
 
 ``` r
 summary(PD_PRicz_OS_lm_sal)
@@ -2135,23 +2374,22 @@ summary(PD_PRicz_OS_lm_sal)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ salinity_median, data = stree_sespd_env[ocean_stratified_sites_env, 
+    ## lm(formula = pd.obs.z ~ salinity_median + Site_type, data = stree_sespd_env[ocean_stratified_sites_env, 
     ##     ])
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -1.62234 -0.59939 -0.00986  0.79133  1.29265 
+    ## -1.22937 -0.67409 -0.04339  0.68973  1.27276 
     ## 
     ## Coefficients:
-    ##                 Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)      3.42648    2.25509   1.519   0.1630  
-    ## salinity_median -0.15956    0.07681  -2.077   0.0675 .
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##                     Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)          0.22454    3.55637   0.063    0.951
+    ## salinity_median     -0.07576    0.10486  -0.722    0.491
+    ## Site_typeStratified  1.04911    0.91151   1.151    0.283
     ## 
-    ## Residual standard error: 0.9862 on 9 degrees of freedom
-    ## Multiple R-squared:  0.3241, Adjusted R-squared:  0.249 
-    ## F-statistic: 4.316 on 1 and 9 DF,  p-value: 0.06755
+    ## Residual standard error: 0.9689 on 8 degrees of freedom
+    ## Multiple R-squared:  0.4201, Adjusted R-squared:  0.2752 
+    ## F-statistic: 2.898 on 2 and 8 DF,  p-value: 0.1131
 
 ``` r
 summary(PD_PRicz_OS_lm_oxy)
@@ -2159,21 +2397,22 @@ summary(PD_PRicz_OS_lm_oxy)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ oxygen_median, data = stree_sespd_env[ocean_stratified_sites_env, 
+    ## lm(formula = pd.obs.z ~ oxygen_median + Site_type, data = stree_sespd_env[ocean_stratified_sites_env, 
     ##     ])
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -1.5550 -0.5488 -0.2580  0.8502  1.3474 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.34310 -0.58681 -0.06734  0.67283  1.32860 
     ## 
     ## Coefficients:
-    ##               Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)     0.2785     1.0920   0.255    0.804
-    ## oxygen_median  -0.3931     0.2739  -1.435    0.185
+    ##                     Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)          -3.8576     2.5695  -1.501    0.172
+    ## oxygen_median         0.2836     0.4603   0.616    0.555
+    ## Site_typeStratified   2.1463     1.2313   1.743    0.119
     ## 
-    ## Residual standard error: 1.082 on 9 degrees of freedom
-    ## Multiple R-squared:  0.1863, Adjusted R-squared:  0.09588 
-    ## F-statistic:  2.06 on 1 and 9 DF,  p-value: 0.185
+    ## Residual standard error: 0.9771 on 8 degrees of freedom
+    ## Multiple R-squared:  0.4103, Adjusted R-squared:  0.2628 
+    ## F-statistic: 2.783 on 2 and 8 DF,  p-value: 0.1209
 
 ``` r
 # p-values
@@ -2185,9 +2424,9 @@ p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 ```
 
     ##        (Intercept) temperature_median        (Intercept)    salinity_median 
-    ##          1.0000000          1.0000000          0.9778181          0.4052833 
+    ##                  1                  1                  1                  1 
     ##        (Intercept)      oxygen_median 
-    ##          1.0000000          1.0000000
+    ##                  1                  1
 
 ``` r
 # Summarize MS lm results
@@ -2196,21 +2435,22 @@ summary(PD_PRicz_MS_lm_temp)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ temperature_median, data = stree_sespd_env[mixed_stratified_lakes, 
+    ## lm(formula = pd.obs.z ~ temperature_median + Site_type, data = stree_sespd_env[mixed_stratified_lakes, 
     ##     ])
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -1.31084 -0.39336 -0.04969  0.66381  1.21788 
+    ## -1.41152 -0.39937 -0.05327  0.71710  1.10329 
     ## 
     ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)         -7.2976     5.0989  -1.431    0.174
-    ## temperature_median   0.2105     0.1653   1.274    0.223
+    ##                     Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)          -8.1385     5.5413  -1.469    0.166
+    ## temperature_median    0.2411     0.1820   1.325    0.208
+    ## Site_typeStratified  -0.2058     0.4362  -0.472    0.645
     ## 
-    ## Residual standard error: 0.7922 on 14 degrees of freedom
-    ## Multiple R-squared:  0.1039, Adjusted R-squared:  0.03988 
-    ## F-statistic: 1.623 on 1 and 14 DF,  p-value: 0.2234
+    ## Residual standard error: 0.8151 on 13 degrees of freedom
+    ## Multiple R-squared:  0.119,  Adjusted R-squared:  -0.01658 
+    ## F-statistic: 0.8777 on 2 and 13 DF,  p-value: 0.439
 
 ``` r
 summary(PD_PRicz_MS_lm_sal)
@@ -2218,21 +2458,22 @@ summary(PD_PRicz_MS_lm_sal)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ salinity_median, data = stree_sespd_env[mixed_stratified_lakes, 
+    ## lm(formula = pd.obs.z ~ salinity_median + Site_type, data = stree_sespd_env[mixed_stratified_lakes, 
     ##     ])
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -1.2109 -0.4874 -0.1037  0.6303  1.3962 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.31057 -0.52582 -0.06118  0.64004  1.27276 
     ## 
     ## Coefficients:
-    ##                 Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)      0.39211    1.74145   0.225    0.825
-    ## salinity_median -0.03970    0.05727  -0.693    0.499
+    ##                     Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)          2.30799    2.96427   0.779    0.450
+    ## salinity_median     -0.09458    0.08957  -1.056    0.310
+    ## Site_typeStratified -0.51743    0.64342  -0.804    0.436
     ## 
-    ## Residual standard error: 0.8228 on 14 degrees of freedom
-    ## Multiple R-squared:  0.03319,    Adjusted R-squared:  -0.03587 
-    ## F-statistic: 0.4806 on 1 and 14 DF,  p-value: 0.4995
+    ## Residual standard error: 0.8334 on 13 degrees of freedom
+    ## Multiple R-squared:  0.07901,    Adjusted R-squared:  -0.06269 
+    ## F-statistic: 0.5576 on 2 and 13 DF,  p-value: 0.5857
 
 ``` r
 summary(PD_PRicz_MS_lm_oxy)
@@ -2240,21 +2481,22 @@ summary(PD_PRicz_MS_lm_oxy)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ oxygen_median, data = stree_sespd_env[mixed_stratified_lakes, 
+    ## lm(formula = pd.obs.z ~ oxygen_median + Site_type, data = stree_sespd_env[mixed_stratified_lakes, 
     ##     ])
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -1.3689 -0.4860 -0.1166  0.7609  1.2785 
+    ## -1.3720 -0.4884 -0.1451  0.7163  1.3093 
     ## 
     ## Coefficients:
-    ##               Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)   -0.93662    0.88856  -1.054    0.310
-    ## oxygen_median  0.03313    0.22022   0.150    0.883
+    ##                     Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)         -1.18838    1.69589  -0.701    0.496
+    ## oxygen_median        0.08199    0.35844   0.229    0.823
+    ## Site_typeStratified  0.12030    0.68047   0.177    0.862
     ## 
-    ## Residual standard error: 0.8361 on 14 degrees of freedom
-    ## Multiple R-squared:  0.001614,   Adjusted R-squared:  -0.0697 
-    ## F-statistic: 0.02264 on 1 and 14 DF,  p-value: 0.8825
+    ## Residual standard error: 0.8667 on 13 degrees of freedom
+    ## Multiple R-squared:  0.004009,   Adjusted R-squared:  -0.1492 
+    ## F-statistic: 0.02616 on 2 and 13 DF,  p-value: 0.9742
 
 ``` r
 # p-values
@@ -2266,9 +2508,9 @@ p_values <- c(temp_p_values[1:2], sal_p_values[1:2], oxy_p_values[1:2])
 ```
 
     ##        (Intercept) temperature_median        (Intercept)    salinity_median 
-    ##                  1                  1                  1                  1 
+    ##          0.9941345          1.0000000          1.0000000          1.0000000 
     ##        (Intercept)      oxygen_median 
-    ##                  1                  1
+    ##          1.0000000          1.0000000
 
 ``` r
 # Summarize M lm results
@@ -2542,7 +2784,34 @@ plot(PD_PRicz_am_dist)
 
 ``` r
 ### Ocean & Mixed sites
-PD_PRicz_OM_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites,])
+PD_PRicz_OM_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = stree_sespd_env[ocean_mixed_sites,])
+summary(PD_PRicz_OM_lm_dist)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m * Site_type, 
+    ##     data = stree_sespd_env[ocean_mixed_sites, ])
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.26650 -0.26453 -0.03482  0.43034  1.91960 
+    ## 
+    ## Coefficients:
+    ##                                        Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)                            -1.27775    0.51903  -2.462   0.0336 *
+    ## distance_to_ocean_min_m                -0.04642    0.05528  -0.840   0.4206  
+    ## Site_typeMixed                         -0.02769    1.16608  -0.024   0.9815  
+    ## distance_to_ocean_min_m:Site_typeMixed  0.05372    0.05704   0.942   0.3684  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 1.161 on 10 degrees of freedom
+    ## Multiple R-squared:  0.1699, Adjusted R-squared:  -0.07913 
+    ## F-statistic: 0.6822 on 3 and 10 DF,  p-value: 0.5828
+
+``` r
+PD_PRicz_OM_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = stree_sespd_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OM_lm_dist))
 ```
@@ -2551,7 +2820,7 @@ shapiro.test(residuals(PD_PRicz_OM_lm_dist))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OM_lm_dist)
-    ## W = 0.97718, p-value = 0.9552
+    ## W = 0.98458, p-value = 0.9932
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -2560,12 +2829,44 @@ car::leveneTest(residuals(PD_PRicz_OM_lm_dist) ~ stree_sespd_env[ocean_mixed_sit
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.9077 0.3595
+    ## group  1  0.8484 0.3751
     ##       12
 
 ``` r
 ### Ocean & Stratified sites
-PD_PRicz_OS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites,])
+PD_PRicz_OS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = stree_sespd_env[ocean_stratified_sites,])
+summary(PD_PRicz_OS_lm_dist)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m * Site_type, 
+    ##     data = stree_sespd_env[ocean_stratified_sites, ])
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.26650 -0.42118 -0.03482  0.66063  1.91960 
+    ## 
+    ## Coefficients:
+    ##                                             Estimate Std. Error t value
+    ## (Intercept)                                 -1.27775    0.52271  -2.444
+    ## distance_to_ocean_min_m                     -0.04642    0.05567  -0.834
+    ## Site_typeStratified                          0.18004    1.13084   0.159
+    ## distance_to_ocean_min_m:Site_typeStratified  0.04830    0.05598   0.863
+    ##                                             Pr(>|t|)  
+    ## (Intercept)                                   0.0346 *
+    ## distance_to_ocean_min_m                       0.4238  
+    ## Site_typeStratified                           0.8767  
+    ## distance_to_ocean_min_m:Site_typeStratified   0.4084  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 1.169 on 10 degrees of freedom
+    ## Multiple R-squared:  0.1564, Adjusted R-squared:  -0.09662 
+    ## F-statistic: 0.6182 on 3 and 10 DF,  p-value: 0.6189
+
+``` r
+PD_PRicz_OS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = stree_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_lm_dist))
 ```
@@ -2574,7 +2875,7 @@ shapiro.test(residuals(PD_PRicz_OS_lm_dist))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OS_lm_dist)
-    ## W = 0.99142, p-value = 0.9999
+    ## W = 0.98535, p-value = 0.9949
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -2583,12 +2884,42 @@ car::leveneTest(residuals(PD_PRicz_OS_lm_dist) ~ stree_sespd_env[ocean_stratifie
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1   0.542 0.4757
+    ## group  1  0.6293  0.443
     ##       12
 
 ``` r
 ### Mixed & Stratified lakes
-PD_PRicz_MS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+summary(PD_PRicz_MS_lm_dist)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m * Site_type, 
+    ##     data = stree_sespd_env[mixed_stratified_lakes, ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.0243 -0.5824 -0.1713  0.6286  1.4248 
+    ## 
+    ## Coefficients:
+    ##                                              Estimate Std. Error t value
+    ## (Intercept)                                 -1.305436   0.792146  -1.648
+    ## distance_to_ocean_min_m                      0.007299   0.010663   0.685
+    ## Site_typeStratified                          0.207730   1.094567   0.190
+    ## distance_to_ocean_min_m:Site_typeStratified -0.005422   0.011549  -0.469
+    ##                                             Pr(>|t|)
+    ## (Intercept)                                    0.125
+    ## distance_to_ocean_min_m                        0.507
+    ## Site_typeStratified                            0.853
+    ## distance_to_ocean_min_m:Site_typeStratified    0.647
+    ## 
+    ## Residual standard error: 0.8804 on 12 degrees of freedom
+    ## Multiple R-squared:  0.0512, Adjusted R-squared:  -0.186 
+    ## F-statistic: 0.2158 on 3 and 12 DF,  p-value: 0.8835
+
+``` r
+PD_PRicz_MS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_MS_lm_dist))
 ```
@@ -2597,7 +2928,7 @@ shapiro.test(residuals(PD_PRicz_MS_lm_dist))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_MS_lm_dist)
-    ## W = 0.95185, p-value = 0.5196
+    ## W = 0.9547, p-value = 0.5675
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -2606,7 +2937,7 @@ car::leveneTest(residuals(PD_PRicz_MS_lm_dist) ~ stree_sespd_env[mixed_stratifie
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0104 0.9203
+    ## group  1   0.053 0.8213
     ##       14
 
 ``` r
@@ -2700,7 +3031,34 @@ p_values <- c(mxd_p_values[1:3])
 
 ``` r
 ### Ocean & Mixed sites
-PD_PRicz_OM_lm_mxd <- lm(pd.obs.z ~ max_depth, data = stree_sespd_env[ocean_mixed_sites,])
+PD_PRicz_OM_lm_mxd <- lm(pd.obs.z ~ max_depth * Site_type, data = stree_sespd_env[ocean_mixed_sites,])
+summary(PD_PRicz_OM_lm_mxd)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ max_depth * Site_type, data = stree_sespd_env[ocean_mixed_sites, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -0.7687 -0.3665 -0.1087  0.2736  1.4550 
+    ## 
+    ## Coefficients:
+    ##                          Estimate Std. Error t value Pr(>|t|)   
+    ## (Intercept)               0.13284    0.47084   0.282  0.78359   
+    ## max_depth                -0.11213    0.02658  -4.219  0.00177 **
+    ## Site_typeMixed           -0.29484    0.64726  -0.456  0.65846   
+    ## max_depth:Site_typeMixed  0.06205    0.03918   1.584  0.14431   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.6925 on 10 degrees of freedom
+    ## Multiple R-squared:  0.7045, Adjusted R-squared:  0.6158 
+    ## F-statistic: 7.946 on 3 and 10 DF,  p-value: 0.005295
+
+``` r
+PD_PRicz_OM_lm_mxd <- lm(pd.obs.z ~ max_depth + Site_type, data = stree_sespd_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OM_lm_mxd))
 ```
@@ -2709,7 +3067,7 @@ shapiro.test(residuals(PD_PRicz_OM_lm_mxd))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OM_lm_mxd)
-    ## W = 0.84945, p-value = 0.02183
+    ## W = 0.79399, p-value = 0.00421
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -2718,12 +3076,39 @@ car::leveneTest(residuals(PD_PRicz_OM_lm_mxd) ~ stree_sespd_env[ocean_mixed_site
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0928 0.7659
+    ## group  1   0.056 0.8169
     ##       12
 
 ``` r
 ### Ocean & Stratified sites
-PD_PRicz_OS_lm_mxd <- lm(pd.obs.z ~ max_depth, data = stree_sespd_env[ocean_stratified_sites,])
+PD_PRicz_OS_lm_mxd <- lm(pd.obs.z ~ max_depth * Site_type, data = stree_sespd_env[ocean_stratified_sites,])
+summary(PD_PRicz_OS_lm_mxd)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ max_depth * Site_type, data = stree_sespd_env[ocean_stratified_sites, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -0.8070 -0.4684 -0.1603  0.6502  0.9710 
+    ## 
+    ## Coefficients:
+    ##                               Estimate Std. Error t value Pr(>|t|)   
+    ## (Intercept)                    0.13284    0.50534   0.263  0.79798   
+    ## max_depth                     -0.11213    0.02853  -3.931  0.00282 **
+    ## Site_typeStratified           -1.55543    0.79240  -1.963  0.07805 . 
+    ## max_depth:Site_typeStratified  0.13821    0.03684   3.751  0.00378 **
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.7432 on 10 degrees of freedom
+    ## Multiple R-squared:  0.6589, Adjusted R-squared:  0.5566 
+    ## F-statistic:  6.44 on 3 and 10 DF,  p-value: 0.01057
+
+``` r
+PD_PRicz_OS_lm_mxd <- lm(pd.obs.z ~ max_depth + Site_type, data = stree_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_lm_mxd))
 ```
@@ -2732,7 +3117,7 @@ shapiro.test(residuals(PD_PRicz_OS_lm_mxd))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OS_lm_mxd)
-    ## W = 0.95971, p-value = 0.7183
+    ## W = 0.94225, p-value = 0.448
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -2741,12 +3126,39 @@ car::leveneTest(residuals(PD_PRicz_OS_lm_mxd) ~ stree_sespd_env[ocean_stratified
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.2081 0.6564
+    ## group  1  0.0118 0.9151
     ##       12
 
 ``` r
 ### Mixed & Stratified lakes
-PD_PRicz_MS_lm_mxd <- lm(pd.obs.z ~ max_depth, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_lm_mxd <- lm(pd.obs.z ~ max_depth * Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+summary(PD_PRicz_MS_lm_mxd)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ max_depth * Site_type, data = stree_sespd_env[mixed_stratified_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -0.8070 -0.4989 -0.2811  0.4801  1.4550 
+    ## 
+    ## Coefficients:
+    ##                               Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)                   -0.16200    0.51246  -0.316   0.7573  
+    ## max_depth                     -0.05008    0.03321  -1.508   0.1574  
+    ## Site_typeStratified           -1.26059    0.83258  -1.514   0.1559  
+    ## max_depth:Site_typeStratified  0.07616    0.04161   1.830   0.0921 .
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.799 on 12 degrees of freedom
+    ## Multiple R-squared:  0.2186, Adjusted R-squared:  0.02321 
+    ## F-statistic: 1.119 on 3 and 12 DF,  p-value: 0.38
+
+``` r
+PD_PRicz_MS_lm_mxd <- lm(pd.obs.z ~ max_depth + Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_MS_lm_mxd))
 ```
@@ -2755,7 +3167,7 @@ shapiro.test(residuals(PD_PRicz_MS_lm_mxd))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_MS_lm_mxd)
-    ## W = 0.95887, p-value = 0.6414
+    ## W = 0.9589, p-value = 0.6419
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -2764,7 +3176,7 @@ car::leveneTest(residuals(PD_PRicz_MS_lm_mxd) ~ stree_sespd_env[mixed_stratified
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0168 0.8986
+    ## group  1  0.0201 0.8893
     ##       14
 
 ``` r
@@ -2896,7 +3308,32 @@ plot(PD_PRicz_am_lga)
 
 ``` r
 ### Ocean & Mixed sites
-PD_PRicz_OM_lm_lga <- lm(pd.obs.z ~ logArea, data = stree_sespd_env[ocean_mixed_sites,])
+PD_PRicz_OM_lm_lga <- lm(pd.obs.z ~ logArea * Site_type, data = stree_sespd_env[ocean_mixed_sites,])
+summary(PD_PRicz_OM_lm_lga)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ logArea * Site_type, data = stree_sespd_env[ocean_mixed_sites, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.5552 -0.3618 -0.1088  0.7007  1.8330 
+    ## 
+    ## Coefficients:
+    ##                        Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)             0.83963    2.38169   0.353    0.732
+    ## logArea                -0.19654    0.19995  -0.983    0.349
+    ## Site_typeMixed         -0.23276    3.71819  -0.063    0.951
+    ## logArea:Site_typeMixed  0.05015    0.35445   0.141    0.890
+    ## 
+    ## Residual standard error: 1.148 on 10 degrees of freedom
+    ## Multiple R-squared:  0.1878, Adjusted R-squared:  -0.0559 
+    ## F-statistic: 0.7706 on 3 and 10 DF,  p-value: 0.5363
+
+``` r
+PD_PRicz_OM_lm_lga <- lm(pd.obs.z ~ logArea + Site_type, data = stree_sespd_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OM_lm_lga))
 ```
@@ -2905,7 +3342,7 @@ shapiro.test(residuals(PD_PRicz_OM_lm_lga))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OM_lm_lga)
-    ## W = 0.94445, p-value = 0.4783
+    ## W = 0.94771, p-value = 0.5257
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -2914,12 +3351,37 @@ car::leveneTest(residuals(PD_PRicz_OM_lm_lga) ~ stree_sespd_env[ocean_mixed_site
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  2.4667 0.1423
+    ## group  1  2.1471 0.1685
     ##       12
 
 ``` r
 ### Ocean & Stratified sites
-PD_PRicz_OS_lm_lga <- lm(pd.obs.z ~ logArea, data = stree_sespd_env[ocean_stratified_sites,])
+PD_PRicz_OS_lm_lga <- lm(pd.obs.z ~ logArea * Site_type, data = stree_sespd_env[ocean_stratified_sites,])
+summary(PD_PRicz_OS_lm_lga)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ logArea * Site_type, data = stree_sespd_env[ocean_stratified_sites, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.55521 -0.62982 -0.05435  0.62513  1.83297 
+    ## 
+    ## Coefficients:
+    ##                             Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)                   0.8396     2.2220   0.378    0.713
+    ## logArea                      -0.1965     0.1865  -1.054    0.317
+    ## Site_typeStratified          -6.2486     4.1471  -1.507    0.163
+    ## logArea:Site_typeStratified   0.6451     0.3872   1.666    0.127
+    ## 
+    ## Residual standard error: 1.071 on 10 degrees of freedom
+    ## Multiple R-squared:  0.2917, Adjusted R-squared:  0.07917 
+    ## F-statistic: 1.373 on 3 and 10 DF,  p-value: 0.3069
+
+``` r
+PD_PRicz_OS_lm_lga <- lm(pd.obs.z ~ logArea + Site_type, data = stree_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_lm_lga))
 ```
@@ -2928,7 +3390,7 @@ shapiro.test(residuals(PD_PRicz_OS_lm_lga))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OS_lm_lga)
-    ## W = 0.96736, p-value = 0.8395
+    ## W = 0.98747, p-value = 0.998
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -2937,12 +3399,39 @@ car::leveneTest(residuals(PD_PRicz_OS_lm_lga) ~ stree_sespd_env[ocean_stratified
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.3989 0.5395
+    ## group  1  0.3725  0.553
     ##       12
 
 ``` r
 ### Mixed & Stratified lakes
-PD_PRicz_MS_lm_lga <- lm(pd.obs.z ~ logArea, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_lm_lga <- lm(pd.obs.z ~ logArea * Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+summary(PD_PRicz_MS_lm_lga)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = pd.obs.z ~ logArea * Site_type, data = stree_sespd_env[mixed_stratified_lakes, 
+    ##     ])
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.2837 -0.4198 -0.1088  0.5633  1.4300 
+    ## 
+    ## Coefficients:
+    ##                             Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)                   0.6069     1.9621   0.309   0.7624  
+    ## logArea                      -0.1464     0.2011  -0.728   0.4806  
+    ## Site_typeStratified          -6.0158     3.2407  -1.856   0.0881 .
+    ## logArea:Site_typeStratified   0.5950     0.3208   1.855   0.0884 .
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.7889 on 12 degrees of freedom
+    ## Multiple R-squared:  0.2382, Adjusted R-squared:  0.04772 
+    ## F-statistic: 1.251 on 3 and 12 DF,  p-value: 0.3349
+
+``` r
+PD_PRicz_MS_lm_lga <- lm(pd.obs.z ~ logArea + Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_MS_lm_lga))
 ```
@@ -2951,7 +3440,7 @@ shapiro.test(residuals(PD_PRicz_MS_lm_lga))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_MS_lm_lga)
-    ## W = 0.94033, p-value = 0.3531
+    ## W = 0.94029, p-value = 0.3526
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -2960,7 +3449,7 @@ car::leveneTest(residuals(PD_PRicz_MS_lm_lga) ~ stree_sespd_env[mixed_stratified
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.1803 0.6776
+    ## group  1  0.2073 0.6558
     ##       14
 
 ``` r
@@ -3079,23 +3568,24 @@ summary(PD_PRicz_OM_lm_dist)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m, data = stree_sespd_env[ocean_mixed_sites, 
-    ##     ])
+    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m + Site_type, 
+    ##     data = stree_sespd_env[ocean_mixed_sites, ])
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -2.13269 -0.68339  0.02251  0.51488  2.05342 
+    ## -2.07307 -0.66845  0.02252  0.43878  2.11303 
     ## 
     ## Coefficients:
-    ##                          Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)             -1.411558   0.428307  -3.296  0.00639 **
-    ## distance_to_ocean_min_m  0.008030   0.007582   1.059  0.31041   
+    ##                          Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)             -1.471176   0.474224  -3.102   0.0101 *
+    ## distance_to_ocean_min_m  0.004036   0.013553   0.298   0.7714  
+    ## Site_typeMixed           0.388634   1.073525   0.362   0.7242  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 1.112 on 12 degrees of freedom
-    ## Multiple R-squared:  0.08548,    Adjusted R-squared:  0.009275 
-    ## F-statistic: 1.122 on 1 and 12 DF,  p-value: 0.3104
+    ## Residual standard error: 1.155 on 11 degrees of freedom
+    ## Multiple R-squared:  0.09625,    Adjusted R-squared:  -0.06807 
+    ## F-statistic: 0.5858 on 2 and 11 DF,  p-value: 0.5731
 
 ``` r
 summary(PD_PRicz_OM_lm_mxd)
@@ -3103,23 +3593,24 @@ summary(PD_PRicz_OM_lm_mxd)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ max_depth, data = stree_sespd_env[ocean_mixed_sites, 
+    ## lm(formula = pd.obs.z ~ max_depth + Site_type, data = stree_sespd_env[ocean_mixed_sites, 
     ##     ])
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -0.8119 -0.3941 -0.2401  0.1855  1.7963 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -0.64011 -0.43741 -0.37177  0.07568  1.55965 
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)  0.06282    0.35337   0.178  0.86186   
-    ## max_depth   -0.08547    0.02148  -3.979  0.00183 **
+    ##                Estimate Std. Error t value Pr(>|t|)   
+    ## (Intercept)    -0.27174    0.42177  -0.644  0.53260   
+    ## max_depth      -0.08357    0.02082  -4.014  0.00204 **
+    ## Site_typeMixed  0.54093    0.39971   1.353  0.20311   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.7636 on 12 degrees of freedom
-    ## Multiple R-squared:  0.5688, Adjusted R-squared:  0.5329 
-    ## F-statistic: 15.83 on 1 and 12 DF,  p-value: 0.001831
+    ## Residual standard error: 0.7384 on 11 degrees of freedom
+    ## Multiple R-squared:  0.6303, Adjusted R-squared:  0.5631 
+    ## F-statistic: 9.379 on 2 and 11 DF,  p-value: 0.004197
 
 ``` r
 summary(PD_PRicz_OM_lm_lga)
@@ -3127,21 +3618,22 @@ summary(PD_PRicz_OM_lm_lga)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ logArea, data = stree_sespd_env[ocean_mixed_sites, 
+    ## lm(formula = pd.obs.z ~ logArea + Site_type, data = stree_sespd_env[ocean_mixed_sites, 
     ##     ])
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -1.6386 -0.3133 -0.1054  0.6590  1.6863 
+    ## -1.5985 -0.3070 -0.1336  0.6896  1.8544 
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)   1.1473     1.4372   0.798    0.440
-    ## logArea      -0.2121     0.1339  -1.584    0.139
+    ##                Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)      0.6533     1.8938   0.345    0.737
+    ## logArea         -0.1806     0.1576  -1.146    0.276
+    ## Site_typeMixed   0.2838     0.6721   0.422    0.681
     ## 
-    ## Residual standard error: 1.058 on 12 degrees of freedom
-    ## Multiple R-squared:  0.173,  Adjusted R-squared:  0.104 
-    ## F-statistic: 2.509 on 1 and 12 DF,  p-value: 0.1392
+    ## Residual standard error: 1.096 on 11 degrees of freedom
+    ## Multiple R-squared:  0.1861, Adjusted R-squared:  0.03817 
+    ## F-statistic: 1.258 on 2 and 11 DF,  p-value: 0.3221
 
 ``` r
 # p-values
@@ -3153,9 +3645,9 @@ p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 ```
 
     ##             (Intercept) distance_to_ocean_min_m             (Intercept) 
-    ##              0.03835130              1.00000000              1.00000000 
+    ##              0.06037889              1.00000000              1.00000000 
     ##               max_depth             (Intercept)                 logArea 
-    ##              0.01098572              1.00000000              0.83492018
+    ##              0.01222700              1.00000000              1.00000000
 
 ``` r
 # Summarize OS lm results
@@ -3164,23 +3656,24 @@ summary(PD_PRicz_OS_lm_dist)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m, data = stree_sespd_env[ocean_stratified_sites, 
-    ##     ])
+    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m + Site_type, 
+    ##     data = stree_sespd_env[ocean_stratified_sites, ])
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -2.16171 -0.69283  0.03061  0.63502  2.02440 
+    ## -2.08340 -0.80324 -0.01731  0.72343  2.10271 
     ## 
     ## Coefficients:
-    ##                          Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)             -1.382543   0.417543  -3.311  0.00621 **
-    ## distance_to_ocean_min_m  0.003298   0.003241   1.018  0.32886   
+    ##                          Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)             -1.460849   0.472112  -3.094   0.0102 *
+    ## distance_to_ocean_min_m  0.001342   0.005789   0.232   0.8209  
+    ## Site_typeStratified      0.446093   1.075279   0.415   0.6862  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 1.115 on 12 degrees of freedom
-    ## Multiple R-squared:  0.07947,    Adjusted R-squared:  0.002755 
-    ## F-statistic: 1.036 on 1 and 12 DF,  p-value: 0.3289
+    ## Residual standard error: 1.155 on 11 degrees of freedom
+    ## Multiple R-squared:  0.09365,    Adjusted R-squared:  -0.07114 
+    ## F-statistic: 0.5683 on 2 and 11 DF,  p-value: 0.5823
 
 ``` r
 summary(PD_PRicz_OS_lm_mxd)
@@ -3188,21 +3681,22 @@ summary(PD_PRicz_OS_lm_mxd)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ max_depth, data = stree_sespd_env[ocean_stratified_sites, 
+    ## lm(formula = pd.obs.z ~ max_depth + Site_type, data = stree_sespd_env[ocean_stratified_sites, 
     ##     ])
     ## 
     ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -2.23920 -0.71586  0.00971  0.82891  1.48999 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.5613 -0.5646  0.1070  0.4687  1.7706 
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept) -0.80530    0.58800  -1.370    0.196
-    ## max_depth   -0.01428    0.02564  -0.557    0.588
+    ##                     Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)         -1.04083    0.58704  -1.773    0.104
+    ## max_depth           -0.02928    0.02671  -1.097    0.296
+    ## Site_typeStratified  0.92615    0.64527   1.435    0.179
     ## 
-    ## Residual standard error: 1.147 on 12 degrees of freedom
-    ## Multiple R-squared:  0.0252, Adjusted R-squared:  -0.05604 
-    ## F-statistic: 0.3102 on 1 and 12 DF,  p-value: 0.5878
+    ## Residual standard error: 1.099 on 11 degrees of freedom
+    ## Multiple R-squared:  0.179,  Adjusted R-squared:  0.02968 
+    ## F-statistic: 1.199 on 2 and 11 DF,  p-value: 0.3381
 
 ``` r
 summary(PD_PRicz_OS_lm_lga)
@@ -3210,21 +3704,22 @@ summary(PD_PRicz_OS_lm_lga)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ logArea, data = stree_sespd_env[ocean_stratified_sites, 
+    ## lm(formula = pd.obs.z ~ logArea + Site_type, data = stree_sespd_env[ocean_stratified_sites, 
     ##     ])
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -2.09417 -0.71090  0.03834  0.77993  1.67107 
+    ## -1.96158 -0.83146  0.07893  0.67170  2.03457 
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept)  0.04191    1.78508   0.023    0.982
-    ## logArea     -0.10367    0.16183  -0.641    0.534
+    ##                     Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)         -0.90926    2.11065  -0.431    0.675
+    ## logArea             -0.04679    0.17616  -0.266    0.795
+    ## Site_typeStratified  0.58280    0.67159   0.868    0.404
     ## 
-    ## Residual standard error: 1.142 on 12 degrees of freedom
-    ## Multiple R-squared:  0.03307,    Adjusted R-squared:  -0.04751 
-    ## F-statistic: 0.4104 on 1 and 12 DF,  p-value: 0.5338
+    ## Residual standard error: 1.154 on 11 degrees of freedom
+    ## Multiple R-squared:  0.09502,    Adjusted R-squared:  -0.06952 
+    ## F-statistic: 0.5775 on 2 and 11 DF,  p-value: 0.5774
 
 ``` r
 # p-values
@@ -3236,9 +3731,9 @@ p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 ```
 
     ##             (Intercept) distance_to_ocean_min_m             (Intercept) 
-    ##               0.0372678               1.0000000               1.0000000 
+    ##              0.06124605              1.00000000              0.62326483 
     ##               max_depth             (Intercept)                 logArea 
-    ##               1.0000000               1.0000000               1.0000000
+    ##              1.00000000              1.00000000              1.00000000
 
 ``` r
 # Summarize MS lm results
@@ -3247,23 +3742,24 @@ summary(PD_PRicz_MS_lm_dist)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m, data = stree_sespd_env[mixed_stratified_lakes, 
-    ##     ])
+    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m + Site_type, 
+    ##     data = stree_sespd_env[mixed_stratified_lakes, ])
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -1.1887 -0.5710 -0.1658  0.7619  1.3968 
+    ## -1.2153 -0.5702 -0.1259  0.7297  1.3448 
     ## 
     ## Coefficients:
     ##                          Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)             -0.987812   0.393720  -2.509    0.025 *
-    ## distance_to_ocean_min_m  0.001621   0.002998   0.541    0.597  
+    ## (Intercept)             -0.989708   0.405823  -2.439   0.0298 *
+    ## distance_to_ocean_min_m  0.002677   0.003972   0.674   0.5121  
+    ## Site_typeStratified     -0.232122   0.548674  -0.423   0.6792  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.8282 on 14 degrees of freedom
-    ## Multiple R-squared:  0.02047,    Adjusted R-squared:  -0.0495 
-    ## F-statistic: 0.2926 on 1 and 14 DF,  p-value: 0.5971
+    ## Residual standard error: 0.8536 on 13 degrees of freedom
+    ## Multiple R-squared:  0.03377,    Adjusted R-squared:  -0.1149 
+    ## F-statistic: 0.2272 on 2 and 13 DF,  p-value: 0.7999
 
 ``` r
 summary(PD_PRicz_MS_lm_mxd)
@@ -3271,23 +3767,24 @@ summary(PD_PRicz_MS_lm_mxd)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ max_depth, data = stree_sespd_env[mixed_stratified_lakes, 
+    ## lm(formula = pd.obs.z ~ max_depth + Site_type, data = stree_sespd_env[mixed_stratified_lakes, 
     ##     ])
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -1.3191 -0.4660 -0.1215  0.7645  1.2956 
+    ## -1.3084 -0.4652 -0.1251  0.7583  1.3034 
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept) -0.78459    0.39637  -1.979   0.0678 .
-    ## max_depth   -0.00121    0.01845  -0.066   0.9486  
+    ##                      Estimate Std. Error t value Pr(>|t|)  
+    ## (Intercept)         -0.786625   0.415437  -1.893   0.0808 .
+    ## max_depth           -0.001569   0.021742  -0.072   0.9436  
+    ## Site_typeStratified  0.017153   0.493038   0.035   0.9728  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 0.8367 on 14 degrees of freedom
-    ## Multiple R-squared:  0.0003074,  Adjusted R-squared:  -0.0711 
-    ## F-statistic: 0.004305 on 1 and 14 DF,  p-value: 0.9486
+    ## Residual standard error: 0.8682 on 13 degrees of freedom
+    ## Multiple R-squared:  0.0004005,  Adjusted R-squared:  -0.1534 
+    ## F-statistic: 0.002604 on 2 and 13 DF,  p-value: 0.9974
 
 ``` r
 summary(PD_PRicz_MS_lm_lga)
@@ -3295,21 +3792,22 @@ summary(PD_PRicz_MS_lm_lga)
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs.z ~ logArea, data = stree_sespd_env[mixed_stratified_lakes, 
+    ## lm(formula = pd.obs.z ~ logArea + Site_type, data = stree_sespd_env[mixed_stratified_lakes, 
     ##     ])
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -1.3249 -0.5506 -0.1952  0.7873  1.2490 
+    ## -1.3511 -0.5252 -0.1983  0.8014  1.2199 
     ## 
     ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)
-    ## (Intercept) -1.63077    1.60775  -1.014    0.328
-    ## logArea      0.08275    0.16010   0.517    0.613
+    ##                     Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)         -1.65161    1.67673  -0.985    0.343
+    ## logArea              0.08748    0.17075   0.512    0.617
+    ## Site_typeStratified -0.05251    0.44207  -0.119    0.907
     ## 
-    ## Residual standard error: 0.829 on 14 degrees of freedom
-    ## Multiple R-squared:  0.01873,    Adjusted R-squared:  -0.05136 
-    ## F-statistic: 0.2672 on 1 and 14 DF,  p-value: 0.6133
+    ## Residual standard error: 0.8598 on 13 degrees of freedom
+    ## Multiple R-squared:  0.01979,    Adjusted R-squared:  -0.131 
+    ## F-statistic: 0.1312 on 2 and 13 DF,  p-value: 0.8782
 
 ``` r
 # p-values
@@ -3321,7 +3819,7 @@ p_values <- c(dist_p_values[1:2], mxd_p_values[1:2], lga_p_values[1:2])
 ```
 
     ##             (Intercept) distance_to_ocean_min_m             (Intercept) 
-    ##               0.1501874               1.0000000               0.4066405 
+    ##               0.1790153               1.0000000               0.4845766 
     ##               max_depth             (Intercept)                 logArea 
     ##               1.0000000               1.0000000               1.0000000
 
@@ -4442,7 +4940,7 @@ PD_alpha_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs.z, x = 
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
-  labs(x="PD alpha Dispersion", y="PD alpha z-score", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="PDisp", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "a")
 (PD_alpha_plot <- PD_alpha_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -5016,17 +5514,28 @@ PD_beta_varpart$part
 # Open a jpg device
 png("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_varpart.jpg", width = 4.5, height = 4.5, units = "in", res = 300, type = "cairo")
 # Plot the variation partitioning results
+par(mar = c(3, 3, 3, 3) + 1)  # Increase bottom margin if needed
 plot(PD_beta_varpart,
-     Xnames = c("Environmental", "Geographical"), # name the partitions
-     bg = c("mediumpurple", "orange"), alpha = 80, # colour the circles
-     digits = 1, # only show 2 digits
-     cex = 1)
+     Xnames = c("Env", "Geo"),
+     bg = c("mediumpurple", "orange"), alpha = 80,
+     digits = 1,
+     asp = 1)
 # Close the jpg device
 dev.off()
 ```
 
     ## quartz_off_screen 
     ##                 2
+
+``` r
+plot(PD_beta_varpart,
+     Xnames = c("Env", "Geo"),
+     bg = c("mediumpurple", "orange"), alpha = 80,
+     digits = 1,
+     asp = 1)
+```
+
+![](PD_analyses_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
 ### PD beta env and geo correlated variables using envfit
 
