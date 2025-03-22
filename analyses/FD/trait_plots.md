@@ -359,60 +359,6 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 # TempPrefMin_plot
 ```
 
-### Temperature Preference Maximum
-
-``` r
-TempPrefMax_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= TempPrefMax, color = "black", fill = Strat)) +
-  geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
-  guides(fill = "none", color = "none") +
-  geom_jitter(shape = 21,
-            size = 4,
-            alpha = 0.6,
-            width = 0.1) +
-  theme_bw() +
-  theme(text = element_text(size = 26), legend.text = element_text(size = 26),
-    axis.text = element_text(size = 26, color = "black"),
-    axis.line = element_line(color = "black"),
-    plot.background = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.border = element_blank()) + 
-  ylab("Temp Max (Cº)") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "b")
-TempPrefMax_plot_weighted
-```
-
-![](trait_plots_files/figure-gfm/Temperature%20Preference%20Maximum-1.png)<!-- -->
-
-``` r
-# Warning messages:
-# 1: Removed 11 rows containing non-finite values (`stat_ydensity()`). 
-# 2: Removed 11 rows containing missing values (`geom_point()`). 
-# Two values with NA
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/TempPrefMax_plot_weighted.jpg", TempPrefMax_plot_weighted, width = 8, height = 8, units = "in")
-
-
-# TempPrefMax_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= TempPrefMax, fill = Strat)) +
-#   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
-#   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   geom_jitter(shape = 21,
-#             size = 3,
-#             alpha = 0.75,
-#             width = 0.1) +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("TempPrefMax")
-# TempPrefMax_plot
-```
-
 ### Water
 
 - Fresh/Brack/Salt
@@ -452,7 +398,7 @@ Water_plot_weighted <- ggplot(Site_type_st_props_Water, mapping = aes(x= Strat, 
   ylim(c(0,1)) +
   ylab("Proportion") +
   xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(colour = "Site type:", fill = "Site type:", tag = "b")
 Water_plot_weighted
 ```
 
@@ -486,6 +432,60 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plot
 #   ylab("Proportion") +
 #   xlab("Habitat")
 # Habitat_plot
+```
+
+### Temperature Preference Maximum
+
+``` r
+TempPrefMax_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= TempPrefMax, color = "black", fill = Strat)) +
+  geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  guides(fill = "none", color = "none") +
+  geom_jitter(shape = 21,
+            size = 4,
+            alpha = 0.6,
+            width = 0.1) +
+  theme_bw() +
+  theme(text = element_text(size = 26), legend.text = element_text(size = 26),
+    axis.text = element_text(size = 26, color = "black"),
+    axis.line = element_line(color = "black"),
+    plot.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank()) + 
+  ylab("Temp Max (Cº)") +
+  xlab("Site type") +
+  labs(colour = "Site type:", fill = "Site type:", tag = "c")
+TempPrefMax_plot_weighted
+```
+
+![](trait_plots_files/figure-gfm/Temperature%20Preference%20Maximum-1.png)<!-- -->
+
+``` r
+# Warning messages:
+# 1: Removed 11 rows containing non-finite values (`stat_ydensity()`). 
+# 2: Removed 11 rows containing missing values (`geom_point()`). 
+# Two values with NA
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/TempPrefMax_plot_weighted.jpg", TempPrefMax_plot_weighted, width = 8, height = 8, units = "in")
+
+
+# TempPrefMax_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= TempPrefMax, fill = Strat)) +
+#   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
+#   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
+#   geom_jitter(shape = 21,
+#             size = 3,
+#             alpha = 0.75,
+#             width = 0.1) +
+#   theme_bw() +
+#   theme(
+#     plot.background = element_blank(),
+#     panel.grid.major = element_blank(),
+#     panel.grid.minor = element_blank(),
+#     panel.border = element_blank(),
+#     axis.line = element_line(color = "black")) +
+#   ylab("TempPrefMax")
+# TempPrefMax_plot
 ```
 
 ## Supplementary traits
@@ -1060,7 +1060,7 @@ sessionInfo()
     ## [16] farver_2.1.2            textshaping_1.0.0       munsell_0.5.1          
     ## [19] mnormt_2.1.1            combinat_0.0-8          codetools_0.2-20       
     ## [22] htmltools_0.5.8.1       yaml_2.3.10             Formula_1.2-5          
-    ## [25] pillar_1.10.1           MASS_7.3-64             clusterGeneration_1.3.8
+    ## [25] pillar_1.10.1           MASS_7.3-65             clusterGeneration_1.3.8
     ## [28] iterators_1.0.14        abind_1.4-8             foreach_1.5.2          
     ## [31] nlme_3.1-167            phangorn_2.12.1         tidyselect_1.2.1       
     ## [34] digest_0.6.37           stringi_1.8.4           purrr_1.0.4            

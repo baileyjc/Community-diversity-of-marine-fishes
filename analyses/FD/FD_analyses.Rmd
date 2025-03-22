@@ -64,8 +64,8 @@ env <- env[order(env$X),]
 presabs_lake <- presabs_lake[order(row.names(presabs_lake)),]
 surveyed_sites_lake <- surveyed_sites_lake[order(row.names(surveyed_sites_lake)),]
 
-Site_type_group_ref <- env[,19]
-Site_type_group <- env[surveyed_sites,19]
+Site_type_group_ref <- env[,"Site_type"]
+Site_type_group <- env[surveyed_sites,"Site_type"]
 
 straits_na <- which(rowSums(is.na(straits)) > 0)
 straits_clean <- straits[-straits_na, ]
@@ -256,8 +256,8 @@ row.names(outlier_FD_alpha) <- outlier_FD_alpha$X
         panel.border = element_blank(),
         axis.text = element_text(color = "black", size = 16)) +
   scale_y_continuous(expand = c(0,0)) +
-  labs(y = "FD Alpha z-scores", x = "Site type", color = "Outlier:", tag = "c")) +
-  guides(fill = "none")
+  labs(y = "FRic-z", x = "Site type", color = "Outlier:", tag = "c") +
+  guides(fill = "none"))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/outlier_FD_alpha.jpg", outlier_FD_alpha_plot, width = 6.26, height = 6, units = "in")
 ```
 
@@ -492,7 +492,7 @@ FD_alpha_T_plot <- ggplot(data = straits_sespd_env[surveyed_sites_env,], mapping
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Temperature (ºC)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Temperature (ºC)", y="FRic-z", colour = "Site type:", fill = "Site type:", tag = "a")
 (FD_alpha_T_plot <- FD_alpha_T_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_alpha_T_plot.jpg", plot = FD_alpha_T_plot, width = 6.26, height = 6, units = "in")
 
@@ -514,7 +514,7 @@ FD_alpha_S_plot <- ggplot(data = straits_sespd_env[surveyed_sites_env,], mapping
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Salinity (ppt)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Salinity (ppt)", y="FRic-z", colour = "Site type:", fill = "Site type:", tag = "b")
 (FD_alpha_S_plot <- FD_alpha_S_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_alpha_S_plot.jpg", plot = FD_alpha_S_plot, width = 6.26, height = 6, units = "in")
 
@@ -536,7 +536,7 @@ FD_alpha_O_plot <- ggplot(data = straits_sespd_env[surveyed_sites_env,], mapping
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Oxygen (mg/L)", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(x="Oxygen (mg/L)", y="FRic-z", colour = "Site type:", fill = "Site type:", tag = "c")
 (FD_alpha_O_plot <- FD_alpha_O_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_alpha_O_plot.jpg", plot = FD_alpha_O_plot, width = 6.26, height = 6, units = "in")
 
@@ -558,7 +558,7 @@ FD_alpha_D_plot <- ggplot(data = straits_sespd_env[surveyed_sites,], mapping = a
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Isolation (m)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Isolation (m)", y="FRic-z", colour = "Site type:", fill = "Site type:", tag = "a")
 (FD_alpha_D_plot <- FD_alpha_D_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_alpha_D_plot.jpg", plot = FD_alpha_D_plot, width = 6.26, height = 6, units = "in")
 
@@ -580,7 +580,7 @@ FD_alpha_MD_plot <- ggplot(data = straits_sespd_env[surveyed_sites,], mapping = 
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Age (m)", y="SRic", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Age (m)", y="FRic-z", colour = "Site type:", fill = "Site type:", tag = "b")
 (FD_alpha_MD_plot <- FD_alpha_MD_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_alpha_MD_plot.jpg", plot = FD_alpha_MD_plot, width = 6.26, height = 6, units = "in")
 
@@ -602,7 +602,7 @@ FD_alpha_LA_plot <- ggplot(data = straits_sespd_env[surveyed_sites,], mapping = 
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Log Area (m"^"2"~")", y="Log SRic", colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(x="Log Area (m"^"2"~")", y="FRic-z", colour = "Site type:", fill = "Site type:", tag = "c")
 (FD_alpha_LA_plot <- FD_alpha_LA_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_alpha_LA_plot.jpg", plot = FD_alpha_LA_plot, width = 6.26, height = 6, units = "in")
 ```
@@ -642,21 +642,27 @@ outlierTest(FD_FRicz_am_temp)
 plot(FD_FRicz_am_temp)
 
 ### Ocean & Mixed sites
-FD_FRicz_OM_lm_temp <- lm(pd.obs.z ~ temperature_median, data = straits_sespd_env[ocean_mixed_sites_env,])
+FD_FRicz_OM_lm_temp <- lm(pd.obs.z ~ temperature_median * Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
+summary(FD_FRicz_OM_lm_temp)
+FD_FRicz_OM_lm_temp <- lm(pd.obs.z ~ temperature_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OM_lm_temp))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OM_lm_temp) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
 
 ### Ocean & Stratified sites
-FD_FRicz_OS_lm_temp <- lm(pd.obs.z ~ temperature_median, data = straits_sespd_env[ocean_stratified_sites_env,])
+FD_FRicz_OS_lm_temp <- lm(pd.obs.z ~ temperature_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
+summary(FD_FRicz_OS_lm_temp)
+FD_FRicz_OS_lm_temp <- lm(pd.obs.z ~ temperature_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OS_lm_temp))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OS_lm_temp) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
 
 ### Mixed & Stratified lakes
-FD_FRicz_MS_lm_temp <- lm(pd.obs.z ~ temperature_median, data = straits_sespd_env[mixed_stratified_lakes,])
+FD_FRicz_MS_lm_temp <- lm(pd.obs.z ~ temperature_median * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
+
+FD_FRicz_MS_lm_temp <- lm(pd.obs.z ~ temperature_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_MS_lm_temp))
 # Levene’s test for homogeneity of variance
@@ -701,21 +707,27 @@ outlierTest(FD_FRicz_am_sal)
 plot(FD_FRicz_am_sal)
 
 ### Ocean & Mixed sites
-FD_FRicz_OM_lm_sal <- lm(pd.obs.z ~ salinity_median, data = straits_sespd_env[ocean_mixed_sites_env,])
+FD_FRicz_OM_lm_sal <- lm(pd.obs.z ~ salinity_median * Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
+summary(FD_FRicz_OM_lm_sal)
+FD_FRicz_OM_lm_sal <- lm(pd.obs.z ~ salinity_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OM_lm_sal))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OM_lm_sal) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
 
 ### Ocean & Stratified sites
-FD_FRicz_OS_lm_sal <- lm(pd.obs.z ~ salinity_median, data = straits_sespd_env[ocean_stratified_sites_env,])
+FD_FRicz_OS_lm_sal <- lm(pd.obs.z ~ salinity_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
+summary(FD_FRicz_OS_lm_sal)
+FD_FRicz_OS_lm_sal <- lm(pd.obs.z ~ salinity_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OS_lm_sal))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OS_lm_sal) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
 
 ### Mixed & Stratified lakes
-FD_FRicz_MS_lm_sal <- lm(pd.obs.z ~ salinity_median, data = straits_sespd_env[mixed_stratified_lakes,])
+FD_FRicz_MS_lm_sal <- lm(pd.obs.z ~ salinity_median * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
+summary(FD_FRicz_MS_lm_sal)
+FD_FRicz_MS_lm_sal <- lm(pd.obs.z ~ salinity_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_MS_lm_sal))
 # Levene’s test for homogeneity of variance
@@ -760,21 +772,27 @@ outlierTest(FD_FRicz_am_oxy)
 plot(FD_FRicz_am_oxy)
 
 ### Ocean & Mixed sites
-FD_FRicz_OM_lm_oxy <- lm(pd.obs.z ~ oxygen_median, data = straits_sespd_env[ocean_mixed_sites_env,])
+FD_FRicz_OM_lm_oxy <- lm(pd.obs.z ~ oxygen_median * Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
+summary(FD_FRicz_OM_lm_oxy)
+FD_FRicz_OM_lm_oxy <- lm(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_mixed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OM_lm_oxy))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OM_lm_oxy) ~ straits_sespd_env[ocean_mixed_sites_env,"Site_type"])
 
 ### Ocean & Stratified sites
-FD_FRicz_OS_lm_oxy <- lm(pd.obs.z ~ oxygen_median, data = straits_sespd_env[ocean_stratified_sites_env,])
+FD_FRicz_OS_lm_oxy <- lm(pd.obs.z ~ oxygen_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
+summary(FD_FRicz_OS_lm_oxy)
+FD_FRicz_OS_lm_oxy <- lm(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OS_lm_oxy))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OS_lm_oxy) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
 
 ### Mixed & Stratified lakes
-FD_FRicz_MS_lm_oxy <- lm(pd.obs.z ~ oxygen_median, data = straits_sespd_env[mixed_stratified_lakes,])
+FD_FRicz_MS_lm_oxy <- lm(pd.obs.z ~ oxygen_median * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
+summary(FD_FRicz_MS_lm_oxy)
+FD_FRicz_MS_lm_oxy <- lm(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_MS_lm_oxy))
 # Levene’s test for homogeneity of variance
@@ -893,21 +911,27 @@ outlierTest(FD_FRicz_am_dist)
 plot(FD_FRicz_am_dist)
 
 ### Ocean & Mixed sites
-FD_FRicz_OM_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = straits_sespd_env[ocean_mixed_sites,])
+FD_FRicz_OM_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[ocean_mixed_sites,])
+summary(FD_FRicz_OM_lm_dist)
+FD_FRicz_OM_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OM_lm_dist))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OM_lm_dist) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
 
 ### Ocean & Stratified sites
-FD_FRicz_OS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = straits_sespd_env[ocean_stratified_sites,])
+FD_FRicz_OS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[ocean_stratified_sites,])
+summary(FD_FRicz_OS_lm_dist)
+FD_FRicz_OS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OS_lm_dist))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OS_lm_dist) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
 
 ### Mixed & Stratified lakes
-FD_FRicz_MS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m, data = straits_sespd_env[mixed_stratified_lakes,])
+FD_FRicz_MS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
+summary(FD_FRicz_MS_lm_dist)
+FD_FRicz_MS_lm_dist <- lm(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_MS_lm_dist))
 # Levene’s test for homogeneity of variance
@@ -952,21 +976,27 @@ outlierTest(FD_FRicz_am_mxd)
 plot(FD_FRicz_am_mxd)
 
 ### Ocean & Mixed sites
-FD_FRicz_OM_lm_mxd <- lm(pd.obs.z ~ max_depth, data = straits_sespd_env[ocean_mixed_sites,])
+FD_FRicz_OM_lm_mxd <- lm(pd.obs.z ~ max_depth * Site_type, data = straits_sespd_env[ocean_mixed_sites,])
+summary(FD_FRicz_OM_lm_mxd)
+FD_FRicz_OM_lm_mxd <- lm(pd.obs.z ~ max_depth + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OM_lm_mxd))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OM_lm_mxd) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
 
 ### Ocean & Stratified sites
-FD_FRicz_OS_lm_mxd <- lm(pd.obs.z ~ max_depth, data = straits_sespd_env[ocean_stratified_sites,])
+FD_FRicz_OS_lm_mxd <- lm(pd.obs.z ~ max_depth * Site_type, data = straits_sespd_env[ocean_stratified_sites,])
+summary(FD_FRicz_OS_lm_mxd)
+FD_FRicz_OS_lm_mxd <- lm(pd.obs.z ~ max_depth + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OS_lm_mxd))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OS_lm_mxd) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
 
 ### Mixed & Stratified lakes
-FD_FRicz_MS_lm_mxd <- lm(pd.obs.z ~ max_depth, data = straits_sespd_env[mixed_stratified_lakes,])
+FD_FRicz_MS_lm_mxd <- lm(pd.obs.z ~ max_depth * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
+summary(FD_FRicz_MS_lm_mxd)
+FD_FRicz_MS_lm_mxd <- lm(pd.obs.z ~ max_depth + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_MS_lm_mxd))
 # Levene’s test for homogeneity of variance
@@ -1011,21 +1041,27 @@ outlierTest(FD_FRicz_am_lga)
 plot(FD_FRicz_am_lga)
 
 ### Ocean & Mixed sites
-FD_FRicz_OM_lm_lga <- lm(pd.obs.z ~ logArea, data = straits_sespd_env[ocean_mixed_sites,])
+FD_FRicz_OM_lm_lga <- lm(pd.obs.z ~ logArea * Site_type, data = straits_sespd_env[ocean_mixed_sites,])
+summary(FD_FRicz_OM_lm_lga)
+FD_FRicz_OM_lm_lga <- lm(pd.obs.z ~ logArea + Site_type, data = straits_sespd_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OM_lm_lga))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OM_lm_lga) ~ straits_sespd_env[ocean_mixed_sites,"Site_type"])
 
 ### Ocean & Stratified sites
-FD_FRicz_OS_lm_lga <- lm(pd.obs.z ~ logArea, data = straits_sespd_env[ocean_stratified_sites,])
+FD_FRicz_OS_lm_lga <- lm(pd.obs.z ~ logArea * Site_type, data = straits_sespd_env[ocean_stratified_sites,])
+summary(FD_FRicz_OS_lm_lga)
+FD_FRicz_OS_lm_lga <- lm(pd.obs.z ~ logArea + Site_type, data = straits_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OS_lm_lga))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OS_lm_lga) ~ straits_sespd_env[ocean_stratified_sites,"Site_type"])
 
 ### Mixed & Stratified lakes
-FD_FRicz_MS_lm_lga <- lm(pd.obs.z ~ logArea, data = straits_sespd_env[mixed_stratified_lakes,])
+FD_FRicz_MS_lm_lga <- lm(pd.obs.z ~ logArea * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
+summary(FD_FRicz_MS_lm_lga)
+FD_FRicz_MS_lm_lga <- lm(pd.obs.z ~ logArea + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_MS_lm_lga))
 # Levene’s test for homogeneity of variance
@@ -1349,7 +1385,7 @@ FD_alpha_plot <- ggplot(data = straits_sespd_env, mapping = aes(y = pd.obs.z, x 
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
-  labs(x="FD alpha Dispersion", y="FD alpha z-score", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="FDisp", y="FRic-z", colour = "Site type:", fill = "Site type:", tag = "b")
 (FD_alpha_plot <- FD_alpha_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_alpha_plot.jpg", plot = FD_alpha_plot, width = 4.88, height = 6, units = "in")
 ```
@@ -1362,67 +1398,78 @@ FD_beta_BS <- BAT::beta(surveyed_sites_lake, straits[, "BodyShapeI", drop = FALS
 (FD_beta_BS_BD <- betadisper(FD_beta_BS$Btotal, Site_type_group))
 (FD_beta_BS_AOV <- anova(FD_beta_BS_BD))
 (FD_beta_BS_THSD <- TukeyHSD(FD_beta_BS_BD))
-(FD_beta_BS_PM <- adonis2(FD_beta_BS$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_BS_PM <- adonis2(FD_beta_BS$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_BS_PM_pair <- pairwise.adonis(FD_beta_BS$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 FD_beta_OP <- BAT::beta(surveyed_sites_lake, straits[, "OperculumPresent", drop = FALSE], abund = FALSE)
 (FD_beta_OP_BD <- betadisper(FD_beta_OP$Btotal, Site_type_group))
 (FD_beta_OP_AOV <- anova(FD_beta_OP_BD))
 (FD_beta_OP_THSD <- TukeyHSD(FD_beta_OP_BD))
-(FD_beta_OP_PM <- adonis2(FD_beta_OP$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_OP_PM <- adonis2(FD_beta_OP$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_OP_PM_pair <- pairwise.adonis(FD_beta_OP$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 FD_beta_ML <- BAT::beta(surveyed_sites_lake, straits[, "MaxLengthTL", drop = FALSE], abund = FALSE)
 (FD_beta_ML_BD <- betadisper(FD_beta_ML$Btotal, Site_type_group))
 (FD_beta_ML_AOV <- anova(FD_beta_ML_BD))
 (FD_beta_ML_THSD <- TukeyHSD(FD_beta_ML_BD))
-(FD_beta_ML_PM <- adonis2(FD_beta_ML$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_ML_PM <- adonis2(FD_beta_ML$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_ML_PM_pair <- pairwise.adonis(FD_beta_ML$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 FD_beta_T <- BAT::beta(surveyed_sites_lake, straits[, "Troph", drop = FALSE], abund = FALSE)
 (FD_beta_T_BD <- betadisper(FD_beta_T$Btotal, Site_type_group))
 (FD_beta_T_AOV <- anova(FD_beta_T_BD))
 (FD_beta_T_THSD <- TukeyHSD(FD_beta_T_BD))
-(FD_beta_T_PM <- adonis2(FD_beta_T$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_T_PM <- adonis2(FD_beta_T$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_T_PM_pair <- pairwise.adonis(FD_beta_T$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 FD_beta_DMin <- BAT::beta(surveyed_sites_lake, straits[, "DepthMin", drop = FALSE], abund = FALSE)
 (FD_beta_DMin_BD <- betadisper(FD_beta_DMin$Btotal, Site_type_group))
 (FD_beta_DMin_AOV <- anova(FD_beta_DMin_BD))
 (FD_beta_DMin_THSD <- TukeyHSD(FD_beta_DMin_BD))
-(FD_beta_DMin_PM <- adonis2(FD_beta_DMin$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_DMin_PM <- adonis2(FD_beta_DMin$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_DMin_PM_pair <- pairwise.adonis(FD_beta_DMin$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 FD_beta_DMax <- BAT::beta(surveyed_sites_lake, straits_clean[, "DepthMax", drop = FALSE], abund = FALSE)
 (FD_beta_DMax_BD <- betadisper(FD_beta_DMax$Btotal, Site_type_group))
 (FD_beta_DMax_AOV <- anova(FD_beta_DMax_BD))
 (FD_beta_DMax_THSD <- TukeyHSD(FD_beta_DMax_BD))
-(FD_beta_DMax_PM <- adonis2(FD_beta_DMax$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_DMax_PM <- adonis2(FD_beta_DMax$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_DMax_PM_pair <- pairwise.adonis(FD_beta_DMax$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 FD_beta_TMin <- BAT::beta(surveyed_sites_lake, straits[, "TempPrefMin", drop = FALSE], abund = FALSE)
 (FD_beta_TMin_BD <- betadisper(FD_beta_TMin$Btotal, Site_type_group))
 (FD_beta_TMin_AOV <- anova(FD_beta_TMin_BD))
 (FD_beta_TMin_THSD <- TukeyHSD(FD_beta_TMin_BD))
-(FD_beta_TMin_PM <- adonis2(FD_beta_TMin$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_TMin_PM <- adonis2(FD_beta_TMin$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_TMin_PM_pair <- pairwise.adonis(FD_beta_TMin$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 FD_beta_TMax <- BAT::beta(surveyed_sites_lake, straits[, "TempPrefMax", drop = FALSE], abund = FALSE)
 (FD_beta_TMax_BD <- betadisper(FD_beta_TMax$Btotal, Site_type_group))
 (FD_beta_TMax_AOV <- anova(FD_beta_TMax_BD))
 (FD_beta_TMax_THSD <- TukeyHSD(FD_beta_TMax_BD))
-(FD_beta_TMax_PM <- adonis2(FD_beta_TMax$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_TMax_PM <- adonis2(FD_beta_TMax$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_TMax_PM_pair <- pairwise.adonis(FD_beta_TMax$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 FD_beta_FP <- BAT::beta(surveyed_sites_lake, straits[, "FeedingPath", drop = FALSE], abund = FALSE)
 (FD_beta_FP_BD <- betadisper(FD_beta_FP$Btotal, Site_type_group))
 (FD_beta_FP_AOV <- anova(FD_beta_FP_BD))
 (FD_beta_FP_THSD <- TukeyHSD(FD_beta_FP_BD))
-(FD_beta_FP_PM <- adonis2(FD_beta_FP$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_FP_PM <- adonis2(FD_beta_FP$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_FP_PM_pair <- pairwise.adonis(FD_beta_FP$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 FD_beta_RG <- BAT::beta(surveyed_sites_lake, straits[, "RepGuild2", drop = FALSE], abund = FALSE)
 (FD_beta_RG_BD <- betadisper(FD_beta_RG$Btotal, Site_type_group))
 (FD_beta_RG_AOV <- anova(FD_beta_RG_BD))
 (FD_beta_RG_THSD <- TukeyHSD(FD_beta_RG_BD))
-(FD_beta_RG_PM <- adonis2(FD_beta_RG$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_RG_PM <- adonis2(FD_beta_RG$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_RG_PM_pair <- pairwise.adonis(FD_beta_RG$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 FD_beta_PC <- BAT::beta(surveyed_sites_lake, straits[, "ParentalCare", drop = FALSE], abund = FALSE)
 (FD_beta_PC_BD <- betadisper(FD_beta_PC$Btotal, Site_type_group))
 (FD_beta_PC_AOV <- anova(FD_beta_PC_BD))
 (FD_beta_PC_THSD <- TukeyHSD(FD_beta_PC_BD))
-(FD_beta_PC_PM <- adonis2(FD_beta_PC$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_PC_PM <- adonis2(FD_beta_PC$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_PC_PM_pair <- pairwise.adonis(FD_beta_PC$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 straits_augmented <- rbind(straits, straits[rownames(straits) == "Toxotes_jaculatrix", ])
 rownames(straits_augmented)[nrow(straits_augmented)] <- "Dummy_Species"
@@ -1430,13 +1477,15 @@ FD_beta_WP <- BAT::beta(surveyed_sites_lake, straits_augmented[, "WaterPref", dr
 (FD_beta_WP_BD <- betadisper(FD_beta_WP$Btotal, Site_type_group))
 (FD_beta_WP_AOV <- anova(FD_beta_WP_BD))
 (FD_beta_WP_THSD <- TukeyHSD(FD_beta_WP_BD))
-(FD_beta_WP_PM <- adonis2(FD_beta_WP$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_WP_PM <- adonis2(FD_beta_WP$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_WP_PM_pair <- pairwise.adonis(FD_beta_WP$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 FD_beta_DS <- BAT::beta(surveyed_sites_lake, straits[, "DorsalSpinesMean", drop = FALSE], abund = FALSE)
 (FD_beta_DS_BD <- betadisper(FD_beta_DS$Btotal, Site_type_group))
 (FD_beta_DS_AOV <- anova(FD_beta_DS_BD))
 (FD_beta_DS_THSD <- TukeyHSD(FD_beta_DS_BD))
-(FD_beta_DS_PM <- adonis2(FD_beta_DS$Btotal ~ env[surveyed_sites,19], permutations = 999))
+(FD_beta_DS_PM <- adonis2(FD_beta_DS$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_DS_PM_pair <- pairwise.adonis(FD_beta_DS$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 
 p_values <- c(FD_beta_BS_PM$`Pr(>F)`[1], FD_beta_OP_PM$`Pr(>F)`[1], FD_beta_ML_PM$`Pr(>F)`[1], FD_beta_T_PM$`Pr(>F)`[1], FD_beta_DMin_PM$`Pr(>F)`[1], FD_beta_DMax_PM$`Pr(>F)`[1], FD_beta_TMin_PM$`Pr(>F)`[1], FD_beta_TMax_PM$`Pr(>F)`[1], FD_beta_FP_PM$`Pr(>F)`[1], FD_beta_RG_PM$`Pr(>F)`[1], FD_beta_PC_PM$`Pr(>F)`[1], FD_beta_WP_PM$`Pr(>F)`[1], FD_beta_DS_PM$`Pr(>F)`[1])
 adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
@@ -1452,42 +1501,44 @@ FD_beta_ref_dist <- BAT::beta(presabs_lake, traits[,traits_keep], abund = F)
 (FD_beta_ref_BD <- betadisper(FD_beta_ref_dist$Btotal, Site_type_group_ref))
 (FD_beta_ref_AOV <- anova(FD_beta_ref_BD))
 (FD_beta_ref_THSD <- TukeyHSD(FD_beta_ref_BD))
-(FD_beta_ref_PM <- adonis2(FD_beta_ref_dist$Btotal ~ env[,19], permutations = 999))
-(FD_beta_ref_PM_pair <- pairwise.adonis(FD_beta_ref_dist$Btotal, env[,19], p.adjust.m = "bonferroni", perm = 999))
+(FD_beta_ref_PM <- adonis2(FD_beta_ref_dist$Btotal ~ env[,"Site_type"], permutations = 999))
+(FD_beta_ref_PM_pair <- pairwise.adonis(FD_beta_ref_dist$Btotal, env[,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 # Surveyed sites
 FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F)
 (FD_beta_BD <- betadisper(FD_beta_dist$Btotal, Site_type_group))
 (FD_beta_AOV <- anova(FD_beta_BD))
 (FD_beta_THSD <- TukeyHSD(FD_beta_BD))
-(FD_beta_PM <- adonis2(FD_beta_dist$Btotal ~ env[surveyed_sites,19], permutations = 999))
-(FD_beta_PM_pair <- pairwise.adonis(FD_beta_dist$Btotal, env[surveyed_sites,19], p.adjust.m = "bonferroni", perm = 999))
+(FD_beta_PM <- adonis2(FD_beta_dist$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_PM_pair <- pairwise.adonis(FD_beta_dist$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 # A subset of traits that are significant
 FD_beta_sub_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_sub_keep], abund = F)
 (FD_beta_sub_BD <- betadisper(FD_beta_sub_dist$Btotal, Site_type_group))
 (FD_beta_sub_AOV <- anova(FD_beta_sub_BD))
 (FD_beta_sub_THSD <- TukeyHSD(FD_beta_sub_BD))
-(FD_beta_sub_PM <- adonis2(FD_beta_sub_dist$Btotal ~ env[surveyed_sites,19], permutations = 999))
-(FD_beta_sub_PM_pair <- pairwise.adonis(FD_beta_sub_dist$Btotal, env[surveyed_sites,19], p.adjust.m = "bonferroni", perm = 999))
+(FD_beta_sub_PM <- adonis2(FD_beta_sub_dist$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_sub_PM_pair <- pairwise.adonis(FD_beta_sub_dist$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 # Without LCN
 FD_beta_wo_LCN_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_LCN,], straits[,straits_keep], abund = F)
 (FD_beta_wo_LCN_BD <- betadisper(FD_beta_wo_LCN_dist$Btotal, Site_type_group[-c(8)]))
 (FD_beta_wo_LCN_AOV <- anova(FD_beta_wo_LCN_BD))
 (FD_beta_wo_LCN_THSD <- TukeyHSD(FD_beta_wo_LCN_BD))
-(FD_beta_wo_LCN_PM <- adonis2(FD_beta_wo_LCN_dist$Btotal ~ env[surveyed_sites_wo_LCN,19], permutations = 999))
-(FD_beta_wo_LCN_PM_pair <- pairwise.adonis(FD_beta_wo_LCN_dist$Btotal, env[surveyed_sites_wo_LCN,19], p.adjust.m = "bonferroni", perm = 999))
+(FD_beta_wo_LCN_PM <- adonis2(FD_beta_wo_LCN_dist$Btotal ~ env[surveyed_sites_wo_LCN,"Site_type"], permutations = 999))
+(FD_beta_wo_LCN_PM_pair <- pairwise.adonis(FD_beta_wo_LCN_dist$Btotal, env[surveyed_sites_wo_LCN,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 # Without TLN and HLM
 FD_beta_wo_TLN_HLM_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_TLN_HLM,], straits[,straits_keep], abund = F)
 (FD_beta_wo_TLN_HLM_BD <- betadisper(FD_beta_wo_TLN_HLM_dist$Btotal, Site_type_group[-c(5,21)]))
 (FD_beta_wo_TLN_HLM_AOV <- anova(FD_beta_wo_TLN_HLM_BD))
 (FD_beta_wo_TLN_HLM_THSD <- TukeyHSD(FD_beta_wo_TLN_HLM_BD))
-(FD_beta_wo_TLN_HLM_PM <- adonis2(FD_beta_wo_TLN_HLM_dist$Btotal ~ env[surveyed_sites_wo_TLN_HLM,19], permutations = 999))
-(FD_beta_wo_TLN_HLM_PM_pair <- pairwise.adonis(FD_beta_wo_TLN_HLM_dist$Btotal, env[surveyed_sites_wo_TLN_HLM,19], p.adjust.m = "bonferroni", perm = 999))
+(FD_beta_wo_TLN_HLM_PM <- adonis2(FD_beta_wo_TLN_HLM_dist$Btotal ~ env[surveyed_sites_wo_TLN_HLM,"Site_type"], permutations = 999))
+(FD_beta_wo_TLN_HLM_PM_pair <- pairwise.adonis(FD_beta_wo_TLN_HLM_dist$Btotal, env[surveyed_sites_wo_TLN_HLM,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 # Mixed and stratified lakes
 FD_beta_MS_dist<- BAT::beta(surveyed_sites_lake[mixed_stratified_lakes,], straits[,straits_keep], abund = F)
 # Ocean sites and mixed lakes
 FD_beta_OM_dist<- BAT::beta(surveyed_sites_lake[ocean_mixed_sites,], straits[,straits_keep], abund = F)
 # Stratified lakes and ocean sites
 FD_beta_SO_dist<- BAT::beta(surveyed_sites_lake[ocean_stratified_sites,], straits[,straits_keep], abund = F)
+# Mixed lakes
+FD_beta_M_dist<- BAT::beta(surveyed_sites_lake[mixed_lakes,], straits[,straits_keep], abund = F)
 # Stratified lakes
 FD_beta_S_dist<- BAT::beta(surveyed_sites_lake[stratified_lakes,], straits[,straits_keep], abund = F)
 
@@ -1503,8 +1554,6 @@ FD_beta_env_MS_dist<- BAT::beta(surveyed_sites_lake[mixed_stratified_lakes,], st
 FD_beta_env_OM_dist<- BAT::beta(surveyed_sites_lake[ocean_mixed_sites_env,], straits[,straits_keep], abund = F)
 # Stratified lakes and ocean sites
 FD_beta_env_SO_dist<- BAT::beta(surveyed_sites_lake[ocean_stratified_sites_env,], straits[,straits_keep], abund = F)
-# Mixed lakes
-FD_beta_env_M_dist<- BAT::beta(surveyed_sites_lake[mixed_lakes,], straits[,straits_keep], abund = F)
 
 
 ### Geographic
@@ -1518,8 +1567,6 @@ FD_beta_geo_MS_dist<- BAT::beta(surveyed_sites_lake[mixed_stratified_lakes,], st
 FD_beta_geo_OM_dist<- BAT::beta(surveyed_sites_lake[ocean_mixed_sites,], straits[,straits_keep], abund = F)
 # Stratified lakes and ocean sites
 FD_beta_geo_SO_dist<- BAT::beta(surveyed_sites_lake[ocean_stratified_sites,], straits[,straits_keep], abund = F)
-# Mixed lakes
-FD_beta_geo_M_dist<- BAT::beta(surveyed_sites_lake[mixed_lakes,], straits[,straits_keep], abund = F)
 ```
 
 ### FD beta q values of dispersion statistics
@@ -1600,6 +1647,8 @@ FD_beta_MS_NMDS <- metaMDS(FD_beta_MS_dist$Btotal, try = 1000, parallel = 4, try
 FD_beta_OM_NMDS <- metaMDS(FD_beta_OM_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # Stratified lakes and ocean sites
 FD_beta_SO_NMDS <- metaMDS(FD_beta_SO_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Mixed lakes
+FD_beta_M_NMDS <- metaMDS(FD_beta_M_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # Stratified lakes
 FD_beta_S_NMDS <- metaMDS(FD_beta_S_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 
@@ -1615,8 +1664,6 @@ FD_beta_env_MS_NMDS <- metaMDS(FD_beta_env_MS_dist$Btotal, try = 1000, parallel 
 FD_beta_env_OM_NMDS <- metaMDS(FD_beta_env_OM_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # Stratified lakes and ocean sites
 FD_beta_env_SO_NMDS <- metaMDS(FD_beta_env_SO_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
-# Mixed lakes
-FD_beta_env_M_NMDS <- metaMDS(FD_beta_env_M_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 
 
 ### Geographic
@@ -1630,8 +1677,6 @@ FD_beta_geo_MS_NMDS <- metaMDS(FD_beta_geo_MS_dist$Btotal, try = 1000, parallel 
 FD_beta_geo_OM_NMDS <- metaMDS(FD_beta_geo_OM_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # Stratified lakes and ocean sites
 FD_beta_geo_SO_NMDS <- metaMDS(FD_beta_geo_SO_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
-# Mixed lakes
-FD_beta_geo_M_NMDS <- metaMDS(FD_beta_geo_M_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 ```
 
 ### Load an envfit analysis function for adjusting p-values
@@ -1661,201 +1706,235 @@ p.adjust.envfit <- function (x, method = 'bonferroni', n)
 }
 ```
 
+### FD beta varitation partitioning of env and geo variables
+```{r}
+env_var <- env[surveyed_sites_env,environment]
+geo_var <- env[surveyed_sites_env,geography]
+FD_beta_varpart <- varpart(FD_beta_env_dist$Btotal, env_var, geo_var)
+FD_beta_varpart$part
+
+# Open a jpg device
+png("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_varpart.jpg", width = 4.5, height = 4.5, units = "in", res = 300, type = "cairo")
+# Plot the variation partitioning results
+par(mar = c(3, 3, 3, 3) + 1)  # Increase bottom margin if needed
+plot(FD_beta_varpart,
+     Xnames = c("Env", "Geo"),
+     bg = c("mediumpurple", "orange"), alpha = 80,
+     digits = 1,
+     asp = 1)
+# Close the jpg device
+dev.off()
+
+plot(FD_beta_varpart,
+     Xnames = c("Env", "Geo"),
+     bg = c("mediumpurple", "orange"), alpha = 80,
+     digits = 1,
+     asp = 1)
+```
+
 ### FD beta env and geo correlated variables using envfit
 ```{r, FD beta envfit}
 ### Environmental
 # Surveyed sites 
 # For figure
-(FD_beta_env_ef <- envfit(FD_beta_env_NMDS, env[surveyed_sites_env,c(34)], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+(FD_beta_env_ef <- envfit(FD_beta_env_NMDS, env[surveyed_sites_env,"S"], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
 (FD_beta_env_efp <- p.adjust.envfit(FD_beta_env_ef))
 # A subset of traits that are significant
 # For figure
-(FD_beta_sub_env_ef <- envfit(FD_beta_sub_env_NMDS, env[surveyed_sites_env,c(34)], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+(FD_beta_sub_env_ef <- envfit(FD_beta_sub_env_NMDS, env[surveyed_sites_env,"S"], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
 (FD_beta_sub_env_efp <- p.adjust.envfit(FD_beta_sub_env_ef))
 # Surveyed sites by Site_type
-(FD_beta_env_A_ef <- envfit(FD_beta_env_NMDS, env[surveyed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+(FD_beta_env_A_ef <- envfit(FD_beta_env_NMDS, env[surveyed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
 (FD_beta_env_A_efp <- p.adjust.envfit(FD_beta_env_A_ef))
 # Mixed and stratified lakes
-(FD_beta_env_MS_ef <- envfit(FD_beta_env_MS_NMDS, env[mixed_stratified_lakes,environment], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+(FD_beta_env_MS_ef <- envfit(FD_beta_env_MS_NMDS, env[mixed_stratified_lakes,environment], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
 (FD_beta_env_MS_efp <- p.adjust.envfit(FD_beta_env_MS_ef))
 # Ocean sites and mixed lakes
-(FD_beta_env_OM_ef <- envfit(FD_beta_env_OM_NMDS, env[ocean_mixed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,19]))
+(FD_beta_env_OM_ef <- envfit(FD_beta_env_OM_NMDS, env[ocean_mixed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Site_type"]))
 (FD_beta_env_OM_efp <- p.adjust.envfit(FD_beta_env_OM_ef))
 # Stratified lakes and ocean sites
-(FD_beta_env_SO_ef <- envfit(FD_beta_env_SO_NMDS, env[ocean_stratified_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
+(FD_beta_env_SO_ef <- envfit(FD_beta_env_SO_NMDS, env[ocean_stratified_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Site_type"]))
 (FD_beta_env_SO_efp <- p.adjust.envfit(FD_beta_env_SO_ef))
+
+
 # Mixed lakes
-(FD_beta_env_M_ef <- envfit(FD_beta_env_M_NMDS, env[mixed_lakes,environment], permutations = 999, na.rm = TRUE))
-(FD_beta_env_M_efp <- p.adjust.envfit(FD_beta_env_M_ef))
+(FD_beta_M_ef <- envfit(FD_beta_M_NMDS, env[mixed_lakes,c("temperature_median","salinity_median","oxygen_median","distance_to_ocean_min_m","max_depth","logArea")], permutations = 999, na.rm = TRUE))
+(FD_beta_M_efp <- p.adjust.envfit(FD_beta_M_ef))
 
 
 # Stratified lakes
-(FD_beta_S_ef <- envfit(FD_beta_S_NMDS, env[stratified_lakes,c(2,6,8,26,31:32)], permutations = 999, na.rm = TRUE))
+(FD_beta_S_ef <- envfit(FD_beta_S_NMDS, env[stratified_lakes,c("temperature_median","salinity_median","oxygen_median","distance_to_ocean_min_m","max_depth","logArea")], permutations = 999, na.rm = TRUE))
 (FD_beta_S_efp <- p.adjust.envfit(FD_beta_S_ef))
 
 
 ### Geographic
 # Surveyed sites
 # For figure
-(FD_beta_geo_ef <- envfit(FD_beta_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,19]))
+(FD_beta_geo_ef <- envfit(FD_beta_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
 (FD_beta_geo_efp <- p.adjust.envfit(FD_beta_geo_ef))
 # A subset of traits that are significant
 # For figure
-(FD_beta_sub_geo_ef <- envfit(FD_beta_sub_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,19]))
+(FD_beta_sub_geo_ef <- envfit(FD_beta_sub_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
 (FD_beta_sub_geo_efp <- p.adjust.envfit(FD_beta_sub_geo_ef))
 # Surveyed sites by Site_type
-(FD_beta_geo_A_ef <- envfit(FD_beta_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,19]))
+(FD_beta_geo_A_ef <- envfit(FD_beta_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
 (FD_beta_geo_A_efp <- p.adjust.envfit(FD_beta_geo_A_ef))
 # Mixed and stratified lakes
-(FD_beta_geo_MS_ef <- envfit(FD_beta_geo_MS_NMDS, env[mixed_stratified_lakes,geography], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+(FD_beta_geo_MS_ef <- envfit(FD_beta_geo_MS_NMDS, env[mixed_stratified_lakes,geography], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
 (FD_beta_geo_MS_efp <- p.adjust.envfit(FD_beta_geo_MS_ef))
 # Ocean sites and mixed lakes
-(FD_beta_geo_OM_ef <- envfit(FD_beta_geo_OM_NMDS, env[ocean_mixed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,19]))
+(FD_beta_geo_OM_ef <- envfit(FD_beta_geo_OM_NMDS, env[ocean_mixed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Site_type"]))
 (FD_beta_geo_OM_efp <- p.adjust.envfit(FD_beta_geo_OM_ef))
 # Stratified lakes and ocean sites
-(FD_beta_geo_SO_ef <- envfit(FD_beta_geo_SO_NMDS, env[ocean_stratified_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
+(FD_beta_geo_SO_ef <- envfit(FD_beta_geo_SO_NMDS, env[ocean_stratified_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Site_type"]))
 (FD_beta_geo_SO_efp <- p.adjust.envfit(FD_beta_geo_SO_ef))
-# Mixed lakes
-(FD_beta_geo_M_ef <- envfit(FD_beta_geo_M_NMDS, env[mixed_lakes,geography], permutations = 999, na.rm = TRUE))
-(FD_beta_geo_M_efp <- p.adjust.envfit(FD_beta_geo_M_ef))
 ```
 
 ### FD beta Mantel correlation tests
 ```{r, FD beta Mantel tests}
 ### Environmental
 # Surveyed sites
-env_dist_t <- dist(scaled_env[surveyed_sites_env,c(1)], method = "euclidean")
-(FD_beta_env_mant_t <- mantel(FD_beta_env_dist$Btotal, env_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
-env_dist_s <- dist(scaled_env[surveyed_sites_env,c(2)], method = "euclidean")
-(FD_beta_env_mant_s <- mantel(FD_beta_env_dist$Btotal, env_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
-env_dist_o <- dist(scaled_env[surveyed_sites_env,c(3)], method = "euclidean")
-(FD_beta_env_mant_o <- mantel(FD_beta_env_dist$Btotal, env_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,19]))
+env_dist_t <- dist(scaled_env[surveyed_sites_env,"temperature_median"], method = "euclidean")
+(FD_beta_env_mant_t <- mantel(FD_beta_env_dist$Btotal, env_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
+env_dist_s <- dist(scaled_env[surveyed_sites_env,"salinity_median"], method = "euclidean")
+(FD_beta_env_mant_s <- mantel(FD_beta_env_dist$Btotal, env_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
+env_dist_o <- dist(scaled_env[surveyed_sites_env,"oxygen_median"], method = "euclidean")
+(FD_beta_env_mant_o <- mantel(FD_beta_env_dist$Btotal, env_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
 # Adjust p-values
 FD_beta_env_mant_pv <- rbind(FD_beta_env_mant_t$signif, FD_beta_env_mant_s$signif, FD_beta_env_mant_o$signif)
 FD_beta_env_mant_pv <- FD_beta_env_mant_pv[,1]
 (FD_beta_env_mant_pv <- p.adjust(FD_beta_env_mant_pv, method = "bonferroni"))
 
 # Mixed and stratified lakes
-env_MS_dist_t <- dist(scaled_env[mixed_stratified_lakes,c(1)], method = "euclidean")
-(FD_beta_env_MS_mant_t <- mantel(FD_beta_env_MS_dist$Btotal, env_MS_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
-env_MS_dist_s <- dist(scaled_env[mixed_stratified_lakes,c(2)], method = "euclidean")
-(FD_beta_env_MS_mant_s <- mantel(FD_beta_env_MS_dist$Btotal, env_MS_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
-env_MS_dist_o <- dist(scaled_env[mixed_stratified_lakes,c(3)], method = "euclidean")
-(FD_beta_env_MS_mant_o <- mantel(FD_beta_env_MS_dist$Btotal, env_MS_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+env_MS_dist_t <- dist(scaled_env[mixed_stratified_lakes,"temperature_median"], method = "euclidean")
+(FD_beta_env_MS_mant_t <- mantel(FD_beta_env_MS_dist$Btotal, env_MS_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
+env_MS_dist_s <- dist(scaled_env[mixed_stratified_lakes,"salinity_median"], method = "euclidean")
+(FD_beta_env_MS_mant_s <- mantel(FD_beta_env_MS_dist$Btotal, env_MS_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
+env_MS_dist_o <- dist(scaled_env[mixed_stratified_lakes,"oxygen_median"], method = "euclidean")
+(FD_beta_env_MS_mant_o <- mantel(FD_beta_env_MS_dist$Btotal, env_MS_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
 # Adjust p-values
 FD_beta_env_MS_mant_pv <- rbind(FD_beta_env_MS_mant_t$signif, FD_beta_env_MS_mant_s$signif, FD_beta_env_MS_mant_o$signif)
 FD_beta_env_MS_mant_pv <- FD_beta_env_MS_mant_pv[,1]
 (FD_beta_env_MS_mant_pv <- p.adjust(FD_beta_env_MS_mant_pv, method = "bonferroni"))
 
 # Ocean sites and mixed lakes
-env_OM_dist_t <- dist(scaled_env[ocean_mixed_sites_env,c(1)], method = "euclidean")
-(FD_beta_env_OM_mant_t <- mantel(FD_beta_env_OM_dist$Btotal, env_OM_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,19]))
-env_OM_dist_s <- dist(scaled_env[ocean_mixed_sites_env,c(2)], method = "euclidean")
-(FD_beta_env_OM_mant_s <- mantel(FD_beta_env_OM_dist$Btotal, env_OM_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,19]))
-env_OM_dist_o <- dist(scaled_env[ocean_mixed_sites_env,c(3)], method = "euclidean")
-(FD_beta_env_OM_mant_o <- mantel(FD_beta_env_OM_dist$Btotal, env_OM_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,19]))
+env_OM_dist_t <- dist(scaled_env[ocean_mixed_sites_env,"temperature_median"], method = "euclidean")
+(FD_beta_env_OM_mant_t <- mantel(FD_beta_env_OM_dist$Btotal, env_OM_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Site_type"]))
+env_OM_dist_s <- dist(scaled_env[ocean_mixed_sites_env,"salinity_median"], method = "euclidean")
+(FD_beta_env_OM_mant_s <- mantel(FD_beta_env_OM_dist$Btotal, env_OM_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Site_type"]))
+env_OM_dist_o <- dist(scaled_env[ocean_mixed_sites_env,"oxygen_median"], method = "euclidean")
+(FD_beta_env_OM_mant_o <- mantel(FD_beta_env_OM_dist$Btotal, env_OM_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Site_type"]))
 # Adjust p-values
 FD_beta_env_OM_mant_pv <- rbind(FD_beta_env_OM_mant_t$signif, FD_beta_env_OM_mant_s$signif, FD_beta_env_OM_mant_o$signif)
 FD_beta_env_OM_mant_pv <- FD_beta_env_OM_mant_pv[,1]
 (FD_beta_env_OM_mant_pv <- p.adjust(FD_beta_env_OM_mant_pv, method = "bonferroni"))
 
 # Stratified lakes and ocean sites
-env_SO_dist_t <- dist(scaled_env[ocean_stratified_sites_env,c(1)], method = "euclidean")
-(FD_beta_env_SO_mant_t <- mantel(FD_beta_env_SO_dist$Btotal, env_SO_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
-env_SO_dist_s <- dist(scaled_env[ocean_stratified_sites_env,c(2)], method = "euclidean")
-(FD_beta_env_SO_mant_s <- mantel(FD_beta_env_SO_dist$Btotal, env_SO_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
-env_SO_dist_o <- dist(scaled_env[ocean_stratified_sites_env,c(3)], method = "euclidean")
-(FD_beta_env_SO_mant_o <- mantel(FD_beta_env_SO_dist$Btotal, env_SO_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,19]))
+env_SO_dist_t <- dist(scaled_env[ocean_stratified_sites_env,"temperature_median"], method = "euclidean")
+(FD_beta_env_SO_mant_t <- mantel(FD_beta_env_SO_dist$Btotal, env_SO_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Site_type"]))
+env_SO_dist_s <- dist(scaled_env[ocean_stratified_sites_env,"salinity_median"], method = "euclidean")
+(FD_beta_env_SO_mant_s <- mantel(FD_beta_env_SO_dist$Btotal, env_SO_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Site_type"]))
+env_SO_dist_o <- dist(scaled_env[ocean_stratified_sites_env,"oxygen_median"], method = "euclidean")
+(FD_beta_env_SO_mant_o <- mantel(FD_beta_env_SO_dist$Btotal, env_SO_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Site_type"]))
 # Adjust p-values
 FD_beta_env_SO_mant_pv <- rbind(FD_beta_env_SO_mant_t$signif, FD_beta_env_SO_mant_s$signif, FD_beta_env_SO_mant_o$signif)
 FD_beta_env_SO_mant_pv <- FD_beta_env_SO_mant_pv[,1]
 (FD_beta_env_SO_mant_pv <- p.adjust(FD_beta_env_SO_mant_pv, method = "bonferroni"))
 
+
 # Mixed lakes
-env_M_dist_t <- dist(scaled_env[mixed_lakes,c(1)], method = "euclidean")
-(FD_beta_env_M_mant_t <- mantel(FD_beta_env_M_dist$Btotal, env_M_dist_t, method = "spearman", permutations = 999, na.rm = TRUE))
-env_M_dist_s <- dist(scaled_env[mixed_lakes,c(2)], method = "euclidean")
-(FD_beta_env_M_mant_s <- mantel(FD_beta_env_M_dist$Btotal, env_M_dist_s, method = "spearman", permutations = 999, na.rm = TRUE))
-env_M_dist_o <- dist(scaled_env[mixed_lakes,c(3)], method = "euclidean")
-(FD_beta_env_M_mant_o <- mantel(FD_beta_env_M_dist$Btotal, env_M_dist_o, method = "spearman", permutations = 999, na.rm = TRUE))
+env_M_dist_t <- dist(scaled_env[mixed_lakes,"temperature_median"], method = "euclidean")
+(FD_beta_M_mant_t <- mantel(FD_beta_M_dist$Btotal, env_M_dist_t, method = "spearman", permutations = 999, na.rm = TRUE))
+env_M_dist_s <- dist(scaled_env[mixed_lakes,"salinity_median"], method = "euclidean")
+(FD_beta_M_mant_s <- mantel(FD_beta_M_dist$Btotal, env_M_dist_s, method = "spearman", permutations = 999, na.rm = TRUE))
+env_M_dist_o <- dist(scaled_env[mixed_lakes,"oxygen_median"], method = "euclidean")
+(FD_beta_M_mant_o <- mantel(FD_beta_M_dist$Btotal, env_M_dist_o, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_M_dist_dm <- dist(scaled_env[mixed_lakes,"distance_to_ocean_min_m"], method = "euclidean")
+(FD_beta_M_mant_dm <- mantel(FD_beta_M_dist$Btotal, geo_M_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_M_dist_md <- dist(scaled_env[mixed_lakes,"max_depth"], method = "euclidean")
+(FD_beta_M_mant_md <- mantel(FD_beta_M_dist$Btotal, geo_M_dist_md, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_M_dist_la <- dist(scaled_env[mixed_lakes,"logArea"], method = "euclidean")
+(FD_beta_M_mant_la <- mantel(FD_beta_M_dist$Btotal, geo_M_dist_la, method = "spearman", permutations = 999, na.rm = TRUE))
 # Adjust p-values
-FD_beta_env_M_mant_pv <- rbind(FD_beta_env_M_mant_t$signif, FD_beta_env_M_mant_s$signif, FD_beta_env_M_mant_o$signif)
-FD_beta_env_M_mant_pv <- FD_beta_env_M_mant_pv[,1]
-(FD_beta_env_M_mant_pv <- p.adjust(FD_beta_env_M_mant_pv, method = "bonferroni"))
+FD_beta_M_mant_pv <- rbind(FD_beta_M_mant_t$signif, FD_beta_M_mant_s$signif, FD_beta_M_mant_o$signif, FD_beta_M_mant_dm$signif, FD_beta_M_mant_md$signif, FD_beta_M_mant_la$signif)
+FD_beta_M_mant_pv <- FD_beta_M_mant_pv[,1]
+(FD_beta_M_mant_pv <- p.adjust(FD_beta_M_mant_pv, method = "bonferroni"))
 
 
 # Stratified lakes
-env_geo_S_dist <- dist(scaled_env[stratified_lakes,c(1:3,9,14:15)], method = "euclidean")
-(FD_beta_S_mant <- mantel(FD_beta_S_dist$Btotal, env_geo_S_dist, method = "spearman", permutations = 999, na.rm = TRUE))
+env_S_dist_t <- dist(scaled_env[stratified_lakes,"temperature_median"], method = "euclidean")
+(FD_beta_S_mant_t <- mantel(FD_beta_S_dist$Btotal, env_S_dist_t, method = "spearman", permutations = 999, na.rm = TRUE))
+env_S_dist_s <- dist(scaled_env[stratified_lakes,"salinity_median"], method = "euclidean")
+(FD_beta_S_mant_s <- mantel(FD_beta_S_dist$Btotal, env_S_dist_s, method = "spearman", permutations = 999, na.rm = TRUE))
+env_S_dist_o <- dist(scaled_env[stratified_lakes,"oxygen_median"], method = "euclidean")
+(FD_beta_S_mant_o <- mantel(FD_beta_S_dist$Btotal, env_S_dist_o, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_S_dist_dm <- dist(scaled_env[stratified_lakes,"distance_to_ocean_min_m"], method = "euclidean")
+(FD_beta_S_mant_dm <- mantel(FD_beta_S_dist$Btotal, geo_S_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_S_dist_md <- dist(scaled_env[stratified_lakes,"max_depth"], method = "euclidean")
+(FD_beta_S_mant_md <- mantel(FD_beta_S_dist$Btotal, geo_S_dist_md, method = "spearman", permutations = 999, na.rm = TRUE))
+geo_S_dist_la <- dist(scaled_env[stratified_lakes,"logArea"], method = "euclidean")
+(FD_beta_S_mant_la <- mantel(FD_beta_S_dist$Btotal, geo_S_dist_la, method = "spearman", permutations = 999, na.rm = TRUE))
+# Adjust p-values
+FD_beta_S_mant_pv <- rbind(FD_beta_S_mant_t$signif, FD_beta_S_mant_s$signif, FD_beta_S_mant_o$signif, FD_beta_S_mant_dm$signif, FD_beta_S_mant_md$signif, FD_beta_S_mant_la$signif)
+FD_beta_S_mant_pv <- FD_beta_S_mant_pv[,1]
+(FD_beta_S_mant_pv <- p.adjust(FD_beta_S_mant_pv, method = "bonferroni"))
 
 
 ### Geographic
 # Surveyed sites
-geo_dist_dmean <- dist(scaled_env[surveyed_sites,c(9)], method = "euclidean")
-(FD_beta_geo_mant_dmean <- mantel(FD_beta_geo_dist$Btotal, geo_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,19]))
-geo_dist_md <- dist(scaled_env[surveyed_sites,c(14)], method = "euclidean")
-(FD_beta_geo_mant_md <- mantel(FD_beta_geo_dist$Btotal, geo_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,19]))
-geo_dist_la <- dist(scaled_env[surveyed_sites,c(15)], method = "euclidean")
-(FD_beta_geo_mant_la <- mantel(FD_beta_geo_dist$Btotal, geo_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,19]))
+geo_dist_dm <- dist(scaled_env[surveyed_sites,"distance_to_ocean_min_m"], method = "euclidean")
+(FD_beta_geo_mant_dm <- mantel(FD_beta_geo_dist$Btotal, geo_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
+geo_dist_md <- dist(scaled_env[surveyed_sites,"max_depth"], method = "euclidean")
+(FD_beta_geo_mant_md <- mantel(FD_beta_geo_dist$Btotal, geo_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
+geo_dist_la <- dist(scaled_env[surveyed_sites,"logArea"], method = "euclidean")
+(FD_beta_geo_mant_la <- mantel(FD_beta_geo_dist$Btotal, geo_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
 # Adjust p-values
-FD_beta_geo_mant_pv <- rbind(FD_beta_geo_mant_dmean$signif, FD_beta_geo_mant_md$signif, FD_beta_geo_mant_la$signif)
+FD_beta_geo_mant_pv <- rbind(FD_beta_geo_mant_dm$signif, FD_beta_geo_mant_md$signif, FD_beta_geo_mant_la$signif)
 FD_beta_geo_mant_pv <- FD_beta_geo_mant_pv[,1]
 (FD_beta_geo_mant_pv <- p.adjust(FD_beta_geo_mant_pv, method = "bonferroni"))
 
 # Mixed and stratified lakes 
-geo_MS_dist_dmean <- dist(scaled_env[mixed_stratified_lakes,c(9)], method = "euclidean")
-(FD_beta_geo_MS_mant_dmean <- mantel(FD_beta_geo_MS_dist$Btotal, geo_MS_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
-geo_MS_dist_md <- dist(scaled_env[mixed_stratified_lakes,c(14)], method = "euclidean")
-(FD_beta_geo_MS_mant_md <- mantel(FD_beta_geo_MS_dist$Btotal, geo_MS_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
-geo_MS_dist_la <- dist(scaled_env[mixed_stratified_lakes,c(15)], method = "euclidean")
-(FD_beta_geo_MS_mant_la <- mantel(FD_beta_geo_MS_dist$Btotal, geo_MS_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,19]))
+geo_MS_dist_dm <- dist(scaled_env[mixed_stratified_lakes,"distance_to_ocean_min_m"], method = "euclidean")
+(FD_beta_geo_MS_mant_dm <- mantel(FD_beta_geo_MS_dist$Btotal, geo_MS_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
+geo_MS_dist_md <- dist(scaled_env[mixed_stratified_lakes,"max_depth"], method = "euclidean")
+(FD_beta_geo_MS_mant_md <- mantel(FD_beta_geo_MS_dist$Btotal, geo_MS_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
+geo_MS_dist_la <- dist(scaled_env[mixed_stratified_lakes,"logArea"], method = "euclidean")
+(FD_beta_geo_MS_mant_la <- mantel(FD_beta_geo_MS_dist$Btotal, geo_MS_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
 # Adjust p-values
-FD_beta_geo_MS_mant_pv <- rbind(FD_beta_geo_MS_mant_dmean$signif, FD_beta_geo_MS_mant_md$signif, FD_beta_geo_MS_mant_la$signif)
+FD_beta_geo_MS_mant_pv <- rbind(FD_beta_geo_MS_mant_dm$signif, FD_beta_geo_MS_mant_md$signif, FD_beta_geo_MS_mant_la$signif)
 FD_beta_geo_MS_mant_pv <- FD_beta_geo_MS_mant_pv[,1]
 (FD_beta_geo_MS_mant_pv <- p.adjust(FD_beta_geo_MS_mant_pv, method = "bonferroni"))
 
 # Ocean sites and mixed lakes
-geo_OM_dist_dmean <- dist(scaled_env[ocean_mixed_sites,c(9)], method = "euclidean")
-(FD_beta_geo_OM_mant_dmean <- mantel(FD_beta_geo_OM_dist$Btotal, geo_OM_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,19]))
-geo_OM_dist_md <- dist(scaled_env[ocean_mixed_sites,c(14)], method = "euclidean")
-(FD_beta_geo_OM_mant_md <- mantel(FD_beta_geo_OM_dist$Btotal, geo_OM_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,19]))
-geo_OM_dist_la <- dist(scaled_env[ocean_mixed_sites,c(15)], method = "euclidean")
-(FD_beta_geo_OM_mant_la <- mantel(FD_beta_geo_OM_dist$Btotal, geo_OM_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,19]))
+geo_OM_dist_dm <- dist(scaled_env[ocean_mixed_sites,"distance_to_ocean_min_m"], method = "euclidean")
+(FD_beta_geo_OM_mant_dm <- mantel(FD_beta_geo_OM_dist$Btotal, geo_OM_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Site_type"]))
+geo_OM_dist_md <- dist(scaled_env[ocean_mixed_sites,"max_depth"], method = "euclidean")
+(FD_beta_geo_OM_mant_md <- mantel(FD_beta_geo_OM_dist$Btotal, geo_OM_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Site_type"]))
+geo_OM_dist_la <- dist(scaled_env[ocean_mixed_sites,"logArea"], method = "euclidean")
+(FD_beta_geo_OM_mant_la <- mantel(FD_beta_geo_OM_dist$Btotal, geo_OM_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Site_type"]))
 # Adjust p-values
-FD_beta_geo_OM_mant_pv <- rbind( FD_beta_geo_OM_mant_dmean$signif, FD_beta_geo_OM_mant_md$signif, FD_beta_geo_OM_mant_la$signif)
+FD_beta_geo_OM_mant_pv <- rbind( FD_beta_geo_OM_mant_dm$signif, FD_beta_geo_OM_mant_md$signif, FD_beta_geo_OM_mant_la$signif)
 FD_beta_geo_OM_mant_pv <- FD_beta_geo_OM_mant_pv[,1]
 (FD_beta_geo_OM_mant_pv <- p.adjust(FD_beta_geo_OM_mant_pv, method = "bonferroni"))
 
 # Stratified lakes and ocean sites
-geo_SO_dist_dmean <- dist(scaled_env[ocean_stratified_sites,c(9)], method = "euclidean")
-(FD_beta_geo_SO_mant_dmean <- mantel(FD_beta_geo_SO_dist$Btotal, geo_SO_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
-geo_SO_dist_md <- dist(scaled_env[ocean_stratified_sites,c(14)], method = "euclidean")
-(FD_beta_geo_SO_mant_md <- mantel(FD_beta_geo_SO_dist$Btotal, geo_SO_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
-geo_SO_dist_la <- dist(scaled_env[ocean_stratified_sites,c(15)], method = "euclidean")
-(FD_beta_geo_SO_mant_la <- mantel(FD_beta_geo_SO_dist$Btotal, geo_SO_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,19]))
+geo_SO_dist_dm <- dist(scaled_env[ocean_stratified_sites,"distance_to_ocean_min_m"], method = "euclidean")
+(FD_beta_geo_SO_mant_dm <- mantel(FD_beta_geo_SO_dist$Btotal, geo_SO_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Site_type"]))
+geo_SO_dist_md <- dist(scaled_env[ocean_stratified_sites,"max_depth"], method = "euclidean")
+(FD_beta_geo_SO_mant_md <- mantel(FD_beta_geo_SO_dist$Btotal, geo_SO_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Site_type"]))
+geo_SO_dist_la <- dist(scaled_env[ocean_stratified_sites,"logArea"], method = "euclidean")
+(FD_beta_geo_SO_mant_la <- mantel(FD_beta_geo_SO_dist$Btotal, geo_SO_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Site_type"]))
 # Adjust p-values
-FD_beta_geo_SO_mant_pv <- rbind( FD_beta_geo_SO_mant_dmean$signif, FD_beta_geo_SO_mant_md$signif, FD_beta_geo_SO_mant_la$signif)
+FD_beta_geo_SO_mant_pv <- rbind( FD_beta_geo_SO_mant_dm$signif, FD_beta_geo_SO_mant_md$signif, FD_beta_geo_SO_mant_la$signif)
 FD_beta_geo_SO_mant_pv <- FD_beta_geo_SO_mant_pv[,1]
 (FD_beta_geo_SO_mant_pv <- p.adjust(FD_beta_geo_SO_mant_pv, method = "bonferroni"))
-
-# Stratified lakes and ocean sites
-geo_M_dist_dmean <- dist(scaled_env[mixed_lakes,c(9)], method = "euclidean")
-(FD_beta_geo_M_mant_dmean <- mantel(FD_beta_geo_M_dist$Btotal, geo_M_dist_dmean, method = "spearman", permutations = 999, na.rm = TRUE))
-geo_M_dist_md <- dist(scaled_env[mixed_lakes,c(14)], method = "euclidean")
-(FD_beta_geo_M_mant_md <- mantel(FD_beta_geo_M_dist$Btotal, geo_M_dist_md, method = "spearman", permutations = 999, na.rm = TRUE))
-geo_M_dist_la <- dist(scaled_env[mixed_lakes,c(15)], method = "euclidean")
-(FD_beta_geo_M_mant_la <- mantel(FD_beta_geo_M_dist$Btotal, geo_M_dist_la, method = "spearman", permutations = 999, na.rm = TRUE))
-# Adjust p-values
-FD_beta_geo_M_mant_pv <- rbind( FD_beta_geo_M_mant_dmean$signif, FD_beta_geo_M_mant_md$signif, FD_beta_geo_M_mant_la$signif)
-FD_beta_geo_M_mant_pv <- FD_beta_geo_M_mant_pv[,1]
-(FD_beta_geo_M_mant_pv <- p.adjust(FD_beta_geo_M_mant_pv, method = "bonferroni"))
 ```
 
 ### FD beta NMDS ordination plots
 ```{r, FD beta NMDS plots}
 # FD beta total NMDS scores
 FD_beta_NMDS_data.scores <- as.data.frame(scores(FD_beta_NMDS))
-FD_beta_NMDS_data.scores$Site_type <- env[surveyed_sites,19]
+FD_beta_NMDS_data.scores$Site_type <- env[surveyed_sites,"Site_type"]
 FD_beta_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
 FD_beta_NMDS_data.scores$Site_type <- factor(FD_beta_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
 
@@ -1934,7 +2013,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_NM
 
 # FD beta total NMDS scores for the subset of traits
 FD_beta_sub_NMDS_data.scores <- as.data.frame(scores(FD_beta_sub_NMDS))
-FD_beta_sub_NMDS_data.scores$Site_type <- env[surveyed_sites,19]
+FD_beta_sub_NMDS_data.scores$Site_type <- env[surveyed_sites,"Site_type"]
 FD_beta_sub_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
 FD_beta_sub_NMDS_data.scores$Site_type <- factor(FD_beta_sub_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
 
@@ -1977,7 +2056,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_su
 
 # FD beta replacement NMDS scores
 FD_beta_rep_NMDS_data.scores <- as.data.frame(scores(FD_beta_rep_NMDS))
-FD_beta_rep_NMDS_data.scores$Site_type <- env[surveyed_sites,19]
+FD_beta_rep_NMDS_data.scores$Site_type <- env[surveyed_sites,"Site_type"]
 FD_beta_rep_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
 FD_beta_rep_NMDS_data.scores$Site_type <- factor(FD_beta_rep_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
 
@@ -2010,7 +2089,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_re
 
 # FD beta richness NMDS scores
 FD_beta_ric_NMDS_data.scores <- as.data.frame(scores(FD_beta_ric_NMDS))
-FD_beta_ric_NMDS_data.scores$Site_type <- env[surveyed_sites,19]
+FD_beta_ric_NMDS_data.scores$Site_type <- env[surveyed_sites,"Site_type"]
 FD_beta_ric_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
 FD_beta_ric_NMDS_data.scores$Site_type <- factor(FD_beta_ric_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
 
@@ -2043,7 +2122,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_ri
 
 # FD beta ref NMDS scores
 FD_beta_ref_NMDS_data.scores <- as.data.frame(scores(FD_beta_ref_NMDS))
-FD_beta_ref_NMDS_data.scores$Site_type <- env[,19]
+FD_beta_ref_NMDS_data.scores$Site_type <- env[,"Site_type"]
 FD_beta_ref_NMDS_data.scores$Lakes <- env[,1]
 FD_beta_ref_NMDS_data.scores$Site_type <- factor(FD_beta_ref_NMDS_data.scores$Site_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
 
@@ -2225,7 +2304,7 @@ FD_beta_mean_dist <- FD_beta_mean_dist[,-1]
 FD_beta_mean_dist <- as.data.frame(t(FD_beta_mean_dist))
 
 # Add Site_type column
-FD_beta_mean_dist$Site_type <- env[surveyed_sites,19]
+FD_beta_mean_dist$Site_type <- env[surveyed_sites,"Site_type"]
 FD_beta_mean_dist$Site_type <- factor(FD_beta_mean_dist$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
 
 
