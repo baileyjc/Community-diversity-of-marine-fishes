@@ -2192,8 +2192,21 @@ summary(FD_FRicz_OS_am_oxy)
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-FD_FRicz_OS_am_oxy <- aov(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-# Shapiro-Wilk test on residuals
+# p-values
+oxy_p_values <- summary(FD_FRicz_OS_am_oxy)[[1]][, "Pr(>F)"]
+p_values <- c(oxy_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
+```
+
+    ## [1] 0.0009768443 1.0000000000 0.0349523100
+
+``` r
+4# Shapiro-Wilk test on residuals
+```
+
+    ## [1] 4
+
+``` r
 shapiro.test(residuals(FD_FRicz_OS_am_oxy))
 ```
 
@@ -2201,7 +2214,7 @@ shapiro.test(residuals(FD_FRicz_OS_am_oxy))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(FD_FRicz_OS_am_oxy)
-    ## W = 0.97317, p-value = 0.9167
+    ## W = 0.94022, p-value = 0.5231
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -2210,7 +2223,7 @@ car::leveneTest(residuals(FD_FRicz_OS_am_oxy) ~ straits_sespd_env[ocean_stratifi
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  3.0943 0.1124
+    ## group  1  0.0143 0.9074
     ##        9
 
 ``` r
@@ -2426,10 +2439,11 @@ summary(FD_FRicz_OS_am_sal)
 summary(FD_FRicz_OS_am_oxy)
 ```
 
-    ##               Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## oxygen_median  1 12.754  12.754  18.455 0.00263 **
-    ## Site_type      1  0.001   0.001   0.002 0.96418   
-    ## Residuals      8  5.529   0.691                   
+    ##                         Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## oxygen_median            1 12.754  12.754  42.608 0.000326 ***
+    ## Site_type                1  0.001   0.001   0.005 0.945846    
+    ## oxygen_median:Site_type  1  3.433   3.433  11.470 0.011651 *  
+    ## Residuals                7  2.095   0.299                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -2442,8 +2456,8 @@ p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## [1] 1.00000000 0.14497654         NA 1.00000000 0.11784608         NA 0.01578116
-    ## [8] 1.00000000         NA
+    ## [1] 1.000000000 0.169139300          NA 1.000000000 0.137487097          NA
+    ## [7] 0.002279303 1.000000000 0.081555390
 
 ``` r
 # Summarize MS lm results
@@ -2760,6 +2774,15 @@ summary(FD_FRicz_MS_am_dist)
     ## Residuals                         12 10.958   0.913                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# p-values
+dist_p_values <- summary(FD_FRicz_MS_am_dist)[[1]][, "Pr(>F)"]
+p_values <- c(dist_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
+```
+
+    ## [1] 1.00000000 0.76056697 0.08892854
 
 ``` r
 FD_FRicz_MS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])

@@ -783,8 +783,11 @@ car::leveneTest(residuals(FD_FRicz_OM_am_oxy) ~ straits_sespd_env[ocean_mixed_si
 ### Ocean & Stratified sites
 FD_FRicz_OS_am_oxy <- aov(pd.obs.z ~ oxygen_median * Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
 summary(FD_FRicz_OS_am_oxy)
-FD_FRicz_OS_am_oxy <- aov(pd.obs.z ~ oxygen_median + Site_type, data = straits_sespd_env[ocean_stratified_sites_env,])
-# Shapiro-Wilk test on residuals
+# p-values
+oxy_p_values <- summary(FD_FRicz_OS_am_oxy)[[1]][, "Pr(>F)"]
+p_values <- c(oxy_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
+4# Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OS_am_oxy))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OS_am_oxy) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
@@ -931,6 +934,11 @@ car::leveneTest(residuals(FD_FRicz_OS_am_dist) ~ straits_sespd_env[ocean_stratif
 ### Mixed & Stratified lakes
 FD_FRicz_MS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
 summary(FD_FRicz_MS_am_dist)
+# p-values
+dist_p_values <- summary(FD_FRicz_MS_am_dist)[[1]][, "Pr(>F)"]
+p_values <- c(dist_p_values[1:3])
+(adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
+
 FD_FRicz_MS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = straits_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_MS_am_dist))
