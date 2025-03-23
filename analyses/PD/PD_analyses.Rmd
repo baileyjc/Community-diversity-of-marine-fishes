@@ -928,7 +928,6 @@ car::leveneTest(residuals(PD_PRicz_OM_am_mxd) ~ stree_sespd_env[ocean_mixed_site
 ### Ocean & Stratified sites
 PD_PRicz_OS_am_mxd <- aov(pd.obs.z ~ max_depth * Site_type, data = stree_sespd_env[ocean_stratified_sites,])
 summary(PD_PRicz_OS_am_mxd)
-PD_PRicz_OS_am_mxd <- aov(pd.obs.z ~ max_depth + Site_type, data = stree_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_am_mxd))
 # Levene’s test for homogeneity of variance

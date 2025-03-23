@@ -2688,7 +2688,6 @@ summary(PD_PRicz_OS_am_mxd)
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_OS_am_mxd <- aov(pd.obs.z ~ max_depth + Site_type, data = stree_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_am_mxd))
 ```
@@ -2697,7 +2696,7 @@ shapiro.test(residuals(PD_PRicz_OS_am_mxd))
     ##  Shapiro-Wilk normality test
     ## 
     ## data:  residuals(PD_PRicz_OS_am_mxd)
-    ## W = 0.94225, p-value = 0.448
+    ## W = 0.89034, p-value = 0.08174
 
 ``` r
 # Levene’s test for homogeneity of variance
@@ -2706,7 +2705,7 @@ car::leveneTest(residuals(PD_PRicz_OS_am_mxd) ~ stree_sespd_env[ocean_stratified
 
     ## Levene's Test for Homogeneity of Variance (center = median)
     ##       Df F value Pr(>F)
-    ## group  1  0.0118 0.9151
+    ## group  1  1.2699 0.2818
     ##       12
 
 ``` r
@@ -3142,10 +3141,13 @@ summary(PD_PRicz_OS_am_dist)
 summary(PD_PRicz_OS_am_mxd)
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## max_depth    1  0.408  0.4081   0.338  0.573
-    ## Site_type    1  2.490  2.4902   2.060  0.179
-    ## Residuals   11 13.297  1.2088
+    ##                     Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## max_depth            1  0.408   0.408   0.739 0.41020   
+    ## Site_type            1  2.490   2.490   4.508 0.05970 . 
+    ## max_depth:Site_type  1  7.773   7.773  14.072 0.00378 **
+    ## Residuals           10  5.524   0.552                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
 summary(PD_PRicz_OS_am_lga)
@@ -3165,7 +3167,8 @@ p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
 ```
 
-    ## [1]  1  1 NA  1  1 NA  1  1 NA
+    ## [1] 1.00000000 1.00000000         NA 1.00000000 0.41787275 0.02643281 1.00000000
+    ## [8] 1.00000000         NA
 
 ``` r
 # Summarize MS lm results
