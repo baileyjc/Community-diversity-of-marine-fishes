@@ -4422,7 +4422,7 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
 
 ``` r
 # Surveyed sites replacement
-(PD_beta_BD <- betadisper(PD_beta_dist$Brepl, Site_type_group))
+(PD_beta_rep_BD <- betadisper(PD_beta_dist$Brepl, Site_type_group))
 ```
 
     ## Warning in betadisper(PD_beta_dist$Brepl, Site_type_group): some squared
@@ -4446,7 +4446,7 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## 0.3211 0.2167 0.1805 0.1541 0.1496 0.1394 0.1090 0.1006
 
 ``` r
-(PD_beta_AOV <- anova(PD_beta_BD))
+(PD_beta_rep_AOV <- anova(PD_beta_rep_BD))
 ```
 
     ## Analysis of Variance Table
@@ -4457,7 +4457,7 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## Residuals 19 0.222196 0.011695
 
 ``` r
-(PD_beta_THSD <- TukeyHSD(PD_beta_BD))
+(PD_beta_rep_THSD <- TukeyHSD(PD_beta_rep_BD))
 ```
 
     ##   Tukey multiple comparisons of means
@@ -4472,7 +4472,7 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## Stratified-Mixed -0.04930302 -0.1866666 0.08806055 0.6396241
 
 ``` r
-(PD_beta_PM <- adonis2(PD_beta_dist$Brepl ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(PD_beta_rep_PM <- adonis2(PD_beta_dist$Brepl ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
@@ -4486,7 +4486,7 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## Total    21  0.80063  1.000
 
 ``` r
-(PD_beta_PM_pair <- pairwise.adonis(PD_beta_dist$Brepl, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+(PD_beta_rep_PM_pair <- pairwise.adonis(PD_beta_dist$Brepl, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df  SumsOfSqs   F.Model         R2 p.value p.adjusted sig
@@ -4496,7 +4496,7 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
 
 ``` r
 # Surveyed sites richness
-(PD_beta_BD <- betadisper(PD_beta_dist$Brich, Site_type_group))
+(PD_beta_ric_BD <- betadisper(PD_beta_dist$Brich, Site_type_group))
 ```
 
     ## Warning in betadisper(PD_beta_dist$Brich, Site_type_group): some squared
@@ -4520,7 +4520,7 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## 2.020426 0.459344 0.061893 0.031443 0.020588 0.017300 0.016122 0.009001
 
 ``` r
-(PD_beta_AOV <- anova(PD_beta_BD))
+(PD_beta_ric_AOV <- anova(PD_beta_ric_BD))
 ```
 
     ## Analysis of Variance Table
@@ -4531,7 +4531,7 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## Residuals 19 0.26209 0.013794
 
 ``` r
-(PD_beta_THSD <- TukeyHSD(PD_beta_BD))
+(PD_beta_ric_THSD <- TukeyHSD(PD_beta_ric_BD))
 ```
 
     ##   Tukey multiple comparisons of means
@@ -4546,7 +4546,7 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## Stratified-Mixed -0.04298614 -0.19217358 0.1062013 0.7478413
 
 ``` r
-(PD_beta_PM <- adonis2(PD_beta_dist$Brich ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(PD_beta_ric_PM <- adonis2(PD_beta_dist$Brich ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
@@ -4562,7 +4562,7 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(PD_beta_PM_pair <- pairwise.adonis(PD_beta_dist$Brich, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+(PD_beta_ric_PM_pair <- pairwise.adonis(PD_beta_dist$Brich, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df    SumsOfSqs     F.Model           R2 p.value
@@ -4784,19 +4784,19 @@ group <- PD_beta_THSD$group
 (OM_q <- (abs(group[1,1]))/USE)
 ```
 
-    ## [1] 1.695132
+    ## [1] 0.2439479
 
 ``` r
 (SO_q <- (abs(group[2,1]))/USE)
 ```
 
-    ## [1] 0.7367278
+    ## [1] 2.924567
 
 ``` r
 (MS_q <- (abs(group[3,1]))/BSE)
 ```
 
-    ## [1] 1.035194
+    ## [1] 2.8954
 
 ``` r
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
