@@ -279,10 +279,11 @@ row.names(outlier_PD_alpha) <- outlier_PD_alpha$X
 
 # Create the plot
 (outlier_PD_alpha_plot <- ggplot(outlier_PD_alpha, aes(x = Site_type, y = pd.obs.z, fill = Site_type)) +
-  geom_violin(trim = FALSE) +
-  geom_jitter(aes(color = is_outlier), width = 0.2, size = 4, alpha = 0.7) +
+  geom_violin(alpha = 0.9, draw_quantiles = c(0.25, 0.5, 0.75), aes(fill = Site_type)) +
+  geom_jitter(aes(color = is_outlier), width = 0.1, size = 4, alpha = 0.7) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
   scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = outlier_PD_alpha, label = outlier_PD_alpha$X, size = 5, point.padding = 7, max.overlaps = 30, nudge_x = -0.01) +
   theme(text = element_text(size = 16),
         legend.position = "right",
         legend.title = element_text(size = 16),
@@ -294,7 +295,7 @@ row.names(outlier_PD_alpha) <- outlier_PD_alpha$X
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         axis.text = element_text(color = "black", size = 16)) +
-  scale_y_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0.5)) +
   labs(y = "PRic-z", x = "Site type", color = "Outlier:", tag = "b") +
   guides(fill = "none"))
 ```
@@ -4344,7 +4345,7 @@ PD_beta_ref_dist <- BAT::beta(presabs_lake, tree, abund = F)
     ## 6
 
 ``` r
-# Surveyed sites
+# Surveyed sites total
 PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
 (PD_beta_BD <- betadisper(PD_beta_dist$Btotal, Site_type_group))
 ```
@@ -4420,6 +4421,160 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## 3      Mixed vs Ocean  1 0.2573592 1.467099 0.1089395   0.109      0.327
 
 ``` r
+# Surveyed sites replacement
+(PD_beta_BD <- betadisper(PD_beta_dist$Brepl, Site_type_group))
+```
+
+    ## Warning in betadisper(PD_beta_dist$Brepl, Site_type_group): some squared
+    ## distances are negative and changed to zero
+
+    ## 
+    ##  Homogeneity of multivariate dispersions
+    ## 
+    ## Call: betadisper(d = PD_beta_dist$Brepl, group = Site_type_group)
+    ## 
+    ## No. of Positive Eigenvalues: 17
+    ## No. of Negative Eigenvalues: 4
+    ## 
+    ## Average distance to median:
+    ##      Ocean      Mixed Stratified 
+    ##     0.2461     0.1650     0.1157 
+    ## 
+    ## Eigenvalues for PCoA axes:
+    ## (Showing 8 of 21 eigenvalues)
+    ##  PCoA1  PCoA2  PCoA3  PCoA4  PCoA5  PCoA6  PCoA7  PCoA8 
+    ## 0.3211 0.2167 0.1805 0.1541 0.1496 0.1394 0.1090 0.1006
+
+``` r
+(PD_beta_AOV <- anova(PD_beta_BD))
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Response: Distances
+    ##           Df   Sum Sq  Mean Sq F value Pr(>F)
+    ## Groups     2 0.058518 0.029259   2.502 0.1085
+    ## Residuals 19 0.222196 0.011695
+
+``` r
+(PD_beta_THSD <- TukeyHSD(PD_beta_BD))
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = distances ~ group, data = df)
+    ## 
+    ## $group
+    ##                         diff        lwr        upr     p adj
+    ## Mixed-Ocean      -0.08109467 -0.2294643 0.06727494 0.3664712
+    ## Stratified-Ocean -0.13039769 -0.2787673 0.01797192 0.0910974
+    ## Stratified-Mixed -0.04930302 -0.1866666 0.08806055 0.6396241
+
+``` r
+(PD_beta_PM <- adonis2(PD_beta_dist$Brepl ~ env[surveyed_sites,"Site_type"], permutations = 999))
+```
+
+    ## Permutation test for adonis under reduced model
+    ## Permutation: free
+    ## Number of permutations: 999
+    ## 
+    ## adonis2(formula = PD_beta_dist$Brepl ~ env[surveyed_sites, "Site_type"], permutations = 999)
+    ##          Df SumOfSqs     R2       F Pr(>F)
+    ## Model     2 -0.09848 -0.123 -1.0405  0.977
+    ## Residual 19  0.89910  1.123               
+    ## Total    21  0.80063  1.000
+
+``` r
+(PD_beta_PM_pair <- pairwise.adonis(PD_beta_dist$Brepl, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+```
+
+    ##                 pairs Df  SumsOfSqs   F.Model         R2 p.value p.adjusted sig
+    ## 1 Stratified vs Mixed  1 -0.1363606 -3.955091 -0.3937408   0.999      1.000    
+    ## 2 Stratified vs Ocean  1 -0.1745626 -3.504821 -0.4125659   0.996      1.000    
+    ## 3      Mixed vs Ocean  1  0.1756548  2.936368  0.1965918   0.019      0.057
+
+``` r
+# Surveyed sites richness
+(PD_beta_BD <- betadisper(PD_beta_dist$Brich, Site_type_group))
+```
+
+    ## Warning in betadisper(PD_beta_dist$Brich, Site_type_group): some squared
+    ## distances are negative and changed to zero
+
+    ## 
+    ##  Homogeneity of multivariate dispersions
+    ## 
+    ## Call: betadisper(d = PD_beta_dist$Brich, group = Site_type_group)
+    ## 
+    ## No. of Positive Eigenvalues: 13
+    ## No. of Negative Eigenvalues: 8
+    ## 
+    ## Average distance to median:
+    ##      Ocean      Mixed Stratified 
+    ##     0.1374     0.2134     0.1704 
+    ## 
+    ## Eigenvalues for PCoA axes:
+    ## (Showing 8 of 21 eigenvalues)
+    ##    PCoA1    PCoA2    PCoA3    PCoA4    PCoA5    PCoA6    PCoA7    PCoA8 
+    ## 2.020426 0.459344 0.061893 0.031443 0.020588 0.017300 0.016122 0.009001
+
+``` r
+(PD_beta_AOV <- anova(PD_beta_BD))
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Response: Distances
+    ##           Df  Sum Sq  Mean Sq F value Pr(>F)
+    ## Groups     2 0.02037 0.010185  0.7383 0.4911
+    ## Residuals 19 0.26209 0.013794
+
+``` r
+(PD_beta_THSD <- TukeyHSD(PD_beta_BD))
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = distances ~ group, data = df)
+    ## 
+    ## $group
+    ##                         diff         lwr       upr     p adj
+    ## Mixed-Ocean       0.07602972 -0.08511113 0.2371706 0.4683225
+    ## Stratified-Ocean  0.03304358 -0.12809727 0.1941844 0.8621170
+    ## Stratified-Mixed -0.04298614 -0.19217358 0.1062013 0.7478413
+
+``` r
+(PD_beta_PM <- adonis2(PD_beta_dist$Brich ~ env[surveyed_sites,"Site_type"], permutations = 999))
+```
+
+    ## Permutation test for adonis under reduced model
+    ## Permutation: free
+    ## Number of permutations: 999
+    ## 
+    ## adonis2(formula = PD_beta_dist$Brich ~ env[surveyed_sites, "Site_type"], permutations = 999)
+    ##          Df SumOfSqs      R2      F Pr(>F)    
+    ## Model     2  1.64257 0.63885 16.805  0.001 ***
+    ## Residual 19  0.92857 0.36115                  
+    ## Total    21  2.57114 1.00000                  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+(PD_beta_PM_pair <- pairwise.adonis(PD_beta_dist$Brich, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+```
+
+    ##                 pairs Df    SumsOfSqs     F.Model           R2 p.value
+    ## 1 Stratified vs Mixed  1  1.284828878 23.16859364  0.623337914   0.001
+    ## 2 Stratified vs Ocean  1  1.116050132 27.01816083  0.692450906   0.001
+    ## 3      Mixed vs Ocean  1 -0.003242723 -0.06650969 -0.005573365   0.995
+    ##   p.adjusted sig
+    ## 1      0.003   *
+    ## 2      0.003   *
+    ## 3      1.000
+
+``` r
 # Without LCN
 PD_beta_wo_LCN_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_LCN,], stree, abund = F)
 (PD_beta_wo_LCN_BD <- betadisper(PD_beta_wo_LCN_dist$Btotal, Site_type_group[-8]))
@@ -4491,8 +4646,8 @@ PD_beta_wo_LCN_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_LCN,], st
 
     ##                 pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted sig
     ## 1 Stratified vs Mixed  1 1.2940870 9.415922 0.4021162   0.001      0.003   *
-    ## 2 Stratified vs Ocean  1 1.2083230 9.439158 0.4618174   0.003      0.009   *
-    ## 3      Mixed vs Ocean  1 0.3347638 2.034034 0.1560556   0.017      0.051
+    ## 2 Stratified vs Ocean  1 1.2083230 9.439158 0.4618174   0.001      0.003   *
+    ## 3      Mixed vs Ocean  1 0.3347638 2.034034 0.1560556   0.020      0.060
 
 ``` r
 # Without TLN and HLM
@@ -4568,8 +4723,8 @@ PD_beta_wo_TLN_HLM_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_TLN_H
 
     ##                 pairs Df SumsOfSqs   F.Model        R2 p.value p.adjusted sig
     ## 1 Stratified vs Mixed  1 1.3499033 10.500850 0.4666868   0.001      0.003   *
-    ## 2 Stratified vs Ocean  1 1.2146330  9.192717 0.4789690   0.002      0.006   *
-    ## 3      Mixed vs Ocean  1 0.2573592  1.467099 0.1089395   0.086      0.258
+    ## 2 Stratified vs Ocean  1 1.2146330  9.192717 0.4789690   0.003      0.009   *
+    ## 3      Mixed vs Ocean  1 0.2573592  1.467099 0.1089395   0.089      0.267
 
 ``` r
 # Mixed and stratified lakes
@@ -4629,19 +4784,19 @@ group <- PD_beta_THSD$group
 (OM_q <- (abs(group[1,1]))/USE)
 ```
 
-    ## [1] 0.2439479
+    ## [1] 1.695132
 
 ``` r
 (SO_q <- (abs(group[2,1]))/USE)
 ```
 
-    ## [1] 2.924567
+    ## [1] 0.7367278
 
 ``` r
 (MS_q <- (abs(group[3,1]))/BSE)
 ```
 
-    ## [1] 2.8954
+    ## [1] 1.035194
 
 ``` r
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
@@ -4658,8 +4813,31 @@ PD_beta_BD_dist <- as.data.frame(PD_beta_BD_dist)
 PD_beta_BD_dist$X <- row.names(PD_beta_BD_dist)
 PD_beta_BD_dist_env <- merge(PD_beta_BD_dist, env[surveyed_sites,], by = "X", sort = F)
 
+# Add levels to Site_type column
 PD_beta_BD_dist_env$Site_type <- factor(PD_beta_BD_dist_env$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
 
+# Determine outliers based on dispersion of sites by site type
+outlier_PD_beta_BD_dist_env <- PD_beta_BD_dist_env %>%
+  group_by(Site_type) %>%
+  mutate(
+    Q1 = quantile(PD_beta_BD_dist, 0.25),
+    Q3 = quantile(PD_beta_BD_dist, 0.75),
+    IQR = Q3 - Q1,
+    lower_bound = Q1 - 1.5 * IQR,
+    upper_bound = Q3 + 1.5 * IQR,
+    is_outlier = PD_beta_BD_dist < lower_bound | PD_beta_BD_dist > upper_bound
+  )
+
+outlier_PD_beta_BD_dist_env$is_outlier
+```
+
+    ##   25%   25%   25%   25%   25%   25%   25%   25%   25%   25%   25%   25%   25% 
+    ## FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE 
+    ##   25%   25%   25%   25%   25%   25%   25%   25%   25% 
+    ## FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+
+``` r
+# Plot dispersion
 (PD_beta_BD_dist_env_plot <- ggplot(PD_beta_BD_dist_env, aes(x = Site_type, y = PD_beta_BD_dist, color = Site_type, fill = Site_type)) +
   geom_violin(alpha = 0.6, draw_quantiles = c(0.25, 0.5, 0.75), aes(color = Site_type, fill = Site_type)) +
   scale_color_manual(values = custom_colors) +
@@ -4671,22 +4849,23 @@ PD_beta_BD_dist_env$Site_type <- factor(PD_beta_BD_dist_env$Site_type, levels = 
             width = 0.1) +
     geom_text_repel(data = PD_beta_BD_dist_env, label = PD_beta_BD_dist_env$X, size = 5, point.padding = 7, max.overlaps = 30, nudge_x = -0.01) +
   theme_bw() +
-  theme(text = element_text(size = 16), legend.text = element_text(size = 16),
+  theme(text = element_text(size = 17), legend.text = element_text(size = 17),
     panel.background = element_rect(fill='transparent'),
     plot.background = element_rect(fill='transparent', color=NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
-    panel.border = element_blank(), axis.text = element_text(size = 16, color = "black"),
+    panel.border = element_blank(), axis.text = element_text(size = 17, color = "black"),
     axis.line = element_line(color = "black")) +
+  scale_y_continuous(expand = c(0,0.05)) +
   xlab("Site type") +
   ylab("Distance to Centroid") +
-  labs(color = "Site_type", tag = "b"))
+  labs(color = "Site_type", tag = "a"))
 ```
 
 ![](PD_analyses_files/figure-gfm/PD%20beta%20dispersion%20plot-1.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_BD_dist_plot.jpg", PD_beta_BD_dist_env_plot, width = 4.88, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_BD_dist_plot.jpg", PD_beta_BD_dist_env_plot, width = 5.4, height = 6, units = "in")
 ```
 
 ### PD beta NMDS
@@ -4706,6 +4885,10 @@ PD_beta_NMDS <- metaMDS(PD_beta_dist$Btotal, try = 1000, parallel = 4, trymax = 
 round(PD_beta_NMDS$stress, digits = 2)
 PD_beta_rep_NMDS <- metaMDS(PD_beta_dist$Brepl, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 PD_beta_ric_NMDS <- metaMDS(PD_beta_dist$Brich, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Without LCN
+PD_beta_wo_LCN_NMDS <- metaMDS(PD_beta_wo_LCN_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Without TLN and HLM
+PD_beta_wo_TLN_HLM_NMDS <- metaMDS(PD_beta_wo_TLN_HLM_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # Mixed and stratified lakes
 PD_beta_MS_NMDS <- metaMDS(PD_beta_MS_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # Ocean sites and mixed lakes
@@ -4845,8 +5028,8 @@ plot(PD_beta_varpart,
     ## 
     ## ***VECTORS
     ## 
-    ##                                NMDS1   NMDS2    r2 Pr(>r)   
-    ## env[surveyed_sites_env, "S"] 0.94798 0.31832 0.699   0.01 **
+    ##                                NMDS1   NMDS2    r2 Pr(>r)  
+    ## env[surveyed_sites_env, "S"] 0.94799 0.31830 0.699  0.018 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4862,8 +5045,8 @@ plot(PD_beta_varpart,
     ## 
     ## ***VECTORS
     ## 
-    ##                                NMDS1   NMDS2    r2 Pr(>r)   
-    ## env[surveyed_sites_env, "S"] 0.94798 0.31832 0.699   0.01 **
+    ##                                NMDS1   NMDS2    r2 Pr(>r)  
+    ## env[surveyed_sites_env, "S"] 0.94799 0.31830 0.699  0.018 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4879,9 +5062,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.75819 -0.65204 0.0724  0.662  
-    ## salinity_median     0.94798  0.31832 0.6990  0.013 *
-    ## oxygen_median       0.57185 -0.82036 0.6836  0.111  
+    ## temperature_median -0.75821 -0.65201 0.0724  0.700  
+    ## salinity_median     0.94799  0.31830 0.6990  0.020 *
+    ## oxygen_median       0.57185 -0.82036 0.6836  0.108  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4898,9 +5081,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.75819 -0.65204 0.0724  1.000  
-    ## salinity_median     0.94798  0.31832 0.6990  0.039 *
-    ## oxygen_median       0.57185 -0.82036 0.6836  0.333  
+    ## temperature_median -0.75821 -0.65201 0.0724  1.000  
+    ## salinity_median     0.94799  0.31830 0.6990  0.060 .
+    ## oxygen_median       0.57185 -0.82036 0.6836  0.324  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4916,9 +5099,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.92663  0.37597 0.0954  0.732  
-    ## salinity_median     0.90470  0.42605 0.6840  0.033 *
-    ## oxygen_median       0.44477 -0.89565 0.5837  0.210  
+    ## temperature_median -0.92650  0.37629 0.0954  0.751  
+    ## salinity_median     0.90467  0.42611 0.6840  0.026 *
+    ## oxygen_median       0.44477 -0.89564 0.5837  0.225  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4935,9 +5118,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.92663  0.37597 0.0954  1.000  
-    ## salinity_median     0.90470  0.42605 0.6840  0.099 .
-    ## oxygen_median       0.44477 -0.89565 0.5837  0.630  
+    ## temperature_median -0.92650  0.37629 0.0954  1.000  
+    ## salinity_median     0.90467  0.42611 0.6840  0.078 .
+    ## oxygen_median       0.44477 -0.89564 0.5837  0.675  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4953,9 +5136,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.52519 -0.85098 0.0223  0.907  
+    ## temperature_median -0.52519 -0.85099 0.0223  0.895  
     ## salinity_median    -0.79785 -0.60286 0.7269  0.026 *
-    ## oxygen_median      -0.91393 -0.40587 0.8026  0.011 *
+    ## oxygen_median      -0.91393 -0.40587 0.8026  0.020 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4972,9 +5155,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.52519 -0.85098 0.0223  1.000  
+    ## temperature_median -0.52519 -0.85099 0.0223  1.000  
     ## salinity_median    -0.79785 -0.60286 0.7269  0.078 .
-    ## oxygen_median      -0.91393 -0.40587 0.8026  0.033 *
+    ## oxygen_median      -0.91393 -0.40587 0.8026  0.060 .
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -4989,10 +5172,10 @@ plot(PD_beta_varpart,
     ## 
     ## ***VECTORS
     ## 
-    ##                         NMDS1      NMDS2     r2 Pr(>r)
-    ## temperature_median  0.0001214  1.0000000 0.2599  0.148
-    ## salinity_median    -0.0142568 -0.9999000 0.4824  0.956
-    ## oxygen_median      -0.0017287 -1.0000000 0.7386  0.340
+    ##                          NMDS1       NMDS2     r2 Pr(>r)
+    ## temperature_median  0.00033289 -1.00000000 0.0455  0.707
+    ## salinity_median    -0.00048010  1.00000000 0.6053  0.109
+    ## oxygen_median      -0.00108894 -1.00000000 0.7467  0.267
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5006,10 +5189,10 @@ plot(PD_beta_varpart,
     ## 
     ## ***VECTORS
     ## 
-    ##                         NMDS1      NMDS2     r2 Pr(>r)
-    ## temperature_median  0.0001214  1.0000000 0.2599  0.444
-    ## salinity_median    -0.0142568 -0.9999000 0.4824  1.000
-    ## oxygen_median      -0.0017287 -1.0000000 0.7386  1.000
+    ##                          NMDS1       NMDS2     r2 Pr(>r)
+    ## temperature_median  0.00033289 -1.00000000 0.0455  1.000
+    ## salinity_median    -0.00048010  1.00000000 0.6053  0.327
+    ## oxygen_median      -0.00108894 -1.00000000 0.7467  0.801
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5022,13 +5205,13 @@ plot(PD_beta_varpart,
     ## 
     ## ***VECTORS
     ## 
-    ##                              NMDS1      NMDS2     r2 Pr(>r)  
-    ## temperature_median      -0.0000787  1.0000000 0.1967  0.569  
-    ## salinity_median          0.0032439 -0.9999900 0.3805  0.304  
-    ## oxygen_median            0.0014410 -1.0000000 0.5962  0.094 .
-    ## distance_to_ocean_min_m -0.0002525 -1.0000000 0.5781  0.117  
-    ## max_depth                0.0011120  1.0000000 0.7342  0.052 .
-    ## logArea                  0.0006208 -1.0000000 0.7433  0.026 *
+    ##                               NMDS1       NMDS2     r2 Pr(>r)  
+    ## temperature_median      -0.00005951  1.00000000 0.5587  0.132  
+    ## salinity_median          0.00091085 -1.00000000 0.4220  0.261  
+    ## oxygen_median            0.00076744 -1.00000000 0.6750  0.062 .
+    ## distance_to_ocean_min_m -0.00073953 -1.00000000 0.3654  0.326  
+    ## max_depth                0.00262577 -1.00000000 0.7128  0.056 .
+    ## logArea                  0.00195855 -1.00000000 0.6670  0.050 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
@@ -5043,13 +5226,13 @@ plot(PD_beta_varpart,
     ## 
     ## ***VECTORS
     ## 
-    ##                              NMDS1      NMDS2     r2 Pr(>r)
-    ## temperature_median      -0.0000787  1.0000000 0.1967  1.000
-    ## salinity_median          0.0032439 -0.9999900 0.3805  1.000
-    ## oxygen_median            0.0014410 -1.0000000 0.5962  0.564
-    ## distance_to_ocean_min_m -0.0002525 -1.0000000 0.5781  0.702
-    ## max_depth                0.0011120  1.0000000 0.7342  0.312
-    ## logArea                  0.0006208 -1.0000000 0.7433  0.156
+    ##                               NMDS1       NMDS2     r2 Pr(>r)
+    ## temperature_median      -0.00005951  1.00000000 0.5587  0.792
+    ## salinity_median          0.00091085 -1.00000000 0.4220  1.000
+    ## oxygen_median            0.00076744 -1.00000000 0.6750  0.372
+    ## distance_to_ocean_min_m -0.00073953 -1.00000000 0.3654  1.000
+    ## max_depth                0.00262577 -1.00000000 0.7128  0.336
+    ## logArea                  0.00195855 -1.00000000 0.6670  0.300
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5062,12 +5245,12 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median      -0.39650 -0.91804 0.0381  0.907  
-    ## salinity_median         -0.96164  0.27432 0.5830  0.120  
-    ## oxygen_median            0.83740  0.54659 0.7450  0.030 *
-    ## distance_to_ocean_min_m  0.81783 -0.57546 0.1914  0.600  
-    ## max_depth               -0.87451  0.48501 0.1022  0.765  
-    ## logArea                 -0.40927  0.91241 0.2148  0.553  
+    ## temperature_median      -0.39652 -0.91803 0.0381  0.899  
+    ## salinity_median         -0.96164  0.27433 0.5830  0.127  
+    ## oxygen_median            0.83740  0.54660 0.7450  0.041 *
+    ## distance_to_ocean_min_m  0.81783 -0.57546 0.1914  0.579  
+    ## max_depth               -0.87448  0.48506 0.1022  0.756  
+    ## logArea                 -0.40925  0.91242 0.2148  0.546  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
@@ -5083,12 +5266,12 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## temperature_median      -0.39650 -0.91804 0.0381   1.00
-    ## salinity_median         -0.96164  0.27432 0.5830   0.72
-    ## oxygen_median            0.83740  0.54659 0.7450   0.18
-    ## distance_to_ocean_min_m  0.81783 -0.57546 0.1914   1.00
-    ## max_depth               -0.87451  0.48501 0.1022   1.00
-    ## logArea                 -0.40927  0.91241 0.2148   1.00
+    ## temperature_median      -0.39652 -0.91803 0.0381  1.000
+    ## salinity_median         -0.96164  0.27433 0.5830  0.762
+    ## oxygen_median            0.83740  0.54660 0.7450  0.246
+    ## distance_to_ocean_min_m  0.81783 -0.57546 0.1914  1.000
+    ## max_depth               -0.87448  0.48506 0.1022  1.000
+    ## logArea                 -0.40925  0.91242 0.2148  1.000
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5103,9 +5286,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.065 .
-    ## max_depth               -0.20870 -0.97798 0.0858  0.899  
-    ## logArea                  0.25301 -0.96746 0.2012  0.275  
+    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.078 .
+    ## max_depth               -0.20869 -0.97798 0.0858  0.912  
+    ## logArea                  0.25301 -0.96746 0.2012  0.297  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5122,9 +5305,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.195
-    ## max_depth               -0.20870 -0.97798 0.0858  1.000
-    ## logArea                  0.25301 -0.96746 0.2012  0.825
+    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.234
+    ## max_depth               -0.20869 -0.97798 0.0858  1.000
+    ## logArea                  0.25301 -0.96746 0.2012  0.891
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5138,9 +5321,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.088 .
-    ## max_depth               -0.20870 -0.97798 0.0858  0.889  
-    ## logArea                  0.25301 -0.96746 0.2012  0.284  
+    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.057 .
+    ## max_depth               -0.20869 -0.97798 0.0858  0.892  
+    ## logArea                  0.25301 -0.96746 0.2012  0.287  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5157,9 +5340,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.264
-    ## max_depth               -0.20870 -0.97798 0.0858  1.000
-    ## logArea                  0.25301 -0.96746 0.2012  0.852
+    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.171
+    ## max_depth               -0.20869 -0.97798 0.0858  1.000
+    ## logArea                  0.25301 -0.96746 0.2012  0.861
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5173,9 +5356,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.76314  0.64624 0.4671  0.134
-    ## max_depth               -0.34715 -0.93781 0.0777  0.960
-    ## logArea                  0.55489  0.83192 0.0073  0.956
+    ## distance_to_ocean_min_m -0.76308  0.64630 0.4671  0.127
+    ## max_depth               -0.34714 -0.93781 0.0777  0.970
+    ## logArea                  0.55456  0.83214 0.0074  0.966
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5190,9 +5373,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.76314  0.64624 0.4671  0.402
-    ## max_depth               -0.34715 -0.93781 0.0777  1.000
-    ## logArea                  0.55489  0.83192 0.0073  1.000
+    ## distance_to_ocean_min_m -0.76308  0.64630 0.4671  0.381
+    ## max_depth               -0.34714 -0.93781 0.0777  1.000
+    ## logArea                  0.55456  0.83214 0.0074  1.000
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5206,9 +5389,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)   
-    ## distance_to_ocean_min_m  0.45615 -0.88990 0.4273  0.177   
-    ## max_depth               -0.94119 -0.33789 0.6682  0.003 **
-    ## logArea                 -0.86397  0.50354 0.2339  0.439   
+    ## distance_to_ocean_min_m  0.45615 -0.88990 0.4273  0.166   
+    ## max_depth               -0.94118 -0.33789 0.6682  0.004 **
+    ## logArea                 -0.86397  0.50355 0.2339  0.414   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5224,10 +5407,10 @@ plot(PD_beta_varpart,
     ## 
     ## ***VECTORS
     ## 
-    ##                            NMDS1    NMDS2     r2 Pr(>r)   
-    ## distance_to_ocean_min_m  0.45615 -0.88990 0.4273  0.531   
-    ## max_depth               -0.94119 -0.33789 0.6682  0.009 **
-    ## logArea                 -0.86397  0.50354 0.2339  1.000   
+    ##                            NMDS1    NMDS2     r2 Pr(>r)  
+    ## distance_to_ocean_min_m  0.45615 -0.88990 0.4273  0.498  
+    ## max_depth               -0.94118 -0.33789 0.6682  0.012 *
+    ## logArea                 -0.86397  0.50355 0.2339  1.000  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5243,9 +5426,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m  0.99474  0.10240 0.6338  0.211
-    ## max_depth                0.73024  0.68319 0.0374  0.976
-    ## logArea                 -0.39139  0.92022 0.3078  0.302
+    ## distance_to_ocean_min_m  0.99474  0.10239 0.6338  0.214
+    ## max_depth                0.73039  0.68303 0.0374  0.975
+    ## logArea                 -0.39145  0.92020 0.3078  0.313
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5260,9 +5443,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m  0.99474  0.10240 0.6338  0.633
-    ## max_depth                0.73024  0.68319 0.0374  1.000
-    ## logArea                 -0.39139  0.92022 0.3078  0.906
+    ## distance_to_ocean_min_m  0.99474  0.10239 0.6338  0.642
+    ## max_depth                0.73039  0.68303 0.0374  1.000
+    ## logArea                 -0.39145  0.92020 0.3078  0.939
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5283,11 +5466,11 @@ env_dist_t <- dist(scaled_env[surveyed_sites_env,"temperature_median"], method =
     ## mantel(xdis = PD_beta_env_dist$Btotal, ydis = env_dist_t, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, "Site_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1792 
-    ##       Significance: 0.203 
+    ##       Significance: 0.231 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.218 0.253 0.274 0.302 
+    ## 0.218 0.244 0.273 0.291 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5308,7 +5491,7 @@ env_dist_s <- dist(scaled_env[surveyed_sites_env,"salinity_median"], method = "e
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.436 0.463 0.485 0.506 
+    ## 0.436 0.462 0.484 0.495 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5325,11 +5508,11 @@ env_dist_o <- dist(scaled_env[surveyed_sites_env,"oxygen_median"], method = "euc
     ## mantel(xdis = PD_beta_env_dist$Btotal, ydis = env_dist_o, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, "Site_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.462 
-    ##       Significance: 0.261 
+    ##       Significance: 0.27 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.531 0.563 0.593 0.639 
+    ## 0.530 0.564 0.593 0.616 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5341,7 +5524,7 @@ PD_beta_env_mant_pv <- PD_beta_env_mant_pv[,1]
 (PD_beta_env_mant_pv <- p.adjust(PD_beta_env_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.609 0.015 0.783
+    ## [1] 0.693 0.015 0.810
 
 ``` r
 # Mixed and stratified lakes
@@ -5356,11 +5539,11 @@ env_MS_dist_t <- dist(scaled_env[mixed_stratified_lakes,"temperature_median"], m
     ## mantel(xdis = PD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_t,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1644 
-    ##       Significance: 0.244 
+    ##       Significance: 0.239 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.219 0.249 0.283 0.317 
+    ## 0.213 0.245 0.277 0.302 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5377,11 +5560,11 @@ env_MS_dist_s <- dist(scaled_env[mixed_stratified_lakes,"salinity_median"], meth
     ## mantel(xdis = PD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_s,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4638 
-    ##       Significance: 0.009 
+    ##       Significance: 0.008 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.381 0.417 0.443 0.461 
+    ## 0.370 0.397 0.429 0.449 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5398,11 +5581,11 @@ env_MS_dist_o <- dist(scaled_env[mixed_stratified_lakes,"oxygen_median"], method
     ## mantel(xdis = PD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_o,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3305 
-    ##       Significance: 0.29 
+    ##       Significance: 0.306 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.414 0.451 0.492 0.527 
+    ## 0.416 0.449 0.477 0.548 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5414,7 +5597,7 @@ PD_beta_env_MS_mant_pv <- PD_beta_env_MS_mant_pv[,1]
 (PD_beta_env_MS_mant_pv <- p.adjust(PD_beta_env_MS_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.732 0.027 0.870
+    ## [1] 0.717 0.024 0.918
 
 ``` r
 # Ocean sites and mixed lakes
@@ -5429,11 +5612,11 @@ env_OM_dist_t <- dist(scaled_env[ocean_mixed_sites_env,"temperature_median"], me
     ## mantel(xdis = PD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.03824 
-    ##       Significance: 0.517 
+    ##       Significance: 0.541 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.141 0.195 0.252 0.407 
+    ## 0.142 0.223 0.317 0.404 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5450,11 +5633,11 @@ env_OM_dist_s <- dist(scaled_env[ocean_mixed_sites_env,"salinity_median"], metho
     ## mantel(xdis = PD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4565 
-    ##       Significance: 0.021 
+    ##       Significance: 0.015 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.301 0.369 0.428 0.501 
+    ## 0.294 0.363 0.434 0.462 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5471,11 +5654,11 @@ env_OM_dist_o <- dist(scaled_env[ocean_mixed_sites_env,"oxygen_median"], method 
     ## mantel(xdis = PD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5527 
-    ##       Significance: 0.013 
+    ##       Significance: 0.007 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.332 0.416 0.496 0.573 
+    ## 0.299 0.396 0.468 0.536 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5487,7 +5670,7 @@ PD_beta_env_OM_mant_pv <- PD_beta_env_OM_mant_pv[,1]
 (PD_beta_env_OM_mant_pv <- p.adjust(PD_beta_env_OM_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.063 0.039
+    ## [1] 1.000 0.045 0.021
 
 ``` r
 # Stratified lakes and ocean sites
@@ -5502,11 +5685,11 @@ env_SO_dist_t <- dist(scaled_env[ocean_stratified_sites_env,"temperature_median"
     ## mantel(xdis = PD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.07569 
-    ##       Significance: 0.443 
+    ##       Significance: 0.446 
     ## 
     ## Upper quantiles of permutations (null model):
     ##    90%    95%  97.5%    99% 
-    ## 0.0419 0.0661 0.0934 0.1227 
+    ## 0.0380 0.0617 0.0846 0.1268 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5523,11 +5706,11 @@ env_SO_dist_s <- dist(scaled_env[ocean_stratified_sites_env,"salinity_median"], 
     ## mantel(xdis = PD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4755 
-    ##       Significance: 0.019 
+    ##       Significance: 0.014 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.392 0.433 0.463 0.489 
+    ## 0.380 0.424 0.456 0.482 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5544,11 +5727,11 @@ env_SO_dist_o <- dist(scaled_env[ocean_stratified_sites_env,"oxygen_median"], me
     ## mantel(xdis = PD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.6587 
-    ##       Significance: 0.229 
+    ##       Significance: 0.221 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.692 0.712 0.748 0.773 
+    ## 0.691 0.713 0.730 0.759 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5560,7 +5743,7 @@ PD_beta_env_SO_mant_pv <- PD_beta_env_SO_mant_pv[,1]
 (PD_beta_env_SO_mant_pv <- p.adjust(PD_beta_env_SO_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.057 0.687
+    ## [1] 1.000 0.042 0.663
 
 ``` r
 # Mixed lakes
@@ -5575,11 +5758,11 @@ env_M_dist_t <- dist(scaled_env[mixed_lakes,"temperature_median"], method = "euc
     ## mantel(xdis = PD_beta_M_dist$Btotal, ydis = env_M_dist_t, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.1368 
-    ##       Significance: 0.772 
+    ##       Significance: 0.781 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.266 0.376 0.445 0.687 
+    ## 0.259 0.351 0.567 0.706 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5595,11 +5778,11 @@ env_M_dist_s <- dist(scaled_env[mixed_lakes,"salinity_median"], method = "euclid
     ## mantel(xdis = PD_beta_M_dist$Btotal, ydis = env_M_dist_s, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1095 
-    ##       Significance: 0.204 
+    ##       Significance: 0.253 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.190 0.240 0.292 0.342 
+    ## 0.221 0.279 0.339 0.371 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5615,11 +5798,11 @@ env_M_dist_o <- dist(scaled_env[mixed_lakes,"oxygen_median"], method = "euclidea
     ## mantel(xdis = PD_beta_M_dist$Btotal, ydis = env_M_dist_o, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2748 
-    ##       Significance: 0.094 
+    ##       Significance: 0.085 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.266 0.382 0.459 0.579 
+    ## 0.250 0.359 0.471 0.626 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5635,11 +5818,11 @@ geo_M_dist_dm <- dist(scaled_env[mixed_lakes,"distance_to_ocean_min_m"], method 
     ## mantel(xdis = PD_beta_M_dist$Btotal, ydis = geo_M_dist_dm, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2565 
-    ##       Significance: 0.071 
+    ##       Significance: 0.073 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.224 0.280 0.343 0.710 
+    ## 0.230 0.291 0.363 0.752 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5655,11 +5838,11 @@ geo_M_dist_md <- dist(scaled_env[mixed_lakes,"max_depth"], method = "euclidean")
     ## mantel(xdis = PD_beta_M_dist$Btotal, ydis = geo_M_dist_md, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5985 
-    ##       Significance: 0.006 
+    ##       Significance: 0.01 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.257 0.376 0.505 0.583 
+    ## 0.258 0.366 0.510 0.581 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5675,11 +5858,11 @@ geo_M_dist_la <- dist(scaled_env[mixed_lakes,"logArea"], method = "euclidean")
     ## mantel(xdis = PD_beta_M_dist$Btotal, ydis = geo_M_dist_la, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4007 
-    ##       Significance: 0.018 
+    ##       Significance: 0.017 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.210 0.288 0.374 0.427 
+    ## 0.219 0.296 0.358 0.416 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5690,7 +5873,7 @@ PD_beta_M_mant_pv <- PD_beta_M_mant_pv[,1]
 (PD_beta_M_mant_pv <- p.adjust(PD_beta_M_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 1.000 0.564 0.426 0.036 0.108
+    ## [1] 1.000 1.000 0.510 0.438 0.060 0.102
 
 ``` r
 # Stratified lakes
@@ -5705,11 +5888,11 @@ env_S_dist_t <- dist(scaled_env[stratified_lakes,"temperature_median"], method =
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = env_S_dist_t, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.02901 
-    ##       Significance: 0.48 
+    ##       Significance: 0.506 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.387 0.459 0.515 0.650 
+    ## 0.365 0.438 0.504 0.564 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5725,11 +5908,11 @@ env_S_dist_s <- dist(scaled_env[stratified_lakes,"salinity_median"], method = "e
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = env_S_dist_s, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3536 
-    ##       Significance: 0.071 
+    ##       Significance: 0.062 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.306 0.383 0.440 0.513 
+    ## 0.286 0.375 0.446 0.512 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5745,11 +5928,11 @@ env_S_dist_o <- dist(scaled_env[stratified_lakes,"oxygen_median"], method = "euc
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = env_S_dist_o, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3399 
-    ##       Significance: 0.075 
+    ##       Significance: 0.061 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.295 0.393 0.469 0.527 
+    ## 0.288 0.356 0.428 0.501 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5765,11 +5948,11 @@ geo_S_dist_dm <- dist(scaled_env[stratified_lakes,"distance_to_ocean_min_m"], me
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = geo_S_dist_dm, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.01204 
-    ##       Significance: 0.479 
+    ##       Significance: 0.496 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.242 0.328 0.397 0.492 
+    ## 0.233 0.307 0.379 0.452 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5785,11 +5968,11 @@ geo_S_dist_md <- dist(scaled_env[stratified_lakes,"max_depth"], method = "euclid
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = geo_S_dist_md, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.05559 
-    ##       Significance: 0.56 
+    ##       Significance: 0.555 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.284 0.382 0.470 0.543 
+    ## 0.280 0.371 0.460 0.536 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5805,11 +5988,11 @@ geo_S_dist_la <- dist(scaled_env[stratified_lakes,"logArea"], method = "euclidea
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = geo_S_dist_la, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1155 
-    ##       Significance: 0.285 
+    ##       Significance: 0.284 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.334 0.489 0.600 0.646 
+    ## 0.336 0.466 0.528 0.632 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5820,7 +6003,7 @@ PD_beta_S_mant_pv <- PD_beta_S_mant_pv[,1]
 (PD_beta_S_mant_pv <- p.adjust(PD_beta_S_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.426 0.450 1.000 1.000 1.000
+    ## [1] 1.000 0.372 0.366 1.000 1.000 1.000
 
 ``` r
 ### Geographic
@@ -5836,11 +6019,11 @@ geo_dist_dm <- dist(scaled_env[surveyed_sites,"distance_to_ocean_min_m"], method
     ## mantel(xdis = PD_beta_geo_dist$Btotal, ydis = geo_dist_dm, method = "spearman",      permutations = 999, strata = env[surveyed_sites, "Site_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3758 
-    ##       Significance: 0.107 
+    ##       Significance: 0.12 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.377 0.409 0.428 0.447 
+    ## 0.384 0.410 0.435 0.460 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5857,11 +6040,11 @@ geo_dist_md <- dist(scaled_env[surveyed_sites,"max_depth"], method = "euclidean"
     ## mantel(xdis = PD_beta_geo_dist$Btotal, ydis = geo_dist_md, method = "spearman",      permutations = 999, strata = env[surveyed_sites, "Site_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.0242 
-    ##       Significance: 0.81 
+    ##       Significance: 0.788 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.163 0.194 0.215 0.231 
+    ## 0.162 0.196 0.216 0.242 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5878,11 +6061,11 @@ geo_dist_la <- dist(scaled_env[surveyed_sites,"logArea"], method = "euclidean")
     ## mantel(xdis = PD_beta_geo_dist$Btotal, ydis = geo_dist_la, method = "spearman",      permutations = 999, strata = env[surveyed_sites, "Site_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.01132 
-    ##       Significance: 0.713 
+    ##       Significance: 0.721 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.112 0.128 0.145 0.160 
+    ## 0.112 0.129 0.147 0.162 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5894,7 +6077,7 @@ PD_beta_geo_mant_pv <- PD_beta_geo_mant_pv[,1]
 (PD_beta_geo_mant_pv <- p.adjust(PD_beta_geo_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.321 1.000 1.000
+    ## [1] 0.36 1.00 1.00
 
 ``` r
 # Mixed and stratified lakes 
@@ -5909,11 +6092,11 @@ geo_MS_dist_dm <- dist(scaled_env[mixed_stratified_lakes,"distance_to_ocean_min_
     ## mantel(xdis = PD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_dm,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1819 
-    ##       Significance: 0.142 
+    ##       Significance: 0.153 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.215 0.257 0.294 0.325 
+    ## 0.205 0.252 0.291 0.318 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5930,11 +6113,11 @@ geo_MS_dist_md <- dist(scaled_env[mixed_stratified_lakes,"max_depth"], method = 
     ## mantel(xdis = PD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_md,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.05502 
-    ##       Significance: 0.92 
+    ##       Significance: 0.917 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.154 0.192 0.231 0.280 
+    ## 0.158 0.189 0.219 0.257 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5951,11 +6134,11 @@ geo_MS_dist_la <- dist(scaled_env[mixed_stratified_lakes,"logArea"], method = "e
     ## mantel(xdis = PD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_la,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.06883 
-    ##       Significance: 0.854 
+    ##       Significance: 0.904 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.137 0.159 0.177 0.203 
+    ## 0.123 0.147 0.168 0.189 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5967,7 +6150,7 @@ PD_beta_geo_MS_mant_pv <- PD_beta_geo_MS_mant_pv[,1]
 (PD_beta_geo_MS_mant_pv <- p.adjust(PD_beta_geo_MS_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.426 1.000 1.000
+    ## [1] 0.459 1.000 1.000
 
 ``` r
 # Ocean sites and mixed lakes
@@ -5982,11 +6165,11 @@ geo_OM_dist_dm <- dist(scaled_env[ocean_mixed_sites,"distance_to_ocean_min_m"], 
     ## mantel(xdis = PD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_dm,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1695 
-    ##       Significance: 0.046 
+    ##       Significance: 0.057 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.126 0.162 0.200 0.306 
+    ## 0.142 0.177 0.214 0.288 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -6003,11 +6186,11 @@ geo_OM_dist_md <- dist(scaled_env[ocean_mixed_sites,"max_depth"], method = "eucl
     ## mantel(xdis = PD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3135 
-    ##       Significance: 0.014 
+    ##       Significance: 0.018 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.157 0.209 0.273 0.336 
+    ## 0.166 0.232 0.282 0.347 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -6024,11 +6207,11 @@ geo_OM_dist_la <- dist(scaled_env[ocean_mixed_sites,"logArea"], method = "euclid
     ## mantel(xdis = PD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1943 
-    ##       Significance: 0.072 
+    ##       Significance: 0.086 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.178 0.216 0.240 0.280 
+    ## 0.187 0.224 0.245 0.272 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -6040,7 +6223,7 @@ PD_beta_geo_OM_mant_pv <- PD_beta_geo_OM_mant_pv[,1]
 (PD_beta_geo_OM_mant_pv <- p.adjust(PD_beta_geo_OM_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.138 0.042 0.216
+    ## [1] 0.171 0.054 0.258
 
 ``` r
 # Stratified lakes and ocean sites
@@ -6055,11 +6238,11 @@ geo_SO_dist_dm <- dist(scaled_env[ocean_stratified_sites,"distance_to_ocean_min_
     ## mantel(xdis = PD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_dm,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4489 
-    ##       Significance: 0.21 
+    ##       Significance: 0.204 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.488 0.519 0.537 0.555 
+    ## 0.493 0.516 0.538 0.559 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -6076,11 +6259,11 @@ geo_SO_dist_md <- dist(scaled_env[ocean_stratified_sites,"max_depth"], method = 
     ## mantel(xdis = PD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.04194 
-    ##       Significance: 0.776 
+    ##       Significance: 0.78 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.104 0.132 0.152 0.188 
+    ## 0.110 0.138 0.162 0.209 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -6097,11 +6280,11 @@ geo_SO_dist_la <- dist(scaled_env[ocean_stratified_sites,"logArea"], method = "e
     ## mantel(xdis = PD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          "Site_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3193 
-    ##       Significance: 0.211 
+    ##       Significance: 0.233 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.366 0.400 0.421 0.442 
+    ## 0.379 0.399 0.422 0.438 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -6113,7 +6296,7 @@ PD_beta_geo_SO_mant_pv <- PD_beta_geo_SO_mant_pv[,1]
 (PD_beta_geo_SO_mant_pv <- p.adjust(PD_beta_geo_SO_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.630 1.000 0.633
+    ## [1] 0.612 1.000 0.699
 
 ### PD beta NMDS ordination plots
 
@@ -6183,18 +6366,18 @@ PD_beta_ef_plot_CI90 <- ggplot(data = PD_beta_NMDS_data.scores, aes(x = NMDS1, y
             color = env_cont, label = row.names(PD_beta_env_ef_coord_cont), size = 5) +
   geom_text_repel(data = PD_beta_NMDS_data.scores, label = PD_beta_NMDS_data.scores$Lakes, 
                   size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
-  theme(text = element_text(size = 16), 
+  theme(text = element_text(size = 17), 
         legend.position = "bottom", 
-        legend.title = element_text(size = 16), 
-        legend.text = element_text(size = 16), 
+        legend.title = element_text(size = 17), 
+        legend.text = element_text(size = 17), 
         panel.background = element_rect(fill='transparent'),
         plot.background = element_rect(fill='transparent', color=NA),
         panel.border = element_rect(fill = NA), 
-        axis.text = element_text(color = "black", size = 16), 
+        axis.text = element_text(color = "black", size = 17), 
         legend.key = element_blank()) +
   annotate("text", x = -0.6, y = 0.5, size = 5,
            label = paste("Stress: ", round(PD_beta_NMDS$stress, digits = 2))) +
-  labs(colour = "Site type:  ", fill = "Site type:  ") +
+  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "b") +
   coord_fixed() +
   scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81)) +
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81))
@@ -6204,7 +6387,83 @@ PD_beta_ef_plot_CI90 <- ggplot(data = PD_beta_NMDS_data.scores, aes(x = NMDS1, y
 ![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-2.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_NMDS_CI90.jpg", PD_beta_ef_plot_CI90, width = 6, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_NMDS_CI90.jpg", PD_beta_ef_plot_CI90, width = 5.4, height = 6, units = "in")
+
+
+# PD beta total NMDS scores without LCN
+PD_beta_wo_LCN_NMDS_data.scores <- as.data.frame(scores(PD_beta_wo_LCN_NMDS))
+PD_beta_wo_LCN_NMDS_data.scores$Site_type <- env[surveyed_sites_wo_LCN,"Site_type"]
+PD_beta_wo_LCN_NMDS_data.scores$Lakes <- env[surveyed_sites_wo_LCN,1]
+PD_beta_wo_LCN_NMDS_data.scores$Site_type <- factor(PD_beta_wo_LCN_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+
+# Plot NMDS ordination of PD beta total without LCN with CI = 0.95
+PD_beta_wo_LCN_plot <- ggplot(data = PD_beta_wo_LCN_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Site_type)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Site_type), type = "t", level = 0.95) +
+  geom_point(data = PD_beta_wo_LCN_NMDS_data.scores, aes(color = Site_type, fill = Site_type), size = 4, alpha = 1) + 
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = PD_beta_wo_LCN_NMDS_data.scores, label = PD_beta_wo_LCN_NMDS_data.scores$Lakes, 
+                  size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
+  theme(text = element_text(size = 14), 
+        legend.position = "bottom", 
+        legend.title = element_text(size = 14), 
+        legend.text = element_text(size = 14), 
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.border = element_rect(fill = NA), 
+        axis.text = element_text(color = "black", size = 14), 
+        legend.key = element_blank()) +
+  annotate("text", x = -0.6, y = 0.5, size = 5,
+           label = paste("Stress: ", round(PD_beta_wo_LCN_NMDS$stress, digits = 2))) +
+  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "a") +
+  coord_fixed() +
+  scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81)) +
+  scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81))
+(PD_beta_wo_LCN_plot <- PD_beta_wo_LCN_plot + guides(color = guide_legend(override.aes = list(label = ""))))
+```
+
+![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-3.png)<!-- -->
+
+``` r
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_NMDS_wo_LCN.jpg", PD_beta_wo_LCN_plot, width = 4.88, height = 6, units = "in")
+
+
+# PD beta total NMDS scores without TLN and HLM
+PD_beta_wo_TLN_HLM_NMDS_data.scores <- as.data.frame(scores(PD_beta_wo_TLN_HLM_NMDS))
+PD_beta_wo_TLN_HLM_NMDS_data.scores$Site_type <- env[surveyed_sites_wo_TLN_HLM,"Site_type"]
+PD_beta_wo_TLN_HLM_NMDS_data.scores$Lakes <- env[surveyed_sites_wo_TLN_HLM,1]
+PD_beta_wo_TLN_HLM_NMDS_data.scores$Site_type <- factor(PD_beta_wo_TLN_HLM_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+
+# Plot NMDS ordination of PD beta total without TLN and HLM with CI = 0.95
+PD_beta_wo_TLN_HLM_plot <- ggplot(data = PD_beta_wo_TLN_HLM_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Site_type)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Site_type), type = "t", level = 0.95) +
+  geom_point(data = PD_beta_wo_TLN_HLM_NMDS_data.scores, aes(color = Site_type, fill = Site_type), size = 4, alpha = 1) + 
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = PD_beta_wo_TLN_HLM_NMDS_data.scores, label = PD_beta_wo_TLN_HLM_NMDS_data.scores$Lakes, 
+                  size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
+  theme(text = element_text(size = 14), 
+        legend.position = "bottom", 
+        legend.title = element_text(size = 14), 
+        legend.text = element_text(size = 14), 
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.border = element_rect(fill = NA), 
+        axis.text = element_text(color = "black", size = 14), 
+        legend.key = element_blank()) +
+  annotate("text", x = -0.6, y = 0.5, size = 5,
+           label = paste("Stress: ", round(PD_beta_wo_TLN_HLM_NMDS$stress, digits = 2))) +
+  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "b") +
+  coord_fixed() +
+  scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81)) +
+  scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81))
+(PD_beta_wo_TLN_HLM_plot <- PD_beta_wo_TLN_HLM_plot + guides(color = guide_legend(override.aes = list(label = ""))))
+```
+
+![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-4.png)<!-- -->
+
+``` r
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_NMDS_wo_TLN_HLM.jpg", PD_beta_wo_TLN_HLM_plot, width = 4.88, height = 6, units = "in")
 
 
 # PD beta replacement NMDS scores
@@ -6239,7 +6498,7 @@ PD_beta_rep_plot <- ggplot(data = PD_beta_rep_NMDS_data.scores, aes(x = NMDS1, y
 (PD_beta_rep_plot <- PD_beta_rep_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-3.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-5.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_rep_NMDS.jpg", PD_beta_rep_plot, width = 4.88, height = 6, units = "in")
@@ -6277,7 +6536,7 @@ PD_beta_ric_plot <- ggplot(data = PD_beta_ric_NMDS_data.scores, aes(x = NMDS1, y
 (PD_beta_ric_plot <- PD_beta_ric_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-4.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-6.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_ric_NMDS.jpg", PD_beta_ric_plot, width = 4.88, height = 6, units = "in")
@@ -6323,7 +6582,7 @@ PD_beta_ref_plot <- ggplot(data = PD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y
     ## Warning: ggrepel: 13 unlabeled data points (too many overlaps). Consider
     ## increasing max.overlaps
 
-![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-5.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-7.png)<!-- -->
 
 ``` r
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_ref_NMDS.jpg", PD_beta_ref_plot, width = 6.26, height = 6, units = "in")
@@ -6417,16 +6676,17 @@ outlier_PD_beta_NMDS1 <- ordered_PD_beta_NMDS1_data.scores %>%
 
 outlier_PD_beta_NMDS1 <- as.data.frame(outlier_PD_beta_NMDS1)
 
-row.names(outlier_PD_beta_NMDS1) <- outlier_PD_beta_NMDS1$X
+row.names(outlier_PD_beta_NMDS1) <- outlier_PD_beta_NMDS1$Lakes
 
 # Create the plot
 (outlier_PD_beta_NMDS1_plot <- ggplot(outlier_PD_beta_NMDS1, aes(x = Site_type, y = NMDS1, fill = Site_type)) +
-  geom_violin(trim = FALSE) +
-  geom_jitter(aes(color = is_outlier), width = 0.2, size = 4, alpha = 0.7) +
+  geom_violin(alpha = 0.9, draw_quantiles = c(0.25, 0.5, 0.75), aes(fill = Site_type)) +
+  geom_jitter(aes(color = is_outlier), width = 0.1, size = 4, alpha = 0.7) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
   scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = outlier_PD_beta_NMDS1, label = outlier_PD_beta_NMDS1$Lakes, size = 5, point.padding = 7, max.overlaps = 30, nudge_x = -0.01) +
   theme(text = element_text(size = 16),
-        legend.position = "right",
+        legend.position = "bottom",
         legend.title = element_text(size = 16),
         legend.text = element_text(size = 16),
         axis.line = element_line(color = "black"),
@@ -6436,6 +6696,7 @@ row.names(outlier_PD_beta_NMDS1) <- outlier_PD_beta_NMDS1$X
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         axis.text = element_text(color = "black", size = 16)) +
+  scale_y_continuous(expand = c(0,0.05)) +
   guides(fill = "none") + 
   labs(y = "NMDS1 Distances", x = "Site type", color = "Outlier:", tag = "a"))
 ```
@@ -6443,7 +6704,7 @@ row.names(outlier_PD_beta_NMDS1) <- outlier_PD_beta_NMDS1$X
 ![](PD_analyses_files/figure-gfm/PD%20beta%20outliers-1.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/outlier_PD_beta_NMDS1.jpg", outlier_PD_beta_NMDS1_plot, width = 6.26, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/outlier_PD_beta_NMDS1.jpg", outlier_PD_beta_NMDS1_plot, width = 4.88, height = 6, units = "in")
 
 
 # Determine NMDS2 outliers
@@ -6462,16 +6723,17 @@ outlier_PD_beta_NMDS2 <- ordered_PD_beta_NMDS2_data.scores %>%
 
 outlier_PD_beta_NMDS2 <- as.data.frame(outlier_PD_beta_NMDS2)
 
-row.names(outlier_PD_beta_NMDS2) <- outlier_PD_beta_NMDS2$X
+row.names(outlier_PD_beta_NMDS2) <- outlier_PD_beta_NMDS2$Lakes
 
 # Create the plot
 (outlier_PD_beta_NMDS2_plot <- ggplot(outlier_PD_beta_NMDS2, aes(x = Site_type, y = NMDS2, fill = Site_type)) +
-  geom_violin(trim = FALSE) +
-  geom_jitter(aes(color = is_outlier), width = 0.2, size = 4, alpha = 0.7) +
+  geom_violin(alpha = 0.9, draw_quantiles = c(0.25, 0.5, 0.75), aes(fill = Site_type)) +
+  geom_jitter(aes(color = is_outlier), width = 0.1, size = 4, alpha = 0.7) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
   scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = outlier_PD_beta_NMDS2, label = outlier_PD_beta_NMDS2$Lakes, size = 5, point.padding = 7, max.overlaps = 30, nudge_x = -0.01) +
   theme(text = element_text(size = 16),
-        legend.position = "right",
+        legend.position = "bottom",
         legend.title = element_text(size = 16),
         legend.text = element_text(size = 16),
         axis.line = element_line(color = "black"),
@@ -6481,6 +6743,7 @@ row.names(outlier_PD_beta_NMDS2) <- outlier_PD_beta_NMDS2$X
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         axis.text = element_text(color = "black", size = 16)) +
+  scale_y_continuous(expand = c(0,0.05)) +
   guides(fill = "none") + 
   labs(y = "NMDS2 Distances", x = "Site type", color = "Outlier:", tag = "b"))
 ```
@@ -6488,110 +6751,7 @@ row.names(outlier_PD_beta_NMDS2) <- outlier_PD_beta_NMDS2$X
 ![](PD_analyses_files/figure-gfm/PD%20beta%20outliers-2.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/outlier_PD_beta_NMDS2.jpg", outlier_PD_beta_NMDS2_plot, width = 6.26, height = 6, units = "in")
-
-
-# Make PD_beta distances into a matrix
-PD_beta_dist_matrix <- as.matrix(PD_beta_dist$Btotal)
-
-# Set the diagonal elements to NA
-diag(PD_beta_dist_matrix) <- NA
-
-# Get the labels of the sites
-sites <- attr(PD_beta_dist_matrix, "Labels")
-
-# Calculate the mean dist for each group
-PD_beta_mean_dist <- aggregate(PD_beta_dist_matrix, by = list(Site_type_group), FUN = mean, na.rm = TRUE)
-
-# Rename rows, delete column, and transpose matrix and make it a data frame
-row.names(PD_beta_mean_dist) <- PD_beta_mean_dist$Group.1
-PD_beta_mean_dist <- PD_beta_mean_dist[,-1] 
-PD_beta_mean_dist <- as.data.frame(t(PD_beta_mean_dist))
-
-# Add Site_type column
-PD_beta_mean_dist$Site_type <- env[surveyed_sites,"Site_type"]
-PD_beta_mean_dist$Site_type <- factor(PD_beta_mean_dist$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
-
-
-# Determine ocean sites outliers based on distance from other ocean sites
-outlier_PD_beta_mean_dist_ocean <- PD_beta_mean_dist[ocean_sites,] %>%
-  group_by(Site_type) %>%
-  mutate(
-    Q1 = quantile(Ocean, 0.25),
-    Q3 = quantile(Ocean, 0.75),
-    IQR = Q3 - Q1,
-    lower_bound = Q1 - 1.5 * IQR,
-    upper_bound = Q3 + 1.5 * IQR,
-    is_outlier = Ocean < lower_bound | Ocean > upper_bound
-  )
-
-outlier_PD_beta_mean_dist_ocean <- as.data.frame(outlier_PD_beta_mean_dist_ocean)
-row.names(outlier_PD_beta_mean_dist_ocean) <- outlier_PD_beta_mean_dist_ocean$X
-outlier_PD_beta_mean_dist_ocean$Distances <- outlier_PD_beta_mean_dist_ocean$Ocean
-outlier_PD_beta_mean_dist_ocean <- outlier_PD_beta_mean_dist_ocean[,-c(1:3)]
-
-
-# Determine mixed lake outliers based on distance from other mixed lakes
-outlier_PD_beta_mean_dist_mixed <- PD_beta_mean_dist[mixed_lakes,] %>%
-  group_by(Site_type) %>%
-  mutate(
-    Q1 = quantile(Mixed, 0.25),
-    Q3 = quantile(Mixed, 0.75),
-    IQR = Q3 - Q1,
-    lower_bound = Q1 - 1.5 * IQR,
-    upper_bound = Q3 + 1.5 * IQR,
-    is_outlier = Mixed < lower_bound | Mixed > upper_bound
-  )
-
-outlier_PD_beta_mean_dist_mixed <- as.data.frame(outlier_PD_beta_mean_dist_mixed)
-row.names(outlier_PD_beta_mean_dist_mixed) <- outlier_PD_beta_mean_dist_mixed$X
-outlier_PD_beta_mean_dist_mixed$Distances <- outlier_PD_beta_mean_dist_mixed$Mixed
-outlier_PD_beta_mean_dist_mixed <- outlier_PD_beta_mean_dist_mixed[,-c(1:3)]
-
-
-# Determine stratified lake outliers based on distance from other stratified lakes
-outlier_PD_beta_mean_dist_stratified <- PD_beta_mean_dist[stratified_lakes,] %>%
-  group_by(Site_type) %>%
-  mutate(
-    Q1 = quantile(Stratified, 0.25),
-    Q3 = quantile(Stratified, 0.75),
-    IQR = Q3 - Q1,
-    lower_bound = Q1 - 1.5 * IQR,
-    upper_bound = Q3 + 1.5 * IQR,
-    is_outlier = Stratified < lower_bound | Stratified > upper_bound
-  )
-
-outlier_PD_beta_mean_dist_stratified <- as.data.frame(outlier_PD_beta_mean_dist_stratified)
-row.names(outlier_PD_beta_mean_dist_stratified) <- outlier_PD_beta_mean_dist_stratified$X
-outlier_PD_beta_mean_dist_stratified$Distances <- outlier_PD_beta_mean_dist_stratified$Stratified
-outlier_PD_beta_mean_dist_stratified <- outlier_PD_beta_mean_dist_stratified[,-c(1:3)]
-
-outlier_PD_beta_mean_dist <- rbind(outlier_PD_beta_mean_dist_ocean, outlier_PD_beta_mean_dist_mixed, outlier_PD_beta_mean_dist_stratified)
-
-(outlier_PD_beta_mean_dist_plot <- ggplot(outlier_PD_beta_mean_dist, aes(x = Site_type, y = Distances, fill = Site_type)) +
-  geom_violin(trim = FALSE) +
-  geom_jitter(aes(color = is_outlier), width = 0.2, size = 4, alpha = 0.7) +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
-  scale_fill_manual(values = custom_colors) +
-  theme(text = element_text(size = 16),
-        legend.position = "right",
-        legend.title = element_text(size = 16),
-        legend.text = element_text(size = 16),
-        axis.line = element_line(color = "black"),
-        panel.background = element_rect(fill='transparent'),
-        plot.background = element_rect(fill='transparent', color=NA),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        axis.text = element_text(color = "black", size = 16)) +
-  guides(fill = "none") + 
-  labs(y = "Average Distance from other sites by site type", x = "Site type", color = "Outlier:", tag = "c"))
-```
-
-![](PD_analyses_files/figure-gfm/PD%20beta%20outliers-3.png)<!-- -->
-
-``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/outlier_PD_beta_mean_dist.jpg", outlier_PD_beta_mean_dist_plot, width = 6.26, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/outlier_PD_beta_NMDS2.jpg", outlier_PD_beta_NMDS2_plot, width = 4.88, height = 6, units = "in")
 ```
 
 ### Package and version info
