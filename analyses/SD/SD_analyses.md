@@ -4660,7 +4660,7 @@ SD_beta_dist <- BAT::beta(surveyed_sites_lake, abund = F)
 
 ``` r
 # Surveyed sites replacement
-(SD_beta_BD <- betadisper(SD_beta_dist$Brepl, Site_type_group))
+(SD_beta_rep_BD <- betadisper(SD_beta_dist$Brepl, Site_type_group))
 ```
 
     ## Warning in betadisper(SD_beta_dist$Brepl, Site_type_group): some squared
@@ -4684,7 +4684,7 @@ SD_beta_dist <- BAT::beta(surveyed_sites_lake, abund = F)
     ## 0.6075 0.4576 0.4347 0.3451 0.3386 0.2780 0.2574 0.2153
 
 ``` r
-(SD_beta_AOV <- anova(SD_beta_BD))
+(SD_beta_rep_AOV <- anova(SD_beta_rep_BD))
 ```
 
     ## Analysis of Variance Table
@@ -4695,7 +4695,7 @@ SD_beta_dist <- BAT::beta(surveyed_sites_lake, abund = F)
     ## Residuals 19 0.55158 0.029031
 
 ``` r
-(SD_beta_THSD <- TukeyHSD(SD_beta_BD))
+(SD_beta_rep_THSD <- TukeyHSD(SD_beta_rep_BD))
 ```
 
     ##   Tukey multiple comparisons of means
@@ -4710,7 +4710,7 @@ SD_beta_dist <- BAT::beta(surveyed_sites_lake, abund = F)
     ## Stratified-Mixed  0.05373490 -0.1626912 0.2701610 0.8052064
 
 ``` r
-(SD_beta_PM <- adonis2(SD_beta_dist$Brepl ~ env[surveyed_sites,"Site_type"], permutations = 999, method = "euclidean"))
+(SD_beta_rep_PM <- adonis2(SD_beta_dist$Brepl ~ env[surveyed_sites,"Site_type"], permutations = 999, method = "euclidean"))
 ```
 
     ## Permutation test for adonis under reduced model
@@ -4724,7 +4724,7 @@ SD_beta_dist <- BAT::beta(surveyed_sites_lake, abund = F)
     ## Total    21  1.69930  1.00000
 
 ``` r
-(SD_beta_PM_pair <- pairwise.adonis(SD_beta_dist$Brepl, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+(SD_beta_rep_PM_pair <- pairwise.adonis(SD_beta_dist$Brepl, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df  SumsOfSqs   F.Model         R2 p.value p.adjusted sig
@@ -4734,7 +4734,7 @@ SD_beta_dist <- BAT::beta(surveyed_sites_lake, abund = F)
 
 ``` r
 # Surveyed sites richness
-(SD_beta_BD <- betadisper(SD_beta_dist$Brich, Site_type_group))
+(SD_beta_ric_BD <- betadisper(SD_beta_dist$Brich, Site_type_group))
 ```
 
     ## 
@@ -4755,7 +4755,7 @@ SD_beta_dist <- BAT::beta(surveyed_sites_lake, abund = F)
     ## 2.76461 1.02744 0.16424 0.11046 0.05150 0.04231 0.03669 0.02298
 
 ``` r
-(SD_beta_AOV <- anova(SD_beta_BD))
+(SD_beta_ric_AOV <- anova(SD_beta_ric_BD))
 ```
 
     ## Analysis of Variance Table
@@ -4766,7 +4766,7 @@ SD_beta_dist <- BAT::beta(surveyed_sites_lake, abund = F)
     ## Residuals 19 0.67594 0.035576
 
 ``` r
-(SD_beta_THSD <- TukeyHSD(SD_beta_BD))
+(SD_beta_ric_THSD <- TukeyHSD(SD_beta_ric_BD))
 ```
 
     ##   Tukey multiple comparisons of means
@@ -4781,7 +4781,7 @@ SD_beta_dist <- BAT::beta(surveyed_sites_lake, abund = F)
     ## Stratified-Mixed 0.02363774 -0.2159459 0.2632214 0.9660225
 
 ``` r
-(SD_beta_PM <- adonis2(SD_beta_dist$Brich ~ env[surveyed_sites,"Site_type"], permutations = 999, method = "euclidean"))
+(SD_beta_ric_PM <- adonis2(SD_beta_dist$Brich ~ env[surveyed_sites,"Site_type"], permutations = 999, method = "euclidean"))
 ```
 
     ## Permutation test for adonis under reduced model
@@ -4797,7 +4797,7 @@ SD_beta_dist <- BAT::beta(surveyed_sites_lake, abund = F)
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(SD_beta_PM_pair <- pairwise.adonis(SD_beta_dist$Brich, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+(SD_beta_ric_PM_pair <- pairwise.adonis(SD_beta_dist$Brich, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df   SumsOfSqs    F.Model          R2 p.value p.adjusted
@@ -5017,19 +5017,19 @@ group <- SD_beta_THSD$group
 (OM_q <- (abs(group[1,1]))/USE)
 ```
 
-    ## [1] 0.6838803
+    ## [1] 0.3677399
 
 ``` r
 (SO_q <- (abs(group[2,1]))/USE)
 ```
 
-    ## [1] 1.012052
+    ## [1] 0.2899708
 
 ``` r
 (MS_q <- (abs(group[3,1]))/BSE)
 ```
 
-    ## [1] 0.3544658
+    ## [1] 0.7104088
 
 ``` r
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
@@ -5065,9 +5065,9 @@ outlier_SD_beta_BD_dist_env$is_outlier
 ```
 
     ##   25%   25%   25%   25%   25%   25%   25%   25%   25%   25%   25%   25%   25% 
-    ## FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE 
+    ## FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE 
     ##   25%   25%   25%   25%   25%   25%   25%   25%   25% 
-    ## FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE
+    ## FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
 
 ``` r
 # Plot dispersion
