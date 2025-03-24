@@ -240,10 +240,11 @@ row.names(outlier_FD_alpha) <- outlier_FD_alpha$X
 
 # Create the plot
 (outlier_FD_alpha_plot <- ggplot(outlier_FD_alpha, aes(x = Site_type, y = pd.obs.z, fill = Site_type)) +
-  geom_violin(trim = FALSE) +
-  geom_jitter(aes(color = is_outlier), width = 0.2, size = 4, alpha = 0.7) +
+  geom_violin(alpha = 0.9, draw_quantiles = c(0.25, 0.5, 0.75), aes(fill = Site_type)) +
+  geom_jitter(aes(color = is_outlier), width = 0.1, size = 4, alpha = 0.7) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
   scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = outlier_FD_alpha, label = outlier_FD_alpha$X, size = 5, point.padding = 7, max.overlaps = 30, nudge_x = -0.01) +
   theme(text = element_text(size = 16),
         legend.position = "right",
         legend.title = element_text(size = 16),
@@ -255,7 +256,7 @@ row.names(outlier_FD_alpha) <- outlier_FD_alpha$X
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         axis.text = element_text(color = "black", size = 16)) +
-  scale_y_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0.5)) +
   labs(y = "FRic-z", x = "Site type", color = "Outlier:", tag = "c") +
   guides(fill = "none"))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/outlier_FD_alpha.jpg", outlier_FD_alpha_plot, width = 6.26, height = 6, units = "in")
@@ -787,7 +788,7 @@ summary(FD_FRicz_OS_am_oxy)
 oxy_p_values <- summary(FD_FRicz_OS_am_oxy)[[1]][, "Pr(>F)"]
 p_values <- c(oxy_p_values[1:3])
 (adjusted_p_values <- p.adjust(p_values, method = "bonferroni"))
-4# Shapiro-Wilk test on residuals
+# Shapiro-Wilk test on residuals
 shapiro.test(residuals(FD_FRicz_OS_am_oxy))
 # Levene’s test for homogeneity of variance
 car::leveneTest(residuals(FD_FRicz_OS_am_oxy) ~ straits_sespd_env[ocean_stratified_sites_env,"Site_type"])
@@ -1511,13 +1512,25 @@ FD_beta_ref_dist <- BAT::beta(presabs_lake, traits[,traits_keep], abund = F)
 (FD_beta_ref_THSD <- TukeyHSD(FD_beta_ref_BD))
 (FD_beta_ref_PM <- adonis2(FD_beta_ref_dist$Btotal ~ env[,"Site_type"], permutations = 999))
 (FD_beta_ref_PM_pair <- pairwise.adonis(FD_beta_ref_dist$Btotal, env[,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
-# Surveyed sites
+# Surveyed sites total
 FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F)
 (FD_beta_BD <- betadisper(FD_beta_dist$Btotal, Site_type_group))
 (FD_beta_AOV <- anova(FD_beta_BD))
 (FD_beta_THSD <- TukeyHSD(FD_beta_BD))
 (FD_beta_PM <- adonis2(FD_beta_dist$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
 (FD_beta_PM_pair <- pairwise.adonis(FD_beta_dist$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+# Surveyed sites replacement
+(FD_beta_BD <- betadisper(FD_beta_dist$Brepl, Site_type_group))
+(FD_beta_AOV <- anova(FD_beta_BD))
+(FD_beta_THSD <- TukeyHSD(FD_beta_BD))
+(FD_beta_PM <- adonis2(FD_beta_dist$Brepl ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_PM_pair <- pairwise.adonis(FD_beta_dist$Brepl, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+# Surveyed sites richness
+(FD_beta_BD <- betadisper(FD_beta_dist$Brich, Site_type_group))
+(FD_beta_AOV <- anova(FD_beta_BD))
+(FD_beta_THSD <- TukeyHSD(FD_beta_BD))
+(FD_beta_PM <- adonis2(FD_beta_dist$Brich ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_PM_pair <- pairwise.adonis(FD_beta_dist$Brich, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 # A subset of traits that are significant
 FD_beta_sub_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_sub_keep], abund = F)
 (FD_beta_sub_BD <- betadisper(FD_beta_sub_dist$Btotal, Site_type_group))
@@ -1611,8 +1624,24 @@ FD_beta_BD_dist <- as.data.frame(FD_beta_BD_dist)
 FD_beta_BD_dist$X <- row.names(FD_beta_BD_dist)
 FD_beta_BD_dist_env <- merge(FD_beta_BD_dist, env[surveyed_sites,], by = "X", sort = F)
 
+# Add levels to Site_type column
 FD_beta_BD_dist_env$Site_type <- factor(FD_beta_BD_dist_env$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
 
+# Determine outliers based on dispersion of sites by site type
+outlier_FD_beta_BD_dist_env <- FD_beta_BD_dist_env %>%
+  group_by(Site_type) %>%
+  mutate(
+    Q1 = quantile(FD_beta_BD_dist, 0.25),
+    Q3 = quantile(FD_beta_BD_dist, 0.75),
+    IQR = Q3 - Q1,
+    lower_bound = Q1 - 1.5 * IQR,
+    upper_bound = Q3 + 1.5 * IQR,
+    is_outlier = FD_beta_BD_dist < lower_bound | FD_beta_BD_dist > upper_bound
+  )
+
+outlier_FD_beta_BD_dist_env$is_outlier
+
+# Plot dispersion
 (FD_beta_BD_dist_env_plot <- ggplot(FD_beta_BD_dist_env, aes(x = Site_type, y = FD_beta_BD_dist, color = Site_type, fill = Site_type)) +
   geom_violin(alpha = 0.6, draw_quantiles = c(0.25, 0.5, 0.75), aes(color = Site_type, fill = Site_type)) +
   scale_color_manual(values = custom_colors) +
@@ -1624,17 +1653,18 @@ FD_beta_BD_dist_env$Site_type <- factor(FD_beta_BD_dist_env$Site_type, levels = 
             width = 0.1) +
     geom_text_repel(data = FD_beta_BD_dist_env, label = FD_beta_BD_dist_env$X, size = 5, point.padding = 7, max.overlaps = 30, nudge_x = -0.01) +
   theme_bw() +
-  theme(text = element_text(size = 16), legend.text = element_text(size = 16),
+  theme(text = element_text(size = 17), legend.text = element_text(size = 17),
     panel.background = element_rect(fill='transparent'),
     plot.background = element_rect(fill='transparent', color=NA),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
-    panel.border = element_blank(), axis.text = element_text(size = 16, color = "black"),
+    panel.border = element_blank(), axis.text = element_text(size = 17, color = "black"),
     axis.line = element_line(color = "black")) +
+  scale_y_continuous(expand = c(0,0.05)) +
   xlab("Site type") +
   ylab("Distance to Centroid") +
-  labs(color = "Site_type", tag = "c"))
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_BD_dist_plot.jpg", FD_beta_BD_dist_env_plot, width = 4.88, height = 6, units = "in")
+  labs(color = "Site_type", tag = "a"))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_BD_dist_plot.jpg", FD_beta_BD_dist_env_plot, width = 5.4, height = 6, units = "in")
 ```
 
 ### FD beta NMDS
@@ -1649,6 +1679,10 @@ FD_beta_rep_NMDS <- metaMDS(FD_beta_dist$Brepl, try = 1000, parallel = 4, trymax
 FD_beta_ric_NMDS <- metaMDS(FD_beta_dist$Brich, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # A subset of traits that are significant
 FD_beta_sub_NMDS <- metaMDS(FD_beta_sub_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Without LCN
+FD_beta_wo_LCN_NMDS <- metaMDS(FD_beta_wo_LCN_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
+# Without TLN and HLM
+FD_beta_wo_TLN_HLM_NMDS <- metaMDS(FD_beta_wo_TLN_HLM_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # Mixed and stratified lakes
 FD_beta_MS_NMDS <- metaMDS(FD_beta_MS_dist$Btotal, try = 1000, parallel = 4, trymax = 500, maxit = 500)
 # Ocean sites and mixed lakes
@@ -2000,23 +2034,23 @@ FD_beta_ef_plot_CI90 <- ggplot(data = FD_beta_NMDS_data.scores, aes(x = NMDS1, y
             color = env_cont, label = row.names(FD_beta_env_ef_coord_cont), size = 5) +
   geom_text_repel(data = FD_beta_NMDS_data.scores, label = FD_beta_NMDS_data.scores$Lakes, 
                   size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
-  theme(text = element_text(size = 16), 
+  theme(text = element_text(size = 17), 
         legend.position = "bottom", 
-        legend.title = element_text(size = 16), 
-        legend.text = element_text(size = 16), 
+        legend.title = element_text(size = 17), 
+        legend.text = element_text(size = 17), 
         panel.background = element_rect(fill='transparent'),
         plot.background = element_rect(fill='transparent', color=NA),
         panel.border = element_rect(fill = NA), 
-        axis.text = element_text(color = "black", size = 16), 
+        axis.text = element_text(color = "black", size = 17), 
         legend.key = element_blank()) +
   annotate("text", x = -0.6, y = 0.5, size = 5,
            label = paste("Stress: ", round(FD_beta_NMDS$stress, digits = 2))) +
-  labs(colour = "Site type:  ", fill = "Site type:  ") +
+  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "b") +
   coord_fixed() +
   scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81)) +
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81))
 (FD_beta_ef_plot_CI90 <- FD_beta_ef_plot_CI90 + guides(color = guide_legend(override.aes = list(label = ""))))
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_NMDS_CI90.jpg", FD_beta_ef_plot_CI90, width = 6, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_NMDS_CI90.jpg", FD_beta_ef_plot_CI90, width = 5.4, height = 6, units = "in")
 
 
 # FD beta total NMDS scores for the subset of traits
@@ -2060,6 +2094,72 @@ FD_beta_sub_ef_plot <- ggplot(data = FD_beta_sub_NMDS_data.scores, aes(x = NMDS1
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-1,1))
 (FD_beta_sub_ef_plot <- FD_beta_sub_ef_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_sub_NMDS.jpg", FD_beta_sub_ef_plot, width = 6, height = 6, units = "in")
+
+
+# FD beta total NMDS scores without LCN
+FD_beta_wo_LCN_NMDS_data.scores <- as.data.frame(scores(FD_beta_wo_LCN_NMDS))
+FD_beta_wo_LCN_NMDS_data.scores$Site_type <- env[surveyed_sites_wo_LCN,"Site_type"]
+FD_beta_wo_LCN_NMDS_data.scores$Lakes <- env[surveyed_sites_wo_LCN,1]
+FD_beta_wo_LCN_NMDS_data.scores$Site_type <- factor(FD_beta_wo_LCN_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+
+# Plot without LCN NMDS ordination of FD beta total with CI = 0.95
+FD_beta_wo_LCN_plot <- ggplot(data = FD_beta_wo_LCN_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Site_type)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Site_type), type = "t", level = 0.95) +
+  geom_point(data = FD_beta_wo_LCN_NMDS_data.scores, aes(color = Site_type, fill = Site_type), size = 4, alpha = 1) + 
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = FD_beta_wo_LCN_NMDS_data.scores, label = FD_beta_wo_LCN_NMDS_data.scores$Lakes, 
+                  size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
+  theme(text = element_text(size = 14), 
+        legend.position = "bottom", 
+        legend.title = element_text(size = 14), 
+        legend.text = element_text(size = 14), 
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.border = element_rect(fill = NA), 
+        axis.text = element_text(color = "black", size = 14), 
+        legend.key = element_blank()) +
+  annotate("text", x = -0.6, y = 0.5, size = 5,
+           label = paste("Stress: ", round(FD_beta_wo_LCN_NMDS$stress, digits = 2))) +
+  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "a") +
+  coord_fixed() +
+  scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81)) +
+  scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81))
+(FD_beta_wo_LCN_plot <- FD_beta_wo_LCN_plot + guides(color = guide_legend(override.aes = list(label = ""))))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_wo_LCN_NMDS.jpg", FD_beta_wo_LCN_plot, width = 4.88, height = 6, units = "in")
+
+
+# FD beta total NMDS scores without TLN and HLM
+FD_beta_wo_TLN_HLM_NMDS_data.scores <- as.data.frame(scores(FD_beta_wo_TLN_HLM_NMDS))
+FD_beta_wo_TLN_HLM_NMDS_data.scores$Site_type <- env[surveyed_sites_wo_TLN_HLM,"Site_type"]
+FD_beta_wo_TLN_HLM_NMDS_data.scores$Lakes <- env[surveyed_sites_wo_TLN_HLM,1]
+FD_beta_wo_TLN_HLM_NMDS_data.scores$Site_type <- factor(FD_beta_wo_TLN_HLM_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+
+# Plot without TLN and HLM NMDS ordination of FD beta total with CI = 0.95
+FD_beta_wo_TLN_HLM_plot <- ggplot(data = FD_beta_wo_TLN_HLM_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Site_type)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Site_type), type = "t", level = 0.95) +
+  geom_point(data = FD_beta_wo_TLN_HLM_NMDS_data.scores, aes(color = Site_type, fill = Site_type), size = 4, alpha = 1) + 
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = FD_beta_wo_TLN_HLM_NMDS_data.scores, label = FD_beta_wo_TLN_HLM_NMDS_data.scores$Lakes, 
+                  size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
+  theme(text = element_text(size = 14), 
+        legend.position = "bottom", 
+        legend.title = element_text(size = 14), 
+        legend.text = element_text(size = 14), 
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.border = element_rect(fill = NA), 
+        axis.text = element_text(color = "black", size = 14), 
+        legend.key = element_blank()) +
+  annotate("text", x = -0.6, y = 0.5, size = 5,
+           label = paste("Stress: ", round(FD_beta_wo_TLN_HLM_NMDS$stress, digits = 2))) +
+  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "b") +
+  coord_fixed() +
+  scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81)) +
+  scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81))
+(FD_beta_wo_TLN_HLM_plot <- FD_beta_wo_TLN_HLM_plot + guides(color = guide_legend(override.aes = list(label = ""))))
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/FD_beta_wo_TLN_HLM_NMDS.jpg", FD_beta_wo_TLN_HLM_plot, width = 4.88, height = 6, units = "in")
 
 
 # FD beta replacement NMDS scores
@@ -2230,16 +2330,17 @@ outlier_FD_beta_NMDS1 <- ordered_FD_beta_NMDS1_data.scores %>%
 
 outlier_FD_beta_NMDS1 <- as.data.frame(outlier_FD_beta_NMDS1)
 
-row.names(outlier_FD_beta_NMDS1) <- outlier_FD_beta_NMDS1$X
+row.names(outlier_FD_beta_NMDS1) <- outlier_FD_beta_NMDS1$Lakes
 
 # Create the plot
 (outlier_FD_beta_NMDS1_plot <- ggplot(outlier_FD_beta_NMDS1, aes(x = Site_type, y = NMDS1, fill = Site_type)) +
-  geom_violin(trim = FALSE) +
-  geom_jitter(aes(color = is_outlier), width = 0.2, size = 4, alpha = 0.7) +
+  geom_violin(alpha = 0.9, draw_quantiles = c(0.25, 0.5, 0.75), aes(fill = Site_type)) +
+  geom_jitter(aes(color = is_outlier), width = 0.1, size = 4, alpha = 0.7) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
   scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = outlier_FD_beta_NMDS1, label = outlier_FD_beta_NMDS1$Lakes, size = 5, point.padding = 7, max.overlaps = 30, nudge_x = -0.01) +
   theme(text = element_text(size = 16),
-        legend.position = "right",
+        legend.position = "bottom",
         legend.title = element_text(size = 16),
         legend.text = element_text(size = 16),
         axis.line = element_line(color = "black"),
@@ -2249,9 +2350,10 @@ row.names(outlier_FD_beta_NMDS1) <- outlier_FD_beta_NMDS1$X
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         axis.text = element_text(color = "black", size = 16)) +
+  scale_y_continuous(expand = c(0,0.05)) +
   guides(fill = "none") + 
   labs(y = "NMDS1 Distances", x = "Site type", color = "Outlier:", tag = "a"))
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/outlier_FD_beta_NMDS1.jpg", outlier_FD_beta_NMDS1_plot, width = 6.26, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/outlier_FD_beta_NMDS1.jpg", outlier_FD_beta_NMDS1_plot, width = 4.88, height = 6, units = "in")
 
 
 # Determine NMDS2 outliers
@@ -2270,16 +2372,17 @@ outlier_FD_beta_NMDS2 <- ordered_FD_beta_NMDS2_data.scores %>%
 
 outlier_FD_beta_NMDS2 <- as.data.frame(outlier_FD_beta_NMDS2)
 
-row.names(outlier_FD_beta_NMDS2) <- outlier_FD_beta_NMDS2$X
+row.names(outlier_FD_beta_NMDS2) <- outlier_FD_beta_NMDS2$Lakes
 
 # Create the plot
 (outlier_FD_beta_NMDS2_plot <- ggplot(outlier_FD_beta_NMDS2, aes(x = Site_type, y = NMDS2, fill = Site_type)) +
-  geom_violin(trim = FALSE) +
-  geom_jitter(aes(color = is_outlier), width = 0.2, size = 4, alpha = 0.7) +
+  geom_violin(alpha = 0.9, draw_quantiles = c(0.25, 0.5, 0.75), aes(fill = Site_type)) +
+  geom_jitter(aes(color = is_outlier), width = 0.1, size = 4, alpha = 0.7) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
   scale_fill_manual(values = custom_colors) +
+  geom_text_repel(data = outlier_FD_beta_NMDS2, label = outlier_FD_beta_NMDS2$Lakes, size = 5, point.padding = 7, max.overlaps = 30, nudge_x = -0.01) +
   theme(text = element_text(size = 16),
-        legend.position = "right",
+        legend.position = "bottom",
         legend.title = element_text(size = 16),
         legend.text = element_text(size = 16),
         axis.line = element_line(color = "black"),
@@ -2289,107 +2392,10 @@ row.names(outlier_FD_beta_NMDS2) <- outlier_FD_beta_NMDS2$X
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         axis.text = element_text(color = "black", size = 16)) +
+  scale_y_continuous(expand = c(0,0.05)) +
   guides(fill = "none") + 
   labs(y = "NMDS2 Distances", x = "Site type", color = "Outlier:", tag = "b"))
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/outlier_FD_beta_NMDS2.jpg", outlier_FD_beta_NMDS2_plot, width = 6.26, height = 6, units = "in")
-
-
-# Make FD_beta distances into a matrix
-FD_beta_dist_matrix <- as.matrix(FD_beta_dist$Btotal)
-
-# Set the diagonal elements to NA
-diag(FD_beta_dist_matrix) <- NA
-
-# Get the labels of the sites
-sites <- attr(FD_beta_dist_matrix, "Labels")
-
-# Calculate the mean dist for each group
-FD_beta_mean_dist <- aggregate(FD_beta_dist_matrix, by = list(Site_type_group), FUN = mean, na.rm = TRUE)
-
-# Rename rows, delete column, and transpose matrix and make it a data frame
-row.names(FD_beta_mean_dist) <- FD_beta_mean_dist$Group.1
-FD_beta_mean_dist <- FD_beta_mean_dist[,-1] 
-FD_beta_mean_dist <- as.data.frame(t(FD_beta_mean_dist))
-
-# Add Site_type column
-FD_beta_mean_dist$Site_type <- env[surveyed_sites,"Site_type"]
-FD_beta_mean_dist$Site_type <- factor(FD_beta_mean_dist$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
-
-
-# Determine ocean sites outliers based on distance from other ocean sites
-outlier_FD_beta_mean_dist_ocean <- FD_beta_mean_dist[ocean_sites,] %>%
-  group_by(Site_type) %>%
-  mutate(
-    Q1 = quantile(Ocean, 0.25),
-    Q3 = quantile(Ocean, 0.75),
-    IQR = Q3 - Q1,
-    lower_bound = Q1 - 1.5 * IQR,
-    upper_bound = Q3 + 1.5 * IQR,
-    is_outlier = Ocean < lower_bound | Ocean > upper_bound
-  )
-
-outlier_FD_beta_mean_dist_ocean <- as.data.frame(outlier_FD_beta_mean_dist_ocean)
-row.names(outlier_FD_beta_mean_dist_ocean) <- outlier_FD_beta_mean_dist_ocean$X
-outlier_FD_beta_mean_dist_ocean$Distances <- outlier_FD_beta_mean_dist_ocean$Ocean
-outlier_FD_beta_mean_dist_ocean <- outlier_FD_beta_mean_dist_ocean[,-c(1:3)]
-
-
-# Determine mixed lake outliers based on distance from other mixed lakes
-outlier_FD_beta_mean_dist_mixed <- FD_beta_mean_dist[mixed_lakes,] %>%
-  group_by(Site_type) %>%
-  mutate(
-    Q1 = quantile(Mixed, 0.25),
-    Q3 = quantile(Mixed, 0.75),
-    IQR = Q3 - Q1,
-    lower_bound = Q1 - 1.5 * IQR,
-    upper_bound = Q3 + 1.5 * IQR,
-    is_outlier = Mixed < lower_bound | Mixed > upper_bound
-  )
-
-outlier_FD_beta_mean_dist_mixed <- as.data.frame(outlier_FD_beta_mean_dist_mixed)
-row.names(outlier_FD_beta_mean_dist_mixed) <- outlier_FD_beta_mean_dist_mixed$X
-outlier_FD_beta_mean_dist_mixed$Distances <- outlier_FD_beta_mean_dist_mixed$Mixed
-outlier_FD_beta_mean_dist_mixed <- outlier_FD_beta_mean_dist_mixed[,-c(1:3)]
-
-
-# Determine stratified lake outliers based on distance from other stratified lakes
-outlier_FD_beta_mean_dist_stratified <- FD_beta_mean_dist[stratified_lakes,] %>%
-  group_by(Site_type) %>%
-  mutate(
-    Q1 = quantile(Stratified, 0.25),
-    Q3 = quantile(Stratified, 0.75),
-    IQR = Q3 - Q1,
-    lower_bound = Q1 - 1.5 * IQR,
-    upper_bound = Q3 + 1.5 * IQR,
-    is_outlier = Stratified < lower_bound | Stratified > upper_bound
-  )
-
-outlier_FD_beta_mean_dist_stratified <- as.data.frame(outlier_FD_beta_mean_dist_stratified)
-row.names(outlier_FD_beta_mean_dist_stratified) <- outlier_FD_beta_mean_dist_stratified$X
-outlier_FD_beta_mean_dist_stratified$Distances <- outlier_FD_beta_mean_dist_stratified$Stratified
-outlier_FD_beta_mean_dist_stratified <- outlier_FD_beta_mean_dist_stratified[,-c(1:3)]
-
-outlier_FD_beta_mean_dist <- rbind(outlier_FD_beta_mean_dist_ocean, outlier_FD_beta_mean_dist_mixed, outlier_FD_beta_mean_dist_stratified)
-
-(outlier_FD_beta_mean_dist_plot <- ggplot(outlier_FD_beta_mean_dist, aes(x = Site_type, y = Distances, fill = Site_type)) +
-  geom_violin(trim = FALSE) +
-  geom_jitter(aes(color = is_outlier), width = 0.2, size = 4, alpha = 0.7) +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
-  scale_fill_manual(values = custom_colors) +
-  theme(text = element_text(size = 16),
-        legend.position = "right",
-        legend.title = element_text(size = 16),
-        legend.text = element_text(size = 16),
-        axis.line = element_line(color = "black"),
-        panel.background = element_rect(fill='transparent'),
-        plot.background = element_rect(fill='transparent', color=NA),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        axis.text = element_text(color = "black", size = 16)) +
-  guides(fill = "none") + 
-  labs(y = "Average Distance from other sites by site type", x = "Site type", color = "Outlier:", tag = "c"))
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/outlier_FD_beta_mean_dist.jpg", outlier_FD_beta_mean_dist_plot, width = 6.26, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/outlier_FD_beta_NMDS2.jpg", outlier_FD_beta_NMDS2_plot, width = 4.88, height = 6, units = "in")
 ```
 
 ### Package and version info
