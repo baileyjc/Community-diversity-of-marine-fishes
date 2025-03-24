@@ -5743,7 +5743,7 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
 
 ``` r
 # Surveyed sites replacement
-(FD_beta_BD <- betadisper(FD_beta_dist$Brepl, Site_type_group))
+(FD_beta_rep_BD <- betadisper(FD_beta_dist$Brepl, Site_type_group))
 ```
 
     ## Warning in betadisper(FD_beta_dist$Brepl, Site_type_group): some squared
@@ -5767,7 +5767,7 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
     ## 0.4447 0.3891 0.3139 0.2750 0.1960 0.1559 0.1436 0.1243
 
 ``` r
-(FD_beta_AOV <- anova(FD_beta_BD))
+(FD_beta_rep_AOV <- anova(FD_beta_rep_BD))
 ```
 
     ## Analysis of Variance Table
@@ -5778,7 +5778,7 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
     ## Residuals 19 0.31929 0.016805
 
 ``` r
-(FD_beta_THSD <- TukeyHSD(FD_beta_BD))
+(FD_beta_rep_THSD <- TukeyHSD(FD_beta_rep_BD))
 ```
 
     ##   Tukey multiple comparisons of means
@@ -5793,7 +5793,7 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
     ## Stratified-Mixed  0.01243849 -0.1522251 0.1771021 0.9799241
 
 ``` r
-(FD_beta_PM <- adonis2(FD_beta_dist$Brepl ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_rep_PM <- adonis2(FD_beta_dist$Brepl ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
@@ -5807,7 +5807,7 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
     ## Total    21   1.1774  1.00000
 
 ``` r
-(FD_beta_PM_pair <- pairwise.adonis(FD_beta_dist$Brepl, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+(FD_beta_rep_PM_pair <- pairwise.adonis(FD_beta_dist$Brepl, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df  SumsOfSqs   F.Model         R2 p.value p.adjusted sig
@@ -5817,7 +5817,7 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
 
 ``` r
 # Surveyed sites richness
-(FD_beta_BD <- betadisper(FD_beta_dist$Brich, Site_type_group))
+(FD_beta_ric_BD <- betadisper(FD_beta_dist$Brich, Site_type_group))
 ```
 
     ## Warning in betadisper(FD_beta_dist$Brich, Site_type_group): some squared
@@ -5841,7 +5841,7 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
     ## 2.24283 0.62601 0.12631 0.05187 0.03538 0.02642 0.02337 0.01878
 
 ``` r
-(FD_beta_AOV <- anova(FD_beta_BD))
+(FD_beta_ric_AOV <- anova(FD_beta_ric_BD))
 ```
 
     ## Analysis of Variance Table
@@ -5852,7 +5852,7 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
     ## Residuals 19 0.44958 0.0236620
 
 ``` r
-(FD_beta_THSD <- TukeyHSD(FD_beta_BD))
+(FD_beta_ric_THSD <- TukeyHSD(FD_beta_ric_BD))
 ```
 
     ##   Tukey multiple comparisons of means
@@ -5867,7 +5867,7 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
     ## Stratified-Mixed 0.04029709 -0.1550946 0.2356888 0.8606578
 
 ``` r
-(FD_beta_PM <- adonis2(FD_beta_dist$Brich ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(FD_beta_ric_PM <- adonis2(FD_beta_dist$Brich ~ env[surveyed_sites,"Site_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
@@ -5883,7 +5883,7 @@ FD_beta_dist <- BAT::beta(surveyed_sites_lake, straits[,straits_keep], abund = F
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(FD_beta_PM_pair <- pairwise.adonis(FD_beta_dist$Brich, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+(FD_beta_ric_PM_pair <- pairwise.adonis(FD_beta_dist$Brich, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df    SumsOfSqs    F.Model          R2 p.value p.adjusted
@@ -6181,19 +6181,19 @@ group <- FD_beta_THSD$group
 (OM_q <- (abs(group[1,1]))/USE)
 ```
 
-    ## [1] 0.5251666
+    ## [1] 0.7193541
 
 ``` r
 (SO_q <- (abs(group[2,1]))/USE)
 ```
 
-    ## [1] 1.21116
+    ## [1] 0.5398549
 
 ``` r
 (MS_q <- (abs(group[3,1]))/BSE)
 ```
 
-    ## [1] 0.7409576
+    ## [1] 1.360101
 
 ``` r
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
