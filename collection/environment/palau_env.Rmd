@@ -52,7 +52,7 @@ row.names(env_by_lake) <- env_by_lake$lake_code
 env_by_lake <- env_by_lake[,-1]
 
 # Reorder the columns based on the desired order
-desired_order <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LLN", "LCN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OOO", "OTM", "OOM", "RCA", "REF", "SLN", "TLN", "ULN")
+desired_order <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LLN", "LCN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OCO", "OTM", "OCM", "RCA", "REF", "SLN", "TLN", "ULN")
 env_by_lake <- env_by_lake[desired_order,]
 ```
 

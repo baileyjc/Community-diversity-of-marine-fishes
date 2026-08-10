@@ -71,7 +71,7 @@ row.names(env_by_lake) <- env_by_lake$lake_code
 env_by_lake <- env_by_lake[,-1]
 
 # Reorder the columns based on the desired order
-desired_order <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LLN", "LCN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OOO", "OTM", "OOM", "RCA", "REF", "SLN", "TLN", "ULN")
+desired_order <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LLN", "LCN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OCO", "OTM", "OCM", "RCA", "REF", "SLN", "TLN", "ULN")
 env_by_lake <- env_by_lake[desired_order,]
 ```
 
@@ -84,18 +84,18 @@ write.csv(env_by_lake, "/Users/bailey/Documents/research/fish_biodiversity/data/
 sessionInfo()
 ```
 
-    ## R version 4.3.1 (2023-06-16)
-    ## Platform: aarch64-apple-darwin20 (64-bit)
-    ## Running under: macOS Ventura 13.6.6
+    ## R version 4.4.3 (2025-02-28)
+    ## Platform: aarch64-apple-darwin20
+    ## Running under: macOS 26.0.1
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
     ## 
     ## locale:
     ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
     ## 
-    ## time zone: America/Los_Angeles
+    ## time zone: America/Chicago
     ## tzcode source: internal
     ## 
     ## attached base packages:
@@ -105,10 +105,9 @@ sessionInfo()
     ## [1] dplyr_1.1.4
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] digest_0.6.33     utf8_1.2.4        R6_2.5.1          fastmap_1.1.1    
-    ##  [5] tidyselect_1.2.0  xfun_0.41         magrittr_2.0.3    glue_1.6.2       
-    ##  [9] tibble_3.2.1      knitr_1.45        pkgconfig_2.0.3   htmltools_0.5.7  
-    ## [13] rmarkdown_2.25    generics_0.1.3    lifecycle_1.0.4   cli_3.6.1        
-    ## [17] fansi_1.0.6       vctrs_0.6.5       withr_2.5.2       compiler_4.3.1   
-    ## [21] rstudioapi_0.15.0 tools_4.3.1       pillar_1.9.0      evaluate_0.23    
-    ## [25] yaml_2.3.7        rlang_1.1.2
+    ##  [1] digest_0.6.37     R6_2.6.1          fastmap_1.2.0     tidyselect_1.2.1 
+    ##  [5] xfun_0.52         magrittr_2.0.3    glue_1.8.0        tibble_3.2.1     
+    ##  [9] knitr_1.50        pkgconfig_2.0.3   htmltools_0.5.8.1 rmarkdown_2.29   
+    ## [13] generics_0.1.3    lifecycle_1.0.4   cli_3.6.4         vctrs_0.6.5      
+    ## [17] withr_3.0.2       compiler_4.4.3    rstudioapi_0.17.1 tools_4.4.3      
+    ## [21] pillar_1.10.2     evaluate_1.0.3    yaml_2.3.10       rlang_1.1.6
