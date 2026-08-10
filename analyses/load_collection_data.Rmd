@@ -1,13 +1,10 @@
 ---
-title: "Bringing everything together & modifying files"
+title: "Bring diversity data together & modify files"
 output: github_document
 editor_options: 
   chunk_output_type: console
 ---
-
-#### R Markdown
-
-## Load packages
+### Load packages
 ```{r, Bringing everything together load modifying files packages}
 library(dplyr)
 library(parallel)
@@ -17,63 +14,63 @@ library(phytools)
 library(tidyr)
 ```
 
-## Load in files
+### Load in files
 ```{r, Bringing everything together load in modifying files}
-env_by_lake <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/environment/env_by_lake.csv")
+env_by_lake <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/environment/env_by_lake.csv")
 
 # Fish present in the marine lakes and reference pool by lake code. fish_matched and fish_matched2
-pres_abs_by_lake <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/fish_presence_matrix_by_lake.csv")
+pres_abs_by_lake <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/fish_presence_matrix_by_lake.csv")
 
 # Fish present in the marine lakes and reference pool by species. fish_matched and fish_matched2
-pres_abs_by_species <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/fish_presence_matrix_by_species.csv")
+pres_abs_by_species <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/fish_presence_matrix_by_species.csv")
 
 # Fish present in marine lakes only
-surveyed_sites_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/surveyed_site_presence_by_species.csv")
+surveyed_sites_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/surveyed_site_presence_by_species.csv")
 
 # Ocean site fish presence by species 
-ocean_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/ocean_site_presence_by_species.csv")
+ocean_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/ocean_site_presence_by_species.csv")
 
 # Holomictic fish presence by species 
-holomictic_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/holomictic_presence_by_species.csv")
+holomictic_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/holomictic_presence_by_species.csv")
 
 # Meromictic fish presence by species 
-meromictic_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/meromictic_presence_by_species.csv")
+meromictic_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/meromictic_presence_by_species.csv")
 
 # Mixed fish presence by species 
-mixed_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/mixed_presence_by_species.csv")
+mixed_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/mixed_presence_by_species.csv")
 
 # Stratified fish presence by species 
-stratified_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/stratified_presence_by_species.csv")
+stratified_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/stratified_presence_by_species.csv")
 
 # Surveyed sites fish presence by species each in separate files
-BCM_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/BCM_fish.csv")
-CLM_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/CLM_fish.csv")
-FLK_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/FLK_fish.csv")
-GLK_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/GLK_fish.csv")
-HLM_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/HLM_fish.csv")
-HLO_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/HLO_fish.csv")
-IBK_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/IBK_fish.csv")
-LLN_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/LLN_fish.csv")
-LCN_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/LCN_fish.csv")
-MLN_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/MLN_fish.csv")
-NCN_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/NCN_fish.csv")
-NLK_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/NLK_fish.csv")
-NLN_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/NLN_fish.csv")
-NLU_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/NLU_fish.csv")
-OLO_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/OLO_fish.csv")
-OOO_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/OOO_fish.csv")
-OTM_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/OTM_fish.csv")
-OOM_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/OOM_fish.csv")
-RCA_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/RCA_fish.csv")
-SLN_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/SLN_fish.csv")
-TLN_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/TLN_fish.csv")
-ULN_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/ULN_fish.csv")
+BCM_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/BCM_fish.csv")
+CLM_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/CLM_fish.csv")
+FLK_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/FLK_fish.csv")
+GLK_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/GLK_fish.csv")
+HLM_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/HLM_fish.csv")
+HLO_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/HLO_fish.csv")
+IBK_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/IBK_fish.csv")
+LLN_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/LLN_fish.csv")
+LCN_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/LCN_fish.csv")
+MLN_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/MLN_fish.csv")
+NCN_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/NCN_fish.csv")
+NLK_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/NLK_fish.csv")
+NLN_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/NLN_fish.csv")
+NLU_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/NLU_fish.csv")
+OLO_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/OLO_fish.csv")
+OCO_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/OCO_fish.csv")
+OTM_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/OTM_fish.csv")
+OCM_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/OCM_fish.csv")
+RCA_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/RCA_fish.csv")
+SLN_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/SLN_fish.csv")
+TLN_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/TLN_fish.csv")
+ULN_fish <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/ULN_fish.csv")
 
 # Phylogenetic tree of species present in marine lakes, tree
-tree <- read.tree("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/palau_fish_tree.tre")
+tree <- read.tree("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/phylo/palau_fish_tree.tre")
 
 # Traits for fish present in the marine lakes and reference pool, fish_traits_complete_matched and fish_traits_complete_matched2
-species_functional_traits <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/traits/final_traits_gnathostomata.csv")
+species_functional_traits <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/traits/final_traits_gnathostomata.csv")
 ```
 
 ## Check species names
@@ -105,7 +102,7 @@ site_env_only
 ## Modify environmental data
 ```{r, Modify environment data}
 # Contains environmental data for lakes sampled from
-env_by_lake$Community <- factor(env_by_lake$Community, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
+env_by_lake$Location_type <- factor(env_by_lake$Location_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
 
 env_by_lake$logArea <- log(env_by_lake$surface_area_m2)
 
@@ -114,32 +111,17 @@ env <- env_by_lake
 env$C <- env$temperature_median
 env$S <- env$salinity_median
 env$O <- env$oxygen_median
-env$pH <- env$pH_median
-env$Vw <- env$volume_m3_w_chemocline
-env$V <- env$volume_m3
-env$A <- env$surface_area_m2
 env$minD <- env$distance_to_ocean_min_m
-env$meanD <- env$distance_to_ocean_mean_m
-env$medianD <- env$distance_to_ocean_median_m
-env$Tl <- env$tidal_lag_time_minutes
-env$Te <- env$tidal_efficiency
-env$P <- env$perimeter_fromSat
 env$M <- env$max_depth
 env$LA <- env$logArea
 
 scaled_env <- as.data.frame(scale(env[,c(2,6,8,10,22:32)]))
 
 # Create a formula for aggregation
-formula <- as.formula(paste(". ~ Community"))
+formula <- as.formula(paste(". ~ Location_type"))
 
-# Use the aggregate function to calculate the mean for each variable by Community
-community_env <- aggregate(formula, data = env[, c(2,4,6,8,10,20,22:32)], FUN = mean)
-
-# Create a formula for aggregation
-formula <- as.formula(paste(". ~ Stratification"))
-
-# Use the aggregate function to calculate the mean for each variable by Stratification
-stratification_env <- aggregate(formula, data = env[, c(2,4,6,8,10,19,22:32)], FUN = mean)
+# Use the aggregate function to calculate the mean for each variable by Location_type
+Location_type_env <- aggregate(formula, data = env[, c(2,4,6,8,10,19,22:32)], FUN = mean)
 ```
 
 ## Modify incidence matrices
@@ -149,6 +131,7 @@ row.names(pres_abs_by_lake) <- pres_abs_by_lake$X
 pres_abs_by_lake[,c(2:1725)] <- sapply(pres_abs_by_lake[,c(2:1725)], as.numeric)
 presabs_lake <- pres_abs_by_lake[,-1]
 
+# Kept this here because HLM is holomictic but is mixed, so it differs between datasets #
 com_presabs_lake <- presabs_lake
 com_presabs_lake[24,] <- colSums(com_presabs_lake[c(7,9,11,16,18:19),])
 rownames(com_presabs_lake)[rownames(com_presabs_lake) == "24"] <- "Ocean sites"
@@ -199,7 +182,7 @@ pres_abs_species_sums$row_sum <- rowSums(pres_abs_species_sums[,-1])
 pres_abs_species_sums <- pres_abs_species_sums[,-1]
 
 
-# Surveyed Sites
+# Surveyed Locations
 surveyed_sites_fish[,c(2:23)] <- sapply(surveyed_sites_fish[,c(2:23)], as.numeric)
 row.names(surveyed_sites_fish) <- surveyed_sites_fish$X
 surveyed_sites_species <- surveyed_sites_fish[,-1]
@@ -208,6 +191,7 @@ surveyed_sites_lake <- as.data.frame(t(surveyed_sites_species))
 # Reorder lake names alphabetically
 surveyed_sites_lake <- surveyed_sites_lake[order(row.names(surveyed_sites_lake)),]
 
+# Kept this here because HLM is holomictic but is mixed, so it differs between datasets #
 surveyed_sites_com_abund <- surveyed_sites_lake
 surveyed_sites_com_abund[25,] <- colSums(surveyed_sites_com_abund[c(7,9,11,16,18:19),])
 rownames(surveyed_sites_com_abund)[rownames(surveyed_sites_com_abund) == "23"] <- "Ocean sites"
@@ -323,12 +307,12 @@ row.names(NLU_fish) <- NLU_fish$X
 NLU_species <- NLU_fish["NLU"]
 row.names(OLO_fish) <- OLO_fish$X
 OLO_species <- OLO_fish["OLO"]
-row.names(OOO_fish) <- OOO_fish$X
-OOO_species <- OOO_fish["OOO"]
+row.names(OCO_fish) <- OCO_fish$X
+OCO_species <- OCO_fish["OCO"]
 row.names(OTM_fish) <- OTM_fish$X
 OTM_species <- OTM_fish["OTM"]
-row.names(OOM_fish) <- OOM_fish$X
-OOM_species <- OOM_fish["OOM"]
+row.names(OCM_fish) <- OCM_fish$X
+OCM_species <- OCM_fish["OCM"]
 row.names(RCA_fish) <- RCA_fish$X
 RCA_species <- RCA_fish["RCA"]
 row.names(SLN_fish) <- SLN_fish$X
@@ -365,19 +349,19 @@ species_functional_traits$WaterPref[species_functional_traits$Fresh > 0 & specie
 
 # Categorical variables
 species_functional_traits <- species_functional_traits %>%
-    mutate(BodyShapeI = recode(BodyShapeI, 'elongated' = '4e', 'Elongated' = '4e', 'short and / or deep' = '2s', 'fusiform / normal' =  '3f', 'eel-like' = '5l', 'other' = '1o'))
+    mutate(BodyShapeI = dplyr::recode(BodyShapeI, 'elongated' = '4e', "short and / or deep" = "2s", 'fusiform / normal' =  '3f', 'eel-like' = '5l', 'other' = '1o'))
 species_functional_traits <- species_functional_traits %>%
-    mutate(DemersPelag = recode(DemersPelag, 'bathydemersal' = '7bd', 'benthopelagic' = '6bp', 'demersal' = '5d', 'pelagic' =  '3p', 'pelagic-neritic' = '2pn', 'pelagic-oceanic' = '4po', 'reef-associated' = '1r'))
+    mutate(DemersPelag = dplyr::recode(DemersPelag, 'bathydemersal' = '7bd', 'benthopelagic' = '6bp', 'demersal' = '5d', 'pelagic' =  '3p', 'pelagic-neritic' = '2pn', 'pelagic-oceanic' = '4po', 'reef-associated' = '1r'))
 species_functional_traits <- species_functional_traits %>%
-    mutate(FeedingPath = recode(FeedingPath, 'benthic' = 'b', 'pelagic' = 'p'))
+    mutate(FeedingPath = dplyr::recode(FeedingPath, 'benthic' = 'b', 'pelagic' = 'p'))
 species_functional_traits <- species_functional_traits %>%
-    mutate(RepGuild1 = recode(RepGuild1, 'guarders' = '2g', 'bearers' = '1b', 'nonguarders' =  '3n'))
+    mutate(RepGuild1 = dplyr::recode(RepGuild1, 'guarders' = '2g', 'bearers' = '1b', 'nonguarders' =  '3n'))
 species_functional_traits <- species_functional_traits %>%
-    mutate(RepGuild2 = recode(RepGuild2, 'internal live bearers' = '1ib', 'Internal live bearers' = '1ib', 'open water/substratum egg scatterers' = '6s', 'nesters' =  '3n', 'Nesters' =  '3n', 'brood hiders' = '5h', 'clutch tenders' = '4t', 'external brooders' = '2eb'))
+    mutate(RepGuild2 = dplyr::recode(RepGuild2, 'internal live bearers' = '1ib', 'Internal live bearers' = '1ib', 'open water/substratum egg scatterers' = '6s', 'nesters' =  '3n', 'Nesters' =  '3n', 'brood hiders' = '5h', 'clutch tenders' = '4t', 'external brooders' = '2eb'))
 species_functional_traits <- species_functional_traits %>%
-    mutate(ParentalCare = recode(ParentalCare, 'none' = '4n', 'paternal' = '3p', 'maternal' = '2m', 'biparental' = '1b'))
+    mutate(ParentalCare = dplyr::recode(ParentalCare, 'none' = '4n', 'paternal' = '3p', 'maternal' = '2m', 'biparental' = '1b'))
 species_functional_traits <- species_functional_traits %>%
-    mutate(WaterPref = recode(WaterPref, 'all' = '3a', 'salt' = '1s', 'brack-salt' = '2bs', 'brack' = '4b', 'fresh-brack' = '5fb', 'fresh' = '6f'))
+    mutate(WaterPref = dplyr::recode(WaterPref, 'all' = '3a', 'salt' = '1s', 'brack-salt' = '2bs', 'brack' = '4b', 'fresh-brack' = '5fb', 'fresh' = '6f'))
 
 # Operculum 
 species_functional_traits$OperculumPresent[species_functional_traits$OperculumPresent > 0] <- "yes"
@@ -412,14 +396,14 @@ species_functional_traits <- species_functional_traits[order(row.names(species_f
 traits <- species_functional_traits[,-c(2:6)]
 rs <- pres_abs_by_species[,c(1,21)]
 rt <- full_join(traits, rs, by = "X")
-rt$SiteSums <- rt$REF
+rt$LocationSums <- rt$REF
 rt <- rt[,-17]
-rt$Com <- "R"
-rt <- cbind(rt, env[20, c(2,4,6,8,10,20,22:32)])
+rt$Strat <- "R"
+rt <- cbind(rt, env[20, c(2,4,6,8,10,19,22:32)])
 # Warning message:
 # In data.frame(..., check.names = FALSE) :
 #   row names were found from a short variable and have been discarded
-rt <- rt %>% relocate(Community, .before = temperature_median)
+rt <- rt %>% relocate(Location_type, .before = temperature_median)
 traits <- traits[,-1]
 
 # Surveyed
@@ -431,16 +415,15 @@ row.names(surveyed_sites_traits) <- surveyed_sites_traits$X
 surveyed_sites_traits <- surveyed_sites_traits[order(row.names(surveyed_sites_traits)),]
 # Trim off other taxonomic levels other than species name
 straits <- surveyed_sites_traits[,-c(2:6)]
-surveyed_sites_fish$SiteSums <- rowSums(surveyed_sites_fish[,-1])
+surveyed_sites_fish$LocationSums <- rowSums(surveyed_sites_fish[,-1])
 # # ss <- surveyed_sites_fish[,c(1,24)]
 # # st <- full_join(straits, ss, by = "X")
-# # st$Com <- "S"
+# # st$Strat <- "S"
 straits <- straits[,-1]
 ```
 
-
-## Modify community trait data frames
-```{r, Modify community data frames}
+## Modify Location_type trait data frames
+```{r, Modify Location_type data frames}
 # Ocean
 ocean_traits <- species_functional_traits[species_functional_traits$X %in% ocean_fish$X,]
 str(ocean_traits)
@@ -450,122 +433,16 @@ row.names(ocean_traits) <- ocean_traits$X
 ocean_traits <- ocean_traits[order(row.names(ocean_traits)),]
 # Trim off other taxonomic levels other than species name
 otraits <- ocean_traits[,-c(2:6)]
-ocean_fish$SiteSums <- rowSums(ocean_fish[,-1])
+ocean_fish$LocationSums <- rowSums(ocean_fish[,-1])
 os <- ocean_fish[,c(1,8)]
 ot <- full_join(otraits, os, by = "X")
-ot$Com <- "O"
-ot <- cbind(ot, community_env[1,])
+ot$Strat <- "O"
+ot <- cbind(ot, Location_type_env[1,])
 # Warning message:
 # In data.frame(..., check.names = FALSE) :
 #   row names were found from a short variable and have been discarded
 otraits <- otraits[,-1]
 
-
-# Holomictic
-holomictic_traits <- species_functional_traits[species_functional_traits$X %in% holomictic_fish$X,]
-str(holomictic_traits)
-# Make Species column the row names and get rid of columns that are not traits
-row.names(holomictic_traits) <- holomictic_traits$X
-# Reorder species names alphabetically
-holomictic_traits <- holomictic_traits[order(row.names(holomictic_traits)),]
-# Trim off other taxonomic levels other than species name
-htraits <- holomictic_traits[,-c(2:6)]
-holomictic_fish$SiteSums <- rowSums(holomictic_fish[,-1])
-hs <- holomictic_fish[,c(1,11)]
-ht <- full_join(htraits, hs, by = "X")
-ht$Com <- "H"
-ht <- cbind(ht, community_env[2,])
-# Warning message:
-# In data.frame(..., check.names = FALSE) :
-#   row names were found from a short variable and have been discarded
-htraits <- htraits[,-1]
-
-
-# Meromictic
-meromictic_traits <- species_functional_traits[species_functional_traits$X %in% meromictic_fish$X,]
-str(meromictic_traits)
-# Make Species column the row names and get rid of columns that are not traits
-row.names(meromictic_traits) <- meromictic_traits$X
-# Reorder species names alphabetically
-meromictic_traits <- meromictic_traits[order(row.names(meromictic_traits)),]
-# Trim off other taxonomic levels other than species name
-mtraits <- meromictic_traits[,-c(2:6)]
-meromictic_fish$SiteSums <- rowSums(meromictic_fish[,-1])
-ms <- meromictic_fish[,c(1,9)]
-mt <- full_join(mtraits, ms, by = "X")
-mt$Com <- "M"
-mt <- cbind(mt, community_env[3,])
-# Warning message:
-# In data.frame(..., check.names = FALSE) :
-#   row names were found from a short variable and have been discarded
-mtraits <- mtraits[,-1]
-```
-
-## Modify community trait data
-```{r, Modify community trait data}
-# All
-Community_at <- rbind(rt, ot, ht, mt)
-
-Community_at$Com <- factor(Community_at$Com, levels = c("R", "O", "H", "M"))
-
-Community_at_weighted <- Community_at %>%
-  group_by(Com) %>%
-  uncount(weights = SiteSums)
-
-Community_st <- rbind(ot, ht, mt)
-
-Community_st$Com <- factor(Community_st$Com, levels = c("O", "H", "M"))
-```
-
-## Community trait data tests
-```{r, Community trait data tests}
-# # Apply the normality test function to each column in your dataframe
-# shapiro_results <- lapply(Community_at[,c(2:17)], test_normality)
-# 
-# ## For numerical traits
-# # Create an empty vector to store numerical trait p-values
-# Community_at_nt_p_values <- c()
-# 
-# # Loop through each trait (numerical variable)
-# for (trait in colnames(Community_at[,c(4:10,12:13)])) {
-#   # Use the Kruskal-Wallis test
-#   kruskal_result <- kruskal.test(Community_at[[trait]] ~ Community, data = Community_at)
-#   # Extract and store the p-value
-#   Community_at_nt_p_values <- c(Community_at_nt_p_values, kruskal_result$p.value)
-# }
-# 
-# # Display the p-values for each trait
-# Community_at_nt_p_values
-# 
-# ## For categorical traits
-# # Create an empty vector to store categorical trait p-values
-# Community_at_ct_p_values <- numeric()
-# 
-# # Loop through each Community_ategorical variable (trait) in your data
-# for (trait in colnames(Community_at[,c(2:3,11,14:17)])) {
-#   # Create a contingency table for the current trait and Community
-#   contingency_table <- table(Community_at$Community, Community_at[[trait]])
-#   # Perform Fisher's Exact Test
-#   fisher_test_result <- fisher.test(contingency_table, simulate.p.value = T)
-#   # Extract and store the p-value
-#   p_value <- fisher_test_result$p.value
-#   Community_at_ct_p_values <- c(Community_at_ct_p_values, p_value)
-# }
-# 
-# # Display the p-values for each trait
-# Community_at_ct_p_values
-# 
-# # Example usage
-# Community_at_traits <- colnames(Community_at[,c(2:17)])
-# Community_at_env_vars <- colnames(Community_at[,c(20:36)])
-# Community_at_test_results <- perform_tests(Community_at, Community_at_traits, Community_at_env_vars)
-# 
-# # Usage example
-# Community_at_p_values <- extract_p_values(Community_at_test_results)
-```
-
-## Modify stratification trait data frames
-```{r, Modify stratification data frames}
 # Mixed
 mixed_traits <- species_functional_traits[species_functional_traits$X %in% mixed_fish$X,]
 str(mixed_traits)
@@ -575,11 +452,11 @@ row.names(mixed_traits) <- mixed_traits$X
 mixed_traits <- mixed_traits[order(row.names(mixed_traits)),]
 # Trim off other taxonomic levels other than species name
 mxtraits <- mixed_traits[,-c(2:6)]
-mixed_fish$SiteSums <- rowSums(mixed_fish[,-1])
+mixed_fish$LocationSums <- rowSums(mixed_fish[,-1])
 mxs <- mixed_fish[,c(1,10)]
 mxt <- full_join(mxtraits, mxs, by = "X")
 mxt$Strat <- "M"
-mxt <- cbind(mxt, stratification_env[1,])
+mxt <- cbind(mxt, Location_type_env[2,])
 # Warning message:
 # In data.frame(..., check.names = FALSE) :
 #   row names were found from a short variable and have been discarded
@@ -595,90 +472,82 @@ row.names(stratified_traits) <- stratified_traits$X
 stratified_traits <- stratified_traits[order(row.names(stratified_traits)),]
 # Trim off other taxonomic levels other than species name
 sttraits <- stratified_traits[,-c(2:6)]
-stratified_fish$SiteSums <- rowSums(stratified_fish[,-1])
+stratified_fish$LocationSums <- rowSums(stratified_fish[,-1])
 sts <- stratified_fish[,c(1,10)]
 stt <- full_join(sttraits, sts, by = "X")
 stt$Strat <- "S"
-stt <- cbind(stt, stratification_env[3,])
+stt <- cbind(stt, Location_type_env[3,])
 # Warning message:
 # In data.frame(..., check.names = FALSE) :
 #   row names were found from a short variable and have been discarded
 sttraits <- sttraits[,-1]
 ```
 
-## Modify stratification trait data
-```{r, Modify stratification trait data}
-rt <- rt %>%
-  rename(Strat = Com)
-
-rt <- rt %>%
-  rename(Stratification = Community)
-
-ot <- ot %>%
-  rename(Strat = Com)
-
-ot <- ot %>%
-  rename(Stratification = Community)
-
+### Modify Location_type trait data
+```{r, Modify Location_type trait data}
 # All
-Stratification_at <- rbind(rt, ot, mxt, stt)
+Location_type_at <- rbind(rt, ot, mxt, stt)
 
-Stratification_at$Strat <- factor(Stratification_at$Strat, levels = c("R", "O", "M", "S"))
+Location_type_at$Strat <- factor(Location_type_at$Strat, levels = c("R", "O", "M", "S"))
 
-Stratification_at_weighted <- Stratification_at %>%
-  group_by(Stratification) %>%
-  uncount(weights = SiteSums)
+Location_type_at_weighted <- Location_type_at %>%
+  group_by(Location_type) %>%
+  uncount(weights = LocationSums)
 
-Stratification_st <- rbind(ot, mxt, stt)
+Location_type_st <- rbind(ot, mxt, stt)
 
-Stratification_st$Strat <- factor(Stratification_st$Strat, levels = c("O", "M", "S"))
+Location_type_st$Strat <- factor(Location_type_st$Strat, levels = c("O", "M", "S"))
+
+Location_type_st_weighted <- Location_type_st %>%
+  group_by(Location_type) %>%
+  uncount(weights = LocationSums)
 ```
 
-## Stratification trait data tests
-```{r, Stratification trait data tests}
+### Location_type trait data tests
+```{r, Location_type trait data tests}
 # # Apply the normality test function to each column in your dataframe
-# shapiro_results <- lapply(Stratification_at[,c(2:17)], test_normality)
+# shapiro_results <- lapply(Location_type_at[,c(2:17)], test_normality)
 # 
 # ## For numerical traits
 # # Create an empty vector to store numerical trait p-values
-# Stratification_at_nt_p_values <- c()
+# Location_type_at_nt_p_values <- c()
 # 
 # # Loop through each trait (numerical variable)
-# for (trait in colnames(Stratification_at[,c(4:10,12:13)])) {
+# for (trait in colnames(Location_type_at[,c(4:10,12:13)])) {
 #   # Use the Kruskal-Wallis test
-#   kruskal_result <- kruskal.test(Stratification_at[[trait]] ~ Stratification, data = Stratification_at)
+#   kruskal_result <- kruskal.test(Location_type_at[[trait]] ~ Location_type, data = Location_type_at)
 #   # Extract and store the p-value
-#   Stratification_at_nt_p_values <- c(Stratification_at_nt_p_values, kruskal_result$p.value)
+#   Location_type_at_nt_p_values <- c(Location_type_at_nt_p_values, kruskal_result$p.value)
 # }
 # 
 # # Display the p-values for each trait
-# Stratification_at_nt_p_values
+# Location_type_at_nt_p_values
 # 
 # ## For categorical traits
-# # Create an empty vector to store Stratification_ategorical trait p-values
-# Stratification_at_ct_p_values <- numeric()
+# # Create an empty vector to store Location_type_ategorical trait p-values
+# Location_type_at_ct_p_values <- numeric()
 # 
 # # Loop through each categorical variable (trait) in your data
-# for (trait in colnames(Stratification_at[,c(2:3,11,14:17)])) {
-#   # Create a contingency table for the current trait and Stratification
-#   contingency_table <- table(Stratification_at$Stratification, Stratification_at[[trait]])
+# for (trait in colnames(Location_type_at[,c(2:3,11,14:17)])) {
+#   # Create a contingency table for the current trait and Location_type
+#   contingency_table <- table(Location_type_at$Location_type, Location_type_at[[trait]])
 #   # Perform Fisher's Exact Test
 #   fisher_test_result <- fisher.test(contingency_table, simulate.p.value = T)
 #   # Extract and store the p-value
 #   p_value <- fisher_test_result$p.value
-#   Stratification_at_ct_p_values <- c(Stratification_at_ct_p_values, p_value)
+#   Location_type_at_ct_p_values <- c(Location_type_at_ct_p_values, p_value)
 # }
 # 
 # # Display the p-values for each trait
-# Stratification_at_ct_p_values
+# Location_type_at_ct_p_values
 # 
 # # Example usage
-# Stratification_at_traits <- colnames(st[,c(2:17)])
-# Stratification_at_env_vars <- colnames(st[,c(20:36)])
-# Stratification_at_test_results <- perform_tests(Stratification_at, Stratification_at_traits, Stratification_at_env_vars)
+# Location_type_at_traits <- colnames(st[,c(2:17)])
+# Location_type_at_env_vars <- colnames(st[,c(20:36)])
+# Location_type_at_test_results <- perform_tests(Location_type_at, Location_type_at_traits, Location_type_at_env_vars)
 # 
 # # Usage example
-# Stratification_at_p_values <- extract_p_values(Stratification_at_test_results)
+# Location_type_at_p_values <- extract_p_values(Location_type_at_test_results)
 ```
 
 ## Modify site trait data frames
@@ -690,7 +559,7 @@ str(BCM_traits)
 BCM_traits <- BCM_traits[order(row.names(BCM_traits)),]
 # Trim off other taxonomic levels other than species name
 BCMt <- BCM_traits[,-c(1:6)]
-# BCMt$Site <- "BCM"
+# BCMt$Location <- "BCM"
 BCMt <- cbind(BCMt, env[1,])
 
 # CLM
@@ -700,7 +569,7 @@ str(CLM_traits)
 CLM_traits <- CLM_traits[order(row.names(CLM_traits)),]
 # Trim off other taxonomic levels other than species name
 CLMt <- CLM_traits[,-c(1:6)]
-# CLMt$Site <- "CLM"
+# CLMt$Location <- "CLM"
 CLMt <- cbind(CLMt, env[2,])
 
 # FLK
@@ -710,7 +579,7 @@ str(FLK_traits)
 FLK_traits <- FLK_traits[order(row.names(FLK_traits)),]
 # Trim off other taxonomic levels other than species name
 FLKt <- FLK_traits[,-c(1:6)]
-# FLKt$Site <- "FLK"
+# FLKt$Location <- "FLK"
 FLKt <- cbind(FLKt, env[3,])
 
 # GLK
@@ -720,7 +589,7 @@ str(GLK_traits)
 GLK_traits <- GLK_traits[order(row.names(GLK_traits)),]
 # Trim off other taxonomic levels other than species name
 GLKt <- GLK_traits[,-c(1:6)]
-# GLKt$Site <- "GLK"
+# GLKt$Location <- "GLK"
 GLKt <- cbind(GLKt, env[4,])
 
 # HLM
@@ -730,7 +599,7 @@ str(HLM_traits)
 HLM_traits <- HLM_traits[order(row.names(HLM_traits)),]
 # Trim off other taxonomic levels other than species name
 HLMt <- HLM_traits[,-c(1:6)]
-# HLMt$Site <- "HLM"
+# HLMt$Location <- "HLM"
 HLMt <- cbind(HLMt, env[5,])
 
 # HLO
@@ -740,7 +609,7 @@ str(HLO_traits)
 HLO_traits <- HLO_traits[order(row.names(HLO_traits)),]
 # Trim off other taxonomic levels other than species name
 HLOt <- HLO_traits[,-c(1:6)]
-# HLOt$Site <- "HLO"
+# HLOt$Location <- "HLO"
 HLOt <- cbind(HLOt, env[6,])
 
 # IBK
@@ -750,7 +619,7 @@ str(IBK_traits)
 IBK_traits <- IBK_traits[order(row.names(IBK_traits)),]
 # Trim off other taxonomic levels other than species name
 IBKt <- IBK_traits[,-c(1:6)]
-# IBKt$Site <- "IBK"
+# IBKt$Location <- "IBK"
 IBKt <- cbind(IBKt, env[7,])
 
 # LLN
@@ -760,7 +629,7 @@ str(LLN_traits)
 LLN_traits <- LLN_traits[order(row.names(LLN_traits)),]
 # Trim off other taxonomic levels other than species name
 LLNt <- LLN_traits[,-c(1:6)]
-# LLNt$Site <- "LLN"
+# LLNt$Location <- "LLN"
 LLNt <- cbind(LLNt, env[8,])
 
 # LCN
@@ -770,7 +639,7 @@ str(LCN_traits)
 LCN_traits <- LCN_traits[order(row.names(LCN_traits)),]
 # Trim off other taxonomic levels other than species name
 LCNt <- LCN_traits[,-c(1:6)]
-# LCNt$Site <- "LCN"
+# LCNt$Location <- "LCN"
 LCNt <- cbind(LCNt, env[9,])
 
 # MLN
@@ -780,7 +649,7 @@ str(MLN_traits)
 MLN_traits <- MLN_traits[order(row.names(MLN_traits)),]
 # Trim off other taxonomic levels other than species name
 MLNt <- MLN_traits[,-c(1:6)]
-# MLNt$Site <- "MLN"
+# MLNt$Location <- "MLN"
 MLNt <- cbind(MLNt, env[10,])
 
 # NCN
@@ -790,7 +659,7 @@ str(NCN_traits)
 NCN_traits <- NCN_traits[order(row.names(NCN_traits)),]
 # Trim off other taxonomic levels other than species name
 NCNt <- NCN_traits[,-c(1:6)]
-# NCNt$Site <- "NCN"
+# NCNt$Location <- "NCN"
 NCNt <- cbind(NCNt, env[11,])
 
 # NLK
@@ -800,7 +669,7 @@ str(NLK_traits)
 NLK_traits <- NLK_traits[order(row.names(NLK_traits)),]
 # Trim off other taxonomic levels other than species name
 NLKt <- NLK_traits[,-c(1:6)]
-# NLKt$Site <- "NLK"
+# NLKt$Location <- "NLK"
 NLKt <- cbind(NLKt, env[12,])
 
 # NLN
@@ -810,7 +679,7 @@ str(NLN_traits)
 NLN_traits <- NLN_traits[order(row.names(NLN_traits)),]
 # Trim off other taxonomic levels other than species name
 NLNt <- NLN_traits[,-c(1:6)]
-# NLNt$Site <- "NLN"
+# NLNt$Location <- "NLN"
 NLNt <- cbind(NLNt, env[13,])
 
 # NLU
@@ -820,7 +689,7 @@ str(NLU_traits)
 NLU_traits <- NLU_traits[order(row.names(NLU_traits)),]
 # Trim off other taxonomic levels other than species name
 NLUt <- NLU_traits[,-c(1:6)]
-# NLUt$Site <- "NLU"
+# NLUt$Location <- "NLU"
 NLUt <- cbind(NLUt, env[14,])
 
 # OLO
@@ -830,18 +699,18 @@ str(OLO_traits)
 OLO_traits <- OLO_traits[order(row.names(OLO_traits)),]
 # Trim off other taxonomic levels other than species name
 OLOt <- OLO_traits[,-c(1:6)]
-# OLOt$Site <- "OLO"
+# OLOt$Location <- "OLO"
 OLOt <- cbind(OLOt, env[15,])
 
-# OOO
-OOO_traits <- species_functional_traits[species_functional_traits$X %in% OOO_fish$X,]
-str(OOO_traits)
+# OCO
+OCO_traits <- species_functional_traits[species_functional_traits$X %in% OCO_fish$X,]
+str(OCO_traits)
 # Reorder species alphabetically
-OOO_traits <- OOO_traits[order(row.names(OOO_traits)),]
+OCO_traits <- OCO_traits[order(row.names(OCO_traits)),]
 # Trim off other taxonomic levels other than species name
-OOOt <- OOO_traits[,-c(1:6)]
-# OOOt$Site <- "OOO"
-OOOt <- cbind(OOOt, env[16,])
+OCOt <- OCO_traits[,-c(1:6)]
+# OCOt$Location <- "OCO"
+OCOt <- cbind(OCOt, env[16,])
 
 # OTM
 OTM_traits <- species_functional_traits[species_functional_traits$X %in% OTM_fish$X,]
@@ -850,18 +719,18 @@ str(OTM_traits)
 OTM_traits <- OTM_traits[order(row.names(OTM_traits)),]
 # Trim off other taxonomic levels other than species name
 OTMt <- OTM_traits[,-c(1:6)]
-# OTMt$Site <- "OTM"
+# OTMt$Location <- "OTM"
 OTMt <- cbind(OTMt, env[17,])
 
-# OOM
-OOM_traits <- species_functional_traits[species_functional_traits$X %in% OOM_fish$X,]
-str(OOM_traits)
+# OCM
+OCM_traits <- species_functional_traits[species_functional_traits$X %in% OCM_fish$X,]
+str(OCM_traits)
 # Reorder species alphabetically
-OOM_traits <- OOM_traits[order(row.names(OOM_traits)),]
+OCM_traits <- OCM_traits[order(row.names(OCM_traits)),]
 # Trim off other taxonomic levels other than species name
-OOMt <- OOM_traits[,-c(1:6)]
-# OOMt$Site <- "OOM"
-OOMt <- cbind(OOMt, env[18,])
+OCMt <- OCM_traits[,-c(1:6)]
+# OCMt$Location <- "OCM"
+OCMt <- cbind(OCMt, env[18,])
 
 # RCA
 RCA_traits <- species_functional_traits[species_functional_traits$X %in% RCA_fish$X,]
@@ -870,7 +739,7 @@ str(RCA_traits)
 RCA_traits <- RCA_traits[order(row.names(RCA_traits)),]
 # Trim off other taxonomic levels other than species name
 RCAt <- RCA_traits[,-c(1:6)]
-# RCAt$Site <- "RCA"
+# RCAt$Location <- "RCA"
 RCAt <- cbind(RCAt, env[19,])
 
 # SLN
@@ -880,7 +749,7 @@ str(SLN_traits)
 SLN_traits <- SLN_traits[order(row.names(SLN_traits)),]
 # Trim off other taxonomic levels other than species name
 SLNt <- SLN_traits[,-c(1:6)]
-# SLNt$Site <- "SLN"
+# SLNt$Location <- "SLN"
 SLNt <- cbind(SLNt, env[21,])
 
 # TLN
@@ -890,7 +759,7 @@ str(TLN_traits)
 TLN_traits <- TLN_traits[order(row.names(TLN_traits)),]
 # Trim off other taxonomic levels other than species name
 TLNt <- TLN_traits[,-c(1:6)]
-# TLNt$Site <- "TLN"
+# TLNt$Location <- "TLN"
 TLNt <- cbind(TLNt, env[22,])
 
 # ULN
@@ -900,18 +769,18 @@ str(ULN_traits)
 ULN_traits <- ULN_traits[order(row.names(ULN_traits)),]
 # Trim off other taxonomic levels other than species name
 ULNt <- ULN_traits[,-c(1:6)]
-# ULNt$Site <- "ULN"
+# ULNt$Location <- "ULN"
 ULNt <- cbind(ULNt, env[23,])
 
 # All sites
-Sites_at <- rbind(BCMt, CLMt, FLKt, GLKt, HLMt, HLOt, IBKt, LLNt, LCNt, MLNt, NCNt, NLKt, NLNt, NLUt, OLOt, OOOt, OTMt, OOMt, RCAt, SLNt, TLNt, ULNt)
+Locations_at <- rbind(BCMt, CLMt, FLKt, GLKt, HLMt, HLOt, IBKt, LLNt, LCNt, MLNt, NCNt, NLKt, NLNt, NLUt, OLOt, OCOt, OTMt, OCMt, RCAt, SLNt, TLNt, ULNt)
 # Rename column
-Sites_at <- Sites_at %>%
-  rename(Site = X)
+Locations_at <- Locations_at %>%
+  rename(Location = X)
 
-# Calculate median and mode for columns by "Site"
-Sites_at_summary <- Sites_at[1:16] %>%
-  group_by(Site) %>%
+# Calculate median and mode for columns by "Location"
+Locations_at_summary <- Locations_at[1:16] %>%
+  group_by(Location) %>%
   summarise(across(.cols = where(is.numeric), 
                 .fns = list(median = median), 
                 .names = "{.col}_{.fn}", 
@@ -920,214 +789,58 @@ Sites_at_summary <- Sites_at[1:16] %>%
                 .fns = ~ names(which.max(table(.))), 
                 .names = "{.col}_mode"))
 
-Sites_at_summary <- cbind(Sites_at_summary,env[-20,-1])
+Locations_at_summary <- cbind(Locations_at_summary,env[-20,-1])
 
-row.names(Sites_at_summary) <- Sites_at_summary$Site
+row.names(Locations_at_summary) <- Locations_at_summary$Location
 
 # Marine lakes
 Lakes_at <- rbind(BCMt, CLMt, FLKt, GLKt, HLMt, HLOt, LLNt, MLNt, NLKt, NLNt, NLUt, OLOt, OTMt, SLNt, TLNt, ULNt)
 # Rename column
 Lakes_at <- Lakes_at %>%
-  rename(Site = X)
+  rename(Location = X)
 
-Ocean_at <- rbind(IBKt, LCNt, NCNt, OOOt, OOMt, RCAt)
+Ocean_at <- rbind(IBKt, LCNt, NCNt, OCOt, OCMt, RCAt)
 Mixed_at <- rbind(FLKt, HLOt, LLNt, MLNt, NLNt, NLUt, OLOt, ULNt)
 Stratified_at <- rbind(BCMt, CLMt, GLKt, HLMt, NLKt, OTMt, SLNt, TLNt)
-```
-
-## Site trait data tests
-```{r, Site trait data tests}
-# Create a function to test normality and return a p-value
-test_normality <- function(column) {
-  if (is.numeric(column)) {  # Check if the column is numeric
-    shapiro_test <- shapiro.test(column)  # Use the Shapiro-Wilk test
-    return(shapiro_test$p.value)  # Return the p-value
-  } else {
-    return(NA)  # Return NA for non-numeric columns
-  }
-}
-
-# Apply the normality test function to each column in your dataframe
-shapiro_results <- lapply(Sites_at[,c(1:16)], test_normality)
-
-numerical <- c("MaxLengthTL", "Troph", "DepthMin", "DepthMax", "TempPrefMin", "TempPrefMax", "DorsalSpinesMean")
-
-factor <- c("BodyShapeI", "WaterPref", "DemersPelag", "OperculumPresent", "FeedingPath", "RepGuild1", "RepGuild2", "ParentalCare")
-
-env_geo <- c("temperature_median", "salinity_median", "oxygen_median", "pH_median", "Stratification", "Community", "Island", "volume_m3_w_chemocline", "volume_m3", "surface_area_m2", "distance_to_ocean_min_m", "distance_to_ocean_mean_m", "distance_to_ocean_median_m", "tidal_lag_time_minutes", "tidal_efficiency", "perimeter_fromSat", "max_depth", "logArea")
-
-## For numerical traits
-# Create an empty vector to store numerical trait p-values
-Sites_at_nt_p_values <- c()
-
-# Loop through each trait (numerical variable)
-for (trait in numerical) {
-  # Use the Kruskal-Wallis test
-  kruskal_result <- kruskal.test(Sites_at[[trait]] ~ Stratification, data = Sites_at)
-  # Extract and store the p-value
-  Sites_at_nt_p_values <- c(Sites_at_nt_p_values, kruskal_result$p.value)
-}
-
-# Display the p-values for each trait
-Sites_at_nt_p_values
-
-## For categorical traits
-# Create an empty vector to store categorical trait p-values
-Sites_at_ct_p_values <- numeric()
-
-# Loop through each categorical variable (trait) in your data
-for (trait in factor) {
-  # Create a contingency table for the current trait and Community
-  contingency_table <- table(Sites_at$Stratification, Sites_at[[trait]])
-  # Perform Fisher's Exact Test
-  fisher_test_result <- fisher.test(contingency_table, simulate.p.value = T)
-  # Extract and store the p-value
-  p_value <- fisher_test_result$p.value
-  ct_p_values <- c(Sites_at_ct_p_values, p_value)
-}
-
-# Display the p-values for each trait
-Sites_at_ct_p_values
-
-# Function to perform Fisher and Kruskal Willis tests of trait variables against environmental variables.
-perform_tests <- function(data, traits, env_vars) {
-  results <- list()  # Create an empty list to store results for each trait
-
-  # Loop through each trait
-  for (trait in traits) {
-    trait_results <- list()  # Create a list to store results for each trait-environment pair
-
-    # Determine if the trait is categorical or numerical
-    is_categorical <- is.factor(data[[trait]]) || is.character(data[[trait]])
-
-    # Loop through each environmental variable
-    for (env_var in env_vars) {
-      # Determine if the environmental variable is categorical or numerical
-      is_categorical_env <- is.factor(data[[env_var]]) || is.character(data[[env_var]])
-
-      # Perform the appropriate test based on data types
-      if (is_categorical && is_categorical_env) {
-        # Use Fisher's exact test for two categorical variables
-        test <- fisher.test(table(data[[trait]], data[[env_var]]), simulate.p.value = T)
-      } else if (!is_categorical && !is_categorical_env) {
-        # Use Kruskal-Wallis test for two numerical variables
-        test <- kruskal.test(data[[trait]] ~ data[[env_var]])
-      } else if (!is_categorical && is_categorical_env) {
-        # Use Kruskal-Wallis test when trait is numerical and env variable is categorical
-        test <- kruskal.test(data[[trait]] ~ data[[env_var]])
-      } else if (is_categorical && !is_categorical_env) {
-        # Use Fisher's exact test or chi-squared test for categorical trait and numerical env variable
-        # Choose one of the following two lines:
-        test <- fisher.test(table(data[[trait]], data[[env_var]]), simulate.p.value = T)
-        # test <- chisq.test(table(data[[trait]], cut(data[[env_var]], quantile(data[[env_var]], probs = 0:4/4))))
-      } else {
-        # Handle other combinations if needed
-        test <- NULL  # Placeholder for other cases
-      }
-
-      # Create a test result list with trait name, env var name, and the test result
-      test_result <- list(
-        Trait = trait,
-        Env_Var = env_var,
-        Test_Result = test  # Replace 'test' with your actual test result
-      )
-
-      # Add the test result to the list of results for this trait
-      trait_results[[env_var]] <- test_result
-    }
-
-    # Add the results for this trait to the overall results list
-    results[[trait]] <- trait_results
-  }
-
-  return(results)
-}
-
-# Example usage
-Sites_at_traits <- colnames(Sites_at[,c(1:15)])
-Sites_at_test_results <- perform_tests(Sites_at, Sites_at_traits, env_geo)
-
-# Function to extract the p-values for each trait and environmental variable result
-extract_p_values <- function(results) {
-  p_value_list <- list()  # Create an empty list to store p-values
-  
-  # Loop through each trait in the results list
-  for (trait_name in names(results)) {
-    trait_results <- results[[trait_name]]  # Get the results for the current trait
-    
-    # Loop through each environmental variable within the trait
-    for (env_var_name in names(trait_results)) {
-      env_var_results <- trait_results[[env_var_name]]  # Get the results for the current env variable
-      
-      # Check if the Test_Result exists and is a valid test result
-      if (!is.null(env_var_results$Test_Result) && class(env_var_results$Test_Result) == "htest") {
-        # Extract the p-value and store it in a list
-        p_value_list[[paste(trait_name, env_var_name, sep = "_")]] <- env_var_results$Test_Result$p.value
-      }
-    }
-  }
-  
-  return(p_value_list)
-}
-
-# Usage example
-Sites_at_p_values <- extract_p_values(Sites_at_test_results)
-Sites_at_p_values
-# BodyShapeI, DemersPelag, OperculumPresent, Troph, DepthMin, WaterPref, DorsalSpinesMean
 ```
 
 ## Load out modified files
 ```{r, Bringing everything together load out modified files and session info}
 # Environment
-write.csv(env,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/environment/env.csv")
+write.csv(env,"/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/environment/env.csv")
 
 # Fish presence by lake
-write.csv(pres_abs_lake_sums,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/pres_abs_lake_sums.csv")
+write.csv(pres_abs_lake_sums,"/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/pres_abs_lake_sums.csv")
 
 # Fish presence by species
-write.csv(pres_abs_species_sums,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/pres_abs_species_sums.csv")
+write.csv(pres_abs_species_sums,"/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/pres_abs_species_sums.csv")
 
-# Fish presence in surveyed sites by stratification abundance
-write.csv(surveyed_sites_com_abund,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/surveyed_sites_com_abund.csv")
-
-# Fish presence in surveyed sites by stratification abundance
-write.csv(surveyed_sites_strat_abund,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/surveyed_sites_strat_abund.csv")
+# Fish presence in surveyed sites by Location_type abundance
+write.csv(surveyed_sites_strat_abund,"/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/surveyed_sites_strat_abund.csv")
 
 # Fish presence in ocean sites
-write.csv(ocean_site,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/ocean_site_presence_by_site.csv")
-
-# Fish presence in holomictic lakes
-write.csv(holomictic_lake,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/holomictic_site_presence_by_lake.csv")
-
-# Fish presence in meromictic lakes
-write.csv(meromictic_lake,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/meromictic_site_presence_by_lake.csv")
+write.csv(ocean_site,"/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/pres_abs/ocean_site_presence_by_site.csv")
 
 # Phylogenetic tree
-write.tree(tree,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/fish_tree.tre")
+write.tree(tree,"/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/phylo/fish_tree.tre")
 
 # Phylogeny of surveyed sites
-write.tree(stree,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/surveyed_fish_tree.tre")
+write.tree(stree,"/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/phylo/surveyed_fish_tree.tre")
 
 # Phylogeny of sites with environmental data
-write.tree(etree,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/env_fish_tree.tre")
+write.tree(etree,"/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/phylo/env_fish_tree.tre")
 
 # Phylogeny of sites with biogeographic data
-write.tree(btree,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/biogeo_fish_tree.tre")
+write.tree(btree,"/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/phylo/biogeo_fish_tree.tre")
 
 # Traits
-write.csv(species_functional_traits,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/traits/traits.csv")
+write.csv(species_functional_traits,"/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/traits/traits.csv")
 
 # Traits in surveyed sites
-write.csv(surveyed_sites_traits,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/traits/surveyed_sites_traits.csv")
+write.csv(surveyed_sites_traits,"/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/traits/surveyed_sites_traits.csv")
 
 # Traits in ocean sites
-write.csv(ocean_traits,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/traits/ocean_traits.csv")
-
-# Traits in holomictic lakes
-write.csv(holomictic_traits,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/traits/holomictic_traits.csv")
-
-# Traits in meromictic lakes
-write.csv(meromictic_traits,"/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/traits/meromictic_traits.csv")
+write.csv(ocean_traits,"/Users/bailey/Documents/research/Fish_Biodiversity/data/collection/fish/traits/ocean_traits.csv")
 
 sessionInfo()
 ```
