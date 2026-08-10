@@ -8,18 +8,18 @@ Phylogenetic diversity analyses
 library(knitr)
 
 # Source the R Markdown file
-knit("/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.Rmd", output = "/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md")
+knit("/Users/bailey/Documents/research/Fish_Biodiversity/src/collection/load_collection_data.Rmd", output = "/Users/bailey/Documents/research/Fish_Biodiversity/src/collection/load_collection_data.md")
 ```
 
     ## 
     ## 
-    ## processing file: /Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.Rmd
+    ## processing file: /Users/bailey/Documents/research/Fish_Biodiversity/src/collection/load_collection_data.Rmd
 
-    ##   |                  |          |   0%  |                  |          |   3%                                                                          |                  |.         |   7% [Bringing everything together load modifying files packages]             |                  |.         |  10%                                                                          |                  |.         |  13% [Bringing everything together load in modifying files]                   |                  |..        |  17%                                                                          |                  |..        |  20% [Check species names across files]                                       |                  |..        |  23%                                                                          |                  |...       |  27% [Modify environment data]                                                |                  |...       |  30%                                                                          |                  |...       |  33% [Modify incidence matrices]                                              |                  |....      |  37%                                                                          |                  |....      |  40% [Modify phylogeny]                                                       |                  |....      |  43%                                                                          |                  |.....     |  47% [Modify trait data]                                                      |                  |.....     |  50%                                                                          |                  |.....     |  53% [Modify Site_type data frames]                                           |                  |......    |  57%                                                                          |                  |......    |  60% [Modify Site_type trait data]                                            |                  |......    |  63%                                                                          |                  |.......   |  67% [Site_type trait data tests]                                             |                  |.......   |  70%                                                                          |                  |.......   |  73% [Modify site trait data frames]                                          |                  |........  |  77%                                                                          |                  |........  |  80% [Site trait data tests]                                                  |                  |........  |  83%                                                                          |                  |......... |  87% [unnamed-chunk-6]                                                        |                  |......... |  90%                                                                          |                  |......... |  93% [unnamed-chunk-7]                                                        |                  |..........|  97%                                                                          |                  |..........| 100% [Bringing everything together load out modified files and session info]
+    ##   |                  |          |   0%  |                  |          |   4%                                                                          |                  |.         |   8% [Bringing everything together load modifying files packages]             |                  |.         |  12%                                                                          |                  |..        |  17% [Bringing everything together load in modifying files]                   |                  |..        |  21%                                                                          |                  |..        |  25% [Check species names across files]                                       |                  |...       |  29%                                                                          |                  |...       |  33% [Modify environment data]                                                |                  |....      |  38%                                                                          |                  |....      |  42% [Modify incidence matrices]                                              |                  |.....     |  46%                                                                          |                  |.....     |  50% [Modify phylogeny]                                                       |                  |.....     |  54%                                                                          |                  |......    |  58% [Modify trait data]                                                      |                  |......    |  62%                                                                          |                  |.......   |  67% [Modify Location_type data frames]                                       |                  |.......   |  71%                                                                          |                  |........  |  75% [Modify Location_type trait data]                                        |                  |........  |  79%                                                                          |                  |........  |  83% [Location_type trait data tests]                                         |                  |......... |  88%                                                                          |                  |......... |  92% [Modify site trait data frames]                                          |                  |..........|  96%                                                                          |                  |..........| 100% [Bringing everything together load out modified files and session info]
 
-    ## output file: /Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md
+    ## output file: /Users/bailey/Documents/research/Fish_Biodiversity/src/collection/load_collection_data.md
 
-    ## [1] "/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md"
+    ## [1] "/Users/bailey/Documents/research/Fish_Biodiversity/src/collection/load_collection_data.md"
 
 ``` r
 # Packages
@@ -67,6 +67,9 @@ library(caret)
 library(BAT)
 ```
 
+    ## Warning: replacing previous import 'e1071::element' by 'ggplot2::element' when
+    ## loading 'hypervolume'
+
     ## 
     ## Attaching package: 'BAT'
 
@@ -104,26 +107,41 @@ library(emmeans)
     ## See '? untidy'
 
 ``` r
+library(car)
+```
+
+    ## Loading required package: carData
+
+    ## 
+    ## Attaching package: 'car'
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     recode
+
+``` r
 # Site vectors
-surveyed_sites <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LCN", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OOM", "OOO", "OTM", "RCA", "SLN", "TLN", "ULN")
+surveyed_sites <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LCN", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OCM", "OCO", "OLO", "OTM", "RCA", "SLN", "TLN", "ULN")
 
-surveyed_sites_wo_LCN <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OOM", "OOO", "OTM", "RCA", "SLN", "TLN", "ULN")
+surveyed_sites_wo_LCN <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OCM", "OCO", "OLO", "OTM", "RCA", "SLN", "TLN", "ULN")
 
-surveyed_sites_wo_TLN_HLM <- c("BCM", "CLM", "FLK", "GLK", "HLO", "IBK", "LCN", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OOM", "OOO", "OTM", "RCA", "SLN", "ULN")
+surveyed_sites_wo_OCO <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LCN", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OCM", "OLO", "OTM", "RCA", "SLN", "TLN", "ULN")
+
+surveyed_sites_wo_TLN_HLM <- c("BCM", "CLM", "FLK", "GLK", "HLO", "IBK", "LCN", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OCM", "OCO", "OLO", "OTM", "RCA", "SLN", "ULN")
 
 surveyed_sites_env <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "IBK", "LLN", "MLN", "NCN", "NLK", "NLN", "NLU", "OLO", "OTM", "RCA", "SLN", "TLN", "ULN")
 
-ocean_mixed_sites <- c("IBK", "LCN", "NCN", "OOO", "OOM", "RCA", "FLK", "HLO", "LLN", "MLN", "NLN", "NLU", "OLO", "ULN")
+ocean_mixed_sites <- c("FLK", "HLO", "IBK", "LCN", "LLN", "MLN", "NCN", "NLN", "NLU", "OCM", "OCO", "OLO", "RCA", "ULN")
 
-ocean_mixed_sites_env <- c("IBK", "NCN", "RCA", "FLK", "HLO", "LLN", "MLN", "NLN", "NLU", "OLO", "ULN")
+ocean_mixed_sites_env <- c("FLK", "HLO", "IBK", "LLN", "MLN", "NCN", "NLN", "NLU", "OLO", "RCA", "ULN")
 
-ocean_stratified_sites <- c("IBK", "LCN", "NCN", "OOO", "OOM", "RCA", "BCM", "CLM", "GLK", "HLM", "NLK", "OTM", "SLN", "TLN")
+ocean_stratified_sites <- c("BCM", "CLM", "GLK", "HLM", "IBK", "LCN", "NCN", "NLK", "OCM", "OCO", "OTM", "RCA", "SLN", "TLN")
 
-ocean_stratified_sites_env <- c("IBK", "NCN", "RCA", "BCM", "CLM", "GLK", "HLM", "NLK", "OTM", "SLN", "TLN")
+ocean_stratified_sites_env <- c("BCM", "CLM", "GLK", "HLM", "IBK", "NCN", "NLK", "OTM", "RCA", "SLN", "TLN")
 
 mixed_stratified_lakes <- c("BCM", "CLM", "FLK", "GLK", "HLM", "HLO", "LLN", "MLN", "NLK", "NLN", "NLU", "OLO", "OTM", "SLN", "TLN", "ULN")
 
-ocean_sites <- c("IBK", "LCN", "NCN", "OOO", "OOM", "RCA")
+ocean_sites <- c("IBK", "LCN", "NCN", "OCM", "OCO", "RCA")
 
 ocean_sites_env <- c("IBK", "NCN", "RCA")
 
@@ -146,8 +164,8 @@ env <- env[order(env$X),]
 presabs_lake <- presabs_lake[order(row.names(presabs_lake)),]
 surveyed_sites_lake <- surveyed_sites_lake[order(row.names(surveyed_sites_lake)),]
 
-Site_type_group_ref <- env[,"Site_type"]
-Site_type_group <- env[surveyed_sites,"Site_type"]
+Location_type_group_ref <- env[,"Location_type"]
+Location_type_group <- env[surveyed_sites,"Location_type"]
 ```
 
 # Phylogenetic Diversity
@@ -160,37 +178,37 @@ Site_type_group <- env[surveyed_sites,"Site_type"]
 ## Reference
 # Dispersion
 tree_disp <- dispersion(comm = presabs_lake, tree = tree, abund = F)
-write.csv(tree_disp, "/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/tree_disp.csv")
+write.csv(tree_disp, "/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/tree_disp.csv")
 
 #Mean pairwise distances
 tree_sesmpd <- ses.mpd(presabs_lake, cophenetic(tree), null.model = "taxa.labels", abundance.weighted = FALSE, runs = 999, iterations = 1000)
-write.csv(tree_sesmpd, "/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/tree_sesmpd.csv")
+write.csv(tree_sesmpd, "/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/tree_sesmpd.csv")
 
 #Mean nearest taxon distances
 tree_sesmntd <- ses.mntd(presabs_lake, cophenetic(tree), null.model = "taxa.labels", abundance.weighted = FALSE, runs = 999, iterations = 1000)
-write.csv(tree_sesmntd, "/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/tree_sesmntd.csv")
+write.csv(tree_sesmntd, "/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/tree_sesmntd.csv")
 
 #Faith's PD
 tree_sespd <- ses.pd(presabs_lake, tree, null.model = "taxa.labels", runs = 999, iterations = 1000, include.root = TRUE)
-write.csv(tree_sespd, "/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/tree_sespd.csv")
+write.csv(tree_sespd, "/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/tree_sespd.csv")
 
 
 ## Surveyed sites
 # Dispersion
 stree_disp <- dispersion(comm = surveyed_sites_lake, tree = stree, abund = F)
-write.csv(stree_disp, "/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/stree_disp.csv")
+write.csv(stree_disp, "/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/stree_disp.csv")
 
 #Mean pairwise distances
 stree_sesmpd <- ses.mpd(surveyed_sites_lake, cophenetic(stree), null.model = "taxa.labels", abundance.weighted = FALSE, runs = 999, iterations = 1000)
-write.csv(stree_sesmpd, "/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/stree_sesmpd.csv")
+write.csv(stree_sesmpd, "/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/stree_sesmpd.csv")
 
 #Mean nearest taxon distances
 stree_sesmntd <- ses.mntd(surveyed_sites_lake, cophenetic(stree), null.model = "taxa.labels", abundance.weighted = FALSE, runs = 999, iterations = 1000)
-write.csv(stree_sesmntd, "/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/stree_sesmntd.csv")
+write.csv(stree_sesmntd, "/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/stree_sesmntd.csv")
 
 #Faith's PD
 stree_sespd <- ses.pd(surveyed_sites_lake, stree, null.model = "taxa.labels", runs = 999, iterations = 1000, include.root = TRUE)
-write.csv(stree_sespd, "/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/stree_sespd.csv")
+write.csv(stree_sespd, "/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/stree_sespd.csv")
 ```
 
 ### PD alpha files mntd, mpd, and pd to read into R
@@ -200,71 +218,71 @@ write.csv(stree_sespd, "/Users/bailey/Documents/research/fish_biodiversity/data/
 ``` r
 ## Reference
 # Dispersion 
-tree_disp <-read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/tree_disp.csv")
+tree_disp <-read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/tree_disp.csv")
 tree_disp_env <- merge(tree_disp, env, by = "X", sort = F)
 tree_disp_env$measure <- "tree_disp"
-tree_disp_env$Site_type <- factor(tree_disp_env$Site_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
+tree_disp_env$Location_type <- factor(tree_disp_env$Location_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
 row.names(tree_disp_env) <- tree_disp_env$X
 
 # Mean pairwise distances
-tree_sesmpd <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/tree_sesmpd.csv")
+tree_sesmpd <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/tree_sesmpd.csv")
 tree_sesmpd_env <- merge(tree_sesmpd, env, by = "X", sort = F)
 tree_sesmpd_env$measure <- "tree_sesmpd"
-tree_sesmpd_env$Site_type <- factor(tree_sesmpd_env$Site_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
+tree_sesmpd_env$Location_type <- factor(tree_sesmpd_env$Location_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
 row.names(tree_sesmpd_env) <- tree_sesmpd_env$X
 
 # Mean nearest taxon distances
-tree_sesmntd <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/tree_sesmntd.csv")
+tree_sesmntd <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/tree_sesmntd.csv")
 tree_sesmntd_env <- merge(tree_sesmntd, env, by = "X", sort = F)
 tree_sesmntd_env$measure <- "tree_sesmntd"
-tree_sesmntd_env$Site_type <- factor(tree_sesmntd_env$Site_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
+tree_sesmntd_env$Location_type <- factor(tree_sesmntd_env$Location_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
 row.names(tree_sesmntd_env) <- tree_sesmntd_env$X
 
 #Faith's PD
-tree_sespd <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/tree_sespd.csv")
+tree_sespd <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/tree_sespd.csv")
 tree_sespd_env <- merge(tree_sespd, env, by = "X", sort = F)
 tree_sespd_env$measure <- "tree_sespd"
-tree_sespd_env$Site_type <- factor(tree_sespd_env$Site_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
+tree_sespd_env$Location_type <- factor(tree_sespd_env$Location_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
 stree_sespd_env <- merge(tree_sespd_env, tree_disp, by = "X", sort = F)
 row.names(tree_sespd_env) <- tree_sespd_env$X
 
 
 ## Surveyed sites
 # Dispersion 
-stree_disp <-read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/stree_disp.csv")
+stree_disp <-read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/stree_disp.csv")
 stree_disp_env <- merge(stree_disp, env, by = "X", sort = F)
 stree_disp_env$measure <- "stree_disp"
-stree_disp_env$Site_type <- factor(stree_disp_env$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+stree_disp_env$Location_type <- factor(stree_disp_env$Location_type, levels = c("Ocean", "Mixed", "Stratified"))
 row.names(stree_disp_env) <- stree_disp_env$X
 
 # Mean pairwise distances
-stree_sesmpd <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/stree_sesmpd.csv")
+stree_sesmpd <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/stree_sesmpd.csv")
 stree_sesmpd_env <- merge(stree_sesmpd, env, by = "X", sort = F)
 stree_sesmpd_env$measure <- "stree_sesmpd"
-stree_sesmpd_env$Site_type <- factor(stree_sesmpd_env$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+stree_sesmpd_env$Location_type <- factor(stree_sesmpd_env$Location_type, levels = c("Ocean", "Mixed", "Stratified"))
 row.names(stree_sesmpd_env) <- stree_sesmpd_env$X
 
 # Mean nearest taxon distances
-stree_sesmntd <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/stree_sesmntd.csv")
+stree_sesmntd <- read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/stree_sesmntd.csv")
 stree_sesmntd_env <- merge(stree_sesmntd, env, by = "X", sort = F)
 stree_sesmntd_env$measure <- "stree_sesmntd"
-stree_sesmntd_env$Site_type <- factor(stree_sesmntd_env$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+stree_sesmntd_env$Location_type <- factor(stree_sesmntd_env$Location_type, levels = c("Ocean", "Mixed", "Stratified"))
 row.names(stree_sesmntd_env) <- stree_sesmntd_env$X
 
 #Faith's PD
-stree_sespd <-read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/analyses/PD/stree_sespd.csv")
+stree_sespd <-read.csv("/Users/bailey/Documents/research/Fish_Biodiversity/data/analyses/PD/stree_sespd.csv")
 stree_sespd_env <- merge(stree_sespd, env, by = "X", sort = F)
 stree_sespd_env$measure <- "stree_sespd"
-stree_sespd_env$Site_type <- factor(stree_sespd_env$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+stree_sespd_env$Location_type <- factor(stree_sespd_env$Location_type, levels = c("Ocean", "Mixed", "Stratified"))
 stree_sespd_env <- merge(stree_sespd_env, stree_disp, by = "X", sort = F)
 row.names(stree_sespd_env) <- stree_sespd_env$X
 ```
 
-### PD alpha outliers for each site type
+### PD alpha outliers for each Location type
 
 ``` r
 outlier_PD_alpha <- stree_sespd_env %>%
-  group_by(Site_type) %>%
+  group_by(Location_type) %>%
   mutate(
     Q1 = quantile(pd.obs.z, 0.25),
     Q3 = quantile(pd.obs.z, 0.75),
@@ -278,32 +296,40 @@ outlier_PD_alpha <- as.data.frame(outlier_PD_alpha)
 row.names(outlier_PD_alpha) <- outlier_PD_alpha$X
 
 # Create the plot
-(outlier_PD_alpha_plot <- ggplot(outlier_PD_alpha, aes(x = Site_type, y = pd.obs.z, fill = Site_type)) +
-  geom_violin(alpha = 0.9, draw_quantiles = c(0.25, 0.5, 0.75), aes(fill = Site_type)) +
-  geom_jitter(aes(color = is_outlier), width = 0.1, size = 4, alpha = 0.7) +
+(outlier_PD_alpha_plot <- ggplot(outlier_PD_alpha, aes(x = Location_type, y = pd.obs.z, fill = Location_type)) +
+  geom_violin(alpha = 0.9, draw_quantiles = c(0.25, 0.5, 0.75), aes(fill = Location_type)) +
+  geom_jitter(aes(color = is_outlier), width = 0.1, size = 2, alpha = 0.7) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
   scale_fill_manual(values = custom_colors) +
-  geom_text_repel(data = outlier_PD_alpha, label = outlier_PD_alpha$X, size = 5, point.padding = 7, max.overlaps = 30, nudge_x = -0.01) +
-  theme(text = element_text(size = 16),
+  geom_text_repel(data = outlier_PD_alpha, label = outlier_PD_alpha$X, size = 3, point.padding = 7, max.overlaps = 30, nudge_x = -0.01) +
+  theme(text = element_text(size = 12),
         legend.position = "right",
-        legend.title = element_text(size = 16),
-        legend.text = element_text(size = 16),
+        legend.title = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        axis.title = element_text(size = 12),
         axis.line = element_line(color = "black"),
         panel.background = element_rect(fill='transparent'),
         plot.background = element_rect(fill='transparent', color=NA),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
-        axis.text = element_text(color = "black", size = 16)) +
+        axis.text = element_text(color = "black", size = 12)) +
   scale_y_continuous(expand = c(0,0.5)) +
-  labs(y = "PRic-z", x = "Site type", color = "Outlier:", tag = "b") +
-  guides(fill = "none"))
+  labs(y = expression(paste(alpha, "PRic-z")), x = "Location type", color = "Outlier:", tag = "b") +
+  guides(color = "none", fill = "none"))
 ```
+
+    ## Warning: The `draw_quantiles` argument of `geom_violin()` is deprecated as of ggplot2
+    ## 4.0.0.
+    ## ℹ Please use the `quantiles.linetype` argument instead.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
 
 ![](PD_analyses_files/figure-gfm/PD%20alpha%20outliers-1.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/outlier_PD_alpha.jpg", outlier_PD_alpha_plot, width = 6.26, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/outlier_PD_alpha.jpg", outlier_PD_alpha_plot, width = 3.25, height = 3.34, units = "in")
 ```
 
 ### Identify VIF of environmental and geographic variables
@@ -331,50 +357,46 @@ nzv
 ``` r
 # All env variables have variance
 
-mod <-  lm(pd.obs ~ temperature_median + salinity_median + oxygen_median + pH_median, stree_sespd_env)
+mod <-  lm(pd.obs.z ~ temperature_median + salinity_median + oxygen_median + pH_median, stree_sespd_env)
 summary(mod)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs ~ temperature_median + salinity_median + 
+    ## lm(formula = pd.obs.z ~ temperature_median + salinity_median + 
     ##     oxygen_median + pH_median, data = stree_sespd_env)
     ## 
     ## Residuals:
-    ##    Min     1Q Median     3Q    Max 
-    ## -960.6 -344.4    5.4  266.2 1158.6 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -2.0795 -0.6830  0.2744  0.6778  1.7079 
     ## 
     ## Coefficients:
-    ##                     Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)        -23046.44    7912.77  -2.913   0.0114 *
-    ## temperature_median   -226.09     151.83  -1.489   0.1586  
-    ## salinity_median        29.70      77.33   0.384   0.7067  
-    ## oxygen_median         187.18     209.39   0.894   0.3865  
-    ## pH_median            3973.56    1368.75   2.903   0.0116 *
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##                    Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)         1.37662   13.28116   0.104    0.919
+    ## temperature_median  0.06518    0.25484   0.256    0.802
+    ## salinity_median    -0.04190    0.12979  -0.323    0.752
+    ## oxygen_median      -0.17060    0.35146  -0.485    0.635
+    ## pH_median          -0.31582    2.29738  -0.137    0.893
     ## 
-    ## Residual standard error: 638.1 on 14 degrees of freedom
+    ## Residual standard error: 1.071 on 14 degrees of freedom
     ##   (3 observations deleted due to missingness)
-    ## Multiple R-squared:  0.8326, Adjusted R-squared:  0.7847 
-    ## F-statistic:  17.4 on 4 and 14 DF,  p-value: 2.52e-05
+    ## Multiple R-squared:  0.1388, Adjusted R-squared:  -0.1073 
+    ## F-statistic: 0.5641 on 4 and 14 DF,  p-value: 0.6927
 
 ``` r
-Anova(mod, type = 3)
+car::Anova(mod, type = 3)
 ```
 
     ## Anova Table (Type III tests)
     ## 
-    ## Response: pd.obs
-    ##                     Sum Sq Df F value  Pr(>F)  
-    ## (Intercept)        3454556  1  8.4830 0.01136 *
-    ## temperature_median  902998  1  2.2174 0.15864  
-    ## salinity_median      60080  1  0.1475 0.70668  
-    ## oxygen_median       325406  1  0.7991 0.38648  
-    ## pH_median          3432036  1  8.4277 0.01157 *
-    ## Residuals          5701242 14                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## Response: pd.obs.z
+    ##                     Sum Sq Df F value Pr(>F)
+    ## (Intercept)         0.0123  1  0.0107 0.9189
+    ## temperature_median  0.0751  1  0.0654 0.8018
+    ## salinity_median     0.1195  1  0.1042 0.7516
+    ## oxygen_median       0.2703  1  0.2356 0.6349
+    ## pH_median           0.0217  1  0.0189 0.8926
+    ## Residuals          16.0614 14
 
 ``` r
 rms::vif(mod)
@@ -391,48 +413,44 @@ car::vif(mod)
     ##           1.385456           3.435415           2.209454           4.821892
 
 ``` r
-mod <-  lm(pd.obs ~ temperature_median + salinity_median + oxygen_median, stree_sespd_env)
+mod <-  lm(pd.obs.z ~ temperature_median + salinity_median + oxygen_median, stree_sespd_env)
 summary(mod)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs ~ temperature_median + salinity_median + 
+    ## lm(formula = pd.obs.z ~ temperature_median + salinity_median + 
     ##     oxygen_median, data = stree_sespd_env)
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -1060.5  -388.2  -180.5   295.4  1777.7 
+    ## -2.0491 -0.6604  0.2329  0.6865  1.6970 
     ## 
     ## Coefficients:
-    ##                    Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)        -5063.68    6020.36  -0.841  0.41350   
-    ## temperature_median   -43.83     169.04  -0.259  0.79895   
-    ## salinity_median      203.57      59.81   3.403  0.00393 **
-    ## oxygen_median        588.26     192.40   3.057  0.00798 **
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##                    Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)        -0.05264    7.98903  -0.007    0.995
+    ## temperature_median  0.05069    0.22431   0.226    0.824
+    ## salinity_median    -0.05571    0.07937  -0.702    0.493
+    ## oxygen_median      -0.20248    0.25532  -0.793    0.440
     ## 
-    ## Residual standard error: 780.3 on 15 degrees of freedom
+    ## Residual standard error: 1.035 on 15 degrees of freedom
     ##   (3 observations deleted due to missingness)
-    ## Multiple R-squared:  0.7317, Adjusted R-squared:  0.6781 
-    ## F-statistic: 13.64 on 3 and 15 DF,  p-value: 0.0001466
+    ## Multiple R-squared:  0.1376, Adjusted R-squared:  -0.03483 
+    ## F-statistic: 0.798 on 3 and 15 DF,  p-value: 0.514
 
 ``` r
-Anova(mod, type = 3)
+car::Anova(mod, type = 3)
 ```
 
     ## Anova Table (Type III tests)
     ## 
-    ## Response: pd.obs
-    ##                     Sum Sq Df F value   Pr(>F)   
-    ## (Intercept)         430749  1  0.7074 0.413504   
-    ## temperature_median   40929  1  0.0672 0.798954   
-    ## salinity_median    7052231  1 11.5822 0.003931 **
-    ## oxygen_median      5692040  1  9.3483 0.007980 **
-    ## Residuals          9133278 15                    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## Response: pd.obs.z
+    ##                     Sum Sq Df F value Pr(>F)
+    ## (Intercept)         0.0000  1  0.0000 0.9948
+    ## temperature_median  0.0548  1  0.0511 0.8243
+    ## salinity_median     0.5283  1  0.4927 0.4935
+    ## oxygen_median       0.6743  1  0.6289 0.4401
+    ## Residuals          16.0831 15
 
 ``` r
 rms::vif(mod)
@@ -451,75 +469,75 @@ car::vif(mod)
 ``` r
 environment <- c("temperature_median", "salinity_median", "oxygen_median")
 
-mod <- aov(temperature_median ~ Site_type, stree_sespd_env)
+mod <- aov(temperature_median ~ Location_type, stree_sespd_env)
 summary(mod)
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## Site_type    2   2.94   1.470   1.092  0.359
-    ## Residuals   16  21.54   1.346               
+    ##               Df Sum Sq Mean Sq F value Pr(>F)
+    ## Location_type  2   2.94   1.470   1.092  0.359
+    ## Residuals     16  21.54   1.346               
     ## 3 observations deleted due to missingness
 
 ``` r
-mod <- aov(pd.obs ~ temperature_median + Site_type, stree_sespd_env)
+mod <- aov(pd.obs.z ~ temperature_median + Location_type, stree_sespd_env)
 car::vif(mod)
 ```
 
     ##                        GVIF Df GVIF^(1/(2*Df))
     ## temperature_median 1.136543  1        1.066088
-    ## Site_type          1.136543  2        1.032515
+    ## Location_type      1.136543  2        1.032515
 
 ``` r
-mod <- aov(salinity_median ~ Site_type, stree_sespd_env)
+mod <- aov(salinity_median ~ Location_type, stree_sespd_env)
 summary(mod)
 ```
 
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## Site_type    2 147.34   73.67   13.61 0.000353 ***
-    ## Residuals   16  86.62    5.41                     
+    ##               Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## Location_type  2 147.34   73.67   13.61 0.000353 ***
+    ## Residuals     16  86.62    5.41                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 3 observations deleted due to missingness
 
 ``` r
-mod <- aov(pd.obs ~ salinity_median + Site_type, stree_sespd_env)
+mod <- aov(pd.obs.z ~ salinity_median + Location_type, stree_sespd_env)
 car::vif(mod)
 ```
 
     ##                     GVIF Df GVIF^(1/(2*Df))
     ## salinity_median 2.701125  1        1.643510
-    ## Site_type       2.701125  2        1.281995
+    ## Location_type   2.701125  2        1.281995
 
 ``` r
-mod <- aov(oxygen_median ~ Site_type, stree_sespd_env)
+mod <- aov(oxygen_median ~ Location_type, stree_sespd_env)
 summary(mod)
 ```
 
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## Site_type    2 14.440    7.22      19 5.95e-05 ***
-    ## Residuals   16  6.081    0.38                     
+    ##               Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## Location_type  2 14.440    7.22      19 5.95e-05 ***
+    ## Residuals     16  6.081    0.38                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 3 observations deleted due to missingness
 
 ``` r
-mod <- aov(pd.obs ~ oxygen_median + Site_type, stree_sespd_env)
+mod <- aov(pd.obs.z ~ oxygen_median + Location_type, stree_sespd_env)
 car::vif(mod)
 ```
 
     ##                   GVIF Df GVIF^(1/(2*Df))
     ## oxygen_median 3.374424  1        1.836961
-    ## Site_type     3.374424  2        1.355345
+    ## Location_type 3.374424  2        1.355345
 
 ``` r
 SR_ss_env <- stree_sespd_env[surveyed_sites_env,]
-SR_ss_env$Site_type <- factor(SR_ss_env$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+SR_ss_env$Location_type <- factor(SR_ss_env$Location_type, levels = c("Ocean", "Mixed", "Stratified"))
 
 # Run linear discriminant analysis of environmental variables
-LDA <- lda(SR_ss_env[,environment], SR_ss_env$Site_type)
+LDA <- lda(SR_ss_env[,environment], SR_ss_env$Location_type)
 spe.class <- predict(LDA)$class
 spe.post <- predict(LDA)$posterior
-(spe.table <- table(SR_ss_env$Site_type, spe.class))
+(spe.table <- table(SR_ss_env$Location_type, spe.class))
 ```
 
     ##             spe.class
@@ -547,64 +565,64 @@ nzv
 ``` r
 # All geo variables have variance
 
-mod <-  lm(pd.obs ~ volume_m3_w_chemocline + volume_m3 + surface_area_m2 + distance_to_ocean_min_m + distance_to_ocean_mean_m + distance_to_ocean_median_m + tidal_lag_time_minutes + tidal_efficiency + perimeter_fromSat + max_depth + logArea, stree_sespd_env)
+mod <-  lm(pd.obs.z ~ volume_m3_w_chemocline + volume_m3 + surface_area_m2 + distance_to_ocean_min_m + distance_to_ocean_mean_m + distance_to_ocean_median_m + tidal_lag_time_minutes + tidal_efficiency + perimeter_fromSat + max_depth + logArea, stree_sespd_env)
 summary(mod)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs ~ volume_m3_w_chemocline + volume_m3 + surface_area_m2 + 
-    ##     distance_to_ocean_min_m + distance_to_ocean_mean_m + distance_to_ocean_median_m + 
-    ##     tidal_lag_time_minutes + tidal_efficiency + perimeter_fromSat + 
-    ##     max_depth + logArea, data = stree_sespd_env)
+    ## lm(formula = pd.obs.z ~ volume_m3_w_chemocline + volume_m3 + 
+    ##     surface_area_m2 + distance_to_ocean_min_m + distance_to_ocean_mean_m + 
+    ##     distance_to_ocean_median_m + tidal_lag_time_minutes + tidal_efficiency + 
+    ##     perimeter_fromSat + max_depth + logArea, data = stree_sespd_env)
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
-    ## -1236.90  -373.04    26.01   421.08  1540.38 
+    ## -0.99144 -0.27723 -0.03969  0.35938  0.80880 
     ## 
     ## Coefficients:
     ##                              Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)                -3.481e+03  5.821e+03  -0.598    0.565  
-    ## volume_m3_w_chemocline      1.813e-03  2.127e-03   0.852    0.416  
-    ## volume_m3                  -1.536e-03  2.204e-03  -0.697    0.503  
-    ## surface_area_m2            -3.984e-03  2.120e-03  -1.879    0.093 .
-    ## distance_to_ocean_min_m    -3.792e+00  1.163e+01  -0.326    0.752  
-    ## distance_to_ocean_mean_m    2.534e+01  4.939e+01   0.513    0.620  
-    ## distance_to_ocean_median_m -2.641e+01  4.540e+01  -0.582    0.575  
-    ## tidal_lag_time_minutes     -8.253e+00  1.363e+01  -0.606    0.560  
-    ## tidal_efficiency           -5.195e+02  3.631e+03  -0.143    0.889  
-    ## perimeter_fromSat          -6.617e-01  8.975e-01  -0.737    0.480  
-    ## max_depth                  -3.843e+01  5.981e+01  -0.643    0.536  
-    ## logArea                     8.836e+02  5.809e+02   1.521    0.163  
+    ## (Intercept)                 6.793e+00  3.986e+00   1.704   0.1225  
+    ## volume_m3_w_chemocline     -4.247e-06  1.457e-06  -2.915   0.0172 *
+    ## volume_m3                   4.197e-06  1.509e-06   2.781   0.0214 *
+    ## surface_area_m2            -1.308e-06  1.452e-06  -0.900   0.3913  
+    ## distance_to_ocean_min_m    -1.956e-02  7.964e-03  -2.456   0.0364 *
+    ## distance_to_ocean_mean_m    3.443e-02  3.383e-02   1.018   0.3353  
+    ## distance_to_ocean_median_m -2.301e-02  3.109e-02  -0.740   0.4780  
+    ## tidal_lag_time_minutes     -2.410e-02  9.333e-03  -2.582   0.0296 *
+    ## tidal_efficiency           -6.052e+00  2.486e+00  -2.434   0.0377 *
+    ## perimeter_fromSat           5.121e-04  6.147e-04   0.833   0.4263  
+    ## max_depth                  -9.476e-02  4.096e-02  -2.314   0.0460 *
+    ## logArea                    -1.265e-01  3.978e-01  -0.318   0.7577  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 966.8 on 9 degrees of freedom
+    ## Residual standard error: 0.6621 on 9 degrees of freedom
     ##   (1 observation deleted due to missingness)
-    ## Multiple R-squared:  0.7095, Adjusted R-squared:  0.3544 
-    ## F-statistic: 1.998 on 11 and 9 DF,  p-value: 0.1541
+    ## Multiple R-squared:  0.8143, Adjusted R-squared:  0.5874 
+    ## F-statistic: 3.589 on 11 and 9 DF,  p-value: 0.03259
 
 ``` r
-Anova(mod, type = 3)
+car::Anova(mod, type = 3)
 ```
 
     ## Anova Table (Type III tests)
     ## 
-    ## Response: pd.obs
-    ##                             Sum Sq Df F value  Pr(>F)  
-    ## (Intercept)                 334277  1  0.3577 0.56456  
-    ## volume_m3_w_chemocline      679038  1  0.7265 0.41612  
-    ## volume_m3                   454018  1  0.4858 0.50342  
-    ## surface_area_m2            3299154  1  3.5299 0.09298 .
-    ## distance_to_ocean_min_m      99395  1  0.1063 0.75180  
-    ## distance_to_ocean_mean_m    245998  1  0.2632 0.62028  
-    ## distance_to_ocean_median_m  316251  1  0.3384 0.57505  
-    ## tidal_lag_time_minutes      342739  1  0.3667 0.55976  
-    ## tidal_efficiency             19133  1  0.0205 0.88938  
-    ## perimeter_fromSat           508096  1  0.5436 0.47971  
-    ## max_depth                   385984  1  0.4130 0.53649  
-    ## logArea                    2162579  1  2.3138 0.16255  
-    ## Residuals                  8411739  9                  
+    ## Response: pd.obs.z
+    ##                            Sum Sq Df F value  Pr(>F)  
+    ## (Intercept)                1.2731  1  2.9041 0.12255  
+    ## volume_m3_w_chemocline     3.7258  1  8.4992 0.01716 *
+    ## volume_m3                  3.3898  1  7.7327 0.02137 *
+    ## surface_area_m2            0.3554  1  0.8108 0.39134  
+    ## distance_to_ocean_min_m    2.6443  1  6.0321 0.03640 *
+    ## distance_to_ocean_mean_m   0.4541  1  1.0360 0.33534  
+    ## distance_to_ocean_median_m 0.2402  1  0.5479 0.47803  
+    ## tidal_lag_time_minutes     2.9232  1  6.6684 0.02958 *
+    ## tidal_efficiency           2.5974  1  5.9251 0.03772 *
+    ## perimeter_fromSat          0.3043  1  0.6941 0.42631  
+    ## max_depth                  2.3464  1  5.3525 0.04597 *
+    ## logArea                    0.0444  1  0.1012 0.75768  
+    ## Residuals                  3.9453  9                  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -643,47 +661,43 @@ car::vif(mod)
     ##                   25.70304
 
 ``` r
-mod <-  lm(pd.obs ~ distance_to_ocean_min_m + max_depth + logArea, stree_sespd_env)
+mod <-  lm(pd.obs.z ~ distance_to_ocean_min_m + max_depth + logArea, stree_sespd_env)
 summary(mod)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs ~ distance_to_ocean_min_m + max_depth + logArea, 
-    ##     data = stree_sespd_env)
+    ## lm(formula = pd.obs.z ~ distance_to_ocean_min_m + max_depth + 
+    ##     logArea, data = stree_sespd_env)
     ## 
     ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -1739.8  -528.6    69.2   274.2  2683.2 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.64778 -0.52435  0.00465  0.45465  1.58573 
     ## 
     ## Coefficients:
-    ##                         Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)             1894.996   1521.690   1.245    0.229  
-    ## distance_to_ocean_min_m   -9.726      3.431  -2.835    0.011 *
-    ## max_depth                 -6.612     25.223  -0.262    0.796  
-    ## logArea                  131.270    151.202   0.868    0.397  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##                          Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)             -0.761374   1.365296  -0.558    0.584
+    ## distance_to_ocean_min_m  0.004729   0.003078   1.536    0.142
+    ## max_depth               -0.033489   0.022631  -1.480    0.156
+    ## logArea                 -0.003605   0.135662  -0.027    0.979
     ## 
-    ## Residual standard error: 1093 on 18 degrees of freedom
-    ## Multiple R-squared:  0.4137, Adjusted R-squared:  0.3159 
-    ## F-statistic: 4.233 on 3 and 18 DF,  p-value: 0.01981
+    ## Residual standard error: 0.9802 on 18 degrees of freedom
+    ## Multiple R-squared:  0.1958, Adjusted R-squared:  0.0618 
+    ## F-statistic: 1.461 on 3 and 18 DF,  p-value: 0.2585
 
 ``` r
-Anova(mod, type = 3)
+car::Anova(mod, type = 3)
 ```
 
     ## Anova Table (Type III tests)
     ## 
-    ## Response: pd.obs
-    ##                           Sum Sq Df F value  Pr(>F)  
-    ## (Intercept)              1851004  1  1.5508 0.22898  
-    ## distance_to_ocean_min_m  9591272  1  8.0359 0.01099 *
-    ## max_depth                  82010  1  0.0687 0.79620  
-    ## logArea                   899626  1  0.7537 0.39672  
-    ## Residuals               21484032 18                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## Response: pd.obs.z
+    ##                          Sum Sq Df F value Pr(>F)
+    ## (Intercept)              0.2988  1  0.3110 0.5839
+    ## distance_to_ocean_min_m  2.2671  1  2.3596 0.1419
+    ## max_depth                2.1040  1  2.1897 0.1562
+    ## logArea                  0.0007  1  0.0007 0.9791
+    ## Residuals               17.2949 18
 
 ``` r
 rms::vif(mod)
@@ -702,70 +716,70 @@ car::vif(mod)
 ``` r
 geography <- c("distance_to_ocean_min_m", "max_depth", "logArea")
 
-mod <- aov(distance_to_ocean_min_m ~ Site_type, stree_sespd_env)
+mod <- aov(distance_to_ocean_min_m ~ Location_type, stree_sespd_env)
 summary(mod)
 ```
 
-    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## Site_type    2  80935   40468   16.49 7.05e-05 ***
-    ## Residuals   19  46637    2455                     
+    ##               Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## Location_type  2  80935   40468   16.49 7.05e-05 ***
+    ## Residuals     19  46637    2455                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-mod <- aov(pd.obs ~ distance_to_ocean_min_m + Site_type, stree_sespd_env)
+mod <- aov(pd.obs.z ~ distance_to_ocean_min_m + Location_type, stree_sespd_env)
 car::vif(mod)
 ```
 
     ##                             GVIF Df GVIF^(1/(2*Df))
     ## distance_to_ocean_min_m 2.735421  1        1.653911
-    ## Site_type               2.735421  2        1.286045
+    ## Location_type           2.735421  2        1.286045
 
 ``` r
-mod <- aov(max_depth ~ Site_type, stree_sespd_env)
+mod <- aov(max_depth ~ Location_type, stree_sespd_env)
 summary(mod)
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## Site_type    2    535   267.5   2.235  0.134
-    ## Residuals   19   2274   119.7
+    ##               Df Sum Sq Mean Sq F value Pr(>F)
+    ## Location_type  2    535   267.5   2.235  0.134
+    ## Residuals     19   2274   119.7
 
 ``` r
-mod <- aov(pd.obs ~ max_depth + Site_type, stree_sespd_env)
+mod <- aov(pd.obs.z ~ max_depth + Location_type, stree_sespd_env)
 car::vif(mod)
 ```
 
-    ##               GVIF Df GVIF^(1/(2*Df))
-    ## max_depth 1.235315  1        1.111447
-    ## Site_type 1.235315  2        1.054252
+    ##                   GVIF Df GVIF^(1/(2*Df))
+    ## max_depth     1.235315  1        1.111447
+    ## Location_type 1.235315  2        1.054252
 
 ``` r
-mod <- aov(logArea ~ Site_type, stree_sespd_env)
+mod <- aov(logArea ~ Location_type, stree_sespd_env)
 summary(mod)
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## Site_type    2  14.37   7.184   2.341  0.123
-    ## Residuals   19  58.32   3.069
+    ##               Df Sum Sq Mean Sq F value Pr(>F)
+    ## Location_type  2  14.37   7.184   2.341  0.123
+    ## Residuals     19  58.32   3.069
 
 ``` r
-mod <- aov(pd.obs ~ logArea + Site_type, stree_sespd_env)
+mod <- aov(pd.obs.z ~ logArea + Location_type, stree_sespd_env)
 car::vif(mod)
 ```
 
-    ##               GVIF Df GVIF^(1/(2*Df))
-    ## logArea   1.246371  1        1.116410
-    ## Site_type 1.246371  2        1.056603
+    ##                   GVIF Df GVIF^(1/(2*Df))
+    ## logArea       1.246371  1        1.116410
+    ## Location_type 1.246371  2        1.056603
 
 ``` r
 SR_ss_geo <- stree_sespd_env[surveyed_sites,]
-SR_ss_geo$Site_type <- factor(SR_ss_geo$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+SR_ss_geo$Location_type <- factor(SR_ss_geo$Location_type, levels = c("Ocean", "Mixed", "Stratified"))
 
 # Run linear discriminant analysis of geographical variables
-LDA <- lda(SR_ss_geo[,geography], SR_ss_geo$Site_type)
+LDA <- lda(SR_ss_geo[,geography], SR_ss_geo$Location_type)
 spe.class <- predict(LDA)$class
 spe.post <- predict(LDA)$posterior
-(spe.table <- table(SR_ss_geo$Site_type, spe.class))
+(spe.table <- table(SR_ss_geo$Location_type, spe.class))
 ```
 
     ##             spe.class
@@ -783,54 +797,50 @@ diag(prop.table(spe.table, 1))
 
 ``` r
 # Combine environment and geography
-mod <-  lm(pd.obs ~ salinity_median + oxygen_median + temperature_median + distance_to_ocean_min_m + max_depth + logArea, stree_sespd_env)
+mod <-  lm(pd.obs.z ~ salinity_median + oxygen_median + temperature_median + distance_to_ocean_min_m + max_depth + logArea, stree_sespd_env)
 summary(mod)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs ~ salinity_median + oxygen_median + temperature_median + 
+    ## lm(formula = pd.obs.z ~ salinity_median + oxygen_median + temperature_median + 
     ##     distance_to_ocean_min_m + max_depth + logArea, data = stree_sespd_env)
     ## 
     ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -1338.44  -234.51   -29.79   376.69  1083.33 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.5337 -0.5831  0.2194  0.4617  1.5641 
     ## 
     ## Coefficients:
-    ##                           Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)             -6532.6687  6930.2272  -0.943   0.3645  
-    ## salinity_median           221.6224    90.9978   2.435   0.0314 *
-    ## oxygen_median             422.0351   194.7223   2.167   0.0510 .
-    ## temperature_median       -104.4125   186.7860  -0.559   0.5864  
-    ## distance_to_ocean_min_m     0.9776     4.2929   0.228   0.8237  
-    ## max_depth                 -39.9509    25.2787  -1.580   0.1400  
-    ## logArea                   409.5474   173.0952   2.366   0.0357 *
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##                          Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)             -9.897190   9.949262  -0.995    0.339
+    ## salinity_median          0.041754   0.130639   0.320    0.755
+    ## oxygen_median           -0.127615   0.279550  -0.457    0.656
+    ## temperature_median       0.288413   0.268156   1.076    0.303
+    ## distance_to_ocean_min_m  0.005448   0.006163   0.884    0.394
+    ## max_depth               -0.033994   0.036291  -0.937    0.367
+    ## logArea                 -0.066143   0.248501  -0.266    0.795
     ## 
-    ## Residual standard error: 717.9 on 12 degrees of freedom
+    ## Residual standard error: 1.031 on 12 degrees of freedom
     ##   (3 observations deleted due to missingness)
-    ## Multiple R-squared:  0.8183, Adjusted R-squared:  0.7275 
-    ## F-statistic:  9.01 on 6 and 12 DF,  p-value: 0.0007177
+    ## Multiple R-squared:  0.3165, Adjusted R-squared:  -0.02526 
+    ## F-statistic: 0.9261 on 6 and 12 DF,  p-value: 0.5101
 
 ``` r
-Anova(mod, type = 3)
+car::Anova(mod, type = 3)
 ```
 
     ## Anova Table (Type III tests)
     ## 
-    ## Response: pd.obs
-    ##                          Sum Sq Df F value  Pr(>F)  
-    ## (Intercept)              457976  1  0.8886 0.36446  
-    ## salinity_median         3057189  1  5.9315 0.03142 *
-    ## oxygen_median           2421151  1  4.6975 0.05103 .
-    ## temperature_median       161054  1  0.3125 0.58645  
-    ## distance_to_ocean_min_m   26727  1  0.0519 0.82370  
-    ## max_depth               1287359  1  2.4977 0.14000  
-    ## logArea                 2885324  1  5.5981 0.03566 *
-    ## Residuals               6184967 12                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## Response: pd.obs.z
+    ##                          Sum Sq Df F value Pr(>F)
+    ## (Intercept)              1.0512  1  0.9896 0.3395
+    ## salinity_median          0.1085  1  0.1022 0.7548
+    ## oxygen_median            0.2214  1  0.2084 0.6562
+    ## temperature_median       1.2288  1  1.1568 0.3033
+    ## distance_to_ocean_min_m  0.8302  1  0.7815 0.3940
+    ## max_depth                0.9321  1  0.8774 0.3674
+    ## logArea                  0.0753  1  0.0708 0.7946
+    ## Residuals               12.7475 12
 
 ``` r
 rms::vif(mod)
@@ -851,50 +861,46 @@ car::vif(mod)
     ##                3.720344                2.979442                2.810937
 
 ``` r
-mod <-  lm(pd.obs ~ oxygen_median + temperature_median + distance_to_ocean_min_m + logArea, stree_sespd_env)
+mod <-  lm(pd.obs.z ~ oxygen_median + temperature_median + distance_to_ocean_min_m + logArea, stree_sespd_env)
 summary(mod)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = pd.obs ~ oxygen_median + temperature_median + distance_to_ocean_min_m + 
-    ##     logArea, data = stree_sespd_env)
+    ## lm(formula = pd.obs.z ~ oxygen_median + temperature_median + 
+    ##     distance_to_ocean_min_m + logArea, data = stree_sespd_env)
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -1089.1  -515.5  -131.7   467.2  1618.6 
+    ## -1.2970 -0.8222  0.1822  0.5153  1.7577 
     ## 
     ## Coefficients:
-    ##                         Estimate Std. Error t value Pr(>|t|)  
-    ## (Intercept)             6866.106   6017.217   1.141   0.2730  
-    ## oxygen_median            529.669    224.507   2.359   0.0334 *
-    ## temperature_median      -276.362    207.914  -1.329   0.2050  
-    ## distance_to_ocean_min_m   -7.323      3.103  -2.360   0.0333 *
-    ## logArea                  240.988    144.789   1.664   0.1182  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##                          Estimate Std. Error t value Pr(>|t|)
+    ## (Intercept)             -4.977528   6.959020  -0.715    0.486
+    ## oxygen_median           -0.057382   0.259646  -0.221    0.828
+    ## temperature_median       0.197762   0.240457   0.822    0.425
+    ## distance_to_ocean_min_m  0.003899   0.003588   1.087    0.296
+    ## logArea                 -0.227450   0.167451  -1.358    0.196
     ## 
-    ## Residual standard error: 856.9 on 14 degrees of freedom
+    ## Residual standard error: 0.991 on 14 degrees of freedom
     ##   (3 observations deleted due to missingness)
-    ## Multiple R-squared:  0.6981, Adjusted R-squared:  0.6118 
-    ## F-statistic: 8.092 on 4 and 14 DF,  p-value: 0.001346
+    ## Multiple R-squared:  0.2628, Adjusted R-squared:  0.05212 
+    ## F-statistic: 1.247 on 4 and 14 DF,  p-value: 0.3361
 
 ``` r
-Anova(mod, type = 3)
+car::Anova(mod, type = 3)
 ```
 
     ## Anova Table (Type III tests)
     ## 
-    ## Response: pd.obs
-    ##                           Sum Sq Df F value  Pr(>F)  
-    ## (Intercept)               956066  1  1.3021 0.27298  
-    ## oxygen_median            4087034  1  5.5661 0.03337 *
-    ## temperature_median       1297314  1  1.7668 0.20503  
-    ## distance_to_ocean_min_m  4089851  1  5.5699 0.03332 *
-    ## logArea                  2034131  1  2.7703 0.11824  
-    ## Residuals               10279839 14                  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## Response: pd.obs.z
+    ##                          Sum Sq Df F value Pr(>F)
+    ## (Intercept)              0.5025  1  0.5116 0.4862
+    ## oxygen_median            0.0480  1  0.0488 0.8283
+    ## temperature_median       0.6643  1  0.6764 0.4246
+    ## distance_to_ocean_min_m  1.1596  1  1.1807 0.2956
+    ## logArea                  1.8120  1  1.8450 0.1959
+    ## Residuals               13.7496 14
 
 ``` r
 rms::vif(mod)
@@ -919,10 +925,10 @@ envgeo <- c("oxygen_median", "temperature_median", "distance_to_ocean_min_m", "l
 
 
 # Run linear discriminant analysis of geographical variables
-LDA <- lda(SR_ss_env[,envgeo], SR_ss_env$Site_type)
+LDA <- lda(SR_ss_env[,envgeo], SR_ss_env$Location_type)
 spe.class <- predict(LDA)$class
 spe.post <- predict(LDA)$posterior
-(spe.table <- table(SR_ss_env$Site_type, spe.class))
+(spe.table <- table(SR_ss_env$Location_type, spe.class))
 ```
 
     ##             spe.class
@@ -938,18 +944,41 @@ diag(prop.table(spe.table, 1))
     ##      Ocean      Mixed Stratified 
     ##      1.000      0.875      0.875
 
-### PD alpha & site type
+### PD alpha & Location type
 
 ``` r
-### Site_type
+### Location_type
 # Run ANOVA on the original data
-anova_PRic_result <- aov(pd.obs ~ Site_type, data = stree_sespd_env[surveyed_sites,])
+anova_PRic_result <- aov(pd.obs ~ Location_type, data = stree_sespd_env[surveyed_sites,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(anova_PRic_result))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(anova_PRic_result)
+    ## W = 0.97392, p-value = 0.7997
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(anova_PRic_result) ~ SR_env[surveyed_sites,"Location_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value  Pr(>F)   
+    ## group  2  6.8998 0.00559 **
+    ##       19                   
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
 summary(anova_PRic_result)
 ```
 
-    ##             Df   Sum Sq  Mean Sq F value   Pr(>F)    
-    ## Site_type    2 23597133 11798567   17.19 5.48e-05 ***
-    ## Residuals   19 13044225   686538                     
+    ##               Df   Sum Sq  Mean Sq F value   Pr(>F)    
+    ## Location_type  2 23597133 11798567   17.19 5.48e-05 ***
+    ## Residuals     19 13044225   686538                     
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -962,9 +991,9 @@ print(tukey_PRic_result)
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = pd.obs ~ Site_type, data = stree_sespd_env[surveyed_sites, ])
+    ## Fit: aov(formula = pd.obs ~ Location_type, data = stree_sespd_env[surveyed_sites, ])
     ## 
-    ## $Site_type
+    ## $Location_type
     ##                        diff        lwr        upr     p adj
     ## Mixed-Ocean        218.8183  -917.9877  1355.6244 0.8773441
     ## Stratified-Ocean -2020.3990 -3157.2051  -883.5929 0.0006627
@@ -985,22 +1014,22 @@ BSE <- sqrt(MS / 8)
 USE <- sqrt((MS/2)*((1/6)+(1/8)))
 
 # Get differences
-Site_type <- tukey_PRic_result$Site_type
+Location_type <- tukey_PRic_result$Location_type
 
 # q-values
-(OM_q <- (abs(Site_type[1,1]))/USE)
+(OM_q <- (abs(Location_type[1,1]))/USE)
 ```
 
     ## [1] 0.6915491
 
 ``` r
-(MS_q <- (abs(Site_type[3,1]))/BSE)
+(MS_q <- (abs(Location_type[3,1]))/BSE)
 ```
 
     ## [1] 7.643793
 
 ``` r
-(SO_q <- (abs(Site_type[2,1]))/USE)
+(SO_q <- (abs(Location_type[2,1]))/USE)
 ```
 
     ## [1] 6.385228
@@ -1008,14 +1037,36 @@ Site_type <- tukey_PRic_result$Site_type
 ``` r
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
 
+
 # Run ANOVA on the original data
-anova_PRicz_result <- aov(pd.obs.z ~ Site_type, data = stree_sespd_env[surveyed_sites,])
+anova_PRicz_result <- aov(pd.obs.z ~ Location_type, data = stree_sespd_env[surveyed_sites,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(anova_PRicz_result))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(anova_PRicz_result)
+    ## W = 0.99439, p-value = 1
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(anova_PRicz_result) ~ SR_env[surveyed_sites,"Location_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value Pr(>F)
+    ## group  2  0.4728 0.6304
+    ##       19
+
+``` r
 summary(anova_PRicz_result)
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## Site_type    2  1.838   0.919   0.888  0.428
-    ## Residuals   19 19.668   1.035
+    ##               Df Sum Sq Mean Sq F value Pr(>F)
+    ## Location_type  2  1.838   0.919   0.888  0.428
+    ## Residuals     19 19.668   1.035
 
 ``` r
 # Perform Tukey's HSD test
@@ -1026,13 +1077,13 @@ print(tukey_PRicz_result)
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = pd.obs.z ~ Site_type, data = stree_sespd_env[surveyed_sites, ])
+    ## Fit: aov(formula = pd.obs.z ~ Location_type, data = stree_sespd_env[surveyed_sites, ])
     ## 
-    ## $Site_type
+    ## $Location_type
     ##                          diff        lwr      upr     p adj
     ## Mixed-Ocean      0.6488785535 -0.7470411 2.044798 0.4784457
     ## Stratified-Ocean 0.6491655128 -0.7467542 2.045085 0.4781464
-    ## Stratified-Mixed 0.0002869593 -1.2920836 1.292657 0.9999998
+    ## Stratified-Mixed 0.0002869594 -1.2920836 1.292657 0.9999998
 
 ``` r
 # Sites
@@ -1049,22 +1100,22 @@ BSE <- sqrt(MS / 8)
 USE <- sqrt((MS/2)*((1/6)+(1/8)))
 
 # Get differences
-Site_type <- tukey_PRicz_result$Site_type
+Location_type <- tukey_PRicz_result$Location_type
 
 # q-values
-(OM_q <- (abs(Site_type[1,1]))/USE)
+(OM_q <- (abs(Location_type[1,1]))/USE)
 ```
 
     ## [1] 1.670047
 
 ``` r
-(MS_q <- (abs(Site_type[3,1]))/BSE)
+(MS_q <- (abs(Location_type[3,1]))/BSE)
 ```
 
-    ## [1] 0.0007977355
+    ## [1] 0.0007977357
 
 ``` r
-(SO_q <- (abs(Site_type[2,1]))/USE)
+(SO_q <- (abs(Location_type[2,1]))/USE)
 ```
 
     ## [1] 1.670785
@@ -1072,14 +1123,126 @@ Site_type <- tukey_PRicz_result$Site_type
 ``` r
 # Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
 
+
 # Run ANOVA on the original data
-anova_PDisp_result <- aov(Dispersion ~ Site_type, data = stree_sespd_env[surveyed_sites,])
+anova_PRicz_result <- aov(pd.obs.z ~ Location_type, data = stree_sespd_env[surveyed_sites_wo_LCN,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(anova_PRicz_result))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(anova_PRicz_result)
+    ## W = 0.955, p-value = 0.4216
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(anova_PRicz_result) ~ SR_env[surveyed_sites_wo_LCN,"Location_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value Pr(>F)
+    ## group  2  0.0469 0.9543
+    ##       18
+
+``` r
+summary(anova_PRicz_result)
+```
+
+    ##               Df Sum Sq Mean Sq F value Pr(>F)  
+    ## Location_type  2   4.35  2.1748   2.721 0.0928 .
+    ## Residuals     18  14.39  0.7994                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# Perform Tukey's HSD test
+tukey_PRicz_result <- TukeyHSD(anova_PRicz_result)
+print(tukey_PRicz_result)
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = pd.obs.z ~ Location_type, data = stree_sespd_env[surveyed_sites_wo_LCN, ])
+    ## 
+    ## $Location_type
+    ##                          diff        lwr      upr     p adj
+    ## Mixed-Ocean      1.0683910717 -0.2324447 2.369227 0.1187864
+    ## Stratified-Ocean 1.0686780311 -0.2321578 2.369514 0.1186661
+    ## Stratified-Mixed 0.0002869594 -1.1406215 1.141195 0.9999998
+
+``` r
+# Sites
+N <- length(anova_PRicz_result$residuals)
+# Categories
+k <- length(anova_PRicz_result$coefficients)
+# Sum of squares
+SS <- sum(resid(anova_PRicz_result)^2) # from anova, the residual SS
+# Mean squares
+MS <- SS/(N-k)
+# Balanced
+BSE <- sqrt(MS / 8)
+# Unbalanced
+USE <- sqrt((MS/2)*((1/6)+(1/8)))
+
+# Get differences
+Location_type <- tukey_PRicz_result$Location_type
+
+# q-values
+(OM_q <- (abs(Location_type[1,1]))/USE)
+```
+
+    ## [1] 3.129172
+
+``` r
+(MS_q <- (abs(Location_type[3,1]))/BSE)
+```
+
+    ## [1] 0.000907806
+
+``` r
+(SO_q <- (abs(Location_type[2,1]))/USE)
+```
+
+    ## [1] 3.130013
+
+``` r
+# Check values here https://www.socscistatistics.com/pvalues/qdistribution.aspx
+
+
+# Run ANOVA on the original data
+anova_PDisp_result <- aov(Dispersion ~ Location_type, data = stree_sespd_env[surveyed_sites,])
+# Shapiro-Wilk test on residuals
+shapiro.test(residuals(anova_PDisp_result))
+```
+
+    ## 
+    ##  Shapiro-Wilk normality test
+    ## 
+    ## data:  residuals(anova_PDisp_result)
+    ## W = 0.85989, p-value = 0.005104
+
+``` r
+# Levene’s test for homogeneity of variance
+car::leveneTest(residuals(anova_PDisp_result) ~ SR_env[surveyed_sites,"Location_type"])
+```
+
+    ## Levene's Test for Homogeneity of Variance (center = median)
+    ##       Df F value  Pr(>F)  
+    ## group  2  3.5154 0.05024 .
+    ##       19                  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
 summary(anova_PDisp_result)
 ```
 
-    ##             Df   Sum Sq   Mean Sq F value Pr(>F)
-    ## Site_type    2 0.000707 0.0003537   0.703  0.507
-    ## Residuals   19 0.009556 0.0005030
+    ##               Df   Sum Sq   Mean Sq F value Pr(>F)
+    ## Location_type  2 0.000707 0.0003537   0.703  0.507
+    ## Residuals     19 0.009556 0.0005030
 
 ``` r
 # Perform Tukey's HSD test
@@ -1090,13 +1253,13 @@ print(tukey_PDisp_result)
     ##   Tukey multiple comparisons of means
     ##     95% family-wise confidence level
     ## 
-    ## Fit: aov(formula = Dispersion ~ Site_type, data = stree_sespd_env[surveyed_sites, ])
+    ## Fit: aov(formula = Dispersion ~ Location_type, data = stree_sespd_env[surveyed_sites, ])
     ## 
-    ## $Site_type
+    ## $Location_type
     ##                          diff         lwr        upr     p adj
     ## Mixed-Ocean       0.007071665 -0.02369775 0.03784108 0.8302990
     ## Stratified-Ocean -0.006219734 -0.03698915 0.02454968 0.8657120
-    ## Stratified-Mixed -0.013291399 -0.04177834 0.01519555 0.4759158
+    ## Stratified-Mixed -0.013291399 -0.04177834 0.01519555 0.4759157
 
 ``` r
 # Sites
@@ -1113,22 +1276,22 @@ BSE <- sqrt(MS / 8)
 USE <- sqrt((MS/2)*((1/6)+(1/8)))
 
 # Get differences
-Site_type <- tukey_PDisp_result$Site_type
+Location_type <- tukey_PDisp_result$Location_type
 
 # q-values
-(OM_q <- (abs(Site_type[1,1]))/USE)
+(OM_q <- (abs(Location_type[1,1]))/USE)
 ```
 
     ## [1] 0.825711
 
 ``` r
-(MS_q <- (abs(Site_type[3,1]))/BSE)
+(MS_q <- (abs(Location_type[3,1]))/BSE)
 ```
 
     ## [1] 1.676295
 
 ``` r
-(SO_q <- (abs(Site_type[2,1]))/USE)
+(SO_q <- (abs(Location_type[2,1]))/USE)
 ```
 
     ## [1] 0.7262367
@@ -1141,7 +1304,7 @@ Site_type <- tukey_PDisp_result$Site_type
 
 ``` r
 # Temperature
-PD_alpha_T_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping = aes(y = pd.obs.z, x = temperature_median, color = Site_type, fill = Site_type)) + 
+PD_alpha_T_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping = aes(y = pd.obs.z, x = temperature_median, color = Location_type, fill = Location_type)) + 
   geom_point(stat = 'identity',
   size = 4,
   alpha = 1) + 
@@ -1158,7 +1321,7 @@ PD_alpha_T_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping =
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Temperature (ºC)", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Temperature (ºC)", y=expression(paste(alpha, "PRic-z")), colour = "Location type:", fill = "Location type:", tag = "a")
 (PD_alpha_T_plot <- PD_alpha_T_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1167,14 +1330,14 @@ PD_alpha_T_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping =
 ![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20plots-1.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_T_plot.jpg", plot = PD_alpha_T_plot, width = 6.26, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_alpha_T_plot.jpg", plot = PD_alpha_T_plot, width = 6.26, height = 6, units = "in")
 ```
 
     ## `geom_smooth()` using formula = 'y ~ x'
 
 ``` r
 # Salinity
-PD_alpha_S_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping = aes(y = pd.obs.z, x = salinity_median, color = Site_type, fill = Site_type)) + 
+PD_alpha_S_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping = aes(y = pd.obs.z, x = salinity_median, color = Location_type, fill = Location_type)) + 
   geom_point(stat = 'identity',
   size = 4,
   alpha = 1) + 
@@ -1191,7 +1354,7 @@ PD_alpha_S_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping =
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Salinity (ppt)", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Salinity (ppt)", y=expression(paste(alpha, "PRic-z")), colour = "Location type:", fill = "Location type:", tag = "b")
 (PD_alpha_S_plot <- PD_alpha_S_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1200,14 +1363,14 @@ PD_alpha_S_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping =
 ![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20plots-2.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_S_plot.jpg", plot = PD_alpha_S_plot, width = 6.26, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_alpha_S_plot.jpg", plot = PD_alpha_S_plot, width = 6.26, height = 6, units = "in")
 ```
 
     ## `geom_smooth()` using formula = 'y ~ x'
 
 ``` r
 # Oxygen
-PD_alpha_O_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping = aes(y = pd.obs.z, x = oxygen_median, color = Site_type, fill = Site_type)) + 
+PD_alpha_O_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping = aes(y = pd.obs.z, x = oxygen_median, color = Location_type, fill = Location_type)) + 
   geom_point(stat = 'identity',
   size = 4,
   alpha = 1) + 
@@ -1224,7 +1387,7 @@ PD_alpha_O_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping =
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Oxygen (mg/L)", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(x="Oxygen (mg/L)", y=expression(paste(alpha, "PRic-z")), colour = "Location type:", fill = "Location type:", tag = "c")
 (PD_alpha_O_plot <- PD_alpha_O_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1233,14 +1396,14 @@ PD_alpha_O_plot <- ggplot(data = stree_sespd_env[surveyed_sites_env,], mapping =
 ![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20plots-3.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_O_plot.jpg", plot = PD_alpha_O_plot, width = 6.26, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_alpha_O_plot.jpg", plot = PD_alpha_O_plot, width = 6.26, height = 6, units = "in")
 ```
 
     ## `geom_smooth()` using formula = 'y ~ x'
 
 ``` r
 # Distance from the ocean mean
-PD_alpha_D_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = aes(y = pd.obs.z, x = distance_to_ocean_min_m, color = Site_type, fill = Site_type)) + 
+PD_alpha_D_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = aes(y = pd.obs.z, x = distance_to_ocean_min_m, color = Location_type, fill = Location_type)) + 
   geom_point(stat = 'identity',
   size = 4,
   alpha = 1) + 
@@ -1257,7 +1420,7 @@ PD_alpha_D_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = aes
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Isolation (m)", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="Isolation (m)", y=expression(paste(alpha, "PRic-z")), colour = "Location type:", fill = "Location type:", tag = "a")
 (PD_alpha_D_plot <- PD_alpha_D_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1266,14 +1429,14 @@ PD_alpha_D_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = aes
 ![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20plots-4.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_D_plot.jpg", plot = PD_alpha_D_plot, width = 6.26, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_alpha_D_plot.jpg", plot = PD_alpha_D_plot, width = 6.26, height = 6, units = "in")
 ```
 
     ## `geom_smooth()` using formula = 'y ~ x'
 
 ``` r
 # Max depth
-PD_alpha_MD_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = aes(y = pd.obs.z, x = max_depth, color = Site_type, fill = Site_type)) + 
+PD_alpha_MD_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = aes(y = pd.obs.z, x = max_depth, color = Location_type, fill = Location_type)) + 
   geom_point(stat = 'identity',
   size = 4,
   alpha = 1) + 
@@ -1290,7 +1453,7 @@ PD_alpha_MD_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = ae
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Age (m)", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "b")
+  labs(x="Age (m)", y=expression(paste(alpha, "PRic-z")), colour = "Location type:", fill = "Location type:", tag = "b")
 (PD_alpha_MD_plot <- PD_alpha_MD_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1299,14 +1462,14 @@ PD_alpha_MD_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = ae
 ![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20plots-5.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_MD_plot.jpg", plot = PD_alpha_MD_plot, width = 6.26, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_alpha_MD_plot.jpg", plot = PD_alpha_MD_plot, width = 6.26, height = 6, units = "in")
 ```
 
     ## `geom_smooth()` using formula = 'y ~ x'
 
 ``` r
 # Log Area
-PD_alpha_LA_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = aes(y = pd.obs.z, x = logArea, color = Site_type, fill = Site_type)) + 
+PD_alpha_LA_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = aes(y = pd.obs.z, x = logArea, color = Location_type, fill = Location_type)) + 
   geom_point(stat = 'identity',
   size = 4,
   alpha = 1) + 
@@ -1323,7 +1486,7 @@ PD_alpha_LA_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = ae
   panel.grid.major = element_blank(),
   panel.grid.minor = element_blank(),
   panel.border = element_blank()) + 
-  labs(x="Log Area (m"^"2"~")", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "c")
+  labs(x="Log Area (m"^"2"~")", y=expression(paste(alpha, "PRic-z")), colour = "Location type:", fill = "Location type:", tag = "c")
 (PD_alpha_LA_plot <- PD_alpha_LA_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
@@ -1332,21 +1495,21 @@ PD_alpha_LA_plot <- ggplot(data = stree_sespd_env[surveyed_sites,], mapping = ae
 ![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20plots-6.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_LA_plot.jpg", plot = PD_alpha_LA_plot, width = 6.26, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_alpha_LA_plot.jpg", plot = PD_alpha_LA_plot, width = 6.26, height = 6, units = "in")
 ```
 
     ## `geom_smooth()` using formula = 'y ~ x'
 
-### PD alpha with env and geo linear models & ANOVAs
+### PD alpha with env and geo linear models & ANCOVAs
 
 ``` r
 par(mfrow=c(2,2)) 
-##### PRicz ANOVAs
+##### PRicz ANCOVAs
 #### Environmental
 ### Surveyed sites
 ## Temperature
 # Interaction
-PD_PRicz_am_temp <- aov(pd.obs.z ~ temperature_median * Site_type, data = stree_sespd_env[surveyed_sites_env,])
+PD_PRicz_am_temp <- aov(pd.obs.z ~ temperature_median * Location_type, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_am_temp))
 ```
@@ -1359,7 +1522,7 @@ shapiro.test(residuals(PD_PRicz_am_temp))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_temp) ~ stree_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_am_temp) ~ stree_sespd_env[surveyed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1385,18 +1548,18 @@ plot(PD_PRicz_am_temp)
     ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
     ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-1.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-1.png)<!-- -->
 
 ``` r
-# Summarize the ANOVA results
+# Summarize the ANCOVA results
 summary(PD_PRicz_am_temp)
 ```
 
-    ##                              Df Sum Sq Mean Sq F value Pr(>F)  
-    ## temperature_median            1  0.541  0.5408   0.718 0.4120  
-    ## Site_type                     2  5.698  2.8488   3.784 0.0507 .
-    ## temperature_median:Site_type  2  2.624  1.3121   1.743 0.2135  
-    ## Residuals                    13  9.788  0.7529                 
+    ##                                  Df Sum Sq Mean Sq F value Pr(>F)  
+    ## temperature_median                1  0.541  0.5408   0.718 0.4120  
+    ## Location_type                     2  5.698  2.8488   3.784 0.0507 .
+    ## temperature_median:Location_type  2  2.624  1.3121   1.743 0.2135  
+    ## Residuals                        13  9.788  0.7529                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1411,7 +1574,7 @@ p_values <- c(temp_p_values[1:3])
 
 ``` r
 # ANCOVA
-PD_PRicz_am_temp <- aov(pd.obs.z ~ temperature_median + Site_type, data = stree_sespd_env[surveyed_sites_env,])
+PD_PRicz_am_temp <- aov(pd.obs.z ~ temperature_median + Location_type, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_am_temp))
 ```
@@ -1424,7 +1587,7 @@ shapiro.test(residuals(PD_PRicz_am_temp))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_temp) ~ stree_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_am_temp) ~ stree_sespd_env[surveyed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1447,24 +1610,24 @@ outlierTest(PD_PRicz_am_temp)
 plot(PD_PRicz_am_temp)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-2.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-2.png)<!-- -->
 
 ``` r
 ### Ocean & Mixed sites
-PD_PRicz_OM_am_temp <- aov(pd.obs.z ~ temperature_median * Site_type, data = stree_sespd_env[ocean_mixed_sites_env,])
+PD_PRicz_OM_am_temp <- aov(pd.obs.z ~ temperature_median * Location_type, data = stree_sespd_env[ocean_mixed_sites_env,])
 summary(PD_PRicz_OM_am_temp)
 ```
 
-    ##                              Df Sum Sq Mean Sq F value Pr(>F)  
-    ## temperature_median            1  0.272   0.272   0.345  0.576  
-    ## Site_type                     1  4.678   4.678   5.934  0.045 *
-    ## temperature_median:Site_type  1  2.515   2.515   3.190  0.117  
-    ## Residuals                     7  5.518   0.788                 
+    ##                                  Df Sum Sq Mean Sq F value Pr(>F)  
+    ## temperature_median                1  0.272   0.272   0.345  0.576  
+    ## Location_type                     1  4.678   4.678   5.934  0.045 *
+    ## temperature_median:Location_type  1  2.515   2.515   3.190  0.117  
+    ## Residuals                         7  5.518   0.788                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_OM_am_temp <- aov(pd.obs.z ~ temperature_median + Site_type, data = stree_sespd_env[ocean_mixed_sites_env,])
+PD_PRicz_OM_am_temp <- aov(pd.obs.z ~ temperature_median + Location_type, data = stree_sespd_env[ocean_mixed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OM_am_temp))
 ```
@@ -1477,7 +1640,7 @@ shapiro.test(residuals(PD_PRicz_OM_am_temp))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_OM_am_temp) ~ stree_sespd_env[ocean_mixed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_OM_am_temp) ~ stree_sespd_env[ocean_mixed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1487,20 +1650,20 @@ car::leveneTest(residuals(PD_PRicz_OM_am_temp) ~ stree_sespd_env[ocean_mixed_sit
 
 ``` r
 ### Ocean & Stratified sites
-PD_PRicz_OS_am_temp <- aov(pd.obs.z ~ temperature_median * Site_type, data = stree_sespd_env[ocean_stratified_sites_env,])
+PD_PRicz_OS_am_temp <- aov(pd.obs.z ~ temperature_median * Location_type, data = stree_sespd_env[ocean_stratified_sites_env,])
 summary(PD_PRicz_OS_am_temp)
 ```
 
-    ##                              Df Sum Sq Mean Sq F value Pr(>F)  
-    ## temperature_median            1  0.606   0.606   0.732 0.4205  
-    ## Site_type                     1  4.506   4.506   5.445 0.0523 .
-    ## temperature_median:Site_type  1  2.047   2.047   2.473 0.1598  
-    ## Residuals                     7  5.793   0.828                 
+    ##                                  Df Sum Sq Mean Sq F value Pr(>F)  
+    ## temperature_median                1  0.606   0.606   0.732 0.4205  
+    ## Location_type                     1  4.506   4.506   5.445 0.0523 .
+    ## temperature_median:Location_type  1  2.047   2.047   2.473 0.1598  
+    ## Residuals                         7  5.793   0.828                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_OS_am_temp <- aov(pd.obs.z ~ temperature_median + Site_type, data = stree_sespd_env[ocean_stratified_sites_env,])
+PD_PRicz_OS_am_temp <- aov(pd.obs.z ~ temperature_median + Location_type, data = stree_sespd_env[ocean_stratified_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_am_temp))
 ```
@@ -1513,7 +1676,7 @@ shapiro.test(residuals(PD_PRicz_OS_am_temp))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_OS_am_temp) ~ stree_sespd_env[ocean_stratified_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_OS_am_temp) ~ stree_sespd_env[ocean_stratified_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1523,18 +1686,18 @@ car::leveneTest(residuals(PD_PRicz_OS_am_temp) ~ stree_sespd_env[ocean_stratifie
 
 ``` r
 ### Mixed & Stratified lakes
-PD_PRicz_MS_am_temp <- aov(pd.obs.z ~ temperature_median * Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_am_temp <- aov(pd.obs.z ~ temperature_median * Location_type, data = stree_sespd_env[mixed_stratified_lakes,])
 summary(PD_PRicz_MS_am_temp)
 ```
 
-    ##                              Df Sum Sq Mean Sq F value Pr(>F)
-    ## temperature_median            1  1.018  1.0185   1.479  0.247
-    ## Site_type                     1  0.148  0.1479   0.215  0.651
-    ## temperature_median:Site_type  1  0.373  0.3734   0.542  0.476
-    ## Residuals                    12  8.264  0.6887
+    ##                                  Df Sum Sq Mean Sq F value Pr(>F)
+    ## temperature_median                1  1.018  1.0185   1.479  0.247
+    ## Location_type                     1  0.148  0.1479   0.215  0.651
+    ## temperature_median:Location_type  1  0.373  0.3734   0.542  0.476
+    ## Residuals                        12  8.264  0.6887
 
 ``` r
-PD_PRicz_MS_am_temp <- aov(pd.obs.z ~ temperature_median + Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_am_temp <- aov(pd.obs.z ~ temperature_median + Location_type, data = stree_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_MS_am_temp))
 ```
@@ -1547,7 +1710,7 @@ shapiro.test(residuals(PD_PRicz_MS_am_temp))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_MS_am_temp) ~ stree_sespd_env[mixed_stratified_lakes,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_MS_am_temp) ~ stree_sespd_env[mixed_stratified_lakes,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1584,7 +1747,7 @@ shapiro.test(residuals(PD_PRicz_S_am_temp))
 ``` r
 ## Salinity
 # Interaction
-PD_PRicz_am_sal <- aov(pd.obs.z ~ salinity_median * Site_type, data = stree_sespd_env[surveyed_sites_env,])
+PD_PRicz_am_sal <- aov(pd.obs.z ~ salinity_median * Location_type, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_am_sal))
 ```
@@ -1597,7 +1760,7 @@ shapiro.test(residuals(PD_PRicz_am_sal))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_sal) ~ stree_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_am_sal) ~ stree_sespd_env[surveyed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1620,18 +1783,18 @@ outlierTest(PD_PRicz_am_sal)
 plot(PD_PRicz_am_sal)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-3.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-3.png)<!-- -->
 
 ``` r
-# Summarize the ANOVA results
+# Summarize the ANCOVA results
 summary(PD_PRicz_am_sal)
 ```
 
-    ##                           Df Sum Sq Mean Sq F value Pr(>F)  
-    ## salinity_median            1  1.819  1.8189   2.385 0.1465  
-    ## Site_type                  2  4.664  2.3322   3.058 0.0816 .
-    ## salinity_median:Site_type  2  2.253  1.1263   1.477 0.2643  
-    ## Residuals                 13  9.914  0.7626                 
+    ##                               Df Sum Sq Mean Sq F value Pr(>F)  
+    ## salinity_median                1  1.819  1.8189   2.385 0.1465  
+    ## Location_type                  2  4.664  2.3322   3.058 0.0816 .
+    ## salinity_median:Location_type  2  2.253  1.1263   1.477 0.2643  
+    ## Residuals                     13  9.914  0.7626                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1646,7 +1809,7 @@ p_values <- c(sal_p_values[1:3])
 
 ``` r
 # ANCOVA
-PD_PRicz_am_sal <- aov(pd.obs.z ~ salinity_median + Site_type, data = stree_sespd_env[surveyed_sites_env,])
+PD_PRicz_am_sal <- aov(pd.obs.z ~ salinity_median + Location_type, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_am_sal))
 ```
@@ -1659,7 +1822,7 @@ shapiro.test(residuals(PD_PRicz_am_sal))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_sal) ~ stree_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_am_sal) ~ stree_sespd_env[surveyed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1682,24 +1845,24 @@ outlierTest(PD_PRicz_am_sal)
 plot(PD_PRicz_am_sal)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-4.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-4.png)<!-- -->
 
 ``` r
 ### Ocean & Mixed sites
-PD_PRicz_OM_am_sal <- aov(pd.obs.z ~ salinity_median * Site_type, data = stree_sespd_env[ocean_mixed_sites_env,])
+PD_PRicz_OM_am_sal <- aov(pd.obs.z ~ salinity_median * Location_type, data = stree_sespd_env[ocean_mixed_sites_env,])
 summary(PD_PRicz_OM_am_sal)
 ```
 
-    ##                           Df Sum Sq Mean Sq F value Pr(>F)  
-    ## salinity_median            1  5.647   5.647   7.138 0.0319 *
-    ## Site_type                  1  1.024   1.024   1.294 0.2928  
-    ## salinity_median:Site_type  1  0.774   0.774   0.978 0.3556  
-    ## Residuals                  7  5.538   0.791                 
+    ##                               Df Sum Sq Mean Sq F value Pr(>F)  
+    ## salinity_median                1  5.647   5.647   7.138 0.0319 *
+    ## Location_type                  1  1.024   1.024   1.294 0.2928  
+    ## salinity_median:Location_type  1  0.774   0.774   0.978 0.3556  
+    ## Residuals                      7  5.538   0.791                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_OM_am_sal <- aov(pd.obs.z ~ salinity_median + Site_type, data = stree_sespd_env[ocean_mixed_sites_env,])
+PD_PRicz_OM_am_sal <- aov(pd.obs.z ~ salinity_median + Location_type, data = stree_sespd_env[ocean_mixed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OM_am_sal))
 ```
@@ -1712,7 +1875,7 @@ shapiro.test(residuals(PD_PRicz_OM_am_sal))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_OM_am_sal) ~ stree_sespd_env[ocean_mixed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_OM_am_sal) ~ stree_sespd_env[ocean_mixed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1722,20 +1885,20 @@ car::leveneTest(residuals(PD_PRicz_OM_am_sal) ~ stree_sespd_env[ocean_mixed_site
 
 ``` r
 ### Ocean & Stratified sites
-PD_PRicz_OS_am_sal <- aov(pd.obs.z ~ salinity_median * Site_type, data = stree_sespd_env[ocean_stratified_sites_env,])
+PD_PRicz_OS_am_sal <- aov(pd.obs.z ~ salinity_median * Location_type, data = stree_sespd_env[ocean_stratified_sites_env,])
 summary(PD_PRicz_OS_am_sal)
 ```
 
-    ##                           Df Sum Sq Mean Sq F value Pr(>F)  
-    ## salinity_median            1  4.198   4.198   4.157 0.0809 .
-    ## Site_type                  1  1.244   1.244   1.231 0.3038  
-    ## salinity_median:Site_type  1  0.441   0.441   0.437 0.5297  
-    ## Residuals                  7  7.069   1.010                 
+    ##                               Df Sum Sq Mean Sq F value Pr(>F)  
+    ## salinity_median                1  4.198   4.198   4.157 0.0809 .
+    ## Location_type                  1  1.244   1.244   1.231 0.3038  
+    ## salinity_median:Location_type  1  0.441   0.441   0.437 0.5297  
+    ## Residuals                      7  7.069   1.010                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_OS_am_sal <- aov(pd.obs.z ~ salinity_median + Site_type, data = stree_sespd_env[ocean_stratified_sites_env,])
+PD_PRicz_OS_am_sal <- aov(pd.obs.z ~ salinity_median + Location_type, data = stree_sespd_env[ocean_stratified_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_am_sal))
 ```
@@ -1748,7 +1911,7 @@ shapiro.test(residuals(PD_PRicz_OS_am_sal))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_OS_am_sal) ~ stree_sespd_env[ocean_stratified_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_OS_am_sal) ~ stree_sespd_env[ocean_stratified_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1758,18 +1921,18 @@ car::leveneTest(residuals(PD_PRicz_OS_am_sal) ~ stree_sespd_env[ocean_stratified
 
 ``` r
 ### Mixed & Stratified lakes
-PD_PRicz_MS_am_sal <- aov(pd.obs.z ~ salinity_median * Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_am_sal <- aov(pd.obs.z ~ salinity_median * Location_type, data = stree_sespd_env[mixed_stratified_lakes,])
 summary(PD_PRicz_MS_am_sal)
 ```
 
-    ##                           Df Sum Sq Mean Sq F value Pr(>F)
-    ## salinity_median            1  0.325  0.3254   0.541  0.476
-    ## Site_type                  1  0.449  0.4492   0.746  0.405
-    ## salinity_median:Site_type  1  1.807  1.8070   3.002  0.109
-    ## Residuals                 12  7.222  0.6019
+    ##                               Df Sum Sq Mean Sq F value Pr(>F)
+    ## salinity_median                1  0.325  0.3254   0.541  0.476
+    ## Location_type                  1  0.449  0.4492   0.746  0.405
+    ## salinity_median:Location_type  1  1.807  1.8070   3.002  0.109
+    ## Residuals                     12  7.222  0.6019
 
 ``` r
-PD_PRicz_MS_am_sal <- aov(pd.obs.z ~ salinity_median + Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_am_sal <- aov(pd.obs.z ~ salinity_median + Location_type, data = stree_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_MS_am_sal))
 ```
@@ -1782,7 +1945,7 @@ shapiro.test(residuals(PD_PRicz_MS_am_sal))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_MS_am_sal) ~ stree_sespd_env[mixed_stratified_lakes,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_MS_am_sal) ~ stree_sespd_env[mixed_stratified_lakes,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1819,7 +1982,7 @@ shapiro.test(residuals(PD_PRicz_S_am_sal))
 ``` r
 ## Oxygen
 # Interaction
-PD_PRicz_am_oxy <- aov(pd.obs.z ~ oxygen_median * Site_type, data = stree_sespd_env[surveyed_sites_env,])
+PD_PRicz_am_oxy <- aov(pd.obs.z ~ oxygen_median * Location_type, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_am_oxy))
 ```
@@ -1832,7 +1995,7 @@ shapiro.test(residuals(PD_PRicz_am_oxy))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_oxy) ~ stree_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_am_oxy) ~ stree_sespd_env[surveyed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1858,18 +2021,18 @@ plot(PD_PRicz_am_oxy)
     ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
     ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-5.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-5.png)<!-- -->
 
 ``` r
-# Summarize the ANOVA results
+# Summarize the ANCOVA results
 summary(PD_PRicz_am_oxy)
 ```
 
-    ##                         Df Sum Sq Mean Sq F value Pr(>F)  
-    ## oxygen_median            1  1.808  1.8078   2.987 0.1076  
-    ## Site_type                2  3.938  1.9688   3.253 0.0715 .
-    ## oxygen_median:Site_type  2  5.038  2.5189   4.163 0.0401 *
-    ## Residuals               13  7.867  0.6051                 
+    ##                             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## oxygen_median                1  1.808  1.8078   2.987 0.1076  
+    ## Location_type                2  3.938  1.9688   3.253 0.0715 .
+    ## oxygen_median:Location_type  2  5.038  2.5189   4.163 0.0401 *
+    ## Residuals                   13  7.867  0.6051                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1884,7 +2047,7 @@ p_values <- c(oxy_p_values[1:3])
 
 ``` r
 # ANCOVA
-PD_PRicz_am_oxy <- aov(pd.obs.z ~ oxygen_median + Site_type, data = stree_sespd_env[surveyed_sites_env,])
+PD_PRicz_am_oxy <- aov(pd.obs.z ~ oxygen_median + Location_type, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_am_oxy))
 ```
@@ -1897,7 +2060,7 @@ shapiro.test(residuals(PD_PRicz_am_oxy))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_oxy) ~ stree_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_am_oxy) ~ stree_sespd_env[surveyed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1920,24 +2083,24 @@ outlierTest(PD_PRicz_am_oxy)
 plot(PD_PRicz_am_oxy)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-6.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-6.png)<!-- -->
 
 ``` r
 ### Ocean & Mixed sites
-PD_PRicz_OM_am_oxy <- aov(pd.obs.z ~ oxygen_median * Site_type, data = stree_sespd_env[ocean_mixed_sites_env,])
+PD_PRicz_OM_am_oxy <- aov(pd.obs.z ~ oxygen_median * Location_type, data = stree_sespd_env[ocean_mixed_sites_env,])
 summary(PD_PRicz_OM_am_oxy)
 ```
 
-    ##                         Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## oxygen_median            1  7.670   7.670  13.553 0.00785 **
-    ## Site_type                1  0.291   0.291   0.514 0.49656   
-    ## oxygen_median:Site_type  1  1.059   1.059   1.871 0.21365   
-    ## Residuals                7  3.962   0.566                   
+    ##                             Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## oxygen_median                1  7.670   7.670  13.553 0.00785 **
+    ## Location_type                1  0.291   0.291   0.514 0.49656   
+    ## oxygen_median:Location_type  1  1.059   1.059   1.871 0.21365   
+    ## Residuals                    7  3.962   0.566                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_OM_am_oxy <- aov(pd.obs.z ~ oxygen_median + Site_type, data = stree_sespd_env[ocean_mixed_sites_env,])
+PD_PRicz_OM_am_oxy <- aov(pd.obs.z ~ oxygen_median + Location_type, data = stree_sespd_env[ocean_mixed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OM_am_oxy))
 ```
@@ -1950,7 +2113,7 @@ shapiro.test(residuals(PD_PRicz_OM_am_oxy))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_OM_am_oxy) ~ stree_sespd_env[ocean_mixed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_OM_am_oxy) ~ stree_sespd_env[ocean_mixed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1960,20 +2123,20 @@ car::leveneTest(residuals(PD_PRicz_OM_am_oxy) ~ stree_sespd_env[ocean_mixed_site
 
 ``` r
 ### Ocean & Stratified sites
-PD_PRicz_OS_am_oxy <- aov(pd.obs.z ~ oxygen_median * Site_type, data = stree_sespd_env[ocean_stratified_sites_env,])
+PD_PRicz_OS_am_oxy <- aov(pd.obs.z ~ oxygen_median * Location_type, data = stree_sespd_env[ocean_stratified_sites_env,])
 summary(PD_PRicz_OS_am_oxy)
 ```
 
-    ##                         Df Sum Sq Mean Sq F value Pr(>F)  
-    ## oxygen_median            1  2.413  2.4127   3.747 0.0941 .
-    ## Site_type                1  2.901  2.9009   4.506 0.0714 .
-    ## oxygen_median:Site_type  1  3.131  3.1307   4.863 0.0633 .
-    ## Residuals                7  4.507  0.6438                 
+    ##                             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## oxygen_median                1  2.413  2.4127   3.747 0.0941 .
+    ## Location_type                1  2.901  2.9009   4.506 0.0714 .
+    ## oxygen_median:Location_type  1  3.131  3.1307   4.863 0.0633 .
+    ## Residuals                    7  4.507  0.6438                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_OS_am_oxy <- aov(pd.obs.z ~ oxygen_median + Site_type, data = stree_sespd_env[ocean_stratified_sites_env,])
+PD_PRicz_OS_am_oxy <- aov(pd.obs.z ~ oxygen_median + Location_type, data = stree_sespd_env[ocean_stratified_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_am_oxy))
 ```
@@ -1986,7 +2149,7 @@ shapiro.test(residuals(PD_PRicz_OS_am_oxy))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_OS_am_oxy) ~ stree_sespd_env[ocean_stratified_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_OS_am_oxy) ~ stree_sespd_env[ocean_stratified_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -1996,20 +2159,20 @@ car::leveneTest(residuals(PD_PRicz_OS_am_oxy) ~ stree_sespd_env[ocean_stratified
 
 ``` r
 ### Mixed & Stratified lakes
-PD_PRicz_MS_am_oxy <- aov(pd.obs.z ~ oxygen_median * Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_am_oxy <- aov(pd.obs.z ~ oxygen_median * Location_type, data = stree_sespd_env[mixed_stratified_lakes,])
 summary(PD_PRicz_MS_am_oxy)
 ```
 
-    ##                         Df Sum Sq Mean Sq F value Pr(>F)  
-    ## oxygen_median            1  0.016  0.0158   0.026 0.8742  
-    ## Site_type                1  0.023  0.0235   0.039 0.8472  
-    ## oxygen_median:Site_type  1  2.500  2.4996   4.129 0.0649 .
-    ## Residuals               12  7.265  0.6054                 
+    ##                             Df Sum Sq Mean Sq F value Pr(>F)  
+    ## oxygen_median                1  0.016  0.0158   0.026 0.8742  
+    ## Location_type                1  0.023  0.0235   0.039 0.8472  
+    ## oxygen_median:Location_type  1  2.500  2.4996   4.129 0.0649 .
+    ## Residuals                   12  7.265  0.6054                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_MS_am_oxy <- aov(pd.obs.z ~ oxygen_median + Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_am_oxy <- aov(pd.obs.z ~ oxygen_median + Location_type, data = stree_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_MS_am_oxy))
 ```
@@ -2022,7 +2185,7 @@ shapiro.test(residuals(PD_PRicz_MS_am_oxy))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_MS_am_oxy) ~ stree_sespd_env[mixed_stratified_lakes,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_MS_am_oxy) ~ stree_sespd_env[mixed_stratified_lakes,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2057,19 +2220,19 @@ shapiro.test(residuals(PD_PRicz_S_am_oxy))
     ## W = 0.96366, p-value = 0.8442
 
 ``` r
-# Summarize ANOVA results and calculate pairwise comparisons
+# Summarize ANCOVA results and calculate pairwise comparisons
 summary(PD_PRicz_am_temp)
 ```
 
     ##                    Df Sum Sq Mean Sq F value Pr(>F)  
     ## temperature_median  1  0.541  0.5408   0.654 0.4315  
-    ## Site_type           2  5.698  2.8488   3.443 0.0588 .
+    ## Location_type       2  5.698  2.8488   3.443 0.0588 .
     ## Residuals          15 12.412  0.8275                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_amp_temp <- emmeans(PD_PRicz_am_temp, pairwise ~ Site_type, adjust = "bonferroni")
+PD_PRicz_amp_temp <- emmeans(PD_PRicz_am_temp, pairwise ~ Location_type, adjust = "bonferroni")
 PD_PRicz_amp_temp$contrasts
 ```
 
@@ -2086,13 +2249,13 @@ summary(PD_PRicz_am_sal)
 
     ##                 Df Sum Sq Mean Sq F value Pr(>F)  
     ## salinity_median  1  1.819  1.8189   2.242 0.1550  
-    ## Site_type        2  4.664  2.3322   2.875 0.0877 .
+    ## Location_type    2  4.664  2.3322   2.875 0.0877 .
     ## Residuals       15 12.167  0.8111                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_amp_sal <- emmeans(PD_PRicz_am_sal, pairwise ~ Site_type, adjust = "bonferroni")
+PD_PRicz_amp_sal <- emmeans(PD_PRicz_am_sal, pairwise ~ Location_type, adjust = "bonferroni")
 PD_PRicz_amp_sal$contrasts
 ```
 
@@ -2109,11 +2272,11 @@ summary(PD_PRicz_am_oxy)
 
     ##               Df Sum Sq Mean Sq F value Pr(>F)
     ## oxygen_median  1  1.808  1.8078   2.101  0.168
-    ## Site_type      2  3.938  1.9688   2.288  0.136
+    ## Location_type  2  3.938  1.9688   2.288  0.136
     ## Residuals     15 12.905  0.8603
 
 ``` r
-PD_PRicz_amp_oxy <- emmeans(PD_PRicz_am_oxy, pairwise ~ Site_type, adjust = "bonferroni")
+PD_PRicz_amp_oxy <- emmeans(PD_PRicz_am_oxy, pairwise ~ Location_type, adjust = "bonferroni")
 PD_PRicz_amp_oxy$contrasts
 ```
 
@@ -2143,7 +2306,7 @@ summary(PD_PRicz_OM_am_temp)
 
     ##                    Df Sum Sq Mean Sq F value Pr(>F)  
     ## temperature_median  1  0.272   0.272   0.271 0.6171  
-    ## Site_type           1  4.678   4.678   4.659 0.0629 .
+    ## Location_type       1  4.678   4.678   4.659 0.0629 .
     ## Residuals           8  8.033   1.004                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -2154,7 +2317,7 @@ summary(PD_PRicz_OM_am_sal)
 
     ##                 Df Sum Sq Mean Sq F value Pr(>F)  
     ## salinity_median  1  5.647   5.647   7.158 0.0281 *
-    ## Site_type        1  1.024   1.024   1.297 0.2876  
+    ## Location_type    1  1.024   1.024   1.297 0.2876  
     ## Residuals        8  6.311   0.789                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -2165,7 +2328,7 @@ summary(PD_PRicz_OM_am_oxy)
 
     ##               Df Sum Sq Mean Sq F value  Pr(>F)   
     ## oxygen_median  1  7.670   7.670  12.222 0.00813 **
-    ## Site_type      1  0.291   0.291   0.464 0.51512   
+    ## Location_type  1  0.291   0.291   0.464 0.51512   
     ## Residuals      8  5.021   0.628                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -2189,7 +2352,7 @@ summary(PD_PRicz_OS_am_temp)
 
     ##                    Df Sum Sq Mean Sq F value Pr(>F)  
     ## temperature_median  1  0.606   0.606   0.618 0.4543  
-    ## Site_type           1  4.506   4.506   4.598 0.0643 .
+    ## Location_type       1  4.506   4.506   4.598 0.0643 .
     ## Residuals           8  7.839   0.980                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -2200,7 +2363,7 @@ summary(PD_PRicz_OS_am_sal)
 
     ##                 Df Sum Sq Mean Sq F value Pr(>F)  
     ## salinity_median  1  4.198   4.198   4.471 0.0674 .
-    ## Site_type        1  1.244   1.244   1.325 0.2830  
+    ## Location_type    1  1.244   1.244   1.325 0.2830  
     ## Residuals        8  7.510   0.939                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -2211,7 +2374,7 @@ summary(PD_PRicz_OS_am_oxy)
 
     ##               Df Sum Sq Mean Sq F value Pr(>F)
     ## oxygen_median  1  2.413  2.4127   2.527  0.151
-    ## Site_type      1  2.901  2.9009   3.039  0.119
+    ## Location_type  1  2.901  2.9009   3.039  0.119
     ## Residuals      8  7.638  0.9547
 
 ``` r
@@ -2233,7 +2396,7 @@ summary(PD_PRicz_MS_am_temp)
 
     ##                    Df Sum Sq Mean Sq F value Pr(>F)
     ## temperature_median  1  1.018  1.0185   1.533  0.238
-    ## Site_type           1  0.148  0.1479   0.223  0.645
+    ## Location_type       1  0.148  0.1479   0.223  0.645
     ## Residuals          13  8.638  0.6644
 
 ``` r
@@ -2242,7 +2405,7 @@ summary(PD_PRicz_MS_am_sal)
 
     ##                 Df Sum Sq Mean Sq F value Pr(>F)
     ## salinity_median  1  0.325  0.3254   0.468  0.506
-    ## Site_type        1  0.449  0.4492   0.647  0.436
+    ## Location_type    1  0.449  0.4492   0.647  0.436
     ## Residuals       13  9.029  0.6946
 
 ``` r
@@ -2251,7 +2414,7 @@ summary(PD_PRicz_MS_am_oxy)
 
     ##               Df Sum Sq Mean Sq F value Pr(>F)
     ## oxygen_median  1  0.016  0.0158   0.021  0.887
-    ## Site_type      1  0.023  0.0235   0.031  0.862
+    ## Location_type  1  0.023  0.0235   0.031  0.862
     ## Residuals     13  9.765  0.7511
 
 ``` r
@@ -2346,7 +2509,7 @@ p_values <- c(temp_p_values[1:3], sal_p_values[1:3], oxy_p_values[1:3])
 ### Surveyed sites
 ## Distance
 # Interaction
-PD_PRicz_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = stree_sespd_env[surveyed_sites,])
+PD_PRicz_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Location_type, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_am_dist))
 ```
@@ -2359,7 +2522,7 @@ shapiro.test(residuals(PD_PRicz_am_dist))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_dist) ~ stree_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_am_dist) ~ stree_sespd_env[surveyed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2385,18 +2548,18 @@ plot(PD_PRicz_am_dist)
     ## Warning: not plotting observations with leverage one:
     ##   19
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-7.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-7.png)<!-- -->
 
 ``` r
-# Summarize the ANOVA results
+# Summarize the ANCOVA results
 summary(PD_PRicz_am_dist)
 ```
 
-    ##                                   Df Sum Sq Mean Sq F value Pr(>F)
-    ## distance_to_ocean_min_m            1  1.310  1.3103   1.151  0.299
-    ## Site_type                          2  0.756  0.3781   0.332  0.722
-    ## distance_to_ocean_min_m:Site_type  2  1.224  0.6118   0.537  0.594
-    ## Residuals                         16 18.216  1.1385
+    ##                                       Df Sum Sq Mean Sq F value Pr(>F)
+    ## distance_to_ocean_min_m                1  1.310  1.3103   1.151  0.299
+    ## Location_type                          2  0.756  0.3781   0.332  0.722
+    ## distance_to_ocean_min_m:Location_type  2  1.224  0.6118   0.537  0.594
+    ## Residuals                             16 18.216  1.1385
 
 ``` r
 # p-values
@@ -2409,7 +2572,7 @@ p_values <- c(dist_p_values[1:3])
 
 ``` r
 # ANCOVA
-PD_PRicz_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = stree_sespd_env[surveyed_sites,])
+PD_PRicz_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Location_type, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_am_dist))
 ```
@@ -2422,7 +2585,7 @@ shapiro.test(residuals(PD_PRicz_am_dist))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_dist) ~ stree_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_am_dist) ~ stree_sespd_env[surveyed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2445,22 +2608,22 @@ outlierTest(PD_PRicz_am_dist)
 plot(PD_PRicz_am_dist)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-8.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-8.png)<!-- -->
 
 ``` r
 ### Ocean & Mixed sites
-PD_PRicz_OM_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = stree_sespd_env[ocean_mixed_sites,])
+PD_PRicz_OM_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Location_type, data = stree_sespd_env[ocean_mixed_sites,])
 summary(PD_PRicz_OM_am_dist)
 ```
 
-    ##                                   Df Sum Sq Mean Sq F value Pr(>F)
-    ## distance_to_ocean_min_m            1  1.387  1.3871   1.030  0.334
-    ## Site_type                          1  0.175  0.1747   0.130  0.726
-    ## distance_to_ocean_min_m:Site_type  1  1.195  1.1950   0.887  0.368
-    ## Residuals                         10 13.469  1.3469
+    ##                                       Df Sum Sq Mean Sq F value Pr(>F)
+    ## distance_to_ocean_min_m                1  1.387  1.3871   1.030  0.334
+    ## Location_type                          1  0.175  0.1747   0.130  0.726
+    ## distance_to_ocean_min_m:Location_type  1  1.195  1.1950   0.887  0.368
+    ## Residuals                             10 13.469  1.3469
 
 ``` r
-PD_PRicz_OM_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = stree_sespd_env[ocean_mixed_sites,])
+PD_PRicz_OM_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Location_type, data = stree_sespd_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OM_am_dist))
 ```
@@ -2473,7 +2636,7 @@ shapiro.test(residuals(PD_PRicz_OM_am_dist))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_OM_am_dist) ~ stree_sespd_env[ocean_mixed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_OM_am_dist) ~ stree_sespd_env[ocean_mixed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2483,18 +2646,18 @@ car::leveneTest(residuals(PD_PRicz_OM_am_dist) ~ stree_sespd_env[ocean_mixed_sit
 
 ``` r
 ### Ocean & Stratified sites
-PD_PRicz_OS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = stree_sespd_env[ocean_stratified_sites,])
+PD_PRicz_OS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Location_type, data = stree_sespd_env[ocean_stratified_sites,])
 summary(PD_PRicz_OS_am_dist)
 ```
 
-    ##                                   Df Sum Sq Mean Sq F value Pr(>F)
-    ## distance_to_ocean_min_m            1  1.287  1.2869   0.942  0.355
-    ## Site_type                          1  0.230  0.2297   0.168  0.690
-    ## distance_to_ocean_min_m:Site_type  1  1.017  1.0171   0.744  0.408
-    ## Residuals                         10 13.661  1.3661
+    ##                                       Df Sum Sq Mean Sq F value Pr(>F)
+    ## distance_to_ocean_min_m                1  1.287  1.2869   0.942  0.355
+    ## Location_type                          1  0.230  0.2297   0.168  0.690
+    ## distance_to_ocean_min_m:Location_type  1  1.017  1.0171   0.744  0.408
+    ## Residuals                             10 13.661  1.3661
 
 ``` r
-PD_PRicz_OS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = stree_sespd_env[ocean_stratified_sites,])
+PD_PRicz_OS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Location_type, data = stree_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_am_dist))
 ```
@@ -2507,7 +2670,7 @@ shapiro.test(residuals(PD_PRicz_OS_am_dist))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_OS_am_dist) ~ stree_sespd_env[ocean_stratified_sites,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_OS_am_dist) ~ stree_sespd_env[ocean_stratified_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2517,18 +2680,18 @@ car::leveneTest(residuals(PD_PRicz_OS_am_dist) ~ stree_sespd_env[ocean_stratifie
 
 ``` r
 ### Mixed & Stratified lakes
-PD_PRicz_MS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m * Location_type, data = stree_sespd_env[mixed_stratified_lakes,])
 summary(PD_PRicz_MS_am_dist)
 ```
 
-    ##                                   Df Sum Sq Mean Sq F value Pr(>F)
-    ## distance_to_ocean_min_m            1  0.201  0.2007   0.259  0.620
-    ## Site_type                          1  0.130  0.1304   0.168  0.689
-    ## distance_to_ocean_min_m:Site_type  1  0.171  0.1708   0.220  0.647
-    ## Residuals                         12  9.302  0.7752
+    ##                                       Df Sum Sq Mean Sq F value Pr(>F)
+    ## distance_to_ocean_min_m                1  0.201  0.2007   0.259  0.620
+    ## Location_type                          1  0.130  0.1304   0.168  0.689
+    ## distance_to_ocean_min_m:Location_type  1  0.171  0.1708   0.220  0.647
+    ## Residuals                             12  9.302  0.7752
 
 ``` r
-PD_PRicz_MS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_am_dist <- aov(pd.obs.z ~ distance_to_ocean_min_m + Location_type, data = stree_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_MS_am_dist))
 ```
@@ -2541,7 +2704,7 @@ shapiro.test(residuals(PD_PRicz_MS_am_dist))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_MS_am_dist) ~ stree_sespd_env[mixed_stratified_lakes,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_MS_am_dist) ~ stree_sespd_env[mixed_stratified_lakes,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2578,7 +2741,7 @@ shapiro.test(residuals(PD_PRicz_S_am_dist))
 ``` r
 ## Max Depth
 # Interaction
-PD_PRicz_am_mxd <- aov(pd.obs.z ~ max_depth * Site_type, data = stree_sespd_env[surveyed_sites,])
+PD_PRicz_am_mxd <- aov(pd.obs.z ~ max_depth * Location_type, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_am_mxd))
 ```
@@ -2591,7 +2754,7 @@ shapiro.test(residuals(PD_PRicz_am_mxd))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_mxd) ~ stree_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_am_mxd) ~ stree_sespd_env[surveyed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2614,18 +2777,18 @@ outlierTest(PD_PRicz_am_mxd)
 plot(PD_PRicz_am_mxd)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-9.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-9.png)<!-- -->
 
 ``` r
-# Summarize the ANOVA results
+# Summarize the ANCOVA results
 summary(PD_PRicz_am_mxd)
 ```
 
-    ##                     Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## max_depth            1  1.600   1.600   2.848 0.11086   
-    ## Site_type            2  2.956   1.478   2.631 0.10284   
-    ## max_depth:Site_type  2  7.960   3.980   7.083 0.00626 **
-    ## Residuals           16  8.990   0.562                   
+    ##                         Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## max_depth                1  1.600   1.600   2.848 0.11086   
+    ## Location_type            2  2.956   1.478   2.631 0.10284   
+    ## max_depth:Location_type  2  7.960   3.980   7.083 0.00626 **
+    ## Residuals               16  8.990   0.562                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -2640,20 +2803,20 @@ p_values <- c(mxd_p_values[1:3])
 
 ``` r
 ### Ocean & Mixed sites
-PD_PRicz_OM_am_mxd <- aov(pd.obs.z ~ max_depth * Site_type, data = stree_sespd_env[ocean_mixed_sites,])
+PD_PRicz_OM_am_mxd <- aov(pd.obs.z ~ max_depth * Location_type, data = stree_sespd_env[ocean_mixed_sites,])
 summary(PD_PRicz_OM_am_mxd)
 ```
 
-    ##                     Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## max_depth            1  9.229   9.229  19.247 0.00136 **
-    ## Site_type            1  0.999   0.999   2.083 0.17957   
-    ## max_depth:Site_type  1  1.203   1.203   2.509 0.14431   
-    ## Residuals           10  4.795   0.480                   
+    ##                         Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## max_depth                1  9.229   9.229  19.247 0.00136 **
+    ## Location_type            1  0.999   0.999   2.083 0.17957   
+    ## max_depth:Location_type  1  1.203   1.203   2.509 0.14431   
+    ## Residuals               10  4.795   0.480                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_OM_am_mxd <- aov(pd.obs.z ~ max_depth + Site_type, data = stree_sespd_env[ocean_mixed_sites,])
+PD_PRicz_OM_am_mxd <- aov(pd.obs.z ~ max_depth + Location_type, data = stree_sespd_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OM_am_mxd))
 ```
@@ -2666,7 +2829,7 @@ shapiro.test(residuals(PD_PRicz_OM_am_mxd))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_OM_am_mxd) ~ stree_sespd_env[ocean_mixed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_OM_am_mxd) ~ stree_sespd_env[ocean_mixed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2676,15 +2839,15 @@ car::leveneTest(residuals(PD_PRicz_OM_am_mxd) ~ stree_sespd_env[ocean_mixed_site
 
 ``` r
 ### Ocean & Stratified sites
-PD_PRicz_OS_am_mxd <- aov(pd.obs.z ~ max_depth * Site_type, data = stree_sespd_env[ocean_stratified_sites,])
+PD_PRicz_OS_am_mxd <- aov(pd.obs.z ~ max_depth * Location_type, data = stree_sespd_env[ocean_stratified_sites,])
 summary(PD_PRicz_OS_am_mxd)
 ```
 
-    ##                     Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## max_depth            1  0.408   0.408   0.739 0.41020   
-    ## Site_type            1  2.490   2.490   4.508 0.05970 . 
-    ## max_depth:Site_type  1  7.773   7.773  14.072 0.00378 **
-    ## Residuals           10  5.524   0.552                   
+    ##                         Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## max_depth                1  0.408   0.408   0.739 0.41020   
+    ## Location_type            1  2.490   2.490   4.508 0.05970 . 
+    ## max_depth:Location_type  1  7.773   7.773  14.072 0.00378 **
+    ## Residuals               10  5.524   0.552                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -2701,7 +2864,7 @@ shapiro.test(residuals(PD_PRicz_OS_am_mxd))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_OS_am_mxd) ~ stree_sespd_env[ocean_stratified_sites,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_OS_am_mxd) ~ stree_sespd_env[ocean_stratified_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2711,20 +2874,20 @@ car::leveneTest(residuals(PD_PRicz_OS_am_mxd) ~ stree_sespd_env[ocean_stratified
 
 ``` r
 ### Mixed & Stratified lakes
-PD_PRicz_MS_am_mxd <- aov(pd.obs.z ~ max_depth * Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_am_mxd <- aov(pd.obs.z ~ max_depth * Location_type, data = stree_sespd_env[mixed_stratified_lakes,])
 summary(PD_PRicz_MS_am_mxd)
 ```
 
-    ##                     Df Sum Sq Mean Sq F value Pr(>F)  
-    ## max_depth            1  0.003  0.0030   0.005 0.9464  
-    ## Site_type            1  0.001  0.0009   0.001 0.9705  
-    ## max_depth:Site_type  1  2.139  2.1389   3.350 0.0921 .
-    ## Residuals           12  7.661  0.6384                 
+    ##                         Df Sum Sq Mean Sq F value Pr(>F)  
+    ## max_depth                1  0.003  0.0030   0.005 0.9464  
+    ## Location_type            1  0.001  0.0009   0.001 0.9705  
+    ## max_depth:Location_type  1  2.139  2.1389   3.350 0.0921 .
+    ## Residuals               12  7.661  0.6384                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_MS_am_mxd <- aov(pd.obs.z ~ max_depth + Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_am_mxd <- aov(pd.obs.z ~ max_depth + Location_type, data = stree_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_MS_am_mxd))
 ```
@@ -2737,7 +2900,7 @@ shapiro.test(residuals(PD_PRicz_MS_am_mxd))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_MS_am_mxd) ~ stree_sespd_env[mixed_stratified_lakes,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_MS_am_mxd) ~ stree_sespd_env[mixed_stratified_lakes,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2774,7 +2937,7 @@ shapiro.test(residuals(PD_PRicz_S_am_mxd))
 ``` r
 ## Log Area
 # Interaction
-PD_PRicz_am_lga <- aov(pd.obs.z ~ logArea * Site_type, data = stree_sespd_env[surveyed_sites,])
+PD_PRicz_am_lga <- aov(pd.obs.z ~ logArea * Location_type, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_am_lga))
 ```
@@ -2787,7 +2950,7 @@ shapiro.test(residuals(PD_PRicz_am_lga))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_lga) ~ stree_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_am_lga) ~ stree_sespd_env[surveyed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2810,18 +2973,18 @@ outlierTest(PD_PRicz_am_lga)
 plot(PD_PRicz_am_lga)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-10.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-10.png)<!-- -->
 
 ``` r
-# Summarize the ANOVA results
+# Summarize the ANCOVA results
 summary(PD_PRicz_am_lga)
 ```
 
-    ##                   Df Sum Sq Mean Sq F value Pr(>F)
-    ## logArea            1  1.147  1.1473   1.143  0.301
-    ## Site_type          2  1.002  0.5011   0.499  0.616
-    ## logArea:Site_type  2  3.297  1.6485   1.642  0.225
-    ## Residuals         16 16.060  1.0037
+    ##                       Df Sum Sq Mean Sq F value Pr(>F)
+    ## logArea                1  1.147  1.1473   1.143  0.301
+    ## Location_type          2  1.002  0.5011   0.499  0.616
+    ## logArea:Location_type  2  3.297  1.6485   1.642  0.225
+    ## Residuals             16 16.060  1.0037
 
 ``` r
 # p-values
@@ -2834,7 +2997,7 @@ p_values <- c(lga_p_values[1:3])
 
 ``` r
 # ANCOVA
-PD_PRicz_am_lga <- aov(pd.obs.z ~ logArea + Site_type, data = stree_sespd_env[surveyed_sites,])
+PD_PRicz_am_lga <- aov(pd.obs.z ~ logArea + Location_type, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_am_lga))
 ```
@@ -2847,7 +3010,7 @@ shapiro.test(residuals(PD_PRicz_am_lga))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_am_lga) ~ stree_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_am_lga) ~ stree_sespd_env[surveyed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2870,22 +3033,22 @@ outlierTest(PD_PRicz_am_lga)
 plot(PD_PRicz_am_lga)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-11.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-11.png)<!-- -->
 
 ``` r
 ### Ocean & Mixed sites
-PD_PRicz_OM_am_lga <- aov(pd.obs.z ~ logArea * Site_type, data = stree_sespd_env[ocean_mixed_sites,])
+PD_PRicz_OM_am_lga <- aov(pd.obs.z ~ logArea * Location_type, data = stree_sespd_env[ocean_mixed_sites,])
 summary(PD_PRicz_OM_am_lga)
 ```
 
-    ##                   Df Sum Sq Mean Sq F value Pr(>F)
-    ## logArea            1  2.806  2.8064   2.129  0.175
-    ## Site_type          1  0.214  0.2140   0.162  0.695
-    ## logArea:Site_type  1  0.026  0.0264   0.020  0.890
-    ## Residuals         10 13.180  1.3180
+    ##                       Df Sum Sq Mean Sq F value Pr(>F)
+    ## logArea                1  2.806  2.8064   2.129  0.175
+    ## Location_type          1  0.214  0.2140   0.162  0.695
+    ## logArea:Location_type  1  0.026  0.0264   0.020  0.890
+    ## Residuals             10 13.180  1.3180
 
 ``` r
-PD_PRicz_OM_am_lga <- aov(pd.obs.z ~ logArea + Site_type, data = stree_sespd_env[ocean_mixed_sites,])
+PD_PRicz_OM_am_lga <- aov(pd.obs.z ~ logArea + Location_type, data = stree_sespd_env[ocean_mixed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OM_am_lga))
 ```
@@ -2898,7 +3061,7 @@ shapiro.test(residuals(PD_PRicz_OM_am_lga))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_OM_am_lga) ~ stree_sespd_env[ocean_mixed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_OM_am_lga) ~ stree_sespd_env[ocean_mixed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2908,18 +3071,18 @@ car::leveneTest(residuals(PD_PRicz_OM_am_lga) ~ stree_sespd_env[ocean_mixed_site
 
 ``` r
 ### Ocean & Stratified sites
-PD_PRicz_OS_am_lga <- aov(pd.obs.z ~ logArea * Site_type, data = stree_sespd_env[ocean_stratified_sites,])
+PD_PRicz_OS_am_lga <- aov(pd.obs.z ~ logArea * Location_type, data = stree_sespd_env[ocean_stratified_sites,])
 summary(PD_PRicz_OS_am_lga)
 ```
 
-    ##                   Df Sum Sq Mean Sq F value Pr(>F)
-    ## logArea            1  0.535   0.535   0.467  0.510
-    ## Site_type          1  1.003   1.003   0.875  0.372
-    ## logArea:Site_type  1  3.185   3.185   2.776  0.127
-    ## Residuals         10 11.471   1.147
+    ##                       Df Sum Sq Mean Sq F value Pr(>F)
+    ## logArea                1  0.535   0.535   0.467  0.510
+    ## Location_type          1  1.003   1.003   0.875  0.372
+    ## logArea:Location_type  1  3.185   3.185   2.776  0.127
+    ## Residuals             10 11.471   1.147
 
 ``` r
-PD_PRicz_OS_am_lga <- aov(pd.obs.z ~ logArea + Site_type, data = stree_sespd_env[ocean_stratified_sites,])
+PD_PRicz_OS_am_lga <- aov(pd.obs.z ~ logArea + Location_type, data = stree_sespd_env[ocean_stratified_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_OS_am_lga))
 ```
@@ -2932,7 +3095,7 @@ shapiro.test(residuals(PD_PRicz_OS_am_lga))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_OS_am_lga) ~ stree_sespd_env[ocean_stratified_sites,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_OS_am_lga) ~ stree_sespd_env[ocean_stratified_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -2942,20 +3105,20 @@ car::leveneTest(residuals(PD_PRicz_OS_am_lga) ~ stree_sespd_env[ocean_stratified
 
 ``` r
 ### Mixed & Stratified lakes
-PD_PRicz_MS_am_lga <- aov(pd.obs.z ~ logArea * Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_am_lga <- aov(pd.obs.z ~ logArea * Location_type, data = stree_sespd_env[mixed_stratified_lakes,])
 summary(PD_PRicz_MS_am_lga)
 ```
 
-    ##                   Df Sum Sq Mean Sq F value Pr(>F)  
-    ## logArea            1  0.184  0.1836   0.295 0.5970  
-    ## Site_type          1  0.010  0.0104   0.017 0.8991  
-    ## logArea:Site_type  1  2.141  2.1410   3.440 0.0884 .
-    ## Residuals         12  7.469  0.6224                 
+    ##                       Df Sum Sq Mean Sq F value Pr(>F)  
+    ## logArea                1  0.184  0.1836   0.295 0.5970  
+    ## Location_type          1  0.010  0.0104   0.017 0.8991  
+    ## logArea:Location_type  1  2.141  2.1410   3.440 0.0884 .
+    ## Residuals             12  7.469  0.6224                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_MS_am_lga <- aov(pd.obs.z ~ logArea + Site_type, data = stree_sespd_env[mixed_stratified_lakes,])
+PD_PRicz_MS_am_lga <- aov(pd.obs.z ~ logArea + Location_type, data = stree_sespd_env[mixed_stratified_lakes,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PRicz_MS_am_lga))
 ```
@@ -2968,7 +3131,7 @@ shapiro.test(residuals(PD_PRicz_MS_am_lga))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PRicz_MS_am_lga) ~ stree_sespd_env[mixed_stratified_lakes,"Site_type"])
+car::leveneTest(residuals(PD_PRicz_MS_am_lga) ~ stree_sespd_env[mixed_stratified_lakes,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3003,17 +3166,17 @@ shapiro.test(residuals(PD_PRicz_S_am_lga))
     ## W = 0.88816, p-value = 0.225
 
 ``` r
-# Summarize ANOVA results and calculate pairwise comparisons
+# Summarize ANCOVA results and calculate pairwise comparisons
 summary(PD_PRicz_am_dist)
 ```
 
     ##                         Df Sum Sq Mean Sq F value Pr(>F)
     ## distance_to_ocean_min_m  1  1.310  1.3103   1.213  0.285
-    ## Site_type                2  0.756  0.3781   0.350  0.709
+    ## Location_type            2  0.756  0.3781   0.350  0.709
     ## Residuals               18 19.440  1.0800
 
 ``` r
-PD_PRicz_amp_dist <- emmeans(PD_PRicz_am_dist, pairwise ~ Site_type, adjust = "bonferroni")
+PD_PRicz_amp_dist <- emmeans(PD_PRicz_am_dist, pairwise ~ Location_type, adjust = "bonferroni")
 PD_PRicz_amp_dist$contrasts
 ```
 
@@ -3028,16 +3191,16 @@ PD_PRicz_amp_dist$contrasts
 summary(PD_PRicz_am_mxd)
 ```
 
-    ##                     Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## max_depth            1  1.600   1.600   2.848 0.11086   
-    ## Site_type            2  2.956   1.478   2.631 0.10284   
-    ## max_depth:Site_type  2  7.960   3.980   7.083 0.00626 **
-    ## Residuals           16  8.990   0.562                   
+    ##                         Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## max_depth                1  1.600   1.600   2.848 0.11086   
+    ## Location_type            2  2.956   1.478   2.631 0.10284   
+    ## max_depth:Location_type  2  7.960   3.980   7.083 0.00626 **
+    ## Residuals               16  8.990   0.562                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-PD_PRicz_amp_mxd <- emmeans(PD_PRicz_am_mxd, pairwise ~ Site_type, adjust = "bonferroni")
+PD_PRicz_amp_mxd <- emmeans(PD_PRicz_am_mxd, pairwise ~ Location_type, adjust = "bonferroni")
 ```
 
     ## NOTE: Results may be misleading due to involvement in interactions
@@ -3057,13 +3220,13 @@ PD_PRicz_amp_mxd$contrasts
 summary(PD_PRicz_am_lga)
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## logArea      1  1.147  1.1473   1.067  0.315
-    ## Site_type    2  1.002  0.5011   0.466  0.635
-    ## Residuals   18 19.357  1.0754
+    ##               Df Sum Sq Mean Sq F value Pr(>F)
+    ## logArea        1  1.147  1.1473   1.067  0.315
+    ## Location_type  2  1.002  0.5011   0.466  0.635
+    ## Residuals     18 19.357  1.0754
 
 ``` r
-PD_PRicz_amp_lga <- emmeans(PD_PRicz_am_lga, pairwise ~ Site_type, adjust = "bonferroni")
+PD_PRicz_amp_lga <- emmeans(PD_PRicz_am_lga, pairwise ~ Location_type, adjust = "bonferroni")
 PD_PRicz_amp_lga$contrasts
 ```
 
@@ -3093,17 +3256,17 @@ summary(PD_PRicz_OM_am_dist)
 
     ##                         Df Sum Sq Mean Sq F value Pr(>F)
     ## distance_to_ocean_min_m  1  1.387  1.3871   1.040  0.330
-    ## Site_type                1  0.175  0.1747   0.131  0.724
+    ## Location_type            1  0.175  0.1747   0.131  0.724
     ## Residuals               11 14.665  1.3331
 
 ``` r
 summary(PD_PRicz_OM_am_mxd)
 ```
 
-    ##             Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## max_depth    1  9.229   9.229  16.926 0.00172 **
-    ## Site_type    1  0.999   0.999   1.831 0.20311   
-    ## Residuals   11  5.998   0.545                   
+    ##               Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## max_depth      1  9.229   9.229  16.926 0.00172 **
+    ## Location_type  1  0.999   0.999   1.831 0.20311   
+    ## Residuals     11  5.998   0.545                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -3111,10 +3274,10 @@ summary(PD_PRicz_OM_am_mxd)
 summary(PD_PRicz_OM_am_lga)
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## logArea      1  2.806   2.806   2.338  0.155
-    ## Site_type    1  0.214   0.214   0.178  0.681
-    ## Residuals   11 13.206   1.200
+    ##               Df Sum Sq Mean Sq F value Pr(>F)
+    ## logArea        1  2.806   2.806   2.338  0.155
+    ## Location_type  1  0.214   0.214   0.178  0.681
+    ## Residuals     11 13.206   1.200
 
 ``` r
 # p-values
@@ -3135,18 +3298,18 @@ summary(PD_PRicz_OS_am_dist)
 
     ##                         Df Sum Sq Mean Sq F value Pr(>F)
     ## distance_to_ocean_min_m  1  1.287  1.2869   0.964  0.347
-    ## Site_type                1  0.230  0.2297   0.172  0.686
+    ## Location_type            1  0.230  0.2297   0.172  0.686
     ## Residuals               11 14.678  1.3344
 
 ``` r
 summary(PD_PRicz_OS_am_mxd)
 ```
 
-    ##                     Df Sum Sq Mean Sq F value  Pr(>F)   
-    ## max_depth            1  0.408   0.408   0.739 0.41020   
-    ## Site_type            1  2.490   2.490   4.508 0.05970 . 
-    ## max_depth:Site_type  1  7.773   7.773  14.072 0.00378 **
-    ## Residuals           10  5.524   0.552                   
+    ##                         Df Sum Sq Mean Sq F value  Pr(>F)   
+    ## max_depth                1  0.408   0.408   0.739 0.41020   
+    ## Location_type            1  2.490   2.490   4.508 0.05970 . 
+    ## max_depth:Location_type  1  7.773   7.773  14.072 0.00378 **
+    ## Residuals               10  5.524   0.552                   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -3154,10 +3317,10 @@ summary(PD_PRicz_OS_am_mxd)
 summary(PD_PRicz_OS_am_lga)
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## logArea      1  0.535  0.5355   0.402  0.539
-    ## Site_type    1  1.003  1.0034   0.753  0.404
-    ## Residuals   11 14.656  1.3324
+    ##               Df Sum Sq Mean Sq F value Pr(>F)
+    ## logArea        1  0.535  0.5355   0.402  0.539
+    ## Location_type  1  1.003  1.0034   0.753  0.404
+    ## Residuals     11 14.656  1.3324
 
 ``` r
 # p-values
@@ -3178,26 +3341,26 @@ summary(PD_PRicz_MS_am_dist)
 
     ##                         Df Sum Sq Mean Sq F value Pr(>F)
     ## distance_to_ocean_min_m  1  0.201  0.2007   0.275  0.609
-    ## Site_type                1  0.130  0.1304   0.179  0.679
+    ## Location_type            1  0.130  0.1304   0.179  0.679
     ## Residuals               13  9.473  0.7287
 
 ``` r
 summary(PD_PRicz_MS_am_mxd)
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## max_depth    1  0.003  0.0030   0.004  0.951
-    ## Site_type    1  0.001  0.0009   0.001  0.973
-    ## Residuals   13  9.800  0.7538
+    ##               Df Sum Sq Mean Sq F value Pr(>F)
+    ## max_depth      1  0.003  0.0030   0.004  0.951
+    ## Location_type  1  0.001  0.0009   0.001  0.973
+    ## Residuals     13  9.800  0.7538
 
 ``` r
 summary(PD_PRicz_MS_am_lga)
 ```
 
-    ##             Df Sum Sq Mean Sq F value Pr(>F)
-    ## logArea      1  0.184  0.1836   0.248  0.627
-    ## Site_type    1  0.010  0.0104   0.014  0.907
-    ## Residuals   13  9.610  0.7392
+    ##               Df Sum Sq Mean Sq F value Pr(>F)
+    ## logArea        1  0.184  0.1836   0.248  0.627
+    ## Location_type  1  0.010  0.0104   0.014  0.907
+    ## Residuals     13  9.610  0.7392
 
 ``` r
 # p-values
@@ -3287,12 +3450,12 @@ p_values <- c(dist_p_values[1:3], mxd_p_values[1:3], lga_p_values[1:3])
     ## [8]        NA        NA
 
 ``` r
-##### PDisp ANOVAs
+##### PDisp ANCOVAs
 #### Environmental
 ### Surveyed sites
 ## Temperature
 # Interaction
-PD_PDisp_am_temp <- aov(Dispersion ~ temperature_median * Site_type, data = stree_sespd_env[surveyed_sites_env,])
+PD_PDisp_am_temp <- aov(Dispersion ~ temperature_median * Location_type, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PDisp_am_temp))
 ```
@@ -3305,7 +3468,7 @@ shapiro.test(residuals(PD_PDisp_am_temp))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PDisp_am_temp) ~ stree_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PDisp_am_temp) ~ stree_sespd_env[surveyed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3333,22 +3496,22 @@ plot(PD_PDisp_am_temp)
     ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
     ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-12.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-12.png)<!-- -->
 
 ``` r
-# Summarize the ANOVA results
+# Summarize the ANCOVA results
 summary(PD_PDisp_am_temp)
 ```
 
-    ##                              Df   Sum Sq   Mean Sq F value Pr(>F)
-    ## temperature_median            1 0.001013 0.0010125   1.963  0.185
-    ## Site_type                     2 0.001623 0.0008117   1.573  0.244
-    ## temperature_median:Site_type  2 0.000613 0.0003063   0.594  0.567
-    ## Residuals                    13 0.006706 0.0005158
+    ##                                  Df   Sum Sq   Mean Sq F value Pr(>F)
+    ## temperature_median                1 0.001013 0.0010125   1.963  0.185
+    ## Location_type                     2 0.001623 0.0008117   1.573  0.244
+    ## temperature_median:Location_type  2 0.000613 0.0003063   0.594  0.567
+    ## Residuals                        13 0.006706 0.0005158
 
 ``` r
 # ANCOVA
-PD_PDisp_am_temp <- aov(Dispersion ~ temperature_median + Site_type, data = stree_sespd_env[surveyed_sites_env,])
+PD_PDisp_am_temp <- aov(Dispersion ~ temperature_median + Location_type, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PDisp_am_temp))
 ```
@@ -3361,7 +3524,7 @@ shapiro.test(residuals(PD_PDisp_am_temp))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PDisp_am_temp) ~ stree_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PDisp_am_temp) ~ stree_sespd_env[surveyed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3384,12 +3547,12 @@ outlierTest(PD_PDisp_am_temp)
 plot(PD_PDisp_am_temp)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-13.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-13.png)<!-- -->
 
 ``` r
 ## Salinity
 # Interaction
-PD_PDisp_am_sal <- aov(Dispersion ~ salinity_median * Site_type, data = stree_sespd_env[surveyed_sites_env,])
+PD_PDisp_am_sal <- aov(Dispersion ~ salinity_median * Location_type, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PDisp_am_sal))
 ```
@@ -3402,7 +3565,7 @@ shapiro.test(residuals(PD_PDisp_am_sal))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PDisp_am_sal) ~ stree_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PDisp_am_sal) ~ stree_sespd_env[surveyed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3423,22 +3586,22 @@ outlierTest(PD_PDisp_am_sal)
 plot(PD_PDisp_am_sal)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-14.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-14.png)<!-- -->
 
 ``` r
-# Summarize the ANOVA results
+# Summarize the ANCOVA results
 summary(PD_PDisp_am_sal)
 ```
 
-    ##                           Df   Sum Sq   Mean Sq F value Pr(>F)
-    ## salinity_median            1 0.000811 0.0008107   1.193  0.294
-    ## Site_type                  2 0.000283 0.0001413   0.208  0.815
-    ## salinity_median:Site_type  2 0.000030 0.0000148   0.022  0.979
-    ## Residuals                 13 0.008832 0.0006793
+    ##                               Df   Sum Sq   Mean Sq F value Pr(>F)
+    ## salinity_median                1 0.000811 0.0008107   1.193  0.294
+    ## Location_type                  2 0.000283 0.0001413   0.208  0.815
+    ## salinity_median:Location_type  2 0.000030 0.0000148   0.022  0.979
+    ## Residuals                     13 0.008832 0.0006793
 
 ``` r
 # ANCOVA
-PD_PDisp_am_sal <- aov(Dispersion ~ salinity_median + Site_type, data = stree_sespd_env[surveyed_sites_env,])
+PD_PDisp_am_sal <- aov(Dispersion ~ salinity_median + Location_type, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PDisp_am_sal))
 ```
@@ -3451,7 +3614,7 @@ shapiro.test(residuals(PD_PDisp_am_sal))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PDisp_am_sal) ~ stree_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PDisp_am_sal) ~ stree_sespd_env[surveyed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3472,12 +3635,12 @@ outlierTest(PD_PDisp_am_sal)
 plot(PD_PDisp_am_sal)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-15.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-15.png)<!-- -->
 
 ``` r
 ## Oxygen
 # Interaction
-PD_PDisp_am_oxy <- aov(Dispersion ~ oxygen_median * Site_type, data = stree_sespd_env[surveyed_sites_env,])
+PD_PDisp_am_oxy <- aov(Dispersion ~ oxygen_median * Location_type, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PDisp_am_oxy))
 ```
@@ -3490,7 +3653,7 @@ shapiro.test(residuals(PD_PDisp_am_oxy))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PDisp_am_oxy) ~ stree_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PDisp_am_oxy) ~ stree_sespd_env[surveyed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3516,22 +3679,22 @@ plot(PD_PDisp_am_oxy)
     ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
     ## Warning in sqrt(crit * p * (1 - hh)/hh): NaNs produced
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-16.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-16.png)<!-- -->
 
 ``` r
-# Summarize the ANOVA results
+# Summarize the ANCOVA results
 summary(PD_PDisp_am_oxy)
 ```
 
-    ##                         Df   Sum Sq   Mean Sq F value Pr(>F)
-    ## oxygen_median            1 0.000100 0.0001001   0.144  0.711
-    ## Site_type                2 0.000696 0.0003481   0.500  0.618
-    ## oxygen_median:Site_type  2 0.000106 0.0000530   0.076  0.927
-    ## Residuals               13 0.009052 0.0006963
+    ##                             Df   Sum Sq   Mean Sq F value Pr(>F)
+    ## oxygen_median                1 0.000100 0.0001001   0.144  0.711
+    ## Location_type                2 0.000696 0.0003481   0.500  0.618
+    ## oxygen_median:Location_type  2 0.000106 0.0000530   0.076  0.927
+    ## Residuals                   13 0.009052 0.0006963
 
 ``` r
 # ANCOVA
-PD_PDisp_am_oxy <- aov(Dispersion ~ oxygen_median + Site_type, data = stree_sespd_env[surveyed_sites_env,])
+PD_PDisp_am_oxy <- aov(Dispersion ~ oxygen_median + Location_type, data = stree_sespd_env[surveyed_sites_env,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PDisp_am_oxy))
 ```
@@ -3544,7 +3707,7 @@ shapiro.test(residuals(PD_PDisp_am_oxy))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PDisp_am_oxy) ~ stree_sespd_env[surveyed_sites_env,"Site_type"])
+car::leveneTest(residuals(PD_PDisp_am_oxy) ~ stree_sespd_env[surveyed_sites_env,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3567,20 +3730,20 @@ outlierTest(PD_PDisp_am_oxy)
 plot(PD_PDisp_am_oxy)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-17.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-17.png)<!-- -->
 
 ``` r
-# Summarize ANOVA results and calculate pairwise comparisons
+# Summarize ANCOVA results and calculate pairwise comparisons
 summary(PD_PDisp_am_temp)
 ```
 
     ##                    Df   Sum Sq   Mean Sq F value Pr(>F)
     ## temperature_median  1 0.001013 0.0010125   2.075  0.170
-    ## Site_type           2 0.001623 0.0008117   1.664  0.223
+    ## Location_type       2 0.001623 0.0008117   1.664  0.223
     ## Residuals          15 0.007319 0.0004879
 
 ``` r
-PD_PDisp_amp_temp <- emmeans(PD_PDisp_am_temp, pairwise ~ Site_type, adjust = "bonferroni")
+PD_PDisp_amp_temp <- emmeans(PD_PDisp_am_temp, pairwise ~ Location_type, adjust = "bonferroni")
 PD_PDisp_amp_temp$contrasts
 ```
 
@@ -3597,11 +3760,11 @@ summary(PD_PDisp_am_sal)
 
     ##                 Df   Sum Sq   Mean Sq F value Pr(>F)
     ## salinity_median  1 0.000811 0.0008107   1.372   0.26
-    ## Site_type        2 0.000283 0.0001413   0.239   0.79
+    ## Location_type    2 0.000283 0.0001413   0.239   0.79
     ## Residuals       15 0.008861 0.0005907
 
 ``` r
-PD_PDisp_amp_sal <- emmeans(PD_PDisp_am_sal, pairwise ~ Site_type, adjust = "bonferroni")
+PD_PDisp_amp_sal <- emmeans(PD_PDisp_am_sal, pairwise ~ Location_type, adjust = "bonferroni")
 PD_PDisp_amp_sal$contrasts
 ```
 
@@ -3618,11 +3781,11 @@ summary(PD_PDisp_am_oxy)
 
     ##               Df   Sum Sq   Mean Sq F value Pr(>F)
     ## oxygen_median  1 0.000100 0.0001001   0.164  0.691
-    ## Site_type      2 0.000696 0.0003481   0.570  0.577
+    ## Location_type  2 0.000696 0.0003481   0.570  0.577
     ## Residuals     15 0.009158 0.0006105
 
 ``` r
-PD_PDisp_amp_oxy <- emmeans(PD_PDisp_am_oxy, pairwise ~ Site_type, adjust = "bonferroni")
+PD_PDisp_amp_oxy <- emmeans(PD_PDisp_am_oxy, pairwise ~ Location_type, adjust = "bonferroni")
 PD_PDisp_amp_oxy$contrasts
 ```
 
@@ -3673,7 +3836,7 @@ summary(PD_PDisp_env_M_lm)
     ## F-statistic: 0.2031 on 3 and 4 DF,  p-value: 0.8894
 
 ``` r
-Anova(PD_PDisp_env_M_lm, type = 3)
+car::Anova(PD_PDisp_env_M_lm, type = 3)
 ```
 
     ## Anova Table (Type III tests)
@@ -3721,7 +3884,7 @@ summary(PD_PDisp_env_S_lm)
     ## F-statistic: 1.051 on 3 and 4 DF,  p-value: 0.4619
 
 ``` r
-Anova(PD_PDisp_env_S_lm, type = 3)
+car::Anova(PD_PDisp_env_S_lm, type = 3)
 ```
 
     ## Anova Table (Type III tests)
@@ -3747,7 +3910,7 @@ p_values <- summary(PD_PDisp_env_S_lm)$coefficients[, "Pr(>|t|)"]
 ### Surveyed sites
 ## Distance
 # Interaction
-PD_PDisp_am_dist <- aov(Dispersion ~ distance_to_ocean_min_m * Site_type, data = stree_sespd_env[surveyed_sites,])
+PD_PDisp_am_dist <- aov(Dispersion ~ distance_to_ocean_min_m * Location_type, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PDisp_am_dist))
 ```
@@ -3760,7 +3923,7 @@ shapiro.test(residuals(PD_PDisp_am_dist))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PDisp_am_dist) ~ stree_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PDisp_am_dist) ~ stree_sespd_env[surveyed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3786,22 +3949,22 @@ plot(PD_PDisp_am_dist)
     ## Warning: not plotting observations with leverage one:
     ##   19
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-18.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-18.png)<!-- -->
 
 ``` r
-# Summarize the ANOVA results
+# Summarize the ANCOVA results
 summary(PD_PDisp_am_dist)
 ```
 
-    ##                                   Df   Sum Sq   Mean Sq F value Pr(>F)
-    ## distance_to_ocean_min_m            1 0.001143 0.0011432   2.217  0.156
-    ## Site_type                          2 0.000823 0.0004115   0.798  0.467
-    ## distance_to_ocean_min_m:Site_type  2 0.000046 0.0000228   0.044  0.957
-    ## Residuals                         16 0.008252 0.0005157
+    ##                                       Df   Sum Sq   Mean Sq F value Pr(>F)
+    ## distance_to_ocean_min_m                1 0.001143 0.0011432   2.217  0.156
+    ## Location_type                          2 0.000823 0.0004115   0.798  0.467
+    ## distance_to_ocean_min_m:Location_type  2 0.000046 0.0000228   0.044  0.957
+    ## Residuals                             16 0.008252 0.0005157
 
 ``` r
 # ANCOVA
-PD_PDisp_am_dist <- aov(Dispersion ~ distance_to_ocean_min_m + Site_type, data = stree_sespd_env[surveyed_sites,])
+PD_PDisp_am_dist <- aov(Dispersion ~ distance_to_ocean_min_m + Location_type, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PDisp_am_dist))
 ```
@@ -3814,7 +3977,7 @@ shapiro.test(residuals(PD_PDisp_am_dist))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PDisp_am_dist) ~ stree_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PDisp_am_dist) ~ stree_sespd_env[surveyed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3837,12 +4000,12 @@ outlierTest(PD_PDisp_am_dist)
 plot(PD_PDisp_am_dist)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-19.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-19.png)<!-- -->
 
 ``` r
 ## Max Depth
 # Interaction
-PD_PDisp_am_mxd <- aov(Dispersion ~ max_depth * Site_type, data = stree_sespd_env[surveyed_sites,])
+PD_PDisp_am_mxd <- aov(Dispersion ~ max_depth * Location_type, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PDisp_am_mxd))
 ```
@@ -3855,7 +4018,7 @@ shapiro.test(residuals(PD_PDisp_am_mxd))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PDisp_am_mxd) ~ stree_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PDisp_am_mxd) ~ stree_sespd_env[surveyed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3878,22 +4041,22 @@ outlierTest(PD_PDisp_am_mxd)
 plot(PD_PDisp_am_mxd)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-20.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-20.png)<!-- -->
 
 ``` r
-# Summarize the ANOVA results
+# Summarize the ANCOVA results
 summary(PD_PDisp_am_mxd)
 ```
 
-    ##                     Df   Sum Sq   Mean Sq F value Pr(>F)
-    ## max_depth            1 0.000004 0.0000044   0.009  0.926
-    ## Site_type            2 0.000904 0.0004519   0.896  0.428
-    ## max_depth:Site_type  2 0.001284 0.0006421   1.273  0.307
-    ## Residuals           16 0.008071 0.0005044
+    ##                         Df   Sum Sq   Mean Sq F value Pr(>F)
+    ## max_depth                1 0.000004 0.0000044   0.009  0.926
+    ## Location_type            2 0.000904 0.0004519   0.896  0.428
+    ## max_depth:Location_type  2 0.001284 0.0006421   1.273  0.307
+    ## Residuals               16 0.008071 0.0005044
 
 ``` r
 # ANCOVA
-PD_PDisp_am_mxd <- aov(Dispersion ~ max_depth + Site_type, data = stree_sespd_env[surveyed_sites,])
+PD_PDisp_am_mxd <- aov(Dispersion ~ max_depth + Location_type, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PDisp_am_mxd))
 ```
@@ -3906,7 +4069,7 @@ shapiro.test(residuals(PD_PDisp_am_mxd))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PDisp_am_mxd) ~ stree_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PDisp_am_mxd) ~ stree_sespd_env[surveyed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3929,12 +4092,12 @@ outlierTest(PD_PDisp_am_mxd)
 plot(PD_PDisp_am_mxd)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-21.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-21.png)<!-- -->
 
 ``` r
 ## Log Area
 # Interaction
-PD_PDisp_am_lga <- aov(Dispersion ~ logArea * Site_type, data = stree_sespd_env[surveyed_sites,])
+PD_PDisp_am_lga <- aov(Dispersion ~ logArea * Location_type, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PDisp_am_lga))
 ```
@@ -3947,7 +4110,7 @@ shapiro.test(residuals(PD_PDisp_am_lga))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PDisp_am_lga) ~ stree_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PDisp_am_lga) ~ stree_sespd_env[surveyed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -3970,24 +4133,24 @@ outlierTest(PD_PDisp_am_lga)
 plot(PD_PDisp_am_lga)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-22.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-22.png)<!-- -->
 
 ``` r
-# Summarize the ANOVA results
+# Summarize the ANCOVA results
 summary(PD_PDisp_am_lga)
 ```
 
-    ##                   Df   Sum Sq   Mean Sq F value Pr(>F)  
-    ## logArea            1 0.000054 0.0000535   0.129 0.7244  
-    ## Site_type          2 0.000817 0.0004087   0.983 0.3956  
-    ## logArea:Site_type  2 0.002741 0.0013705   3.297 0.0633 .
-    ## Residuals         16 0.006652 0.0004157                 
+    ##                       Df   Sum Sq   Mean Sq F value Pr(>F)  
+    ## logArea                1 0.000054 0.0000535   0.129 0.7244  
+    ## Location_type          2 0.000817 0.0004087   0.983 0.3956  
+    ## logArea:Location_type  2 0.002741 0.0013705   3.297 0.0633 .
+    ## Residuals             16 0.006652 0.0004157                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
 # ANCOVA
-PD_PDisp_am_lga <- aov(Dispersion ~ logArea + Site_type, data = stree_sespd_env[surveyed_sites,])
+PD_PDisp_am_lga <- aov(Dispersion ~ logArea + Location_type, data = stree_sespd_env[surveyed_sites,])
 # Shapiro-Wilk test on residuals
 shapiro.test(residuals(PD_PDisp_am_lga))
 ```
@@ -4000,7 +4163,7 @@ shapiro.test(residuals(PD_PDisp_am_lga))
 
 ``` r
 # Levene’s test for homogeneity of variance
-car::leveneTest(residuals(PD_PDisp_am_lga) ~ stree_sespd_env[surveyed_sites,"Site_type"])
+car::leveneTest(residuals(PD_PDisp_am_lga) ~ stree_sespd_env[surveyed_sites,"Location_type"])
 ```
 
     ## Levene's Test for Homogeneity of Variance (center = median)
@@ -4023,20 +4186,20 @@ outlierTest(PD_PDisp_am_lga)
 plot(PD_PDisp_am_lga)
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANOVA-23.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20alpha%20lm%20and%20ANCOVA-23.png)<!-- -->
 
 ``` r
-# Summarize ANOVA results and calculate pairwise comparisons
+# Summarize ANCOVA results and calculate pairwise comparisons
 summary(PD_PDisp_am_dist)
 ```
 
     ##                         Df   Sum Sq   Mean Sq F value Pr(>F)
     ## distance_to_ocean_min_m  1 0.001143 0.0011432   2.480  0.133
-    ## Site_type                2 0.000823 0.0004115   0.893  0.427
+    ## Location_type            2 0.000823 0.0004115   0.893  0.427
     ## Residuals               18 0.008297 0.0004610
 
 ``` r
-PD_PDisp_amp_dist <- emmeans(PD_PDisp_am_dist, pairwise ~ Site_type, adjust = "bonferroni")
+PD_PDisp_amp_dist <- emmeans(PD_PDisp_am_dist, pairwise ~ Location_type, adjust = "bonferroni")
 PD_PDisp_amp_dist$contrasts
 ```
 
@@ -4051,13 +4214,13 @@ PD_PDisp_amp_dist$contrasts
 summary(PD_PDisp_am_mxd)
 ```
 
-    ##             Df   Sum Sq   Mean Sq F value Pr(>F)
-    ## max_depth    1 0.000004 0.0000044   0.009  0.927
-    ## Site_type    2 0.000904 0.0004519   0.869  0.436
-    ## Residuals   18 0.009355 0.0005197
+    ##               Df   Sum Sq   Mean Sq F value Pr(>F)
+    ## max_depth      1 0.000004 0.0000044   0.009  0.927
+    ## Location_type  2 0.000904 0.0004519   0.869  0.436
+    ## Residuals     18 0.009355 0.0005197
 
 ``` r
-PD_PDisp_amp_mxd <- emmeans(PD_PDisp_am_mxd, pairwise ~ Site_type, adjust = "bonferroni")
+PD_PDisp_amp_mxd <- emmeans(PD_PDisp_am_mxd, pairwise ~ Location_type, adjust = "bonferroni")
 PD_PDisp_amp_mxd$contrasts
 ```
 
@@ -4072,13 +4235,13 @@ PD_PDisp_amp_mxd$contrasts
 summary(PD_PDisp_am_lga)
 ```
 
-    ##             Df   Sum Sq   Mean Sq F value Pr(>F)
-    ## logArea      1 0.000054 0.0000535   0.103  0.752
-    ## Site_type    2 0.000817 0.0004087   0.783  0.472
-    ## Residuals   18 0.009393 0.0005218
+    ##               Df   Sum Sq   Mean Sq F value Pr(>F)
+    ## logArea        1 0.000054 0.0000535   0.103  0.752
+    ## Location_type  2 0.000817 0.0004087   0.783  0.472
+    ## Residuals     18 0.009393 0.0005218
 
 ``` r
-PD_PDisp_amp_lga <- emmeans(PD_PDisp_am_lga, pairwise ~ Site_type, adjust = "bonferroni")
+PD_PDisp_amp_lga <- emmeans(PD_PDisp_am_lga, pairwise ~ Location_type, adjust = "bonferroni")
 PD_PDisp_amp_lga$contrasts
 ```
 
@@ -4132,7 +4295,7 @@ summary(PD_PDisp_geo_M_lm)
     ## F-statistic: 0.6669 on 3 and 4 DF,  p-value: 0.615
 
 ``` r
-Anova(PD_PDisp_geo_M_lm, type = 3)
+car::Anova(PD_PDisp_geo_M_lm, type = 3)
 ```
 
     ## Anova Table (Type III tests)
@@ -4153,7 +4316,7 @@ p_values <- summary(PD_PDisp_geo_M_lm)$coefficients[, "Pr(>|t|)"]
 ```
 
     ##             (Intercept) distance_to_ocean_min_m               max_depth 
-    ##              0.01531847              0.98443978              1.00000000 
+    ##              0.01531847              0.98443973              1.00000000 
     ##                 logArea 
     ##              1.00000000
 
@@ -4186,7 +4349,7 @@ summary(PD_PDisp_geo_S_lm)
     ## F-statistic: 3.975 on 3 and 4 DF,  p-value: 0.1079
 
 ``` r
-Anova(PD_PDisp_geo_S_lm, type = 3)
+car::Anova(PD_PDisp_geo_S_lm, type = 3)
 ```
 
     ## Anova Table (Type III tests)
@@ -4218,7 +4381,7 @@ par(mfrow=c(1,1))
 ### PD alpha z-scores & dispersion
 
 ``` r
-PD_alpha_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs.z, x = Dispersion, color = Site_type, fill = Site_type)) +
+PD_alpha_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs.z, x = Dispersion, color = Location_type, fill = Location_type)) +
   geom_point(stat = 'identity',
     size = 4,
     alpha = 1) + 
@@ -4237,14 +4400,14 @@ PD_alpha_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs.z, x = 
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
-  labs(x="PDisp", y="PRic-z", colour = "Site type:", fill = "Site type:", tag = "a")
+  labs(x="PDisp", y=expression(paste(alpha, "PRic-z")), colour = "Location type:", fill = "Location type:", tag = "a")
 (PD_alpha_plot <- PD_alpha_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
 ![](PD_analyses_files/figure-gfm/z-scores%20&%20dispersion-1.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_plot.jpg", plot = PD_alpha_plot, width = 4.88, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_alpha_plot.jpg", plot = PD_alpha_plot, width = 4.88, height = 6, units = "in")
 ```
 
 ## PD beta diversity
@@ -4255,14 +4418,14 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_alpha_p
 ### Regular
 # Reference
 PD_beta_ref_dist <- BAT::beta(presabs_lake, tree, abund = F)
-(PD_beta_ref_BD <- betadisper(PD_beta_ref_dist$Btotal, Site_type_group_ref))
+(PD_beta_ref_BD <- betadisper(PD_beta_ref_dist$Btotal, Location_type_group_ref))
 ```
 
     ## 
     ##  Homogeneity of multivariate dispersions
     ## 
     ## Call: betadisper(d = PD_beta_ref_dist$Btotal, group =
-    ## Site_type_group_ref)
+    ## Location_type_group_ref)
     ## 
     ## No. of Positive Eigenvalues: 21
     ## No. of Negative Eigenvalues: 1
@@ -4308,14 +4471,14 @@ PD_beta_ref_dist <- BAT::beta(presabs_lake, tree, abund = F)
     ## Stratified-Mixed     -0.085558054 -0.20306226 0.03194615 0.2061814
 
 ``` r
-(PD_beta_ref_PM <- adonis2(PD_beta_ref_dist$Btotal ~ env[,"Site_type"], permutations = 999))
+(PD_beta_ref_PM <- adonis2(PD_beta_ref_dist$Btotal ~ env[,"Location_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = PD_beta_ref_dist$Btotal ~ env[, "Site_type"], permutations = 999)
+    ## adonis2(formula = PD_beta_ref_dist$Btotal ~ env[, "Location_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)    
     ## Model     3   2.5315 0.46901 5.5941  0.001 ***
     ## Residual 19   2.8660 0.53099                  
@@ -4324,7 +4487,7 @@ PD_beta_ref_dist <- BAT::beta(presabs_lake, tree, abund = F)
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(PD_beta_ref_PM_pair <- pairwise.adonis(PD_beta_ref_dist$Btotal, env[,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+(PD_beta_ref_PM_pair <- pairwise.adonis(PD_beta_ref_dist$Btotal, env[,"Location_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ## Set of permutations < 'minperm'. Generating entire set.
@@ -4333,7 +4496,7 @@ PD_beta_ref_dist <- BAT::beta(presabs_lake, tree, abund = F)
     ## 1     Stratified vs Mixed  1 1.2940870 9.415922 0.4021162   0.001      0.006
     ## 2     Stratified vs Ocean  1 1.1858559 8.357071 0.4105242   0.002      0.012
     ## 3 Stratified vs Reference  1 0.7729479 7.110647 0.5039207   0.118      0.708
-    ## 4          Mixed vs Ocean  1 0.2573592 1.467099 0.1089395   0.098      0.588
+    ## 4          Mixed vs Ocean  1 0.2573592 1.467099 0.1089395   0.103      0.618
     ## 5      Mixed vs Reference  1 0.6592270 3.967203 0.3617334   0.115      0.690
     ## 6      Ocean vs Reference  1 0.6319662 3.354877 0.4015472   0.145      0.870
     ##   sig
@@ -4347,13 +4510,13 @@ PD_beta_ref_dist <- BAT::beta(presabs_lake, tree, abund = F)
 ``` r
 # Surveyed sites total
 PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
-(PD_beta_BD <- betadisper(PD_beta_dist$Btotal, Site_type_group))
+(PD_beta_BD <- betadisper(PD_beta_dist$Btotal, Location_type_group))
 ```
 
     ## 
     ##  Homogeneity of multivariate dispersions
     ## 
-    ## Call: betadisper(d = PD_beta_dist$Btotal, group = Site_type_group)
+    ## Call: betadisper(d = PD_beta_dist$Btotal, group = Location_type_group)
     ## 
     ## No. of Positive Eigenvalues: 20
     ## No. of Negative Eigenvalues: 1
@@ -4396,14 +4559,14 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## Stratified-Mixed -0.085557660 -0.1917214 0.02060604 0.1281442
 
 ``` r
-(PD_beta_PM <- adonis2(PD_beta_dist$Btotal ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(PD_beta_PM <- adonis2(PD_beta_dist$Btotal ~ env[surveyed_sites,"Location_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = PD_beta_dist$Btotal ~ env[surveyed_sites, "Site_type"], permutations = 999)
+    ## adonis2(formula = PD_beta_dist$Btotal ~ env[surveyed_sites, "Location_type"], permutations = 999)
     ##          Df SumOfSqs      R2     F Pr(>F)    
     ## Model     2   1.8596 0.39351 6.164  0.001 ***
     ## Residual 19   2.8660 0.60649                 
@@ -4412,26 +4575,26 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(PD_beta_PM_pair <- pairwise.adonis(PD_beta_dist$Btotal, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+(PD_beta_PM_pair <- pairwise.adonis(PD_beta_dist$Btotal, env[surveyed_sites,"Location_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted sig
     ## 1 Stratified vs Mixed  1 1.2940870 9.415922 0.4021162   0.001      0.003   *
     ## 2 Stratified vs Ocean  1 1.1858559 8.357071 0.4105242   0.002      0.006   *
-    ## 3      Mixed vs Ocean  1 0.2573592 1.467099 0.1089395   0.109      0.327
+    ## 3      Mixed vs Ocean  1 0.2573592 1.467099 0.1089395   0.107      0.321
 
 ``` r
 # Surveyed sites replacement
-(PD_beta_rep_BD <- betadisper(PD_beta_dist$Brepl, Site_type_group))
+(PD_beta_rep_BD <- betadisper(PD_beta_dist$Brepl, Location_type_group))
 ```
 
-    ## Warning in betadisper(PD_beta_dist$Brepl, Site_type_group): some squared
+    ## Warning in betadisper(PD_beta_dist$Brepl, Location_type_group): some squared
     ## distances are negative and changed to zero
 
     ## 
     ##  Homogeneity of multivariate dispersions
     ## 
-    ## Call: betadisper(d = PD_beta_dist$Brepl, group = Site_type_group)
+    ## Call: betadisper(d = PD_beta_dist$Brepl, group = Location_type_group)
     ## 
     ## No. of Positive Eigenvalues: 17
     ## No. of Negative Eigenvalues: 4
@@ -4472,40 +4635,40 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## Stratified-Mixed -0.04930302 -0.1866666 0.08806055 0.6396241
 
 ``` r
-(PD_beta_rep_PM <- adonis2(PD_beta_dist$Brepl ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(PD_beta_rep_PM <- adonis2(PD_beta_dist$Brepl ~ env[surveyed_sites,"Location_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = PD_beta_dist$Brepl ~ env[surveyed_sites, "Site_type"], permutations = 999)
+    ## adonis2(formula = PD_beta_dist$Brepl ~ env[surveyed_sites, "Location_type"], permutations = 999)
     ##          Df SumOfSqs     R2       F Pr(>F)
-    ## Model     2 -0.09848 -0.123 -1.0405  0.977
+    ## Model     2 -0.09848 -0.123 -1.0405  0.982
     ## Residual 19  0.89910  1.123               
     ## Total    21  0.80063  1.000
 
 ``` r
-(PD_beta_rep_PM_pair <- pairwise.adonis(PD_beta_dist$Brepl, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+(PD_beta_rep_PM_pair <- pairwise.adonis(PD_beta_dist$Brepl, env[surveyed_sites,"Location_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df  SumsOfSqs   F.Model         R2 p.value p.adjusted sig
     ## 1 Stratified vs Mixed  1 -0.1363606 -3.955091 -0.3937408   0.999      1.000    
     ## 2 Stratified vs Ocean  1 -0.1745626 -3.504821 -0.4125659   0.996      1.000    
-    ## 3      Mixed vs Ocean  1  0.1756548  2.936368  0.1965918   0.019      0.057
+    ## 3      Mixed vs Ocean  1  0.1756548  2.936368  0.1965918   0.014      0.042   .
 
 ``` r
 # Surveyed sites richness
-(PD_beta_ric_BD <- betadisper(PD_beta_dist$Brich, Site_type_group))
+(PD_beta_ric_BD <- betadisper(PD_beta_dist$Brich, Location_type_group))
 ```
 
-    ## Warning in betadisper(PD_beta_dist$Brich, Site_type_group): some squared
+    ## Warning in betadisper(PD_beta_dist$Brich, Location_type_group): some squared
     ## distances are negative and changed to zero
 
     ## 
     ##  Homogeneity of multivariate dispersions
     ## 
-    ## Call: betadisper(d = PD_beta_dist$Brich, group = Site_type_group)
+    ## Call: betadisper(d = PD_beta_dist$Brich, group = Location_type_group)
     ## 
     ## No. of Positive Eigenvalues: 13
     ## No. of Negative Eigenvalues: 8
@@ -4546,14 +4709,14 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## Stratified-Mixed -0.04298614 -0.19217358 0.1062013 0.7478413
 
 ``` r
-(PD_beta_ric_PM <- adonis2(PD_beta_dist$Brich ~ env[surveyed_sites,"Site_type"], permutations = 999))
+(PD_beta_ric_PM <- adonis2(PD_beta_dist$Brich ~ env[surveyed_sites,"Location_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = PD_beta_dist$Brich ~ env[surveyed_sites, "Site_type"], permutations = 999)
+    ## adonis2(formula = PD_beta_dist$Brich ~ env[surveyed_sites, "Location_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)    
     ## Model     2  1.64257 0.63885 16.805  0.001 ***
     ## Residual 19  0.92857 0.36115                  
@@ -4562,7 +4725,7 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(PD_beta_ric_PM_pair <- pairwise.adonis(PD_beta_dist$Brich, env[surveyed_sites,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+(PD_beta_ric_PM_pair <- pairwise.adonis(PD_beta_dist$Brich, env[surveyed_sites,"Location_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df    SumsOfSqs     F.Model           R2 p.value
@@ -4577,14 +4740,14 @@ PD_beta_dist <- BAT::beta(surveyed_sites_lake, stree, abund = F)
 ``` r
 # Without LCN
 PD_beta_wo_LCN_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_LCN,], stree, abund = F)
-(PD_beta_wo_LCN_BD <- betadisper(PD_beta_wo_LCN_dist$Btotal, Site_type_group[-8]))
+(PD_beta_wo_LCN_BD <- betadisper(PD_beta_wo_LCN_dist$Btotal, Location_type_group[-8]))
 ```
 
     ## 
     ##  Homogeneity of multivariate dispersions
     ## 
     ## Call: betadisper(d = PD_beta_wo_LCN_dist$Btotal, group =
-    ## Site_type_group[-8])
+    ## Location_type_group[-8])
     ## 
     ## No. of Positive Eigenvalues: 19
     ## No. of Negative Eigenvalues: 1
@@ -4625,14 +4788,14 @@ PD_beta_wo_LCN_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_LCN,], st
     ## Stratified-Mixed -0.08555704 -0.18866893 0.01755485 0.1142581
 
 ``` r
-(PD_beta_wo_LCN_PM <- adonis2(PD_beta_wo_LCN_dist$Btotal ~ env[surveyed_sites_wo_LCN,"Site_type"], permutations = 999))
+(PD_beta_wo_LCN_PM <- adonis2(PD_beta_wo_LCN_dist$Btotal ~ env[surveyed_sites_wo_LCN,"Location_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = PD_beta_wo_LCN_dist$Btotal ~ env[surveyed_sites_wo_LCN, "Site_type"], permutations = 999)
+    ## adonis2(formula = PD_beta_wo_LCN_dist$Btotal ~ env[surveyed_sites_wo_LCN, "Location_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)    
     ## Model     2   1.9412 0.43018 6.7946  0.001 ***
     ## Residual 18   2.5713 0.56982                  
@@ -4641,25 +4804,100 @@ PD_beta_wo_LCN_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_LCN,], st
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(PD_beta_wo_LCN_PM_pair <- pairwise.adonis(PD_beta_wo_LCN_dist$Btotal, env[surveyed_sites_wo_LCN,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+(PD_beta_wo_LCN_PM_pair <- pairwise.adonis(PD_beta_wo_LCN_dist$Btotal, env[surveyed_sites_wo_LCN,"Location_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted sig
     ## 1 Stratified vs Mixed  1 1.2940870 9.415922 0.4021162   0.001      0.003   *
     ## 2 Stratified vs Ocean  1 1.2083230 9.439158 0.4618174   0.001      0.003   *
-    ## 3      Mixed vs Ocean  1 0.3347638 2.034034 0.1560556   0.020      0.060
+    ## 3      Mixed vs Ocean  1 0.3347638 2.034034 0.1560556   0.016      0.048   .
+
+``` r
+# Without OCO
+PD_beta_wo_OCO_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_OCO,], stree, abund = F)
+(PD_beta_wo_OCO_BD <- betadisper(PD_beta_wo_OCO_dist$Btotal, Location_type_group[-8]))
+```
+
+    ## 
+    ##  Homogeneity of multivariate dispersions
+    ## 
+    ## Call: betadisper(d = PD_beta_wo_OCO_dist$Btotal, group =
+    ## Location_type_group[-8])
+    ## 
+    ## No. of Positive Eigenvalues: 19
+    ## No. of Negative Eigenvalues: 1
+    ## 
+    ## Average distance to median:
+    ##      Ocean      Mixed Stratified 
+    ##     0.3545     0.4107     0.3534 
+    ## 
+    ## Eigenvalues for PCoA axes:
+    ## (Showing 8 of 20 eigenvalues)
+    ##  PCoA1  PCoA2  PCoA3  PCoA4  PCoA5  PCoA6  PCoA7  PCoA8 
+    ## 1.8368 0.5955 0.2924 0.2378 0.2048 0.2001 0.1590 0.1503
+
+``` r
+(PD_beta_wo_OCO_AOV <- anova(PD_beta_wo_OCO_BD))
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Response: Distances
+    ##           Df   Sum Sq   Mean Sq F value Pr(>F)
+    ## Groups     2 0.016037 0.0080183  0.5578  0.582
+    ## Residuals 18 0.258734 0.0143741
+
+``` r
+(PD_beta_wo_OCO_THSD <- TukeyHSD(PD_beta_wo_OCO_BD))
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = distances ~ group, data = df)
+    ## 
+    ## $group
+    ##                         diff        lwr        upr     p adj
+    ## Mixed-Ocean       0.05620968 -0.1182281 0.23064741 0.6943204
+    ## Stratified-Ocean -0.00111857 -0.1755563 0.17331916 0.9998523
+    ## Stratified-Mixed -0.05732825 -0.2103203 0.09566376 0.6128398
+
+``` r
+(PD_beta_wo_OCO_PM <- adonis2(PD_beta_wo_OCO_dist$Btotal ~ env[surveyed_sites_wo_OCO,"Location_type"], permutations = 999))
+```
+
+    ## Permutation test for adonis under reduced model
+    ## Permutation: free
+    ## Number of permutations: 999
+    ## 
+    ## adonis2(formula = PD_beta_wo_OCO_dist$Btotal ~ env[surveyed_sites_wo_OCO, "Location_type"], permutations = 999)
+    ##          Df SumOfSqs      R2      F Pr(>F)    
+    ## Model     2   1.8679 0.41592 6.4087  0.001 ***
+    ## Residual 18   2.6232 0.58408                  
+    ## Total    20   4.4911 1.00000                  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+(PD_beta_wo_OCO_PM_pair <- pairwise.adonis(PD_beta_wo_OCO_dist$Btotal, env[surveyed_sites_wo_OCO,"Location_type"], p.adjust.m = "bonferroni", perm = 999))
+```
+
+    ##                 pairs Df SumsOfSqs  F.Model        R2 p.value p.adjusted sig
+    ## 1 Stratified vs Mixed  1  1.294087 9.415922 0.4021162   0.001      0.003   *
+    ## 2 Stratified vs Ocean  1  1.163130 8.763229 0.4434108   0.001      0.003   *
+    ## 3      Mixed vs Ocean  1  0.261577 1.545069 0.1231615   0.092      0.276
 
 ``` r
 # Without TLN and HLM
 PD_beta_wo_TLN_HLM_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_TLN_HLM,], stree, abund = F)
-(PD_beta_wo_TLN_HLM_BD <- betadisper(PD_beta_wo_TLN_HLM_dist$Btotal, Site_type_group[-c(5,21)]))
+(PD_beta_wo_TLN_HLM_BD <- betadisper(PD_beta_wo_TLN_HLM_dist$Btotal, Location_type_group[-c(5,21)]))
 ```
 
     ## 
     ##  Homogeneity of multivariate dispersions
     ## 
     ## Call: betadisper(d = PD_beta_wo_TLN_HLM_dist$Btotal, group =
-    ## Site_type_group[-c(5, 21)])
+    ## Location_type_group[-c(5, 21)])
     ## 
     ## No. of Positive Eigenvalues: 19
     ## No. of Negative Eigenvalues: 0
@@ -4702,14 +4940,14 @@ PD_beta_wo_TLN_HLM_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_TLN_H
     ## Stratified-Mixed -0.140471196 -0.2449883 -0.03595413 0.0081854
 
 ``` r
-(PD_beta_wo_TLN_HLM_PM <- adonis2(PD_beta_wo_TLN_HLM_dist$Btotal ~ env[surveyed_sites_wo_TLN_HLM,"Site_type"], permutations = 999))
+(PD_beta_wo_TLN_HLM_PM <- adonis2(PD_beta_wo_TLN_HLM_dist$Btotal ~ env[surveyed_sites_wo_TLN_HLM,"Location_type"], permutations = 999))
 ```
 
     ## Permutation test for adonis under reduced model
     ## Permutation: free
     ## Number of permutations: 999
     ## 
-    ## adonis2(formula = PD_beta_wo_TLN_HLM_dist$Btotal ~ env[surveyed_sites_wo_TLN_HLM, "Site_type"], permutations = 999)
+    ## adonis2(formula = PD_beta_wo_TLN_HLM_dist$Btotal ~ env[surveyed_sites_wo_TLN_HLM, "Location_type"], permutations = 999)
     ##          Df SumOfSqs      R2      F Pr(>F)    
     ## Model     2   1.8539 0.42732 6.3425  0.001 ***
     ## Residual 17   2.4845 0.57268                  
@@ -4718,13 +4956,13 @@ PD_beta_wo_TLN_HLM_dist <- BAT::beta(surveyed_sites_lake[surveyed_sites_wo_TLN_H
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-(PD_beta_wo_TLN_HLM_PM_pair <- pairwise.adonis(PD_beta_wo_TLN_HLM_dist$Btotal, env[surveyed_sites_wo_TLN_HLM,"Site_type"], p.adjust.m = "bonferroni", perm = 999))
+(PD_beta_wo_TLN_HLM_PM_pair <- pairwise.adonis(PD_beta_wo_TLN_HLM_dist$Btotal, env[surveyed_sites_wo_TLN_HLM,"Location_type"], p.adjust.m = "bonferroni", perm = 999))
 ```
 
     ##                 pairs Df SumsOfSqs   F.Model        R2 p.value p.adjusted sig
     ## 1 Stratified vs Mixed  1 1.3499033 10.500850 0.4666868   0.001      0.003   *
-    ## 2 Stratified vs Ocean  1 1.2146330  9.192717 0.4789690   0.003      0.009   *
-    ## 3      Mixed vs Ocean  1 0.2573592  1.467099 0.1089395   0.089      0.267
+    ## 2 Stratified vs Ocean  1 1.2146330  9.192717 0.4789690   0.001      0.003   *
+    ## 3      Mixed vs Ocean  1 0.2573592  1.467099 0.1089395   0.108      0.324
 
 ``` r
 # Mixed and stratified lakes
@@ -4804,7 +5042,7 @@ group <- PD_beta_THSD$group
 
 ### PD beta phylogenetic dispersions
 
-- The dissimilarity between sites of the same site type
+- The dissimilarity between sites of the same Location type
 
 ``` r
 # Dispersion within-groups
@@ -4813,12 +5051,12 @@ PD_beta_BD_dist <- as.data.frame(PD_beta_BD_dist)
 PD_beta_BD_dist$X <- row.names(PD_beta_BD_dist)
 PD_beta_BD_dist_env <- merge(PD_beta_BD_dist, env[surveyed_sites,], by = "X", sort = F)
 
-# Add levels to Site_type column
-PD_beta_BD_dist_env$Site_type <- factor(PD_beta_BD_dist_env$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+# Add levels to Location_type column
+PD_beta_BD_dist_env$Location_type <- factor(PD_beta_BD_dist_env$Location_type, levels = c("Ocean", "Mixed", "Stratified"))
 
-# Determine outliers based on dispersion of sites by site type
+# Determine outliers based on dispersion of sites by Location type
 outlier_PD_beta_BD_dist_env <- PD_beta_BD_dist_env %>%
-  group_by(Site_type) %>%
+  group_by(Location_type) %>%
   mutate(
     Q1 = quantile(PD_beta_BD_dist, 0.25),
     Q3 = quantile(PD_beta_BD_dist, 0.75),
@@ -4838,8 +5076,8 @@ outlier_PD_beta_BD_dist_env$is_outlier
 
 ``` r
 # Plot dispersion
-(PD_beta_BD_dist_env_plot <- ggplot(PD_beta_BD_dist_env, aes(x = Site_type, y = PD_beta_BD_dist, color = Site_type, fill = Site_type)) +
-  geom_violin(alpha = 0.6, draw_quantiles = c(0.25, 0.5, 0.75), aes(color = Site_type, fill = Site_type)) +
+(PD_beta_BD_dist_env_plot <- ggplot(PD_beta_BD_dist_env, aes(x = Location_type, y = PD_beta_BD_dist, color = Location_type, fill = Location_type)) +
+  geom_violin(alpha = 0.6, draw_quantiles = c(0.25, 0.5, 0.75), aes(color = Location_type, fill = Location_type)) +
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   guides(fill = "none", color = "none") +
@@ -4857,15 +5095,15 @@ outlier_PD_beta_BD_dist_env$is_outlier
     panel.border = element_blank(), axis.text = element_text(size = 17, color = "black"),
     axis.line = element_line(color = "black")) +
   scale_y_continuous(expand = c(0,0.05)) +
-  xlab("Site type") +
+  xlab("Location type") +
   ylab("Distance to Centroid") +
-  labs(color = "Site_type", tag = "a"))
+  labs(color = "Location_type", tag = "a"))
 ```
 
 ![](PD_analyses_files/figure-gfm/PD%20beta%20dispersion%20plot-1.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_BD_dist_plot.jpg", PD_beta_BD_dist_env_plot, width = 5.4, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_beta_BD_dist_plot.jpg", PD_beta_BD_dist_env_plot, width = 5.4, height = 6, units = "in")
 ```
 
 ### PD beta NMDS
@@ -4991,7 +5229,7 @@ PD_beta_varpart$part
 
 ``` r
 # Open a jpg device
-png("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_varpart.jpg", width = 4.5, height = 4.5, units = "in", res = 300, type = "cairo")
+png("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_beta_varpart.jpg", width = 4.5, height = 4.5, units = "in", res = 300, type = "cairo")
 # Plot the variation partitioning results
 par(mar = c(3, 3, 3, 3) + 1)  # Increase bottom margin if needed
 plot(PD_beta_varpart,
@@ -5022,14 +5260,14 @@ plot(PD_beta_varpart,
 ### Environmental
 # Surveyed sites 
 # For figure
-(PD_beta_env_ef <- envfit(PD_beta_env_NMDS, env[surveyed_sites_env,"S"], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
+(PD_beta_env_ef <- envfit(PD_beta_env_NMDS, env[surveyed_sites_env,"S"], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Location_type"]))
 ```
 
     ## 
     ## ***VECTORS
     ## 
     ##                                NMDS1   NMDS2    r2 Pr(>r)  
-    ## env[surveyed_sites_env, "S"] 0.94799 0.31830 0.699  0.018 *
+    ## env[surveyed_sites_env, "S"] 0.94798 0.31833 0.699  0.019 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5046,7 +5284,7 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                                NMDS1   NMDS2    r2 Pr(>r)  
-    ## env[surveyed_sites_env, "S"] 0.94799 0.31830 0.699  0.018 *
+    ## env[surveyed_sites_env, "S"] 0.94798 0.31833 0.699  0.019 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5054,17 +5292,17 @@ plot(PD_beta_varpart,
     ## Number of permutations: 999
 
 ``` r
-# Surveyed sites by Site_type
-(PD_beta_env_A_ef <- envfit(PD_beta_env_NMDS, env[surveyed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
+# Surveyed sites by Location_type
+(PD_beta_env_A_ef <- envfit(PD_beta_env_NMDS, env[surveyed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Location_type"]))
 ```
 
     ## 
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.75821 -0.65201 0.0724  0.700  
-    ## salinity_median     0.94799  0.31830 0.6990  0.020 *
-    ## oxygen_median       0.57185 -0.82036 0.6836  0.108  
+    ## temperature_median -0.75822 -0.65200 0.0724  0.676  
+    ## salinity_median     0.94798  0.31833 0.6990  0.021 *
+    ## oxygen_median       0.57185 -0.82036 0.6836  0.104  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5081,9 +5319,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.75821 -0.65201 0.0724  1.000  
-    ## salinity_median     0.94799  0.31830 0.6990  0.060 .
-    ## oxygen_median       0.57185 -0.82036 0.6836  0.324  
+    ## temperature_median -0.75822 -0.65200 0.0724  1.000  
+    ## salinity_median     0.94798  0.31833 0.6990  0.063 .
+    ## oxygen_median       0.57185 -0.82036 0.6836  0.312  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5092,16 +5330,16 @@ plot(PD_beta_varpart,
 
 ``` r
 # Mixed and stratified lakes
-(PD_beta_env_MS_ef <- envfit(PD_beta_env_MS_NMDS, env[mixed_stratified_lakes,environment], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
+(PD_beta_env_MS_ef <- envfit(PD_beta_env_MS_NMDS, env[mixed_stratified_lakes,environment], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Location_type"]))
 ```
 
     ## 
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.92650  0.37629 0.0954  0.751  
-    ## salinity_median     0.90467  0.42611 0.6840  0.026 *
-    ## oxygen_median       0.44477 -0.89564 0.5837  0.225  
+    ## temperature_median -0.92681  0.37553 0.0954  0.734  
+    ## salinity_median     0.90469  0.42607 0.6840  0.027 *
+    ## oxygen_median       0.44476 -0.89565 0.5837  0.212  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5118,9 +5356,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.92650  0.37629 0.0954  1.000  
-    ## salinity_median     0.90467  0.42611 0.6840  0.078 .
-    ## oxygen_median       0.44477 -0.89564 0.5837  0.675  
+    ## temperature_median -0.92681  0.37553 0.0954  1.000  
+    ## salinity_median     0.90469  0.42607 0.6840  0.081 .
+    ## oxygen_median       0.44476 -0.89565 0.5837  0.636  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5129,16 +5367,16 @@ plot(PD_beta_varpart,
 
 ``` r
 # Ocean sites and mixed lakes
-(PD_beta_env_OM_ef <- envfit(PD_beta_env_OM_NMDS, env[ocean_mixed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Site_type"]))
+(PD_beta_env_OM_ef <- envfit(PD_beta_env_OM_NMDS, env[ocean_mixed_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Location_type"]))
 ```
 
     ## 
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.52519 -0.85099 0.0223  0.895  
-    ## salinity_median    -0.79785 -0.60286 0.7269  0.026 *
-    ## oxygen_median      -0.91393 -0.40587 0.8026  0.020 *
+    ## temperature_median  0.52519 -0.85098 0.0223  0.911  
+    ## salinity_median     0.79785 -0.60286 0.7269  0.021 *
+    ## oxygen_median       0.91393 -0.40587 0.8026  0.013 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5155,9 +5393,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                       NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median -0.52519 -0.85099 0.0223  1.000  
-    ## salinity_median    -0.79785 -0.60286 0.7269  0.078 .
-    ## oxygen_median      -0.91393 -0.40587 0.8026  0.060 .
+    ## temperature_median  0.52519 -0.85098 0.0223  1.000  
+    ## salinity_median     0.79785 -0.60286 0.7269  0.063 .
+    ## oxygen_median       0.91393 -0.40587 0.8026  0.039 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5166,16 +5404,18 @@ plot(PD_beta_varpart,
 
 ``` r
 # Stratified lakes and ocean sites
-(PD_beta_env_SO_ef <- envfit(PD_beta_env_SO_NMDS, env[ocean_stratified_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Site_type"]))
+(PD_beta_env_SO_ef <- envfit(PD_beta_env_SO_NMDS, env[ocean_stratified_sites_env,environment], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Location_type"]))
 ```
 
     ## 
     ## ***VECTORS
     ## 
-    ##                          NMDS1       NMDS2     r2 Pr(>r)
-    ## temperature_median  0.00033289 -1.00000000 0.0455  0.707
-    ## salinity_median    -0.00048010  1.00000000 0.6053  0.109
-    ## oxygen_median      -0.00108894 -1.00000000 0.7467  0.267
+    ##                         NMDS1      NMDS2     r2 Pr(>r)  
+    ## temperature_median -0.0002930 -1.0000000 0.0710  0.549  
+    ## salinity_median     0.0059069  0.9999800 0.4838  0.866  
+    ## oxygen_median       0.0010628  1.0000000 0.7865  0.096 .
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5189,10 +5429,10 @@ plot(PD_beta_varpart,
     ## 
     ## ***VECTORS
     ## 
-    ##                          NMDS1       NMDS2     r2 Pr(>r)
-    ## temperature_median  0.00033289 -1.00000000 0.0455  1.000
-    ## salinity_median    -0.00048010  1.00000000 0.6053  0.327
-    ## oxygen_median      -0.00108894 -1.00000000 0.7467  0.801
+    ##                         NMDS1      NMDS2     r2 Pr(>r)
+    ## temperature_median -0.0002930 -1.0000000 0.0710  1.000
+    ## salinity_median     0.0059069  0.9999800 0.4838  1.000
+    ## oxygen_median       0.0010628  1.0000000 0.7865  0.288
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5206,12 +5446,12 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                               NMDS1       NMDS2     r2 Pr(>r)  
-    ## temperature_median      -0.00005951  1.00000000 0.5587  0.132  
-    ## salinity_median          0.00091085 -1.00000000 0.4220  0.261  
-    ## oxygen_median            0.00076744 -1.00000000 0.6750  0.062 .
-    ## distance_to_ocean_min_m -0.00073953 -1.00000000 0.3654  0.326  
-    ## max_depth                0.00262577 -1.00000000 0.7128  0.056 .
-    ## logArea                  0.00195855 -1.00000000 0.6670  0.050 *
+    ## temperature_median      -0.00012128 -1.00000000 0.0554  0.878  
+    ## salinity_median          0.00039226 -1.00000000 0.4426  0.244  
+    ## oxygen_median            0.00050857 -1.00000000 0.6395  0.071 .
+    ## distance_to_ocean_min_m -0.00014260  1.00000000 0.7097  0.040 *
+    ## max_depth                0.00043957 -1.00000000 0.7980  0.023 *
+    ## logArea                  0.00034803  1.00000000 0.7909  0.020 *
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
@@ -5227,12 +5467,12 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                               NMDS1       NMDS2     r2 Pr(>r)
-    ## temperature_median      -0.00005951  1.00000000 0.5587  0.792
-    ## salinity_median          0.00091085 -1.00000000 0.4220  1.000
-    ## oxygen_median            0.00076744 -1.00000000 0.6750  0.372
-    ## distance_to_ocean_min_m -0.00073953 -1.00000000 0.3654  1.000
-    ## max_depth                0.00262577 -1.00000000 0.7128  0.336
-    ## logArea                  0.00195855 -1.00000000 0.6670  0.300
+    ## temperature_median      -0.00012128 -1.00000000 0.0554  1.000
+    ## salinity_median          0.00039226 -1.00000000 0.4426  1.000
+    ## oxygen_median            0.00050857 -1.00000000 0.6395  0.426
+    ## distance_to_ocean_min_m -0.00014260  1.00000000 0.7097  0.240
+    ## max_depth                0.00043957 -1.00000000 0.7980  0.138
+    ## logArea                  0.00034803  1.00000000 0.7909  0.120
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5245,12 +5485,12 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## temperature_median      -0.39652 -0.91803 0.0381  0.899  
-    ## salinity_median         -0.96164  0.27433 0.5830  0.127  
-    ## oxygen_median            0.83740  0.54660 0.7450  0.041 *
-    ## distance_to_ocean_min_m  0.81783 -0.57546 0.1914  0.579  
-    ## max_depth               -0.87448  0.48506 0.1022  0.756  
-    ## logArea                 -0.40925  0.91242 0.2148  0.546  
+    ## temperature_median      -0.39653 -0.91802 0.0381  0.897  
+    ## salinity_median         -0.96164  0.27433 0.5830  0.102  
+    ## oxygen_median            0.83740  0.54660 0.7450  0.033 *
+    ## distance_to_ocean_min_m  0.81783 -0.57545 0.1914  0.553  
+    ## max_depth               -0.87446  0.48511 0.1022  0.768  
+    ## logArea                 -0.40924  0.91243 0.2148  0.571  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Permutation: free
@@ -5266,12 +5506,12 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## temperature_median      -0.39652 -0.91803 0.0381  1.000
-    ## salinity_median         -0.96164  0.27433 0.5830  0.762
-    ## oxygen_median            0.83740  0.54660 0.7450  0.246
-    ## distance_to_ocean_min_m  0.81783 -0.57546 0.1914  1.000
-    ## max_depth               -0.87448  0.48506 0.1022  1.000
-    ## logArea                 -0.40925  0.91242 0.2148  1.000
+    ## temperature_median      -0.39653 -0.91802 0.0381  1.000
+    ## salinity_median         -0.96164  0.27433 0.5830  0.612
+    ## oxygen_median            0.83740  0.54660 0.7450  0.198
+    ## distance_to_ocean_min_m  0.81783 -0.57545 0.1914  1.000
+    ## max_depth               -0.87446  0.48511 0.1022  1.000
+    ## logArea                 -0.40924  0.91243 0.2148  1.000
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5279,16 +5519,16 @@ plot(PD_beta_varpart,
 ### Geographic
 # Surveyed sites
 # For figure
-(PD_beta_geo_ef <- envfit(PD_beta_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
+(PD_beta_geo_ef <- envfit(PD_beta_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Location_type"]))
 ```
 
     ## 
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.078 .
-    ## max_depth               -0.20869 -0.97798 0.0858  0.912  
-    ## logArea                  0.25301 -0.96746 0.2012  0.297  
+    ## distance_to_ocean_min_m -0.82789  0.56089 0.5558  0.088 .
+    ## max_depth               -0.20869 -0.97798 0.0858  0.898  
+    ## logArea                  0.25301 -0.96746 0.2012  0.266  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5305,25 +5545,25 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.234
+    ## distance_to_ocean_min_m -0.82789  0.56089 0.5558  0.264
     ## max_depth               -0.20869 -0.97798 0.0858  1.000
-    ## logArea                  0.25301 -0.96746 0.2012  0.891
+    ## logArea                  0.25301 -0.96746 0.2012  0.798
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
-# Surveyed sites by Site_type
-(PD_beta_geo_A_ef <- envfit(PD_beta_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
+# Surveyed sites by Location_type
+(PD_beta_geo_A_ef <- envfit(PD_beta_geo_NMDS, env[surveyed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Location_type"]))
 ```
 
     ## 
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.057 .
-    ## max_depth               -0.20869 -0.97798 0.0858  0.892  
-    ## logArea                  0.25301 -0.96746 0.2012  0.287  
+    ## distance_to_ocean_min_m -0.82789  0.56089 0.5558  0.059 .
+    ## max_depth               -0.20869 -0.97798 0.0858  0.887  
+    ## logArea                  0.25301 -0.96746 0.2012  0.292  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5340,25 +5580,25 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.82790  0.56088 0.5558  0.171
+    ## distance_to_ocean_min_m -0.82789  0.56089 0.5558  0.177
     ## max_depth               -0.20869 -0.97798 0.0858  1.000
-    ## logArea                  0.25301 -0.96746 0.2012  0.861
+    ## logArea                  0.25301 -0.96746 0.2012  0.876
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 # Mixed and stratified lakes
-(PD_beta_geo_MS_ef <- envfit(PD_beta_geo_MS_NMDS, env[mixed_stratified_lakes,geography], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
+(PD_beta_geo_MS_ef <- envfit(PD_beta_geo_MS_NMDS, env[mixed_stratified_lakes,geography], permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Location_type"]))
 ```
 
     ## 
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.76308  0.64630 0.4671  0.127
-    ## max_depth               -0.34714 -0.93781 0.0777  0.970
-    ## logArea                  0.55456  0.83214 0.0074  0.966
+    ## distance_to_ocean_min_m -0.76269  0.64676 0.4672  0.129
+    ## max_depth               -0.34718 -0.93780 0.0776  0.958
+    ## logArea                  0.55236  0.83361 0.0074  0.972
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5373,25 +5613,25 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m -0.76308  0.64630 0.4671  0.381
-    ## max_depth               -0.34714 -0.93781 0.0777  1.000
-    ## logArea                  0.55456  0.83214 0.0074  1.000
+    ## distance_to_ocean_min_m -0.76269  0.64676 0.4672  0.387
+    ## max_depth               -0.34718 -0.93780 0.0776  1.000
+    ## logArea                  0.55236  0.83361 0.0074  1.000
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 # Ocean sites and mixed lakes
-(PD_beta_geo_OM_ef <- envfit(PD_beta_geo_OM_NMDS, env[ocean_mixed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Site_type"]))
+(PD_beta_geo_OM_ef <- envfit(PD_beta_geo_OM_NMDS, env[ocean_mixed_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Location_type"]))
 ```
 
     ## 
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)   
-    ## distance_to_ocean_min_m  0.45615 -0.88990 0.4273  0.166   
-    ## max_depth               -0.94118 -0.33789 0.6682  0.004 **
-    ## logArea                 -0.86397  0.50355 0.2339  0.414   
+    ## distance_to_ocean_min_m -0.45616  0.88990 0.4273  0.173   
+    ## max_depth                0.94118  0.33789 0.6682  0.006 **
+    ## logArea                  0.86398 -0.50353 0.2339  0.438   
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5408,9 +5648,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)  
-    ## distance_to_ocean_min_m  0.45615 -0.88990 0.4273  0.498  
-    ## max_depth               -0.94118 -0.33789 0.6682  0.012 *
-    ## logArea                 -0.86397  0.50355 0.2339  1.000  
+    ## distance_to_ocean_min_m -0.45616  0.88990 0.4273  0.519  
+    ## max_depth                0.94118  0.33789 0.6682  0.018 *
+    ## logArea                  0.86398 -0.50353 0.2339  1.000  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## Blocks:  strata 
@@ -5419,16 +5659,16 @@ plot(PD_beta_varpart,
 
 ``` r
 # Stratified lakes and ocean sites
-(PD_beta_geo_SO_ef <- envfit(PD_beta_geo_SO_NMDS, env[ocean_stratified_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Site_type"]))
+(PD_beta_geo_SO_ef <- envfit(PD_beta_geo_SO_NMDS, env[ocean_stratified_sites,geography], permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Location_type"]))
 ```
 
     ## 
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m  0.99474  0.10239 0.6338  0.214
-    ## max_depth                0.73039  0.68303 0.0374  0.975
-    ## logArea                 -0.39145  0.92020 0.3078  0.313
+    ## distance_to_ocean_min_m -0.99474  0.10239 0.6338  0.239
+    ## max_depth               -0.73029  0.68313 0.0374  0.974
+    ## logArea                  0.39142  0.92021 0.3078  0.287
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5443,9 +5683,9 @@ plot(PD_beta_varpart,
     ## ***VECTORS
     ## 
     ##                            NMDS1    NMDS2     r2 Pr(>r)
-    ## distance_to_ocean_min_m  0.99474  0.10239 0.6338  0.642
-    ## max_depth                0.73039  0.68303 0.0374  1.000
-    ## logArea                 -0.39145  0.92020 0.3078  0.939
+    ## distance_to_ocean_min_m -0.99474  0.10239 0.6338  0.717
+    ## max_depth               -0.73029  0.68313 0.0374  1.000
+    ## logArea                  0.39142  0.92021 0.3078  0.861
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5456,63 +5696,63 @@ plot(PD_beta_varpart,
 ### Environmental
 # Surveyed sites
 env_dist_t <- dist(scaled_env[surveyed_sites_env,"temperature_median"], method = "euclidean")
-(PD_beta_env_mant_t <- mantel(PD_beta_env_dist$Btotal, env_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
+(PD_beta_env_mant_t <- mantel(PD_beta_env_dist$Btotal, env_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_env_dist$Btotal, ydis = env_dist_t, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, "Site_type"],      na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_env_dist$Btotal, ydis = env_dist_t, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, "Location_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1792 
-    ##       Significance: 0.231 
+    ##       Significance: 0.211 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.218 0.244 0.273 0.291 
+    ## 0.220 0.246 0.269 0.296 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 env_dist_s <- dist(scaled_env[surveyed_sites_env,"salinity_median"], method = "euclidean")
-(PD_beta_env_mant_s <- mantel(PD_beta_env_dist$Btotal, env_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
+(PD_beta_env_mant_s <- mantel(PD_beta_env_dist$Btotal, env_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_env_dist$Btotal, ydis = env_dist_s, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, "Site_type"],      na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_env_dist$Btotal, ydis = env_dist_s, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, "Location_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5142 
-    ##       Significance: 0.005 
+    ##       Significance: 0.007 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.436 0.462 0.484 0.495 
+    ## 0.429 0.461 0.481 0.503 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 env_dist_o <- dist(scaled_env[surveyed_sites_env,"oxygen_median"], method = "euclidean")
-(PD_beta_env_mant_o <- mantel(PD_beta_env_dist$Btotal, env_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Site_type"]))
+(PD_beta_env_mant_o <- mantel(PD_beta_env_dist$Btotal, env_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites_env,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_env_dist$Btotal, ydis = env_dist_o, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, "Site_type"],      na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_env_dist$Btotal, ydis = env_dist_o, method = "spearman",      permutations = 999, strata = env[surveyed_sites_env, "Location_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.462 
-    ##       Significance: 0.27 
+    ##       Significance: 0.266 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.530 0.564 0.593 0.616 
+    ## 0.524 0.562 0.583 0.606 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5524,68 +5764,68 @@ PD_beta_env_mant_pv <- PD_beta_env_mant_pv[,1]
 (PD_beta_env_mant_pv <- p.adjust(PD_beta_env_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.693 0.015 0.810
+    ## [1] 0.633 0.021 0.798
 
 ``` r
 # Mixed and stratified lakes
 env_MS_dist_t <- dist(scaled_env[mixed_stratified_lakes,"temperature_median"], method = "euclidean")
-(PD_beta_env_MS_mant_t <- mantel(PD_beta_env_MS_dist$Btotal, env_MS_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
+(PD_beta_env_MS_mant_t <- mantel(PD_beta_env_MS_dist$Btotal, env_MS_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_t,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_t,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1644 
-    ##       Significance: 0.239 
+    ##       Significance: 0.225 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.213 0.245 0.277 0.302 
+    ## 0.210 0.242 0.265 0.287 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 env_MS_dist_s <- dist(scaled_env[mixed_stratified_lakes,"salinity_median"], method = "euclidean")
-(PD_beta_env_MS_mant_s <- mantel(PD_beta_env_MS_dist$Btotal, env_MS_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
+(PD_beta_env_MS_mant_s <- mantel(PD_beta_env_MS_dist$Btotal, env_MS_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_s,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_s,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4638 
-    ##       Significance: 0.008 
+    ##       Significance: 0.007 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.370 0.397 0.429 0.449 
+    ## 0.369 0.407 0.425 0.453 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 env_MS_dist_o <- dist(scaled_env[mixed_stratified_lakes,"oxygen_median"], method = "euclidean")
-(PD_beta_env_MS_mant_o <- mantel(PD_beta_env_MS_dist$Btotal, env_MS_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
+(PD_beta_env_MS_mant_o <- mantel(PD_beta_env_MS_dist$Btotal, env_MS_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_o,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_env_MS_dist$Btotal, ydis = env_MS_dist_o,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3305 
-    ##       Significance: 0.306 
+    ##       Significance: 0.326 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.416 0.449 0.477 0.548 
+    ## 0.414 0.450 0.511 0.549 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5597,68 +5837,68 @@ PD_beta_env_MS_mant_pv <- PD_beta_env_MS_mant_pv[,1]
 (PD_beta_env_MS_mant_pv <- p.adjust(PD_beta_env_MS_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.717 0.024 0.918
+    ## [1] 0.675 0.021 0.978
 
 ``` r
 # Ocean sites and mixed lakes
 env_OM_dist_t <- dist(scaled_env[ocean_mixed_sites_env,"temperature_median"], method = "euclidean")
-(PD_beta_env_OM_mant_t <- mantel(PD_beta_env_OM_dist$Btotal, env_OM_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Site_type"]))
+(PD_beta_env_OM_mant_t <- mantel(PD_beta_env_OM_dist$Btotal, env_OM_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.03824 
-    ##       Significance: 0.541 
+    ##       Significance: 0.504 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.142 0.223 0.317 0.404 
+    ## 0.134 0.179 0.221 0.342 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 env_OM_dist_s <- dist(scaled_env[ocean_mixed_sites_env,"salinity_median"], method = "euclidean")
-(PD_beta_env_OM_mant_s <- mantel(PD_beta_env_OM_dist$Btotal, env_OM_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Site_type"]))
+(PD_beta_env_OM_mant_s <- mantel(PD_beta_env_OM_dist$Btotal, env_OM_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4565 
-    ##       Significance: 0.015 
+    ##       Significance: 0.018 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.294 0.363 0.434 0.462 
+    ## 0.297 0.356 0.426 0.473 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 env_OM_dist_o <- dist(scaled_env[ocean_mixed_sites_env,"oxygen_median"], method = "euclidean")
-(PD_beta_env_OM_mant_o <- mantel(PD_beta_env_OM_dist$Btotal, env_OM_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Site_type"]))
+(PD_beta_env_OM_mant_o <- mantel(PD_beta_env_OM_dist$Btotal, env_OM_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites_env,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_env_OM_dist$Btotal, ydis = env_OM_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites_env,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5527 
-    ##       Significance: 0.007 
+    ##       Significance: 0.016 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.299 0.396 0.468 0.536 
+    ## 0.291 0.373 0.454 0.611 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5670,68 +5910,68 @@ PD_beta_env_OM_mant_pv <- PD_beta_env_OM_mant_pv[,1]
 (PD_beta_env_OM_mant_pv <- p.adjust(PD_beta_env_OM_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.045 0.021
+    ## [1] 1.000 0.054 0.048
 
 ``` r
 # Stratified lakes and ocean sites
 env_SO_dist_t <- dist(scaled_env[ocean_stratified_sites_env,"temperature_median"], method = "euclidean")
-(PD_beta_env_SO_mant_t <- mantel(PD_beta_env_SO_dist$Btotal, env_SO_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Site_type"]))
+(PD_beta_env_SO_mant_t <- mantel(PD_beta_env_SO_dist$Btotal, env_SO_dist_t, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_t,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.07569 
-    ##       Significance: 0.446 
+    ##       Significance: 0.439 
     ## 
     ## Upper quantiles of permutations (null model):
     ##    90%    95%  97.5%    99% 
-    ## 0.0380 0.0617 0.0846 0.1268 
+    ## 0.0352 0.0770 0.1038 0.1309 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 env_SO_dist_s <- dist(scaled_env[ocean_stratified_sites_env,"salinity_median"], method = "euclidean")
-(PD_beta_env_SO_mant_s <- mantel(PD_beta_env_SO_dist$Btotal, env_SO_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Site_type"]))
+(PD_beta_env_SO_mant_s <- mantel(PD_beta_env_SO_dist$Btotal, env_SO_dist_s, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_s,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4755 
-    ##       Significance: 0.014 
+    ##       Significance: 0.03 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.380 0.424 0.456 0.482 
+    ## 0.400 0.442 0.479 0.518 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 env_SO_dist_o <- dist(scaled_env[ocean_stratified_sites_env,"oxygen_median"], method = "euclidean")
-(PD_beta_env_SO_mant_o <- mantel(PD_beta_env_SO_dist$Btotal, env_SO_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Site_type"]))
+(PD_beta_env_SO_mant_o <- mantel(PD_beta_env_SO_dist$Btotal, env_SO_dist_o, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites_env,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_env_SO_dist$Btotal, ydis = env_SO_dist_o,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites_env,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.6587 
-    ##       Significance: 0.221 
+    ##       Significance: 0.21 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.691 0.713 0.730 0.759 
+    ## 0.685 0.710 0.728 0.746 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -5743,7 +5983,7 @@ PD_beta_env_SO_mant_pv <- PD_beta_env_SO_mant_pv[,1]
 (PD_beta_env_SO_mant_pv <- p.adjust(PD_beta_env_SO_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.042 0.663
+    ## [1] 1.00 0.09 0.63
 
 ``` r
 # Mixed lakes
@@ -5758,11 +5998,11 @@ env_M_dist_t <- dist(scaled_env[mixed_lakes,"temperature_median"], method = "euc
     ## mantel(xdis = PD_beta_M_dist$Btotal, ydis = env_M_dist_t, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.1368 
-    ##       Significance: 0.781 
+    ##       Significance: 0.756 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.259 0.351 0.567 0.706 
+    ## 0.262 0.373 0.471 0.708 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5778,11 +6018,11 @@ env_M_dist_s <- dist(scaled_env[mixed_lakes,"salinity_median"], method = "euclid
     ## mantel(xdis = PD_beta_M_dist$Btotal, ydis = env_M_dist_s, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1095 
-    ##       Significance: 0.253 
+    ##       Significance: 0.228 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.221 0.279 0.339 0.371 
+    ## 0.208 0.261 0.312 0.394 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5798,11 +6038,11 @@ env_M_dist_o <- dist(scaled_env[mixed_lakes,"oxygen_median"], method = "euclidea
     ## mantel(xdis = PD_beta_M_dist$Btotal, ydis = env_M_dist_o, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2748 
-    ##       Significance: 0.085 
+    ##       Significance: 0.09 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.250 0.359 0.471 0.626 
+    ## 0.250 0.350 0.460 0.582 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5818,11 +6058,11 @@ geo_M_dist_dm <- dist(scaled_env[mixed_lakes,"distance_to_ocean_min_m"], method 
     ## mantel(xdis = PD_beta_M_dist$Btotal, ydis = geo_M_dist_dm, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.2565 
-    ##       Significance: 0.073 
+    ##       Significance: 0.062 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.230 0.291 0.363 0.752 
+    ## 0.217 0.277 0.350 0.701 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5838,11 +6078,11 @@ geo_M_dist_md <- dist(scaled_env[mixed_lakes,"max_depth"], method = "euclidean")
     ## mantel(xdis = PD_beta_M_dist$Btotal, ydis = geo_M_dist_md, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.5985 
-    ##       Significance: 0.01 
+    ##       Significance: 0.013 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.258 0.366 0.510 0.581 
+    ## 0.253 0.413 0.520 0.604 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5858,11 +6098,11 @@ geo_M_dist_la <- dist(scaled_env[mixed_lakes,"logArea"], method = "euclidean")
     ## mantel(xdis = PD_beta_M_dist$Btotal, ydis = geo_M_dist_la, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4007 
-    ##       Significance: 0.017 
+    ##       Significance: 0.024 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.219 0.296 0.358 0.416 
+    ## 0.221 0.307 0.393 0.484 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5873,7 +6113,7 @@ PD_beta_M_mant_pv <- PD_beta_M_mant_pv[,1]
 (PD_beta_M_mant_pv <- p.adjust(PD_beta_M_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 1.000 0.510 0.438 0.060 0.102
+    ## [1] 1.000 1.000 0.540 0.372 0.078 0.144
 
 ``` r
 # Stratified lakes
@@ -5888,11 +6128,11 @@ env_S_dist_t <- dist(scaled_env[stratified_lakes,"temperature_median"], method =
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = env_S_dist_t, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.02901 
-    ##       Significance: 0.506 
+    ##       Significance: 0.511 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.365 0.438 0.504 0.564 
+    ## 0.375 0.456 0.522 0.569 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5908,11 +6148,11 @@ env_S_dist_s <- dist(scaled_env[stratified_lakes,"salinity_median"], method = "e
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = env_S_dist_s, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3536 
-    ##       Significance: 0.062 
+    ##       Significance: 0.057 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.286 0.375 0.446 0.512 
+    ## 0.289 0.376 0.455 0.510 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5928,11 +6168,11 @@ env_S_dist_o <- dist(scaled_env[stratified_lakes,"oxygen_median"], method = "euc
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = env_S_dist_o, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3399 
-    ##       Significance: 0.061 
+    ##       Significance: 0.08 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.288 0.356 0.428 0.501 
+    ## 0.295 0.405 0.484 0.549 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5948,11 +6188,11 @@ geo_S_dist_dm <- dist(scaled_env[stratified_lakes,"distance_to_ocean_min_m"], me
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = geo_S_dist_dm, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.01204 
-    ##       Significance: 0.496 
+    ##       Significance: 0.48 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.233 0.307 0.379 0.452 
+    ## 0.229 0.311 0.385 0.453 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5968,11 +6208,11 @@ geo_S_dist_md <- dist(scaled_env[stratified_lakes,"max_depth"], method = "euclid
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = geo_S_dist_md, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.05559 
-    ##       Significance: 0.555 
+    ##       Significance: 0.573 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.280 0.371 0.460 0.536 
+    ## 0.284 0.403 0.490 0.573 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -5988,11 +6228,11 @@ geo_S_dist_la <- dist(scaled_env[stratified_lakes,"logArea"], method = "euclidea
     ## mantel(xdis = PD_beta_S_dist$Btotal, ydis = geo_S_dist_la, method = "spearman",      permutations = 999, na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1155 
-    ##       Significance: 0.284 
+    ##       Significance: 0.268 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.336 0.466 0.528 0.632 
+    ## 0.338 0.431 0.512 0.612 
     ## Permutation: free
     ## Number of permutations: 999
 
@@ -6003,69 +6243,69 @@ PD_beta_S_mant_pv <- PD_beta_S_mant_pv[,1]
 (PD_beta_S_mant_pv <- p.adjust(PD_beta_S_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 1.000 0.372 0.366 1.000 1.000 1.000
+    ## [1] 1.000 0.342 0.480 1.000 1.000 1.000
 
 ``` r
 ### Geographic
 # Surveyed sites
 geo_dist_dm <- dist(scaled_env[surveyed_sites,"distance_to_ocean_min_m"], method = "euclidean")
-(PD_beta_geo_mant_dm <- mantel(PD_beta_geo_dist$Btotal, geo_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
+(PD_beta_geo_mant_dm <- mantel(PD_beta_geo_dist$Btotal, geo_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_geo_dist$Btotal, ydis = geo_dist_dm, method = "spearman",      permutations = 999, strata = env[surveyed_sites, "Site_type"],      na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_geo_dist$Btotal, ydis = geo_dist_dm, method = "spearman",      permutations = 999, strata = env[surveyed_sites, "Location_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3758 
-    ##       Significance: 0.12 
+    ##       Significance: 0.116 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.384 0.410 0.435 0.460 
+    ## 0.383 0.411 0.432 0.458 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 geo_dist_md <- dist(scaled_env[surveyed_sites,"max_depth"], method = "euclidean")
-(PD_beta_geo_mant_md <- mantel(PD_beta_geo_dist$Btotal, geo_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
+(PD_beta_geo_mant_md <- mantel(PD_beta_geo_dist$Btotal, geo_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_geo_dist$Btotal, ydis = geo_dist_md, method = "spearman",      permutations = 999, strata = env[surveyed_sites, "Site_type"],      na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_geo_dist$Btotal, ydis = geo_dist_md, method = "spearman",      permutations = 999, strata = env[surveyed_sites, "Location_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.0242 
-    ##       Significance: 0.788 
+    ##       Significance: 0.79 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.162 0.196 0.216 0.242 
+    ## 0.158 0.188 0.209 0.242 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 geo_dist_la <- dist(scaled_env[surveyed_sites,"logArea"], method = "euclidean")
-(PD_beta_geo_mant_la <- mantel(PD_beta_geo_dist$Btotal, geo_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Site_type"]))
+(PD_beta_geo_mant_la <- mantel(PD_beta_geo_dist$Btotal, geo_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[surveyed_sites,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_geo_dist$Btotal, ydis = geo_dist_la, method = "spearman",      permutations = 999, strata = env[surveyed_sites, "Site_type"],      na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_geo_dist$Btotal, ydis = geo_dist_la, method = "spearman",      permutations = 999, strata = env[surveyed_sites, "Location_type"],      na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.01132 
-    ##       Significance: 0.721 
+    ##       Significance: 0.71 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.112 0.129 0.147 0.162 
+    ## 0.106 0.126 0.141 0.158 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -6077,68 +6317,68 @@ PD_beta_geo_mant_pv <- PD_beta_geo_mant_pv[,1]
 (PD_beta_geo_mant_pv <- p.adjust(PD_beta_geo_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.36 1.00 1.00
+    ## [1] 0.348 1.000 1.000
 
 ``` r
 # Mixed and stratified lakes 
 geo_MS_dist_dm <- dist(scaled_env[mixed_stratified_lakes,"distance_to_ocean_min_m"], method = "euclidean")
-(PD_beta_geo_MS_mant_dm <- mantel(PD_beta_geo_MS_dist$Btotal, geo_MS_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
+(PD_beta_geo_MS_mant_dm <- mantel(PD_beta_geo_MS_dist$Btotal, geo_MS_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_dm,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_dm,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1819 
-    ##       Significance: 0.153 
+    ##       Significance: 0.158 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.205 0.252 0.291 0.318 
+    ## 0.212 0.253 0.296 0.338 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 geo_MS_dist_md <- dist(scaled_env[mixed_stratified_lakes,"max_depth"], method = "euclidean")
-(PD_beta_geo_MS_mant_md <- mantel(PD_beta_geo_MS_dist$Btotal, geo_MS_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
+(PD_beta_geo_MS_mant_md <- mantel(PD_beta_geo_MS_dist$Btotal, geo_MS_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_md,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_md,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.05502 
-    ##       Significance: 0.917 
+    ##       Significance: 0.914 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.158 0.189 0.219 0.257 
+    ## 0.152 0.187 0.211 0.238 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 geo_MS_dist_la <- dist(scaled_env[mixed_stratified_lakes,"logArea"], method = "euclidean")
-(PD_beta_geo_MS_mant_la <- mantel(PD_beta_geo_MS_dist$Btotal, geo_MS_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Site_type"]))
+(PD_beta_geo_MS_mant_la <- mantel(PD_beta_geo_MS_dist$Btotal, geo_MS_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[mixed_stratified_lakes,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_la,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_geo_MS_dist$Btotal, ydis = geo_MS_dist_la,      method = "spearman", permutations = 999, strata = env[mixed_stratified_lakes,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.06883 
-    ##       Significance: 0.904 
+    ##       Significance: 0.873 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.123 0.147 0.168 0.189 
+    ## 0.129 0.153 0.180 0.208 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -6150,68 +6390,68 @@ PD_beta_geo_MS_mant_pv <- PD_beta_geo_MS_mant_pv[,1]
 (PD_beta_geo_MS_mant_pv <- p.adjust(PD_beta_geo_MS_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.459 1.000 1.000
+    ## [1] 0.474 1.000 1.000
 
 ``` r
 # Ocean sites and mixed lakes
 geo_OM_dist_dm <- dist(scaled_env[ocean_mixed_sites,"distance_to_ocean_min_m"], method = "euclidean")
-(PD_beta_geo_OM_mant_dm <- mantel(PD_beta_geo_OM_dist$Btotal, geo_OM_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Site_type"]))
+(PD_beta_geo_OM_mant_dm <- mantel(PD_beta_geo_OM_dist$Btotal, geo_OM_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_dm,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_dm,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1695 
-    ##       Significance: 0.057 
+    ##       Significance: 0.055 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.142 0.177 0.214 0.288 
+    ## 0.126 0.172 0.211 0.301 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 geo_OM_dist_md <- dist(scaled_env[ocean_mixed_sites,"max_depth"], method = "euclidean")
-(PD_beta_geo_OM_mant_md <- mantel(PD_beta_geo_OM_dist$Btotal, geo_OM_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Site_type"]))
+(PD_beta_geo_OM_mant_md <- mantel(PD_beta_geo_OM_dist$Btotal, geo_OM_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3135 
-    ##       Significance: 0.018 
+    ##       Significance: 0.015 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.166 0.232 0.282 0.347 
+    ## 0.153 0.211 0.273 0.332 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 geo_OM_dist_la <- dist(scaled_env[ocean_mixed_sites,"logArea"], method = "euclidean")
-(PD_beta_geo_OM_mant_la <- mantel(PD_beta_geo_OM_dist$Btotal, geo_OM_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Site_type"]))
+(PD_beta_geo_OM_mant_la <- mantel(PD_beta_geo_OM_dist$Btotal, geo_OM_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_mixed_sites,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_geo_OM_dist$Btotal, ydis = geo_OM_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_mixed_sites,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.1943 
-    ##       Significance: 0.086 
+    ##       Significance: 0.074 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.187 0.224 0.245 0.272 
+    ## 0.178 0.211 0.236 0.286 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -6223,68 +6463,68 @@ PD_beta_geo_OM_mant_pv <- PD_beta_geo_OM_mant_pv[,1]
 (PD_beta_geo_OM_mant_pv <- p.adjust(PD_beta_geo_OM_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.171 0.054 0.258
+    ## [1] 0.165 0.045 0.222
 
 ``` r
 # Stratified lakes and ocean sites
 geo_SO_dist_dm <- dist(scaled_env[ocean_stratified_sites,"distance_to_ocean_min_m"], method = "euclidean")
-(PD_beta_geo_SO_mant_dm <- mantel(PD_beta_geo_SO_dist$Btotal, geo_SO_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Site_type"]))
+(PD_beta_geo_SO_mant_dm <- mantel(PD_beta_geo_SO_dist$Btotal, geo_SO_dist_dm, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_dm,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_dm,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.4489 
-    ##       Significance: 0.204 
+    ##       Significance: 0.199 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.493 0.516 0.538 0.559 
+    ## 0.479 0.507 0.527 0.555 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 geo_SO_dist_md <- dist(scaled_env[ocean_stratified_sites,"max_depth"], method = "euclidean")
-(PD_beta_geo_SO_mant_md <- mantel(PD_beta_geo_SO_dist$Btotal, geo_SO_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Site_type"]))
+(PD_beta_geo_SO_mant_md <- mantel(PD_beta_geo_SO_dist$Btotal, geo_SO_dist_md, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_md,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: -0.04194 
-    ##       Significance: 0.78 
+    ##       Significance: 0.801 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.110 0.138 0.162 0.209 
+    ## 0.118 0.147 0.173 0.191 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
 
 ``` r
 geo_SO_dist_la <- dist(scaled_env[ocean_stratified_sites,"logArea"], method = "euclidean")
-(PD_beta_geo_SO_mant_la <- mantel(PD_beta_geo_SO_dist$Btotal, geo_SO_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Site_type"]))
+(PD_beta_geo_SO_mant_la <- mantel(PD_beta_geo_SO_dist$Btotal, geo_SO_dist_la, method = "spearman", permutations = 999, na.rm = TRUE, strata = env[ocean_stratified_sites,"Location_type"]))
 ```
 
     ## 
     ## Mantel statistic based on Spearman's rank correlation rho 
     ## 
     ## Call:
-    ## mantel(xdis = PD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          "Site_type"], na.rm = TRUE) 
+    ## mantel(xdis = PD_beta_geo_SO_dist$Btotal, ydis = geo_SO_dist_la,      method = "spearman", permutations = 999, strata = env[ocean_stratified_sites,          "Location_type"], na.rm = TRUE) 
     ## 
     ## Mantel statistic r: 0.3193 
-    ##       Significance: 0.233 
+    ##       Significance: 0.216 
     ## 
     ## Upper quantiles of permutations (null model):
     ##   90%   95% 97.5%   99% 
-    ## 0.379 0.399 0.422 0.438 
+    ## 0.380 0.404 0.419 0.430 
     ## Blocks:  strata 
     ## Permutation: free
     ## Number of permutations: 999
@@ -6296,16 +6536,16 @@ PD_beta_geo_SO_mant_pv <- PD_beta_geo_SO_mant_pv[,1]
 (PD_beta_geo_SO_mant_pv <- p.adjust(PD_beta_geo_SO_mant_pv, method = "bonferroni"))
 ```
 
-    ## [1] 0.612 1.000 0.699
+    ## [1] 0.597 1.000 0.648
 
 ### PD beta NMDS ordination plots
 
 ``` r
 # PD beta total NMDS scores
 PD_beta_NMDS_data.scores <- as.data.frame(scores(PD_beta_NMDS))
-PD_beta_NMDS_data.scores$Site_type <- env[surveyed_sites,"Site_type"]
+PD_beta_NMDS_data.scores$Location_type <- env[surveyed_sites,"Location_type"]
 PD_beta_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
-PD_beta_NMDS_data.scores$Site_type <- factor(PD_beta_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+PD_beta_NMDS_data.scores$Location_type <- factor(PD_beta_NMDS_data.scores$Location_type, levels = c("Ocean", "Mixed", "Stratified"))
 
 # Get significantly correlated environmental variables
 PD_beta_env_ef_coord_cont <- as.data.frame(scores(PD_beta_env_ef, "vectors")) * ordiArrowMul(PD_beta_env_ef)
@@ -6319,45 +6559,41 @@ PD_beta_env_ef_coord_cont <- data.frame(row.names = PD_beta_env_row_names, PD_be
 # PD_beta_geo_ef_coord_cont <- data.frame(row.names = PD_beta_geo_row_names, PD_beta_geo_ef_coord_cont)
 
 # Plot NMDS ordination of PD beta total with CI = 0.95
-PD_beta_ef_plot <- ggplot(data = PD_beta_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Site_type)) + 
-  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Site_type), type = "t", level = 0.95) +
-  geom_point(data = PD_beta_NMDS_data.scores, aes(color = Site_type, fill = Site_type), size = 4, alpha = 1) + 
+PD_beta_ef_plot <- ggplot(data = PD_beta_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Location_type)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Location_type), type = "t", level = 0.95) +
+  geom_point(data = PD_beta_NMDS_data.scores, aes(color = Location_type, fill = Location_type), size = 2, alpha = 1) + 
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   geom_segment(aes(x = 0, y = 0, xend = NMDS1, yend = NMDS2),
                data = PD_beta_env_ef_coord_cont, linewidth =1, alpha = 0.2, color = env_cont) +
   geom_text(data = PD_beta_env_ef_coord_cont, aes(x = NMDS1, y = NMDS2),
-            color = env_cont, label = row.names(PD_beta_env_ef_coord_cont), size = 5) +
+            color = env_cont, label = row.names(PD_beta_env_ef_coord_cont), size = 3) +
   geom_text_repel(data = PD_beta_NMDS_data.scores, label = PD_beta_NMDS_data.scores$Lakes, 
-                  size = 5, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
-  theme(text = element_text(size = 16), 
+                  size = 3, force = 10, point.padding = 0, max.overlaps = 30, nudge_x = -0.05) +
+  theme(text = element_text(size = 12), 
         legend.position = "bottom", 
-        legend.title = element_text(size = 16), 
-        legend.text = element_text(size = 16), 
+        legend.title = element_text(size = 10), 
+        legend.text = element_text(size = 10), 
+        axis.title = element_text(size = 10),
         panel.background = element_rect(fill='transparent'),
         plot.background = element_rect(fill='transparent', color=NA),
         panel.border = element_rect(fill = NA), 
-        axis.text = element_text(color = "black", size = 16), 
+        axis.text = element_text(color = "black", size = 10), 
         legend.key = element_blank()) +
-  annotate("text", x = -0.6, y = 0.5, size = 5,
+  annotate("text", x = -0.5, y = 0.55, size = 3.5,
            label = paste("Stress: ", round(PD_beta_NMDS$stress, digits = 2))) +
-  labs(colour = "Site type:  ", fill = "Site type:  ") +
+  labs(colour = "Location type:  ", fill = "Location type:  ", tag = "b") +
   coord_fixed() +
+  guides(color = "none", fill = "none") +
   scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81)) +
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81))
-(PD_beta_ef_plot <- PD_beta_ef_plot + guides(color = guide_legend(override.aes = list(label = ""))))
-```
-
-![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-1.png)<!-- -->
-
-``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_NMDS.jpg", PD_beta_ef_plot, width = 6, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_beta_NMDS.jpg", PD_beta_ef_plot, width = 3.25, height = 3.3, units = "in")
 
 
 # Plot NMDS ordination of PD beta total with CI = 0.90
-PD_beta_ef_plot_CI90 <- ggplot(data = PD_beta_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Site_type)) + 
-  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Site_type), type = "t", level = 0.90) +
-  geom_point(data = PD_beta_NMDS_data.scores, aes(color = Site_type, fill = Site_type), size = 4, alpha = 1) + 
+PD_beta_ef_plot_CI90 <- ggplot(data = PD_beta_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Location_type)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Location_type), type = "t", level = 0.90) +
+  geom_point(data = PD_beta_NMDS_data.scores, aes(color = Location_type, fill = Location_type), size = 4, alpha = 1) + 
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   geom_segment(aes(x = 0, y = 0, xend = NMDS1, yend = NMDS2),
@@ -6377,29 +6613,29 @@ PD_beta_ef_plot_CI90 <- ggplot(data = PD_beta_NMDS_data.scores, aes(x = NMDS1, y
         legend.key = element_blank()) +
   annotate("text", x = -0.6, y = 0.5, size = 5,
            label = paste("Stress: ", round(PD_beta_NMDS$stress, digits = 2))) +
-  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "b") +
+  labs(colour = "Location type:  ", fill = "Location type:  ", tag = "b") +
   coord_fixed() +
   scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81)) +
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81))
 (PD_beta_ef_plot_CI90 <- PD_beta_ef_plot_CI90 + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-2.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-1.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_NMDS_CI90.jpg", PD_beta_ef_plot_CI90, width = 5.4, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_beta_NMDS_CI90.jpg", PD_beta_ef_plot_CI90, width = 5.4, height = 6, units = "in")
 
 
 # PD beta total NMDS scores without LCN
 PD_beta_wo_LCN_NMDS_data.scores <- as.data.frame(scores(PD_beta_wo_LCN_NMDS))
-PD_beta_wo_LCN_NMDS_data.scores$Site_type <- env[surveyed_sites_wo_LCN,"Site_type"]
+PD_beta_wo_LCN_NMDS_data.scores$Location_type <- env[surveyed_sites_wo_LCN,"Location_type"]
 PD_beta_wo_LCN_NMDS_data.scores$Lakes <- env[surveyed_sites_wo_LCN,1]
-PD_beta_wo_LCN_NMDS_data.scores$Site_type <- factor(PD_beta_wo_LCN_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+PD_beta_wo_LCN_NMDS_data.scores$Location_type <- factor(PD_beta_wo_LCN_NMDS_data.scores$Location_type, levels = c("Ocean", "Mixed", "Stratified"))
 
 # Plot NMDS ordination of PD beta total without LCN with CI = 0.95
-PD_beta_wo_LCN_plot <- ggplot(data = PD_beta_wo_LCN_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Site_type)) + 
-  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Site_type), type = "t", level = 0.95) +
-  geom_point(data = PD_beta_wo_LCN_NMDS_data.scores, aes(color = Site_type, fill = Site_type), size = 4, alpha = 1) + 
+PD_beta_wo_LCN_plot <- ggplot(data = PD_beta_wo_LCN_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Location_type)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Location_type), type = "t", level = 0.95) +
+  geom_point(data = PD_beta_wo_LCN_NMDS_data.scores, aes(color = Location_type, fill = Location_type), size = 4, alpha = 1) + 
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   geom_text_repel(data = PD_beta_wo_LCN_NMDS_data.scores, label = PD_beta_wo_LCN_NMDS_data.scores$Lakes, 
@@ -6415,29 +6651,29 @@ PD_beta_wo_LCN_plot <- ggplot(data = PD_beta_wo_LCN_NMDS_data.scores, aes(x = NM
         legend.key = element_blank()) +
   annotate("text", x = -0.6, y = 0.5, size = 5,
            label = paste("Stress: ", round(PD_beta_wo_LCN_NMDS$stress, digits = 2))) +
-  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "a") +
+  labs(colour = "Location type:  ", fill = "Location type:  ", tag = "a") +
   coord_fixed() +
   scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81)) +
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81))
 (PD_beta_wo_LCN_plot <- PD_beta_wo_LCN_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-3.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-2.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_NMDS_wo_LCN.jpg", PD_beta_wo_LCN_plot, width = 4.88, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_beta_NMDS_wo_LCN.jpg", PD_beta_wo_LCN_plot, width = 4.88, height = 6, units = "in")
 
 
 # PD beta total NMDS scores without TLN and HLM
 PD_beta_wo_TLN_HLM_NMDS_data.scores <- as.data.frame(scores(PD_beta_wo_TLN_HLM_NMDS))
-PD_beta_wo_TLN_HLM_NMDS_data.scores$Site_type <- env[surveyed_sites_wo_TLN_HLM,"Site_type"]
+PD_beta_wo_TLN_HLM_NMDS_data.scores$Location_type <- env[surveyed_sites_wo_TLN_HLM,"Location_type"]
 PD_beta_wo_TLN_HLM_NMDS_data.scores$Lakes <- env[surveyed_sites_wo_TLN_HLM,1]
-PD_beta_wo_TLN_HLM_NMDS_data.scores$Site_type <- factor(PD_beta_wo_TLN_HLM_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+PD_beta_wo_TLN_HLM_NMDS_data.scores$Location_type <- factor(PD_beta_wo_TLN_HLM_NMDS_data.scores$Location_type, levels = c("Ocean", "Mixed", "Stratified"))
 
 # Plot NMDS ordination of PD beta total without TLN and HLM with CI = 0.95
-PD_beta_wo_TLN_HLM_plot <- ggplot(data = PD_beta_wo_TLN_HLM_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Site_type)) + 
-  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Site_type), type = "t", level = 0.95) +
-  geom_point(data = PD_beta_wo_TLN_HLM_NMDS_data.scores, aes(color = Site_type, fill = Site_type), size = 4, alpha = 1) + 
+PD_beta_wo_TLN_HLM_plot <- ggplot(data = PD_beta_wo_TLN_HLM_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Location_type)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Location_type), type = "t", level = 0.95) +
+  geom_point(data = PD_beta_wo_TLN_HLM_NMDS_data.scores, aes(color = Location_type, fill = Location_type), size = 4, alpha = 1) + 
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   geom_text_repel(data = PD_beta_wo_TLN_HLM_NMDS_data.scores, label = PD_beta_wo_TLN_HLM_NMDS_data.scores$Lakes, 
@@ -6453,29 +6689,29 @@ PD_beta_wo_TLN_HLM_plot <- ggplot(data = PD_beta_wo_TLN_HLM_NMDS_data.scores, ae
         legend.key = element_blank()) +
   annotate("text", x = -0.6, y = 0.5, size = 5,
            label = paste("Stress: ", round(PD_beta_wo_TLN_HLM_NMDS$stress, digits = 2))) +
-  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "b") +
+  labs(colour = "Location type:  ", fill = "Location type:  ", tag = "b") +
   coord_fixed() +
   scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81)) +
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-0.81,0.81))
 (PD_beta_wo_TLN_HLM_plot <- PD_beta_wo_TLN_HLM_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-4.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-3.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_NMDS_wo_TLN_HLM.jpg", PD_beta_wo_TLN_HLM_plot, width = 4.88, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_beta_NMDS_wo_TLN_HLM.jpg", PD_beta_wo_TLN_HLM_plot, width = 4.88, height = 6, units = "in")
 
 
 # PD beta replacement NMDS scores
 PD_beta_rep_NMDS_data.scores <- as.data.frame(scores(PD_beta_rep_NMDS))
-PD_beta_rep_NMDS_data.scores$Site_type <- env[surveyed_sites,"Site_type"]
+PD_beta_rep_NMDS_data.scores$Location_type <- env[surveyed_sites,"Location_type"]
 PD_beta_rep_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
-PD_beta_rep_NMDS_data.scores$Site_type <- factor(PD_beta_rep_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+PD_beta_rep_NMDS_data.scores$Location_type <- factor(PD_beta_rep_NMDS_data.scores$Location_type, levels = c("Ocean", "Mixed", "Stratified"))
 
 # Plot NMDS ordination of PD beta replacement with CI = 0.95
-PD_beta_rep_plot <- ggplot(data = PD_beta_rep_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Site_type)) + 
-  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Site_type), type = "t", level = 0.95) +
-  geom_point(data = PD_beta_rep_NMDS_data.scores, aes(color = Site_type, fill = Site_type), size = 4, alpha = 1) + 
+PD_beta_rep_plot <- ggplot(data = PD_beta_rep_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Location_type)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Location_type), type = "t", level = 0.95) +
+  geom_point(data = PD_beta_rep_NMDS_data.scores, aes(color = Location_type, fill = Location_type), size = 4, alpha = 1) + 
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   geom_text_repel(data = PD_beta_rep_NMDS_data.scores, label = PD_beta_rep_NMDS_data.scores$Lakes, 
@@ -6491,29 +6727,29 @@ PD_beta_rep_plot <- ggplot(data = PD_beta_rep_NMDS_data.scores, aes(x = NMDS1, y
         legend.key = element_blank()) +
   annotate("text", x = -0.8, y = 0.5, size = 5,
            label = paste("Stress: ", round(PD_beta_rep_NMDS$stress, digits = 2))) +
-  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "a") +
+  labs(colour = "Location type:  ", fill = "Location type:  ", tag = "a") +
   coord_fixed() +
   scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05)) +
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05))
 (PD_beta_rep_plot <- PD_beta_rep_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-5.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-4.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_rep_NMDS.jpg", PD_beta_rep_plot, width = 4.88, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_beta_rep_NMDS.jpg", PD_beta_rep_plot, width = 4.88, height = 6, units = "in")
 
 
 # PD beta richness NMDS scores
 PD_beta_ric_NMDS_data.scores <- as.data.frame(scores(PD_beta_ric_NMDS))
-PD_beta_ric_NMDS_data.scores$Site_type <- env[surveyed_sites,"Site_type"]
+PD_beta_ric_NMDS_data.scores$Location_type <- env[surveyed_sites,"Location_type"]
 PD_beta_ric_NMDS_data.scores$Lakes <- env[surveyed_sites,1]
-PD_beta_ric_NMDS_data.scores$Site_type <- factor(PD_beta_ric_NMDS_data.scores$Site_type, levels = c("Ocean", "Mixed", "Stratified"))
+PD_beta_ric_NMDS_data.scores$Location_type <- factor(PD_beta_ric_NMDS_data.scores$Location_type, levels = c("Ocean", "Mixed", "Stratified"))
 
 # Plot NMDS ordination of PD beta richness with CI = 0.95
-PD_beta_ric_plot <- ggplot(data = PD_beta_ric_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Site_type)) + 
-  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Site_type), type = "t", level = 0.95) +
-  geom_point(data = PD_beta_ric_NMDS_data.scores, aes(color = Site_type, fill = Site_type), size = 4, alpha = 1) + 
+PD_beta_ric_plot <- ggplot(data = PD_beta_ric_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Location_type)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Location_type), type = "t", level = 0.95) +
+  geom_point(data = PD_beta_ric_NMDS_data.scores, aes(color = Location_type, fill = Location_type), size = 4, alpha = 1) + 
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   geom_text_repel(data = PD_beta_ric_NMDS_data.scores, label = PD_beta_ric_NMDS_data.scores$Lakes, 
@@ -6529,29 +6765,29 @@ PD_beta_ric_plot <- ggplot(data = PD_beta_ric_NMDS_data.scores, aes(x = NMDS1, y
         legend.key = element_blank()) +
   annotate("text", x = -0.8, y = 0.5, size = 5,
            label = paste("Stress: ", round(PD_beta_ric_NMDS$stress, digits = 2))) +
-  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "b") +
+  labs(colour = "Location type:  ", fill = "Location type:  ", tag = "b") +
   coord_fixed() +
   scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05)) +
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05))
 (PD_beta_ric_plot <- PD_beta_ric_plot + guides(color = guide_legend(override.aes = list(label = ""))))
 ```
 
-![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-6.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-5.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_ric_NMDS.jpg", PD_beta_ric_plot, width = 4.88, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_beta_ric_NMDS.jpg", PD_beta_ric_plot, width = 4.88, height = 6, units = "in")
 
 
 # PD beta ref NMDS scores
 PD_beta_ref_NMDS_data.scores <- as.data.frame(scores(PD_beta_ref_NMDS))
-PD_beta_ref_NMDS_data.scores$Site_type <- env[,"Site_type"]
+PD_beta_ref_NMDS_data.scores$Location_type <- env[,"Location_type"]
 PD_beta_ref_NMDS_data.scores$Lakes <- env[,1]
-PD_beta_ref_NMDS_data.scores$Site_type <- factor(PD_beta_ref_NMDS_data.scores$Site_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
+PD_beta_ref_NMDS_data.scores$Location_type <- factor(PD_beta_ref_NMDS_data.scores$Location_type, levels = c("Reference", "Ocean", "Mixed", "Stratified"))
 
 # Plot NMDS ordination of PD beta ref with CI = 0.95
-PD_beta_ref_plot <- ggplot(data = PD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Site_type)) + 
-  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Site_type), type = "t", level = 0.95) +
-  geom_point(data = PD_beta_ref_NMDS_data.scores, aes(color = Site_type, fill = Site_type), size = 4, alpha = 1) + 
+PD_beta_ref_plot <- ggplot(data = PD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y = NMDS2, color = Location_type)) + 
+  stat_ellipse(aes(x = NMDS1, y = NMDS2, color = Location_type), type = "t", level = 0.95) +
+  geom_point(data = PD_beta_ref_NMDS_data.scores, aes(color = Location_type, fill = Location_type), size = 4, alpha = 1) + 
   scale_color_manual(values = custom_colors) +
   scale_fill_manual(values = custom_colors) +
   geom_text_repel(data = PD_beta_ref_NMDS_data.scores, label = PD_beta_ref_NMDS_data.scores$Lakes, 
@@ -6567,7 +6803,7 @@ PD_beta_ref_plot <- ggplot(data = PD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y
         legend.key = element_blank()) +
   annotate("text", x = -0.8, y = 0.5, size = 5,
            label = paste("Stress: ", round(PD_beta_ref_NMDS$stress, digits = 2))) +
-  labs(colour = "Site type:  ", fill = "Site type:  ", tag = "b") +
+  labs(colour = "Location type:  ", fill = "Location type:  ", tag = "b") +
   coord_fixed() +
   scale_x_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05)) +
   scale_y_continuous(breaks = c(-0.5,0,0.5), limits = c(-1.05,1.05))
@@ -6582,10 +6818,10 @@ PD_beta_ref_plot <- ggplot(data = PD_beta_ref_NMDS_data.scores, aes(x = NMDS1, y
     ## Warning: ggrepel: 13 unlabeled data points (too many overlaps). Consider
     ## increasing max.overlaps
 
-![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-7.png)<!-- -->
+![](PD_analyses_files/figure-gfm/PD%20beta%20NMDS%20plots-6.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_ref_NMDS.jpg", PD_beta_ref_plot, width = 6.26, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_beta_ref_NMDS.jpg", PD_beta_ref_plot, width = 6.26, height = 6, units = "in")
 ```
 
     ## Too few points to calculate an ellipse
@@ -6602,7 +6838,7 @@ PD_beta_dist_clust <- hclust(PD_beta_dist$Btotal, method = "average")
 
 # The following will create a dendrogram of PD_beta putting things in one dimensional space
 # Open a jpg device
-png("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_dendrogram.jpg", width = 6.5, height = 3, units = "in", res = 300, type = "cairo")
+png("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_beta_dendrogram.jpg", width = 6.5, height = 3, units = "in", res = 300, type = "cairo")
 
 # Create your plot using the plot() function
 plot(PD_beta_dist_clust, 
@@ -6623,7 +6859,7 @@ dev.off()
 ``` r
 # The following will graph and identify the best supported number of clusters of the dendrogram
 # Open a jpg device
-png("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_dg_silhouette.jpg", width = 6.5, height = 3, units = "in", res = 300, type = "cairo")
+png("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_beta_dg_silhouette.jpg", width = 6.5, height = 3, units = "in", res = 300, type = "cairo")
 
 Si <- numeric(nrow(presabs_lake[surveyed_sites,]))
 for (k in 2:(nrow(presabs_lake[surveyed_sites,])-1))
@@ -6645,7 +6881,7 @@ dev.off()
 ``` r
 # Partitioning around mediods uses distances matrix to found how points according to silhouette are grouped around a centroid. The greater the number, the greater the distance from the centroid.
 # Open a jpg device
-png("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/PD_beta_dg_partitioning.jpg", width = 6.5, height = 3, units = "in", res = 300, type = "cairo")
+png("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/PD_beta_dg_partitioning.jpg", width = 6.5, height = 3, units = "in", res = 300, type = "cairo")
 
 PD_beta_pam <- pam(PD_beta_dist$Btotal,2)
 plot(PD_beta_pam)
@@ -6664,7 +6900,7 @@ dev.off()
 ordered_PD_beta_NMDS1_data.scores <- PD_beta_NMDS_data.scores[order(PD_beta_NMDS_data.scores$NMDS1), ]
 
 outlier_PD_beta_NMDS1 <- ordered_PD_beta_NMDS1_data.scores %>%
-  group_by(Site_type) %>%
+  group_by(Location_type) %>%
   mutate(
     Q1 = quantile(NMDS1, 0.25),
     Q3 = quantile(NMDS1, 0.75),
@@ -6679,8 +6915,8 @@ outlier_PD_beta_NMDS1 <- as.data.frame(outlier_PD_beta_NMDS1)
 row.names(outlier_PD_beta_NMDS1) <- outlier_PD_beta_NMDS1$Lakes
 
 # Create the plot
-(outlier_PD_beta_NMDS1_plot <- ggplot(outlier_PD_beta_NMDS1, aes(x = Site_type, y = NMDS1, fill = Site_type)) +
-  geom_violin(alpha = 0.9, draw_quantiles = c(0.25, 0.5, 0.75), aes(fill = Site_type)) +
+(outlier_PD_beta_NMDS1_plot <- ggplot(outlier_PD_beta_NMDS1, aes(x = Location_type, y = NMDS1, fill = Location_type)) +
+  geom_violin(alpha = 0.9, draw_quantiles = c(0.25, 0.5, 0.75), aes(fill = Location_type)) +
   geom_jitter(aes(color = is_outlier), width = 0.1, size = 4, alpha = 0.7) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
   scale_fill_manual(values = custom_colors) +
@@ -6698,20 +6934,20 @@ row.names(outlier_PD_beta_NMDS1) <- outlier_PD_beta_NMDS1$Lakes
         axis.text = element_text(color = "black", size = 16)) +
   scale_y_continuous(expand = c(0,0.05)) +
   guides(fill = "none") + 
-  labs(y = "NMDS1 Distances", x = "Site type", color = "Outlier:", tag = "a"))
+  labs(y = "NMDS1 Distances", x = "Location type", color = "Outlier:", tag = "a"))
 ```
 
 ![](PD_analyses_files/figure-gfm/PD%20beta%20outliers-1.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/outlier_PD_beta_NMDS1.jpg", outlier_PD_beta_NMDS1_plot, width = 4.88, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/outlier_PD_beta_NMDS1.jpg", outlier_PD_beta_NMDS1_plot, width = 4.88, height = 6, units = "in")
 
 
 # Determine NMDS2 outliers
 ordered_PD_beta_NMDS2_data.scores <- PD_beta_NMDS_data.scores[order(PD_beta_NMDS_data.scores$NMDS2), ]
 
 outlier_PD_beta_NMDS2 <- ordered_PD_beta_NMDS2_data.scores %>%
-  group_by(Site_type) %>%
+  group_by(Location_type) %>%
   mutate(
     Q1 = quantile(NMDS2, 0.25),
     Q3 = quantile(NMDS2, 0.75),
@@ -6726,8 +6962,8 @@ outlier_PD_beta_NMDS2 <- as.data.frame(outlier_PD_beta_NMDS2)
 row.names(outlier_PD_beta_NMDS2) <- outlier_PD_beta_NMDS2$Lakes
 
 # Create the plot
-(outlier_PD_beta_NMDS2_plot <- ggplot(outlier_PD_beta_NMDS2, aes(x = Site_type, y = NMDS2, fill = Site_type)) +
-  geom_violin(alpha = 0.9, draw_quantiles = c(0.25, 0.5, 0.75), aes(fill = Site_type)) +
+(outlier_PD_beta_NMDS2_plot <- ggplot(outlier_PD_beta_NMDS2, aes(x = Location_type, y = NMDS2, fill = Location_type)) +
+  geom_violin(alpha = 0.9, draw_quantiles = c(0.25, 0.5, 0.75), aes(fill = Location_type)) +
   geom_jitter(aes(color = is_outlier), width = 0.1, size = 4, alpha = 0.7) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "purple")) +
   scale_fill_manual(values = custom_colors) +
@@ -6745,13 +6981,13 @@ row.names(outlier_PD_beta_NMDS2) <- outlier_PD_beta_NMDS2$Lakes
         axis.text = element_text(color = "black", size = 16)) +
   scale_y_continuous(expand = c(0,0.05)) +
   guides(fill = "none") + 
-  labs(y = "NMDS2 Distances", x = "Site type", color = "Outlier:", tag = "b"))
+  labs(y = "NMDS2 Distances", x = "Location type", color = "Outlier:", tag = "b"))
 ```
 
 ![](PD_analyses_files/figure-gfm/PD%20beta%20outliers-2.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/outlier_PD_beta_NMDS2.jpg", outlier_PD_beta_NMDS2_plot, width = 4.88, height = 6, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/outlier_PD_beta_NMDS2.jpg", outlier_PD_beta_NMDS2_plot, width = 4.88, height = 6, units = "in")
 ```
 
 ### Package and version info
@@ -6762,7 +6998,7 @@ sessionInfo()
 
     ## R version 4.4.3 (2025-02-28)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Ventura 13.6.6
+    ## Running under: macOS 26.0.1
     ## 
     ## Matrix products: default
     ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
@@ -6771,7 +7007,7 @@ sessionInfo()
     ## locale:
     ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
     ## 
-    ## time zone: America/Los_Angeles
+    ## time zone: America/Chicago
     ## tzcode source: internal
     ## 
     ## attached base packages:
@@ -6779,61 +7015,62 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] MASS_7.3-65          emmeans_1.10.7       pairwiseAdonis_0.4.1
-    ##  [4] cluster_2.1.8        BAT_2.9.6            caret_7.0-1         
-    ##  [7] ggrepel_0.9.6        ggplot2_3.5.1        picante_1.8.2       
-    ## [10] nlme_3.1-167         vegan_2.6-10         lattice_0.22-6      
-    ## [13] permute_0.9-7        car_3.1-3            carData_3.0-5       
+    ##  [1] MASS_7.3-65          car_3.1-3            carData_3.0-5       
+    ##  [4] emmeans_1.11.0       pairwiseAdonis_0.4.1 cluster_2.1.8.1     
+    ##  [7] BAT_2.9.6            caret_7.0-1          ggrepel_0.9.6       
+    ## [10] ggplot2_4.0.0        picante_1.8.2        nlme_3.1-168        
+    ## [13] vegan_2.6-10         lattice_0.22-7       permute_0.9-7       
     ## [16] tidyr_1.3.1          phytools_2.4-4       maps_3.4.2.1        
     ## [19] ape_5.8-1            reshape2_1.4.4       stringr_1.5.1       
-    ## [22] dplyr_1.1.4          knitr_1.49          
+    ## [22] dplyr_1.1.4          knitr_1.50          
     ## 
     ## loaded via a namespace (and not attached):
-    ##   [1] rstudioapi_0.17.1       magrittr_2.0.3          TH.data_1.1-3          
-    ##   [4] estimability_1.5.1      farver_2.1.2            rmarkdown_2.29         
-    ##   [7] ragg_1.3.3              vctrs_0.6.5             base64enc_0.1-3        
-    ##  [10] terra_1.8-29            polspline_1.1.25        htmltools_0.5.8.1      
-    ##  [13] progress_1.2.3          DEoptim_2.2-8           Formula_1.2-5          
-    ##  [16] pROC_1.18.5             parallelly_1.42.0       pracma_2.4.4           
-    ##  [19] KernSmooth_2.23-26      htmlwidgets_1.6.4       plyr_1.8.9             
-    ##  [22] sandwich_3.1-1          palmerpenguins_0.1.1    zoo_1.8-13             
-    ##  [25] lubridate_1.9.4         igraph_2.1.4            lifecycle_1.0.4        
-    ##  [28] iterators_1.0.14        pkgconfig_2.0.3         Matrix_1.7-2           
-    ##  [31] R6_2.6.1                fastmap_1.2.0           future_1.34.0          
-    ##  [34] magic_1.6-1             digest_0.6.37           numDeriv_2016.8-1.1    
-    ##  [37] colorspace_2.1-1        Hmisc_5.2-2             textshaping_1.0.0      
-    ##  [40] pdist_1.2.1             labeling_0.4.3          clusterGeneration_1.3.8
-    ##  [43] timechange_0.3.0        abind_1.4-8             mgcv_1.9-1             
-    ##  [46] compiler_4.4.3          proxy_0.4-27            withr_3.0.2            
-    ##  [49] doParallel_1.0.17       backports_1.5.0         htmlTable_2.4.3        
-    ##  [52] optimParallel_1.0-2     quantreg_6.00           lava_1.8.1             
-    ##  [55] scatterplot3d_0.3-44    ModelMetrics_1.2.2.2    tools_4.4.3            
-    ##  [58] foreign_0.8-88          future.apply_1.11.3     nnet_7.3-20            
-    ##  [61] glue_1.8.0              quadprog_1.5-8          grid_4.4.3             
-    ##  [64] checkmate_2.3.2         generics_0.1.3          recipes_1.1.1          
-    ##  [67] gtable_0.3.6            class_7.3-23            data.table_1.17.0      
-    ##  [70] hms_1.1.3               foreach_1.5.2           pillar_1.10.1          
-    ##  [73] splines_4.4.3           survival_3.8-3          SparseM_1.84-2         
-    ##  [76] ks_1.14.3               tidyselect_1.2.1        rms_7.0-0              
-    ##  [79] gridExtra_2.3           stats4_4.4.3            xfun_0.51              
-    ##  [82] expm_1.0-0              hardhat_1.4.1           timeDate_4041.110      
-    ##  [85] proto_1.0.0             stringi_1.8.4           yaml_2.3.10            
-    ##  [88] evaluate_1.0.3          codetools_0.2-20        tibble_3.2.1           
-    ##  [91] cli_3.6.4               rpart_4.1.24            nls2_0.3-4             
-    ##  [94] xtable_1.8-4            geometry_0.5.2          systemfonts_1.2.1      
-    ##  [97] munsell_0.5.1           Rcpp_1.0.14             globals_0.16.3         
-    ## [100] coda_0.19-4.1           fastcluster_1.2.6       MatrixModels_0.5-3     
-    ## [103] gower_1.0.2             prettyunits_1.2.0       mclust_6.1.1           
-    ## [106] listenv_0.9.1           phangorn_2.12.1         mvtnorm_1.3-3          
-    ## [109] ipred_0.9-15            scales_1.3.0            prodlim_2024.06.25     
-    ## [112] e1071_1.7-16            purrr_1.0.4             crayon_1.5.3           
-    ## [115] combinat_0.0-8          rlang_1.1.5             fastmatch_1.1-6        
-    ## [118] multcomp_1.4-28         mnormt_2.1.1            hypervolume_3.1.5
+    ##   [1] RColorBrewer_1.1-3      rstudioapi_0.17.1       magrittr_2.0.3         
+    ##   [4] TH.data_1.1-3           estimability_1.5.1      farver_2.1.2           
+    ##   [7] rmarkdown_2.29          ragg_1.4.0              vctrs_0.6.5            
+    ##  [10] base64enc_0.1-3         terra_1.8-42            polspline_1.1.25       
+    ##  [13] htmltools_0.5.8.1       progress_1.2.3          DEoptim_2.2-8          
+    ##  [16] Formula_1.2-5           pROC_1.18.5             parallelly_1.43.0      
+    ##  [19] pracma_2.4.4            KernSmooth_2.23-26      htmlwidgets_1.6.4      
+    ##  [22] plyr_1.8.9              sandwich_3.1-1          palmerpenguins_0.1.1   
+    ##  [25] zoo_1.8-14              lubridate_1.9.4         igraph_2.1.4           
+    ##  [28] lifecycle_1.0.4         iterators_1.0.14        pkgconfig_2.0.3        
+    ##  [31] Matrix_1.7-3            R6_2.6.1                fastmap_1.2.0          
+    ##  [34] future_1.40.0           magic_1.6-1             digest_0.6.37          
+    ##  [37] numDeriv_2016.8-1.1     colorspace_2.1-1        Hmisc_5.2-3            
+    ##  [40] textshaping_1.0.0       pdist_1.2.1             labeling_0.4.3         
+    ##  [43] clusterGeneration_1.3.8 timechange_0.3.0        abind_1.4-8            
+    ##  [46] mgcv_1.9-3              compiler_4.4.3          proxy_0.4-27           
+    ##  [49] withr_3.0.2             doParallel_1.0.17       backports_1.5.0        
+    ##  [52] htmlTable_2.4.3         S7_0.2.0                optimParallel_1.0-2    
+    ##  [55] quantreg_6.1            lava_1.8.1              scatterplot3d_0.3-44   
+    ##  [58] ModelMetrics_1.2.2.2    tools_4.4.3             foreign_0.8-90         
+    ##  [61] future.apply_1.11.3     nnet_7.3-20             glue_1.8.0             
+    ##  [64] quadprog_1.5-8          grid_4.4.3              checkmate_2.3.2        
+    ##  [67] generics_0.1.3          recipes_1.3.0           gtable_0.3.6           
+    ##  [70] class_7.3-23            data.table_1.17.0       hms_1.1.3              
+    ##  [73] foreach_1.5.2           pillar_1.10.2           splines_4.4.3          
+    ##  [76] survival_3.8-3          SparseM_1.84-2          ks_1.14.3              
+    ##  [79] tidyselect_1.2.1        rms_8.0-0               gridExtra_2.3          
+    ##  [82] stats4_4.4.3            xfun_0.52               expm_1.0-0             
+    ##  [85] hardhat_1.4.1           timeDate_4041.110       proto_1.0.0            
+    ##  [88] stringi_1.8.7           yaml_2.3.10             evaluate_1.0.3         
+    ##  [91] codetools_0.2-20        tibble_3.2.1            cli_3.6.4              
+    ##  [94] rpart_4.1.24            nls2_0.3-4              xtable_1.8-4           
+    ##  [97] geometry_0.5.2          systemfonts_1.2.2       Rcpp_1.0.14            
+    ## [100] globals_0.17.0          coda_0.19-4.1           fastcluster_1.2.6      
+    ## [103] MatrixModels_0.5-4      gower_1.0.2             prettyunits_1.2.0      
+    ## [106] mclust_6.1.1            listenv_0.9.1           phangorn_2.12.1        
+    ## [109] mvtnorm_1.3-3           ipred_0.9-15            scales_1.4.0           
+    ## [112] prodlim_2024.06.25      e1071_1.7-16            purrr_1.0.4            
+    ## [115] crayon_1.5.3            combinat_0.0-8          rlang_1.1.6            
+    ## [118] fastmatch_1.1-6         multcomp_1.4-28         mnormt_2.1.1           
+    ## [121] hypervolume_3.1.5
 
 #### stree Z score vs p value plots
 
 ``` r
-stree_sesmpd_plot <- ggplot(data = stree_sesmpd_env, mapping = aes(y = mpd.obs.p, x = mpd.obs.z, color = Site_type, fill = Site_type)) + 
+stree_sesmpd_plot <- ggplot(data = stree_sesmpd_env, mapping = aes(y = mpd.obs.p, x = mpd.obs.z, color = Location_type, fill = Location_type)) + 
   geom_point(stat = 'identity',
     size = 4,
     alpha = 1) + 
@@ -6848,7 +7085,7 @@ stree_sesmpd_plot <- ggplot(data = stree_sesmpd_env, mapping = aes(y = mpd.obs.p
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
-  labs(y= "p-value", x= "z-score", colour = "Site type:", fill = "Site type:", tag = "D") +
+  labs(y= "p-value", x= "z-score", colour = "Location type:", fill = "Location type:", tag = "D") +
   ylim(c(0,1)) +
   scale_x_continuous(breaks = c(-6,-4, -2, 0, 2), limits = c(-7,3)) +
   annotate('rect', ymin=0, ymax=1, xmin=-2, xmax=2, alpha = 0.3, fill='grey')
@@ -6862,14 +7099,14 @@ stree_sesmpd_plot
 ![](PD_analyses_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sesmpd_plot_z.jpg", stree_sesmpd_plot, width = 5, height = 4, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/stree_sesmpd_plot_z.jpg", stree_sesmpd_plot, width = 5, height = 4, units = "in")
 ```
 
     ## Warning: ggrepel: 8 unlabeled data points (too many overlaps). Consider
     ## increasing max.overlaps
 
 ``` r
-stree_sesmntd_plot <- ggplot(data = stree_sesmntd_env, mapping = aes(y = mntd.obs.p, x = mntd.obs.z, color = Site_type, fill = Site_type)) + 
+stree_sesmntd_plot <- ggplot(data = stree_sesmntd_env, mapping = aes(y = mntd.obs.p, x = mntd.obs.z, color = Location_type, fill = Location_type)) + 
   geom_point(stat = 'identity',
     size = 5,
     alpha = 1) + 
@@ -6884,7 +7121,7 @@ stree_sesmntd_plot <- ggplot(data = stree_sesmntd_env, mapping = aes(y = mntd.ob
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
-  labs(y= "p-value", x= "z-score", colour = "Site type:", fill = "Site type:", tag = "E") +
+  labs(y= "p-value", x= "z-score", colour = "Location type:", fill = "Location type:", tag = "E") +
   ylim(c(0,1)) +
   scale_x_continuous(breaks = c(-6,-4, -2, 0, 2), limits = c(-7,3)) +
   annotate('rect', ymin=0, ymax=1, xmin=-2, xmax=2, alpha = 0.3, fill='grey')
@@ -6898,14 +7135,14 @@ stree_sesmntd_plot
 ![](PD_analyses_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sesmntd_plot_z.jpg", stree_sesmntd_plot, width = 5, height = 4, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/stree_sesmntd_plot_z.jpg", stree_sesmntd_plot, width = 5, height = 4, units = "in")
 ```
 
     ## Warning: ggrepel: 11 unlabeled data points (too many overlaps). Consider
     ## increasing max.overlaps
 
 ``` r
-stree_sespd_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs.p, x = pd.obs.z, color = Site_type, fill = Site_type)) + 
+stree_sespd_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs.p, x = pd.obs.z, color = Location_type, fill = Location_type)) + 
   geom_point(stat = 'identity',
     size = 5,
     alpha = 1) + 
@@ -6920,7 +7157,7 @@ stree_sespd_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs.p, x
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
-  labs(y= "p-value", x= "z-score", colour = "Site type:", fill = "Site type:", tag = "F") +
+  labs(y= "p-value", x= "z-score", colour = "Location type:", fill = "Location type:", tag = "F") +
   ylim(c(0,1)) +
   scale_x_continuous(breaks = c(-6,-4, -2, 0, 2), limits = c(-7,3)) +
   annotate('rect', ymin=0, ymax=1, xmin=-2, xmax=2, alpha = 0.3, fill='grey')
@@ -6928,13 +7165,13 @@ stree_sespd_plot <- stree_sespd_plot + guides(color = guide_legend(override.aes 
 stree_sespd_plot
 ```
 
-    ## Warning: ggrepel: 9 unlabeled data points (too many overlaps). Consider
+    ## Warning: ggrepel: 10 unlabeled data points (too many overlaps). Consider
     ## increasing max.overlaps
 
 ![](PD_analyses_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sespd_plot_z.jpg", stree_sespd_plot, width = 5, height = 4, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/stree_sespd_plot_z.jpg", stree_sespd_plot, width = 5, height = 4, units = "in")
 ```
 
     ## Warning: ggrepel: 13 unlabeled data points (too many overlaps). Consider
@@ -6943,7 +7180,7 @@ ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sesp
 #### stree Z score vs obs value plots
 
 ``` r
-stree_sesmpd_plot <- ggplot(data = stree_sesmpd_env, mapping = aes(y = mpd.obs, x = mpd.obs.z, color = Site_type, fill = Site_type)) + 
+stree_sesmpd_plot <- ggplot(data = stree_sesmpd_env, mapping = aes(y = mpd.obs, x = mpd.obs.z, color = Location_type, fill = Location_type)) + 
   geom_point(stat = 'identity',
     size = 5,
     alpha = 1) + 
@@ -6957,7 +7194,7 @@ stree_sesmpd_plot <- ggplot(data = stree_sesmpd_env, mapping = aes(y = mpd.obs, 
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
-  labs(y= "Observed MPD", x= "z-score", colour = "Site type:", fill = "Site type:") +
+  labs(y= "Observed MPD", x= "z-score", colour = "Location type:", fill = "Location type:") +
   ylim(c(0,1)) +
   scale_x_continuous(breaks = c(-6,-4, -2, 0, 2), limits = c(-7,3)) +
   annotate('rect', ymin=0, ymax=1, xmin=-2, xmax=2, alpha = 0.3, fill='grey')
@@ -6971,14 +7208,14 @@ stree_sesmpd_plot
 ![](PD_analyses_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sesmpd_plot_obs+z.jpg", stree_sesmpd_plot, width = 5, height = 4, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/stree_sesmpd_plot_obs+z.jpg", stree_sesmpd_plot, width = 5, height = 4, units = "in")
 ```
 
     ## Warning: Removed 22 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
 ``` r
-stree_sesmntd_plot <- ggplot(data = stree_sesmntd_env, mapping = aes(y = mntd.obs, x = mntd.obs.z, color = Site_type, fill = Site_type)) + 
+stree_sesmntd_plot <- ggplot(data = stree_sesmntd_env, mapping = aes(y = mntd.obs, x = mntd.obs.z, color = Location_type, fill = Location_type)) + 
   geom_point(stat = 'identity',
     size = 5,
     alpha = 1) + 
@@ -6992,7 +7229,7 @@ stree_sesmntd_plot <- ggplot(data = stree_sesmntd_env, mapping = aes(y = mntd.ob
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
-  labs(y= "Observed MNTD", x= "z-score", colour = "Site type:", fill = "Site type:") +
+  labs(y= "Observed MNTD", x= "z-score", colour = "Location type:", fill = "Location type:") +
   ylim(c(0,1)) +
   scale_x_continuous(breaks = c(-6,-4, -2, 0, 2), limits = c(-7,3)) +
   annotate('rect', ymin=0, ymax=1, xmin=-2, xmax=2, alpha = 0.3, fill='grey')
@@ -7006,14 +7243,14 @@ stree_sesmntd_plot
 ![](PD_analyses_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sesmntd_plot_obs+z.jpg", stree_sesmntd_plot, width = 5, height = 4, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/stree_sesmntd_plot_obs+z.jpg", stree_sesmntd_plot, width = 5, height = 4, units = "in")
 ```
 
     ## Warning: Removed 22 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
 ``` r
-stree_sespd_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs, x = pd.obs.z, color = Site_type, fill = Site_type)) + 
+stree_sespd_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs, x = pd.obs.z, color = Location_type, fill = Location_type)) + 
   geom_point(stat = 'identity',
     size = 5,
     alpha = 1) + 
@@ -7027,7 +7264,7 @@ stree_sespd_plot <- ggplot(data = stree_sespd_env, mapping = aes(y = pd.obs, x =
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
-  labs(y= "Observed PD", x= "z-score", colour = "Site type:", fill = "Site type:") +
+  labs(y= "Observed PD", x= "z-score", colour = "Location type:", fill = "Location type:") +
   ylim(c(0,6)) +
   scale_x_continuous(breaks = c(-6,-4, -2, 0, 2), limits = c(-7,3)) +
   annotate('rect', ymin=0, ymax=6, xmin=-2, xmax=2, alpha = 0.3, fill='grey')
@@ -7041,7 +7278,7 @@ stree_sespd_plot
 ![](PD_analyses_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->
 
 ``` r
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/PD/stree_sespd_plot_obs+z.jpg", stree_sespd_plot, width = 5, height = 4, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/PD/stree_sespd_plot_obs+z.jpg", stree_sespd_plot, width = 5, height = 4, units = "in")
 ```
 
     ## Warning: Removed 22 rows containing missing values or values outside the scale range
