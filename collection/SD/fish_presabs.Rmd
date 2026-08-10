@@ -9,7 +9,6 @@ editor_options:
 ## Packages
 - These are the packages that are needed to extract data from online repositories and manipulate the data
 ```{r load packages and files}
-library(openxlsx) # data manipulation
 library(rfishbase) # data manipulation
 library(tidyr) # data manipulation
 library(dplyr) # data manipulation
@@ -20,11 +19,10 @@ library(taxize)
 ## Reference
 - Take the Micronesian fish file and extract the Palau species from it
 ```{r, Reference survey}
-# File from Rob containing the reference pool of all Micronesian fish with a column dedicated to the fish species in Palau.
-micronesian_records <- read.xlsx("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/species_surveys/micronesian_fish_corrected.xlsx", sheet = 1, startRow = 3, colNames = T, cols =  1:31)
+# File from Rob containing the reference pool of all Palau fish.
+palau_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/species_surveys/palau_fish.csv")
 
-# Extract the three columns of Palauan fish data with genus and species names and whether a fish is present or absent there
-palau_fish <- micronesian_records[c(1:2282),c(5:6,8,24,29)]
+palau_fish <- palau_fish[,-1]
 
 # Some fish lack the information of whether they occur in Palau. Therefore we need to get rid of any fish species that we are not confident occur in Palau. A 1 means that the species occurs there and anything else is speculation currently.
 
@@ -76,13 +74,9 @@ fish <- fish[,c(6:7)]
 - Use the community surveys and extract the species and incidence data
 ```{r, Site surveys}
 # A file with the presence and absence of species observed in the marine lakes. Names have been edited to reflect spelling in FishBase.
-palau_records <- read.xlsx("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/species_surveys/palau_marine_lake_fish_biodiversity_ordered&corrected.xlsx", sheet = 1, startRow = 3, colNames = T)
+site_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/species_surveys/palau_surveyed_fish.csv")
 
-# Extract the lake columns with species names. The lake columns have 3 letter codes and if a species is present there will be a 1 in the column.
-site_fish <- palau_records[-c(254:259), c(2:3,6,11,16,21,26,31,37,43:44,53,58,63,68,73:74,79,84,89,94,101,106,111)]
-
-# Combine Genus and Species
-site_fish$Species <- paste(site_fish[, 1], site_fish[, 2])
+site_fish <- site_fish[,-1]
 
 site_fish[is.na(site_fish)] <- 0; site_fish[site_fish == "x"] <- 0; site_fish[site_fish == "?"] <- 0
 
@@ -161,12 +155,13 @@ blanks <- setdiff(val_species_names, species_names)
 blanks
 word_to_delete <- "Genus Species"
 val_species_names <- val_species_names[val_species_names != word_to_delete]
-# This shows us that only 1675 species were validated
+# This shows us that only 1677 species were validated
 
 # Create a file of species that were only identified to genus level. They will be lost by the validate_names command above and will need to be added back in
 incomplete_to_add <- setdiff(species_names, val_species_names)
 incomplete_to_add
 # 48 species were not validated by FishBase. Some have Genus and Species but have yet to be added to FishBase. Others with an sp cannot be validated
+# This number may change as time passes and species names are updated on FishBase
 write.csv(incomplete_to_add, "/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/species_lists/incomplete_to_add.csv")
 
 # Add back in species that were lost by validate_names command
@@ -494,7 +489,7 @@ pres_abs <- pres_abs[,keep]
 ```
 
 ## Load out files
-```{r,Load out pesabs files and session info}
+```{r,Load out presabs files and session info}
 # Fish presence by lake
 write.csv(pres_abs_t, "/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/pres_abs/fish_presence_matrix_by_lake.csv")
 

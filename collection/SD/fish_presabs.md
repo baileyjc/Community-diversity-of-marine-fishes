@@ -9,7 +9,6 @@ Fish incidence
   repositories and manipulate the data
 
 ``` r
-library(openxlsx) # data manipulation
 library(rfishbase) # data manipulation
 library(tidyr) # data manipulation
 library(dplyr) # data manipulation
@@ -57,11 +56,10 @@ library(taxize)
 - Take the Micronesian fish file and extract the Palau species from it
 
 ``` r
-# File from Rob containing the reference pool of all Micronesian fish with a column dedicated to the fish species in Palau.
-micronesian_records <- read.xlsx("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/species_surveys/micronesian_fish_corrected.xlsx", sheet = 1, startRow = 3, colNames = T, cols =  1:31)
+# File from Rob containing the reference pool of all Palau fish.
+palau_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/species_surveys/palau_fish.csv")
 
-# Extract the three columns of Palauan fish data with genus and species names and whether a fish is present or absent there
-palau_fish <- micronesian_records[c(1:2282),c(5:6,8,24,29)]
+palau_fish <- palau_fish[,-1]
 
 # Some fish lack the information of whether they occur in Palau. Therefore we need to get rid of any fish species that we are not confident occur in Palau. A 1 means that the species occurs there and anything else is speculation currently.
 
@@ -403,13 +401,9 @@ fish <- fish[,c(6:7)]
 
 ``` r
 # A file with the presence and absence of species observed in the marine lakes. Names have been edited to reflect spelling in FishBase.
-palau_records <- read.xlsx("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/species_surveys/palau_marine_lake_fish_biodiversity_ordered&corrected.xlsx", sheet = 1, startRow = 3, colNames = T)
+site_fish <- read.csv("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/species_surveys/palau_surveyed_fish.csv")
 
-# Extract the lake columns with species names. The lake columns have 3 letter codes and if a species is present there will be a 1 in the column.
-site_fish <- palau_records[-c(254:259), c(2:3,6,11,16,21,26,31,37,43:44,53,58,63,68,73:74,79,84,89,94,101,106,111)]
-
-# Combine Genus and Species
-site_fish$Species <- paste(site_fish[, 1], site_fish[, 2])
+site_fish <- site_fish[,-1]
 
 site_fish[is.na(site_fish)] <- 0; site_fish[site_fish == "x"] <- 0; site_fish[site_fish == "?"] <- 0
 
@@ -970,8 +964,8 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] taxize_0.9.100   phytools_2.0-3   maps_3.4.1.1     ape_5.7-1       
-    ## [5] dplyr_1.1.4      tidyr_1.3.0      rfishbase_4.1.2  openxlsx_4.2.5.2
+    ## [1] taxize_0.9.100  phytools_2.0-3  maps_3.4.1.1    ape_5.7-1      
+    ## [5] dplyr_1.1.4     tidyr_1.3.0     rfishbase_4.1.2
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] tidyselect_1.2.0        optimParallel_1.0-2     fastmap_1.1.1          
@@ -997,7 +991,6 @@ sessionInfo()
     ## [61] openssl_2.1.1           R6_2.5.1                dbplyr_2.4.0           
     ## [64] doParallel_1.0.17       bold_1.3.0              evaluate_0.23          
     ## [67] lattice_0.22-5          readr_2.1.4             memoise_2.0.1          
-    ## [70] Rcpp_1.0.11             zip_2.3.0               uuid_1.1-1             
-    ## [73] fastmatch_1.1-4         coda_0.19-4             nlme_3.1-164           
-    ## [76] xfun_0.41               fs_1.6.3                zoo_1.8-12             
-    ## [79] pkgconfig_2.0.3
+    ## [70] Rcpp_1.0.11             uuid_1.1-1              fastmatch_1.1-4        
+    ## [73] coda_0.19-4             nlme_3.1-164            xfun_0.41              
+    ## [76] fs_1.6.3                zoo_1.8-12              pkgconfig_2.0.3
