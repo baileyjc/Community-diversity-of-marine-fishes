@@ -145,6 +145,10 @@ dorsal <- morphology[,keep]
 complete_traits <- full_join(complete_traits, repro, by = "Species")
 complete_traits <- full_join(complete_traits, dorsal, by = "Species")
 
+sum(is.na(complete_traits$RepGuild1))
+sum(is.na(complete_traits$RepGuild2))
+sum(is.na(complete_traits$ParentalCare))
+
 # Make integer fields numeric
 numerical <- c("DorsalSpinesMax", "MaxLengthTL", "Troph", "DepthMin", "DepthMax", "TempPrefMin", "TempPrefMax", "DorsalSpinesMin")
 complete_traits[,numerical] <- sapply(complete_traits[,numerical], as.numeric)
@@ -157,6 +161,7 @@ complete_traits[,factor] <- lapply(complete_traits[,factor], function(x) as.fact
 # Identify which rows have NAs and will be filled in with Genus level data
 fromGenus <- apply(complete_traits, 1, function(x){any(is.na(x))})
 sum(fromGenus) 
+sum(is.na(complete_traits[3:20]))
 
 complete_traits <-  cbind(complete_traits, fromGenus)
 ```
@@ -306,8 +311,6 @@ complete_imputed <- complete_imputed %>%
 ## Fill in NAs in trait data set "complete_imputed" with genus-level summaries
 # complete_imputed <- complete_imputed %>%
 #   mutate(across(everything(), ~ ifelse(is.na(.), complete_traits_incomplete_genus_summary[[cur_column()]][match(complete_imputed$Genus, complete_traits_incomplete_genus_summary$Genus)], .)))
-
-str(complete_imputed)
 ```
 
 ## Trait data for incomplete species
@@ -429,6 +432,7 @@ complete_imputed <- data.frame(rbind(complete_imputed, complete_traits_missing_g
 # Identify which rows have NAs and will be filled in with Genus level data
 fromFamily <- apply(complete_imputed, 1, function(x){any(is.na(x))})
 sum(fromFamily)
+sum(is.na(complete_imputed[3:20]))
 
 complete_imputed_genus <-  cbind(complete_imputed, fromFamily)
 ```
@@ -628,6 +632,7 @@ complete_imputed_family$ParentalCare[is.na(complete_imputed_family$ParentalCare)
 # complete$Species[complete$Species=="Tylosurus acus melanotus"] <- "Tylosurus melanotus"
 
 complete <- complete_imputed_family
+sum(is.na(complete[6:23]))
 
 # Re-order rows
 complete <- complete[order(complete$Species), ]
