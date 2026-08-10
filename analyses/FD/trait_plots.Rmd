@@ -5,415 +5,568 @@ editor_options:
   chunk_output_type: console
 ---
 ### Load packages
-```{r, Load Site_type weighted mean trait plots packages}
+```{r, Load Location_type weighted mean trait plots packages}
 library(dplyr)
 library(ggplot2)
 library(viridis)
+library(dunn.test)
+library(car)
 
 # Load the knitr package if not already loaded
 library(knitr)
 
 # Source the R Markdown file
-knit("/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.Rmd", output = "/Users/bailey/Documents/research/fish_biodiversity/src/collection/load_collection_data.md")
+knit("/Users/bailey/Documents/research/Fish_Biodiversity/src/collection/load_collection_data.Rmd", output = "/Users/bailey/Documents/research/Fish_Biodiversity/src/collection/load_collection_data.md")
 
 # Define your custom colors
-custom_colors <- c("R" = "black", "O" = "#EE6363", "M" = "#87CEFA", "S" = "#6E8B3D")
+custom_shades <- c("R" = "black", "O" = "#EE6363", "M" = "#87CEFA", "S" = "#6E8B3D")
 
-# Reference use Site_type_at_weighted
-# Surveyed sites use Site_type_st_weighted
+# Reference use Location_type_at_weighted
+# Surveyed sites use Location_type_st_weighted
+```
+
+## Location trait data tests
+```{r, Location trait data tests}
+# Create function
+run_tests <- function(trait, data) {
+    # Ensure the trait is numeric
+    if (!is.numeric(data[[trait]])) {
+        return(c(ANOVA_p = NA, Shapiro_p = NA, Levene_p = NA))}  # Return NA if not numeric
+    formula <- as.formula(paste(trait, "~ Location_type"))  # Dynamically create formula
+    anova_model <- aov(formula, data = data)  # Run ANOVA
+    anova_p <- summary(anova_model)[[1]][["Pr(>F)"]][1]  # Extract p-value
+    # Run Shapiro-Wilk test on residuals (normality assumption)
+    shapiro_p <- tryCatch(
+        shapiro.test(residuals(anova_model))$p.value,
+        error = function(e) NA)  # Return NA if Shapiro fails
+    # Run Levene's test for homogeneity of variance
+    levene_p <- tryCatch(
+        leveneTest(formula, data = data)$`Pr(>F)`[1],
+        error = function(e) NA)  # Return NA if Levene fails
+    return(c(ANOVA_p = anova_p, Shapiro_p = shapiro_p, Levene_p = levene_p))
+}
+
+# Run tests on numeric traits
+traits <- colnames(Locations_at)[1:15]  # Extract trait names
+results <- sapply(traits, run_tests, data = Locations_at)
+
+# Convert to a tidy dataframe
+results_df <- as.data.frame(t(results))
+results_df$Trait <- rownames(results_df)
+rownames(results_df) <- NULL
+
+# Print results
+print(results_df)
+
+
+# Identify traits that are numeric
+numerical <- c("MaxLengthTL", "Troph", "DepthMin", "DepthMax", "TempPrefMin", "TempPrefMax", "DorsalSpinesMean")
+
+## MaxLengthTL
+# Perform Dunn's test
+dunn_result <- dunn.test(Locations_at$MaxLengthTL, Locations_at$Location_type, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
+
+
+## Troph
+# Perform Dunn's test
+dunn_result <- dunn.test(Locations_at$Troph, Locations_at$Location_type, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
+median(Ocean_at$Troph)
+median(Mixed_at$Troph)
+median(Stratified_at$Troph)
+
+## DepthMin
+# Perform Dunn's test
+dunn_result <- dunn.test(Locations_at$DepthMin, Locations_at$Location_type, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
+median(Ocean_at$DepthMin)
+median(Mixed_at$DepthMin)
+median(Stratified_at$DepthMin)
+
+## DepthMax
+# Perform Dunn's test
+dunn_result <- dunn.test(Locations_at$DepthMax, Locations_at$Location_type, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
+
+
+## TempPrefMin
+# Perform Dunn's test
+dunn_result <- dunn.test(Locations_at$TempPrefMin, Locations_at$Location_type, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
+
+
+## TempPrefMax
+# Perform Dunn's test
+dunn_result <- dunn.test(Locations_at$TempPrefMax, Locations_at$Location_type, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
+
+
+## DorsalSpinesMean
+# Perform Dunn's test
+dunn_result <- dunn.test(Locations_at$DorsalSpinesMean, Locations_at$Location_type, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
+
+
+## # Identify traits that are factors
+factor <- c("BodyShapeI", "WaterPref", "DemersPelag", "OperculumPresent", "FeedingPath", "RepGuild2", "ParentalCare")
+
+## BodyShapeI
+# Convert to contingency table
+contingency_table <- table(Locations_at$Location_type, Locations_at$BodyShapeI)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
+# Perform Fisher's test
+fisher_test_result <- fisher.test(contingency_table_clean, simulate.p.value=TRUE)  # Adjust workspace size
+print(fisher_test_result)
+
+
+## WaterPref
+# Convert to contingency table
+contingency_table <- table(Locations_at$Location_type, Locations_at$WaterPref)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
+# Perform Fisher's test
+fisher_test_result <- fisher.test(contingency_table_clean, simulate.p.value=TRUE)  # Adjust workspace size
+print(fisher_test_result)
+
+
+## DemersPelag
+# Convert to contingency table
+contingency_table <- table(Locations_at$Location_type, Locations_at$DemersPelag)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
+# Perform Fisher's test
+fisher_test_result <- fisher.test(contingency_table_clean, simulate.p.value=TRUE)  # Adjust workspace size
+print(fisher_test_result)
+
+
+## OperculumPresent
+# Convert to contingency table
+contingency_table <- table(Locations_at$Location_type, Locations_at$OperculumPresent)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
+# Perform Fisher's test
+fisher_test_result <- fisher.test(contingency_table_clean, simulate.p.value=TRUE)  # Adjust workspace size
+print(fisher_test_result)
+
+
+## FeedingPath
+# Convert to contingency table
+contingency_table <- table(Locations_at$Location_type, Locations_at$FeedingPath)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
+# Perform Fisher's test
+fisher_test_result <- fisher.test(contingency_table_clean, simulate.p.value=TRUE)  # Adjust workspace size
+print(fisher_test_result)
+
+
+## RepGuild2
+# Convert to contingency table
+contingency_table <- table(Locations_at$Location_type, Locations_at$RepGuild2)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
+# Perform Fisher's test
+fisher_test_result <- fisher.test(contingency_table_clean, simulate.p.value=TRUE)  # Adjust workspace size
+print(fisher_test_result)
+
+
+## ParentalCare
+# Convert to contingency table
+contingency_table <- table(Locations_at$Location_type, Locations_at$ParentalCare)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
+# Perform Fisher's test
+fisher_test_result <- fisher.test(contingency_table_clean, simulate.p.value=TRUE)  # Adjust workspace size
+print(fisher_test_result)
 ```
 
 ## Biotic traits
 ### Trophic level
 ```{r, Trophic level}
-Troph_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= Troph, color = "black", fill = Strat)) +
-  geom_violin(alpha = 0.6, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
-  guides(fill = "none", color = "none") +
+Troph_plot_weighted <- ggplot(Location_type_st_weighted, mapping = aes(x= Strat, y= Troph, fill = Strat)) +
   geom_jitter(shape = 21,
-            size = 4,
-            alpha = 0.8,
-            width = 0.1) +
+            size = 2,
+            alpha = 0.6,
+            width = 0.1) +  
+  geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 1, aes(group = Strat, fill = Strat)) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
+  guides(fill = "none") +
   theme_bw() +
-  theme(text = element_text(size = 26), legend.text = element_text(size = 26),
-    axis.text = element_text(size = 26, color = "black"),
+  theme(text = element_text(size = 12), 
+        legend.text = element_text(size = 10),
+        axis.title = element_text(size = 10),
+    axis.text = element_text(size = 10, color = "black"),
     axis.line = element_line(color = "black"),
     plot.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
   ylab("Trophic Level") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "a")
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "a")
 Troph_plot_weighted
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/Troph_plot_weighted.jpg", Troph_plot_weighted, width = 8, height = 8, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/Troph_plot_weighted.jpg", Troph_plot_weighted, width = 3.25, height = 2.95, units = "in")
 
 
-# Troph_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= Troph, fill = Strat)) +
-#   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
-#   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   geom_jitter(shape = 21,
-#             size = 3,
-#             alpha = 0.75,
-#             width = 0.1) +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("Troph")
-# Troph_plot
+# Perform Kruskal-Wallis test
+kruskal_result <- kruskal.test(Troph ~ Strat, data = Location_type_st_weighted)
+# Print result
+print(kruskal_result)
+# Perform Dunn's test
+dunn_result <- dunn.test(Location_type_st_weighted$Troph, Location_type_st_weighted$Strat, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
 ```
 
 ### Reproductive Guild2
 ```{r, Reproductive Guild2}
-Site_type_st_props_RepGuild2 <- Site_type_st %>%
+Location_type_st_props_RepGuild2 <- Location_type_st %>%
   group_by(Strat, RepGuild2) %>%
-  summarise(count = sum(SiteSums)) %>%
+  summarise(count = sum(LocationSums)) %>%
   mutate(proportion = count/sum(count))
 
-Site_type_st_props_RepGuild2 <- na.omit(Site_type_st_props_RepGuild2)
+Location_type_st_props_RepGuild2 <- na.omit(Location_type_st_props_RepGuild2)
 
-RepGuild2_plot_weighted <- ggplot(Site_type_st_props_RepGuild2, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = RepGuild2)) + 
-  geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
-  geom_line(position = "identity", aes(group = RepGuild2), linewidth = 2, linetype = "dotted") +
-  scale_shape_manual(name = "Egg Strategy:", values = c(11, 21:25), labels = c('1ib' = 'live bearers', '6s' = 'egg scatterers', '3n' = 'nesters', '5h' = 'brood hiders', '4t' = 'clutch tenders', '2eb' = 'external brooders')) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
+RepGuild2_plot_weighted <- ggplot(Location_type_st_props_RepGuild2, mapping = aes(x= Strat, y= proportion, fill = Strat, shape = RepGuild2)) + 
+  geom_point(position = "identity", size = 4, aes(group = Strat, fill = Strat)) +
+  geom_line(position = "identity", aes(group = RepGuild2), linewidth = 1, linetype = "dotted") +
+  scale_shape_manual(name = "Egg Strategy:", values = c(11, 21:25), labels = c('1ib' = 'bearers', '6s' = 'scatterers', '3n' = 'nesters', '5h' = 'hiders', '4t' = 'tenders', '2eb' = 'brooders')) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
   theme_bw() +
   theme(
-    text = element_text(size = 26),
-    legend.title = element_text(size = 26),  # Adjust legend title size
-    legend.text = element_text(size = 26),  # Adjust legend text size
-    axis.text = element_text(size = 26, color = "black"),
+    text = element_text(size = 12),
+    legend.title = element_text(size = 8),  # Adjust legend title size
+    legend.text = element_text(size = 8),  # Adjust legend text size
+    legend.key.size = unit(0, "cm"),  # Adjust legend key size
+    legend.position = "bottom",
+    legend.spacing = unit(0, "cm"),
+    axis.title = element_text(size = 10),
+    axis.text = element_text(size = 10, color = "black"),
     axis.line = element_line(color = "black"),
     plot.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()
   ) +
-  guides(colour = "none", fill = "none") + # Remove the legends for Site type
+  guides(fill = "none", shape = guide_legend(nrow = 2, byrow = TRUE, title.position = "top")) +
   ylim(c(0,0.6)) +
   ylab("Proportion") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "b")
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "c")
 RepGuild2_plot_weighted
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/RepGuild2_plot_weighted.jpg", RepGuild2_plot_weighted, width = 8, height = 8, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/RepGuild2_plot_weighted.jpg", RepGuild2_plot_weighted, width = 3.25, height = 3.81, units = "in")
 
+# Convert to contingency table
+contingency_table <- table(Location_type_st_weighted$Strat, Location_type_st_weighted$RepGuild2)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
 
-# # Identify how many individuals have one of the trait factors for each Site_type
-# RepGuild2_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$RepGuild2)
-# 
-# # Divide each count by the total number of rows to find the proportion
-# RepGuild2_props <- RepGuild2_counts/(rowSums(RepGuild2_counts))
-# RepGuild2_props
-# 
-# RepGuild2_props <- as.dSite_type_sta.frame(RepGuild2_props)
-# 
-# RepGuild2_props$Var1 <- factor(RepGuild2_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
-# 
-# RepGuild2_plot <- ggplot(RepGuild2_props, mapping = aes(x= Var1, y= Freq, color = Var1, shape = row.names)) + 
-#   geom_point(position = "identity", size = 5, aes(group = Var1)) +
-#   scale_color_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("Proportion") +
-#   xlab("Site type")
-# RepGuild2_plot
+fisher_test_result <- fisher.test(contingency_table_clean, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result)
+
+# Subset for groups O and M
+pairwise_OM <- contingency_table_clean[c("O", "M"), ]
+fisher_test_result_OM <- fisher.test(pairwise_OM, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OM)
+
+# Subset for groups O and S
+pairwise_OS <- contingency_table_clean[c("O", "S"), ]
+fisher_test_result_OS <- fisher.test(pairwise_OS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OS)
+
+# Subset for groups M and S
+pairwise_MS <- contingency_table_clean[c("M", "S"), ]
+fisher_test_result_MS <- fisher.test(pairwise_MS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_MS)
+
+# Adjust for multiple comparisons
+p_values <- c(fisher_test_result_OM$p.value, fisher_test_result_OS$p.value, fisher_test_result_MS$p.value)
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+print(adjusted_p_values)
 ```
 
 ### Dorsal Spines Mean
 ```{r, Dorsal Spines Mean}
-DorsalSpinesMean_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= DorsalSpinesMean, color = "black", fill = Strat)) +
-  geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
-  guides(fill = "none", color = "none") +
+DorsalSpinesMean_plot_weighted <- ggplot(Location_type_st_weighted, mapping = aes(x= Strat, y= DorsalSpinesMean, fill = Strat)) +
   geom_jitter(shape = 21,
-            size = 4,
+            size = 2,
             alpha = 0.6,
             width = 0.1) +
+  geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 1, aes(group = Strat, fill = Strat)) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
+  guides(fill = "none") +
   theme_bw() +
-  theme(text = element_text(size = 26), legend.text = element_text(size = 26),
-    axis.text = element_text(size = 26, color = "black"),
+  theme(text = element_text(size = 12), 
+        legend.text = element_text(size = 10),
+        axis.title = element_text(size = 10),
+    axis.text = element_text(size = 10, color = "black"),
     axis.line = element_line(color = "black"),
     plot.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
   ylab("Dorsal Spines") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "c")
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "b")
 DorsalSpinesMean_plot_weighted
 # Warning messages:
 # 1: Removed 10 rows containing non-finite values (`stat_ydensity()`). 
 # 2: Removed 10 rows containing missing values (`geom_point()`). 
 # Twelve values with NA
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/DorsalSpinesMean_plot_weighted.jpg", DorsalSpinesMean_plot_weighted, width = 8, height = 8, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/DorsalSpinesMean_plot_weighted.jpg", DorsalSpinesMean_plot_weighted, width = 3.25, height = 2.95, units = "in")
 
 
-# DorsalSpinesMax_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= DorsalSpinesMax, fill = Strat)) +
-#   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
-#   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   geom_jitter(shape = 21,
-#             size = 3,
-#             alpha = 0.75,
-#             width = 0.1) +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("DorsalSpinesMax")
-# DorsalSpinesMax_plot
+# Perform Kruskal-Wallis test
+kruskal_result <- kruskal.test(DorsalSpinesMean ~ Strat, data = Location_type_st_weighted)
+# Print result
+print(kruskal_result)
+# Perform Dunn's test
+dunn_result <- dunn.test(Location_type_st_weighted$DorsalSpinesMean, Location_type_st_weighted$Strat, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
 ```
 
 ### Parental Care
 ```{r, Parental Care}
-Site_type_st_props_ParentalCare <- Site_type_st %>%
+Location_type_st_props_ParentalCare <- Location_type_st %>%
   group_by(Strat, ParentalCare) %>%
-  summarise(count = sum(SiteSums)) %>%
+  summarise(count = sum(LocationSums)) %>%
   mutate(proportion = count/sum(count))
 
-Site_type_st_props_ParentalCare <- na.omit(Site_type_st_props_ParentalCare)
+Location_type_st_props_ParentalCare <- na.omit(Location_type_st_props_ParentalCare)
 
-ParentalCare_plot_weighted <- ggplot(Site_type_st_props_ParentalCare, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = ParentalCare)) + 
-  geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
-  geom_line(position = "identity", aes(group = ParentalCare), linewidth = 2, linetype = "dotted") +
+ParentalCare_plot_weighted <- ggplot(Location_type_st_props_ParentalCare, mapping = aes(x= Strat, y= proportion, fill = Strat, shape = ParentalCare)) + 
+  geom_point(position = "identity", size = 4, aes(group = Strat, fill = Strat)) +
+  geom_line(position = "identity", aes(group = ParentalCare), linewidth = 1, linetype = "dotted") +
   scale_shape_manual(name = "Parental Care:", values = c(21:25), labels = c('4n' = 'none', '3p' = 'paternal', '2m' = 'maternal', '1b' = 'biparental')) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
   theme_bw() +
   theme(
-    text = element_text(size = 26),
-    legend.title = element_text(size = 26),  # Adjust legend title size
-    legend.text = element_text(size = 26),  # Adjust legend text size
-    axis.text = element_text(size = 26, color = "black"),
+    text = element_text(size = 12),
+    legend.title = element_text(size = 8),  # Adjust legend title size
+    legend.text = element_text(size = 8),  # Adjust legend text size
+    legend.key.size = unit(0, "cm"),  # Adjust legend key size
+    legend.position = "bottom",
+    legend.spacing = unit(0, "cm"),
+    axis.title = element_text(size = 10),
+    axis.text = element_text(size = 10, color = "black"),
     axis.line = element_line(color = "black"),
     plot.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()
   ) +
-  guides(colour = "none", fill = "none") + # Remove the legends for Site type
+  guides(fill = "none", shape = guide_legend(nrow = 2, byrow = TRUE, title.position = "top")) +
   ylim(c(0,0.6)) +
   ylab("Proportion") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "d")
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "d")
 ParentalCare_plot_weighted
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/ParentalCare_plot_weighted.jpg", ParentalCare_plot_weighted, width = 8, height = 8, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/ParentalCare_plot_weighted.jpg", ParentalCare_plot_weighted, width = 3.25, height = 3.81, units = "in")
 
 
-# # Identify how many individuals have one of the trait factors for each Site_type
-# ParentalCare_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$ParentalCare)
-# 
-# # Divide each count by the total number of rows to find the proportion
-# ParentalCare_props <- ParentalCare_counts/(rowSums(ParentalCare_counts))
-# ParentalCare_props
-# 
-# ParentalCare_props <- as.dSite_type_sta.frame(ParentalCare_props)
-# 
-# ParentalCare_props$Var1 <- factor(ParentalCare_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
-# 
-# ParentalCare_plot <- ggplot(ParentalCare_props, mapping = aes(x= Var1, y= Freq, color = Var1, shape = row.names)) + 
-#   geom_point(position = "identity", size = 5, aes(group = Var1)) +
-#   scale_color_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("Proportion") +
-#   xlab("Site type")
-# ParentalCare_plot
+# Convert to contingency table
+contingency_table <- table(Location_type_st_weighted$Strat, Location_type_st_weighted$ParentalCare)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
+
+fisher_test_result <- fisher.test(contingency_table_clean, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result)
+
+# Subset for groups O and M
+pairwise_OM <- contingency_table_clean[c("O", "M"), ]
+fisher_test_result_OM <- fisher.test(pairwise_OM, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OM)
+
+# Subset for groups O and S
+pairwise_OS <- contingency_table_clean[c("O", "S"), ]
+fisher_test_result_OS <- fisher.test(pairwise_OS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OS)
+
+# Subset for groups M and S
+pairwise_MS <- contingency_table_clean[c("M", "S"), ]
+fisher_test_result_MS <- fisher.test(pairwise_MS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_MS)
+
+# Adjust for multiple comparisons
+p_values <- c(fisher_test_result_OM$p.value, fisher_test_result_OS$p.value, fisher_test_result_MS$p.value)
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+print(adjusted_p_values)
 ```
 
 ## Abiotic traits
 ### Temperature Preference Minimum
 ```{r, Temperature Preference Minimum}
-TempPrefMin_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= TempPrefMin, color = "black", fill = Strat)) +
-  geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
-  guides(fill = "none", color = "none") +
+TempPrefMin_plot_weighted <- ggplot(Location_type_st_weighted, mapping = aes(x= Strat, y= TempPrefMin, fill = Strat)) +
   geom_jitter(shape = 21,
-            size = 4,
+            size = 2,
             alpha = 0.6,
             width = 0.1) +
+  geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 1, aes(group = Strat, fill = Strat)) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
+  guides(fill = "none") +
   theme_bw() +
-  theme(text = element_text(size = 26), legend.text = element_text(size = 26),
-    axis.text = element_text(size = 26, color = "black"),
+  theme(text = element_text(size = 12), 
+        legend.text = element_text(size = 10),
+        axis.title = element_text(size = 10),
+    axis.text = element_text(size = 10, color = "black"),
     axis.line = element_line(color = "black"),
     plot.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
   ylab("Temp Min (Cº)") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "a")
+  scale_y_continuous(breaks = c(20,22,24,26,28)) +
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "a")
 TempPrefMin_plot_weighted
 # Warning messages:
 # 1: Removed 9 rows containing non-finite values (`stat_ydensity()`). 
 # 2: Removed 9 rows containing missing values (`geom_point()`). 
 # Two values with NA
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/TempPrefMin_plot_weighted.jpg", TempPrefMin_plot_weighted, width = 8, height = 8, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/TempPrefMin_plot_weighted.jpg", TempPrefMin_plot_weighted, width = 3.25, height = 2.95, units = "in")
 
 
-# TempPrefMin_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= TempPrefMin, fill = Strat)) +
-#   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
-#   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   geom_jitter(shape = 21,
-#             size = 3,
-#             alpha = 0.75,
-#             width = 0.1) +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("TempPrefMin")
-# TempPrefMin_plot
+# Perform Kruskal-Wallis test
+kruskal_result <- kruskal.test(TempPrefMin ~ Strat, data = Location_type_st_weighted)
+# Print result
+print(kruskal_result)
+# Perform Dunn's test
+dunn_result <- dunn.test(Location_type_st_weighted$TempPrefMin, Location_type_st_weighted$Strat, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
 ```
 
 ### Water
 - Fresh/Brack/Salt
 ```{r, Water}
-Site_type_st_props_Water <- Site_type_st %>%
+Location_type_st_props_Water <- Location_type_st %>%
   group_by(Strat, WaterPref) %>%
-  summarise(count = sum(SiteSums)) %>%
+  summarise(count = sum(LocationSums)) %>%
   mutate(proportion = count/sum(count))
 
-#Site_type_st_props_Water$Water <- factor(Site_type_st_props_Water$Water, levels = c("all", "fresh", "fresh-brack", "brack", "brack-salt", "salt"))
+#Location_type_st_props_Water$Water <- factor(Location_type_st_props_Water$Water, levels = c("all", "fresh", "fresh-brack", "brack", "brack-salt", "salt"))
 
-Water_plot_weighted <- ggplot(Site_type_st_props_Water, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = WaterPref)) + 
-  geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
-  geom_line(position = "identity", aes(group = WaterPref), linewidth = 2, linetype = "dotted") +
+Water_plot_weighted <- ggplot(Location_type_st_props_Water, mapping = aes(x= Strat, y= proportion, fill = Strat, shape = WaterPref)) + 
+  geom_point(position = "identity", size = 4, aes(group = Strat, fill = Strat)) +
+  geom_line(position = "identity", aes(group = WaterPref), linewidth = 1, linetype = "dotted") +
   scale_shape_manual(name = "Water:", values = c(21:23,11,24:25), labels = c('3a' = 'all', '1s' = 'salt', '2bs' = 'brackish-salt', '4b' = 'brack', '5fb' = 'fresh-brackish', '6f' = 'fresh')) + 
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
   theme_bw() +
   theme(
-    text = element_text(size = 26),
-    legend.title = element_text(size = 26),  # Adjust legend title size
-    legend.text = element_text(size = 26),  # Adjust legend text size
-    axis.text = element_text(size = 26, color = "black"),
+    text = element_text(size = 12),
+    legend.title = element_text(size = 8),  # Adjust legend title size
+    legend.text = element_text(size = 8),  # Adjust legend text size
+    legend.key.size = unit(0, "cm"),  # Adjust legend key size
+    legend.position = "bottom",
+    legend.spacing = unit(0, "cm"),
+    axis.title = element_text(size = 10),
+    axis.text = element_text(size = 10, color = "black"),
     axis.line = element_line(color = "black"),
     plot.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()
   ) +
-  guides(colour = "none", fill = "none") + # Remove the legends for Site type
-  ylim(c(0,1)) +
+  guides(fill = "none", shape = guide_legend(nrow = 2, byrow = TRUE, title.position = "top")) +
   ylab("Proportion") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "b")
+  scale_y_continuous(breaks = c(0,0.5,1), limits = c(0,1)) +
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "c")
 Water_plot_weighted
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/Water_plot_weighted.jpg", Water_plot_weighted, width = 8, height = 8, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/Water_plot_weighted.jpg", Water_plot_weighted, width = 3.25, height = 3.81, units = "in")
 
 
-# # Identify how many individuals have one of the trait factors for each Site_type
-# Habitat_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$Habitat)
-# 
-# # Divide each count by the total number of rows to find the proportion
-# Habitat_props <- Habitat_counts/(rowSums(Habitat_counts))
-# Habitat_props
-# 
-# Habitat_props <- as.dSite_type_sta.frame(Habitat_props)
-# 
-# Habitat_props$Var1 <- factor(Habitat_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
-# 
-# Habitat_plot <- ggplot(Habitat_props, mapping = aes(x= Var1, y= Freq, color = Var1, shape = row.names)) + 
-#   geom_point(position = "identity", size = 5, aes(group = Var1)) +
-#   scale_color_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("Proportion") +
-#   xlab("Habitat")
-# Habitat_plot
+# Convert to contingency table
+contingency_table <- table(Location_type_st_weighted$Strat, Location_type_st_weighted$WaterPref)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
+
+fisher_test_result <- fisher.test(contingency_table_clean, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result)
+
+# Subset for groups O and M
+pairwise_OM <- contingency_table_clean[c("O", "M"), ]
+fisher_test_result_OM <- fisher.test(pairwise_OM, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OM)
+
+# Subset for groups O and S
+pairwise_OS <- contingency_table_clean[c("O", "S"), ]
+fisher_test_result_OS <- fisher.test(pairwise_OS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OS)
+
+# Subset for groups M and S
+pairwise_MS <- contingency_table_clean[c("M", "S"), ]
+fisher_test_result_MS <- fisher.test(pairwise_MS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_MS)
+
+# Adjust for multiple comparisons
+p_values <- c(fisher_test_result_OM$p.value, fisher_test_result_OS$p.value, fisher_test_result_MS$p.value)
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+print(adjusted_p_values)
 ```
 
 ### Temperature Preference Maximum
 ```{r, Temperature Preference Maximum}
-TempPrefMax_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= TempPrefMax, color = "black", fill = Strat)) +
-  geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
-  guides(fill = "none", color = "none") +
+TempPrefMax_plot_weighted <- ggplot(Location_type_st_weighted, mapping = aes(x= Strat, y= TempPrefMax, fill = Strat)) +
   geom_jitter(shape = 21,
-            size = 4,
+            size = 2,
             alpha = 0.6,
             width = 0.1) +
+  geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 1, aes(group = Strat, fill = Strat)) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
+  guides(fill = "none") +
   theme_bw() +
-  theme(text = element_text(size = 26), legend.text = element_text(size = 26),
-    axis.text = element_text(size = 26, color = "black"),
+  theme(text = element_text(size = 12), 
+        legend.text = element_text(size = 10),
+        axis.title = element_text(size = 10),
+    axis.text = element_text(size = 10, color = "black"),
     axis.line = element_line(color = "black"),
     plot.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
   ylab("Temp Max (Cº)") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "c")
+  scale_y_continuous(breaks = c(27,28,29,30)) +
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "b")
 TempPrefMax_plot_weighted
 # Warning messages:
 # 1: Removed 11 rows containing non-finite values (`stat_ydensity()`). 
 # 2: Removed 11 rows containing missing values (`geom_point()`). 
 # Two values with NA
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/TempPrefMax_plot_weighted.jpg", TempPrefMax_plot_weighted, width = 8, height = 8, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/TempPrefMax_plot_weighted.jpg", TempPrefMax_plot_weighted, width = 3.25, height = 2.95, units = "in")
 
 
-# TempPrefMax_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= TempPrefMax, fill = Strat)) +
-#   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
-#   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   geom_jitter(shape = 21,
-#             size = 3,
-#             alpha = 0.75,
-#             width = 0.1) +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("TempPrefMax")
-# TempPrefMax_plot
+# Perform Kruskal-Wallis test
+kruskal_result <- kruskal.test(TempPrefMax ~ Strat, data = Location_type_st_weighted)
+# Print result
+print(kruskal_result)
+# Perform Dunn's test
+dunn_result <- dunn.test(Location_type_st_weighted$TempPrefMax, Location_type_st_weighted$Strat, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
 ```
 
 ## Supplementary traits
 ### Operculum Present
 ```{r, Operculum Present}
-Site_type_st_props_OperculumPresent <- Site_type_st %>%
+Location_type_st_props_OperculumPresent <- Location_type_st %>%
   group_by(Strat, OperculumPresent) %>%
-  summarise(count = sum(SiteSums)) %>%
+  summarise(count = sum(LocationSums)) %>%
   mutate(proportion = count/sum(count))
 
-OperculumPresent_plot_weighted <- ggplot(Site_type_st_props_OperculumPresent, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = OperculumPresent)) + 
-  geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
+OperculumPresent_plot_weighted <- ggplot(Location_type_st_props_OperculumPresent, mapping = aes(x= Strat, y= proportion, fill = Strat, shape = OperculumPresent)) + 
+  geom_point(position = "identity", size = 10, aes(group = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = OperculumPresent), linewidth = 2, linetype = "dotted") +
   scale_shape_manual(name = "Operculum:", values = c(21:22)) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
   theme_bw() +
   theme(
     text = element_text(size = 30),
@@ -427,52 +580,54 @@ OperculumPresent_plot_weighted <- ggplot(Site_type_st_props_OperculumPresent, ma
     panel.grid.minor = element_blank(),
     panel.border = element_blank()
   ) +
-  guides(colour = "none", fill = "none") + # Remove the legends for Site type
+  guides(fill = "none") + # Remove the legends for Location type
   ylim(c(0,0.75)) +
   ylab("Proportion") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "a")
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "a")
 OperculumPresent_plot_weighted
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/OperculumPresent_plot_weighted.jpg", OperculumPresent_plot_weighted,  width = 13, height = 10, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/OperculumPresent_plot_weighted.jpg", OperculumPresent_plot_weighted,  width = 13, height = 10, units = "in")
 
 
-# # Identify how many individuals have one of the trait factors for each Site_type
-# OperculumPresent_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$OperculumPresent)
-# 
-# # Divide each count by the total number of rows to find the proportion
-# OperculumPresent_props <- OperculumPresent_counts/(rowSums(OperculumPresent_counts))
-# OperculumPresent_props
-# 
-# OperculumPresent_props <- as.dSite_type_sta.frame(OperculumPresent_props)
-# 
-# OperculumPresent_props$Var1 <- factor(OperculumPresent_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
-# 
-# OperculumPresent_plot <- ggplot(OperculumPresent_props, mapping = aes(x= Var1, y= Freq, color = Var1, shape = row.names)) + 
-#   geom_point(position = "identity", size = 5, aes(group = Var1)) +
-#   scale_color_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("Proportion") +
-#   xlab("OperculumPresent")
-# OperculumPresent_plot
+# Convert to contingency table
+contingency_table <- table(Location_type_st_weighted$Strat, Location_type_st_weighted$OperculumPresent)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
+
+fisher_test_result <- fisher.test(contingency_table_clean, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result)
+
+# Subset for groups O and M
+pairwise_OM <- contingency_table_clean[c("O", "M"), ]
+fisher_test_result_OM <- fisher.test(pairwise_OM, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OM)
+
+# Subset for groups O and S
+pairwise_OS <- contingency_table_clean[c("O", "S"), ]
+fisher_test_result_OS <- fisher.test(pairwise_OS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OS)
+
+# Subset for groups M and S
+pairwise_MS <- contingency_table_clean[c("M", "S"), ]
+fisher_test_result_MS <- fisher.test(pairwise_MS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_MS)
+
+# Adjust for multiple comparisons
+p_values <- c(fisher_test_result_OM$p.value, fisher_test_result_OS$p.value, fisher_test_result_MS$p.value)
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+print(adjusted_p_values)
 ```
 
 ### Max Length (TL)
 ```{r, Max Length (TL)}
-MaxLengthTL_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= MaxLengthTL, color = "black", fill = Strat)) +
-  geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
-  guides(fill = "none", color = "none") +
+MaxLengthTL_plot_weighted <- ggplot(Location_type_st_weighted, mapping = aes(x= Strat, y= MaxLengthTL, fill = Strat)) +
   geom_jitter(shape = 21,
             size = 4,
             alpha = 0.6,
             width = 0.1) +
+  geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, fill = Strat)) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
+  guides(fill = "none") +
   theme_bw() +
   theme(text = element_text(size = 30), legend.text = element_text(size = 30),
     axis.text = element_text(size = 30, color = "black"),
@@ -483,46 +638,38 @@ MaxLengthTL_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Stra
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
   ylab("Length (cm)") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "b")
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "b")
 MaxLengthTL_plot_weighted
 # Warning messages:
 # 1: Removed 3 rows containing non-finite values (`stat_ydensity()`). 
 # 2: Removed 3 rows containing missing values (`geom_point()`). 
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/MaxLengthTL_plot_weighted.jpg", MaxLengthTL_plot_weighted,  width = 13, height = 10, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/MaxLengthTL_plot_weighted.jpg", MaxLengthTL_plot_weighted,  width = 13, height = 10, units = "in")
 
 
-# MaxLengthTL_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= MaxLengthTL, fill = Strat)) +
-#   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
-#   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   geom_jitter(shape = 21,
-#             size = 3,
-#             alpha = 0.75,
-#             width = 0.1) +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("MaxLengthTL")
-# MaxLengthTL_plot
+# Perform Kruskal-Wallis test
+kruskal_result <- kruskal.test(MaxLengthTL ~ Strat, data = Location_type_st_weighted)
+# Print result
+print(kruskal_result)
+# Perform Dunn's test
+dunn_result <- dunn.test(Location_type_st_weighted$MaxLengthTL, Location_type_st_weighted$Strat, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
 ```
 
 ### Body Shape
 ```{r, Body Shape}
-Site_type_st_props_BodyShape <- Site_type_st %>%
+Location_type_st_props_BodyShape <- Location_type_st %>%
   group_by(Strat, BodyShapeI) %>%
-  summarise(count = sum(SiteSums)) %>%
+  summarise(count = sum(LocationSums)) %>%
   mutate(proportion = count/sum(count))
 
-BodyShape_plot_weighted <- ggplot(Site_type_st_props_BodyShape, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = BodyShapeI)) + 
-  geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
+BodyShape_plot_weighted <- ggplot(Location_type_st_props_BodyShape, mapping = aes(x= Strat, y= proportion, fill = Strat, shape = BodyShapeI)) + 
+  geom_point(position = "identity", size = 10, aes(group = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = BodyShapeI), linewidth = 2, linetype = "dotted") +
   scale_shape_manual(name = "Body Shape:", values = c(11, 21:25), labels = c("1o" = "other", "2s" = "short deep", "3f" = "fusiform", "4e" = "elongated", "5l" = "eel-like")) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
   theme_bw() +
   theme(
     text = element_text(size = 30),
@@ -536,69 +683,54 @@ BodyShape_plot_weighted <- ggplot(Site_type_st_props_BodyShape, mapping = aes(x=
     panel.grid.minor = element_blank(),
     panel.border = element_blank()
   ) +
-  guides(colour = "none", fill = "none") + # Remove the legends for Site type
+  guides(fill = "none") + # Remove the legends for Location type
   ylim(c(0,0.6)) +
   ylab("Proportion") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "c")
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "c")
 BodyShape_plot_weighted
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/BodyShape_plot_weighted.jpg", BodyShape_plot_weighted,  width = 13, height = 10, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/BodyShape_plot_weighted.jpg", BodyShape_plot_weighted,  width = 13, height = 10, units = "in")
 
 
-# BodyShape_plot_weighted <- ggplot(Site_type_st_props_BodyShape, aes(fill=Site_type, y=proportion, x=BodyShapeI)) + 
-#   geom_bar(position='dodge', stSite_type_st='identity') +
-#   scale_fill_viridis(alpha = 1, begin = 0.3, end = .85, discrete = T, option = "G") +  
-#   guides(fill = "none", color = "none") +
-#   theme_bw() +
-#   theme(text = element_text(size = 30),
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("Proportion") +
-#   xlab("Body Shape")
-# BodyShape_plot_weighted
-# ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/BodyShape_plot_weightedbar.jpg", BodyShape_plot_weighted,  width = 13, height = 10, units = "in")
+# Convert to contingency table
+contingency_table <- table(Location_type_st_weighted$Strat, Location_type_st_weighted$BodyShapeI)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
 
+fisher_test_result <- fisher.test(contingency_table_clean, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result)
 
-# # Identify how many individuals have one of the trait factors for each Site_type
-# BodyShape_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$BodyShapeI)
-# 
-# # Divide each count by the total number of rows to find the proportion
-# BodyShape_props <- BodyShape_counts/(rowSums(BodyShape_counts))
-# BodyShape_props
-# 
-# BodyShape_props <- as.dSite_type_sta.frame(BodyShape_props)
-# 
-# BodyShape_props$Var1 <- factor(BodyShape_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
-# 
-# BodyShape_plot <- ggplot(BodyShape_props, mapping = aes(x= Var1, y= Freq, color = Var1, shape = row.names)) + 
-#   geom_point(position = "identity", size = 5, aes(group = Var1)) +
-#   scale_color_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("Proportion") +
-#   xlab("BodyShape")
-# BodyShape_plot
+# Subset for groups O and M
+pairwise_OM <- contingency_table_clean[c("O", "M"), ]
+fisher_test_result_OM <- fisher.test(pairwise_OM, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OM)
+
+# Subset for groups O and S
+pairwise_OS <- contingency_table_clean[c("O", "S"), ]
+fisher_test_result_OS <- fisher.test(pairwise_OS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OS)
+
+# Subset for groups M and S
+pairwise_MS <- contingency_table_clean[c("M", "S"), ]
+fisher_test_result_MS <- fisher.test(pairwise_MS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_MS)
+
+# Adjust for multiple comparisons
+p_values <- c(fisher_test_result_OM$p.value, fisher_test_result_OS$p.value, fisher_test_result_MS$p.value)
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+print(adjusted_p_values)
 ```
 
 ### Depth Maximum
 ```{r, Depth Maximum}
-DepthMax_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= DepthMax, color = "black", fill = Strat)) +
-  geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
-  guides(fill = "none", color = "none") +
+DepthMax_plot_weighted <- ggplot(Location_type_st_weighted, mapping = aes(x= Strat, y= DepthMax, fill = Strat)) +
   geom_jitter(shape = 21,
             size = 4,
             alpha = 0.6,
             width = 0.1) +
+  geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, fill = Strat)) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
+  guides(fill = "none") +
   theme_bw() +
   theme(text = element_text(size = 30), legend.text = element_text(size = 30),
     axis.text = element_text(size = 30, color = "black"),
@@ -609,49 +741,41 @@ DepthMax_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, 
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
   ylab("Depth Max (m)") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "d")
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "d")
 DepthMax_plot_weighted
 # Warning messages:
 # 1: Removed 10 rows containing non-finite values (`stat_ydensity()`). 
 # 2: Removed 10 rows containing missing values (`geom_point()`). 
 # One value with NA
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/DepthMax_plot_weighted.jpg", DepthMax_plot_weighted,  width = 13, height = 10, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/DepthMax_plot_weighted.jpg", DepthMax_plot_weighted,  width = 13, height = 10, units = "in")
 
 
-# DepthMax_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= DepthMax, fill = Strat)) +
-#   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
-#   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   geom_jitter(shape = 21,
-#             size = 3,
-#             alpha = 0.75,
-#             width = 0.1) +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("DepthMax")
-# DepthMax_plot
+# Perform Kruskal-Wallis test
+kruskal_result <- kruskal.test(DepthMax ~ Strat, data = Location_type_st_weighted)
+# Print result
+print(kruskal_result)
+# Perform Dunn's test
+dunn_result <- dunn.test(Location_type_st_weighted$DepthMax, Location_type_st_weighted$Strat, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
 ```
 
 ### Feeding Pathway
 ```{r, Feeding Pathway}
-Site_type_st_props_FeedingPath <- Site_type_st %>%
+Location_type_st_props_FeedingPath <- Location_type_st %>%
   group_by(Strat, FeedingPath) %>%
-  summarise(count = sum(SiteSums)) %>%
+  summarise(count = sum(LocationSums)) %>%
   mutate(proportion = count/sum(count))
 
-Site_type_st_props_FeedingPath <- na.omit(Site_type_st_props_FeedingPath)
+Location_type_st_props_FeedingPath <- na.omit(Location_type_st_props_FeedingPath)
 
-FeedingPath_plot_weighted <- ggplot(Site_type_st_props_FeedingPath, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = FeedingPath)) + 
-  geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
+FeedingPath_plot_weighted <- ggplot(Location_type_st_props_FeedingPath, mapping = aes(x= Strat, y= proportion, fill = Strat, shape = FeedingPath)) + 
+  geom_point(position = "identity", size = 10, aes(group = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = FeedingPath), linewidth = 2, linetype = "dotted") +
   scale_shape_manual(name = "Diet Source:", values = c(21:22), labels = c("b" = "benthic", "p" = "pelagic")) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
   theme_bw() +
   theme(
     text = element_text(size = 30),
@@ -665,52 +789,54 @@ FeedingPath_plot_weighted <- ggplot(Site_type_st_props_FeedingPath, mapping = ae
     panel.grid.minor = element_blank(),
     panel.border = element_blank()
   ) +
-  guides(colour = "none", fill = "none") + # Remove the legends for Site type
+  guides(fill = "none") + # Remove the legends for Location type
   ylim(c(0,1)) +
   ylab("Proportion") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "e")
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "e")
 FeedingPath_plot_weighted
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/FeedingPath_plot_weighted.jpg", FeedingPath_plot_weighted,  width = 13, height = 10, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/FeedingPath_plot_weighted.jpg", FeedingPath_plot_weighted,  width = 13, height = 10, units = "in")
 
 
-# # Identify how many individuals have one of the trait factors for each Site_type
-# FeedingPath_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$FeedingPSite_type_sth)
-# 
-# # Divide each count by the total number of rows to find the proportion
-# FeedingPath_props <- FeedingPath_counts/(rowSums(FeedingPath_counts))
-# FeedingPath_props
-# 
-# FeedingPath_props <- as.dSite_type_sta.frame(FeedingPath_props)
-# 
-# FeedingPath_props$Var1 <- factor(FeedingPath_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
-# 
-# FeedingPath_plot <- ggplot(FeedingPath_props, mapping = aes(x= Var1, y= Freq, color = Var1, shape = row.names)) + 
-#   geom_point(position = "identity", size = 5, aes(group = Var1)) +
-#   scale_color_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("Proportion") +
-#   xlab("Site type")
-# FeedingPath_plot
+# Convert to contingency table
+contingency_table <- table(Location_type_st_weighted$Strat, Location_type_st_weighted$FeedingPath)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
+
+fisher_test_result <- fisher.test(contingency_table_clean, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result)
+
+# Subset for groups O and M
+pairwise_OM <- contingency_table_clean[c("O", "M"), ]
+fisher_test_result_OM <- fisher.test(pairwise_OM, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OM)
+
+# Subset for groups O and S
+pairwise_OS <- contingency_table_clean[c("O", "S"), ]
+fisher_test_result_OS <- fisher.test(pairwise_OS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OS)
+
+# Subset for groups M and S
+pairwise_MS <- contingency_table_clean[c("M", "S"), ]
+fisher_test_result_MS <- fisher.test(pairwise_MS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_MS)
+
+# Adjust for multiple comparisons
+p_values <- c(fisher_test_result_OM$p.value, fisher_test_result_OS$p.value, fisher_test_result_MS$p.value)
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+print(adjusted_p_values)
 ```
 
 ### Depth Minimum
 ```{r, Depth Minimum}
-DepthMin_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, y= DepthMin, color = "black", fill = Strat)) +
-  geom_violin(alpha = 0.5, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, color = Strat, fill = Strat)) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
-  guides(fill = "none", color = "none") +
+DepthMin_plot_weighted <- ggplot(Location_type_st_weighted, mapping = aes(x= Strat, y= DepthMin, fill = Strat)) +
   geom_jitter(shape = 21,
             size = 4,
             alpha = 0.6,
             width = 0.1) +
+  geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75), linewidth = 2, aes(group = Strat, fill = Strat)) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
+  guides(fill = "none") +
   theme_bw() +
   theme(text = element_text(size = 30), legend.text = element_text(size = 30),
     axis.text = element_text(size = 30, color = "black"),
@@ -721,48 +847,40 @@ DepthMin_plot_weighted <- ggplot(Site_type_st_weighted, mapping = aes(x= Strat, 
     panel.grid.minor = element_blank(),
     panel.border = element_blank()) + 
   ylab("Depth Min (m)") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "f")
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "f")
 DepthMin_plot_weighted
 # Warning messages:
 # 1: Removed 8 rows containing non-finite values (`stat_ydensity()`). 
 # 2: Removed 8 rows containing missing values (`geom_point()`). 
 # One value with NA
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/DepthMin_plot_weighted.jpg", DepthMin_plot_weighted,  width = 13, height = 10, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/DepthMin_plot_weighted.jpg", DepthMin_plot_weighted,  width = 13, height = 10, units = "in")
 
 
-# DepthMin_plot <- ggplot(Site_type_st, mapping = aes(x= Strat, y= DepthMin, fill = Strat)) +
-#   geom_violin(alpha = 0.75, draw_quantiles = c(0.25, 0.5, 0.75)) +
-#   scale_fill_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   geom_jitter(shape = 21,
-#             size = 3,
-#             alpha = 0.75,
-#             width = 0.1) +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("DepthMin")
-# DepthMin_plot
+# Perform Kruskal-Wallis test
+kruskal_result <- kruskal.test(DepthMin ~ Strat, data = Location_type_st_weighted)
+# Print result
+print(kruskal_result)
+# Perform Dunn's test
+dunn_result <- dunn.test(Location_type_st_weighted$DepthMin, Location_type_st_weighted$Strat, method = "Bonferroni")
+# Print Dunn's test result
+print(dunn_result)
 ```
 
 ### DemersPelag
 ```{r, DemersPelag}
-Site_type_st_props_DemersPelag <- Site_type_st %>%
+Location_type_st_props_DemersPelag <- Location_type_st %>%
   group_by(Strat, DemersPelag) %>%
-  summarise(count = sum(SiteSums)) %>%
+  summarise(count = sum(LocationSums)) %>%
   mutate(proportion = count/sum(count))
 
-DemersPelag_plot_weighted <- ggplot(Site_type_st_props_DemersPelag, mapping = aes(x= Strat, y= proportion, color = "black", fill = Strat, shape = DemersPelag)) + 
-  geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
+DemersPelag_plot_weighted <- ggplot(Location_type_st_props_DemersPelag, mapping = aes(x= Strat, y= proportion, fill = Strat, shape = DemersPelag)) + 
+  geom_point(position = "identity", size = 10, aes(group = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = DemersPelag), linewidth = 2, linetype = "dotted") +
   scale_shape_manual(name = "Demersal Pelagic:", values = c(21:25, 12:13), 
                      labels = c("1r" = "reef-associated", "2pn" = "pelagic-neritic", "3p" = "pelagic", "4po" = "pelagic-oceanic", "5d" = "demersal", '6bp' = 'benthopelagic', '7bd' = 'bathydemersal')) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
   theme_bw() +
   theme(
     text = element_text(size = 30),
@@ -776,31 +894,59 @@ DemersPelag_plot_weighted <- ggplot(Site_type_st_props_DemersPelag, mapping = ae
     panel.grid.minor = element_blank(),
     panel.border = element_blank()
   ) +
-  guides(colour = "none", fill = "none") + # Remove the legends for Site type
+  guides(fill = "none") + # Remove the legends for Location type
   ylim(c(0,1)) +
   ylab("Proportion") +
-  xlab("Site type") +
-  labs(colour = "Site type:", fill = "Site type:", tag = "g")
+  xlab("Location type") +
+  labs(fill = "Location type:", tag = "g")
 DemersPelag_plot_weighted
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/DemersPelag_plot_weighted.jpg", DemersPelag_plot_weighted,  width = 13, height = 10, units = "in")
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/DemersPelag_plot_weighted.jpg", DemersPelag_plot_weighted,  width = 13, height = 10, units = "in")
+
+
+# Convert to contingency table
+contingency_table <- table(Location_type_st_weighted$Strat, Location_type_st_weighted$DemersPelag)
+contingency_table_clean <- contingency_table[rowSums(contingency_table) > 0, colSums(contingency_table) > 0]
+
+fisher_test_result <- fisher.test(contingency_table_clean, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result)
+
+# Subset for groups O and M
+pairwise_OM <- contingency_table_clean[c("O", "M"), ]
+fisher_test_result_OM <- fisher.test(pairwise_OM, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OM)
+
+# Subset for groups O and S
+pairwise_OS <- contingency_table_clean[c("O", "S"), ]
+fisher_test_result_OS <- fisher.test(pairwise_OS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_OS)
+
+# Subset for groups M and S
+pairwise_MS <- contingency_table_clean[c("M", "S"), ]
+fisher_test_result_MS <- fisher.test(pairwise_MS, workspace = 2e8)  # Adjust workspace size
+print(fisher_test_result_MS)
+
+# Adjust for multiple comparisons
+p_values <- c(fisher_test_result_OM$p.value, fisher_test_result_OS$p.value, fisher_test_result_MS$p.value)
+adjusted_p_values <- p.adjust(p_values, method = "bonferroni")
+print(adjusted_p_values)
 ```
 
 ### Reproductive Guild1
 ```{r, Reproductive Guild1}
-Site_type_st_props_RepGuild1 <- Site_type_st %>%
+Location_type_st_props_RepGuild1 <- Location_type_st %>%
   group_by(Strat, RepGuild1) %>%
-  summarise(count = sum(SiteSums)) %>%
+  summarise(count = sum(LocationSums)) %>%
   group_by(Strat) %>%
   mutate(proportion = count/sum(count))
 
-Site_type_st_props_RepGuild1 <- na.omit(Site_type_st_props_RepGuild1)
+Location_type_st_props_RepGuild1 <- na.omit(Location_type_st_props_RepGuild1)
 
-RepGuild1_plot_weighted <- ggplot(Site_type_st_props_RepGuild1, mapping = aes(x = Strat, y = proportion, shape = RepGuild1)) + 
-  geom_point(position = "identity", size = 10, aes(group = Strat, color = Strat, fill = Strat)) +
+RepGuild1_plot_weighted <- ggplot(Location_type_st_props_RepGuild1, mapping = aes(x = Strat, y = proportion, shape = RepGuild1)) + 
+  geom_point(position = "identity", size = 10, aes(group = Strat, fill = Strat)) +
   geom_line(position = "identity", aes(group = RepGuild1), linewidth = 2, linetype = "dotted") +
   scale_shape_manual(name = "Egg Care:", values = c(21, 22, 23), labels = c('2g' = 'guarders', '1b' = 'bearers', '3n' = 'nonguarders')) +
-  scale_color_manual(values = custom_colors) +
-  scale_fill_manual(values = custom_colors) +
+  # scale_color_manual(values = custom_shades) +
+  scale_fill_manual(values = custom_shades) +
   theme_bw() +
   theme(
     text = element_text(size = 30),
@@ -813,42 +959,16 @@ RepGuild1_plot_weighted <- ggplot(Site_type_st_props_RepGuild1, mapping = aes(x 
     panel.grid.minor = element_blank(),
     panel.border = element_blank()
   ) +
-  guides(colour = "none", fill = "none") + # Remove the legends for Site type
+  guides(fill = "none") + # Remove the legends for Location type
   ylim(c(0, 0.6)) +
   ylab("Proportion") +
-  xlab("Site type") +
+  xlab("Location type") +
   labs(tag = "none")
 
 RepGuild1_plot_weighted
-ggsave("/Users/bailey/Documents/research/fish_biodiversity/figures/FD/trait_plots/RepGuild1_plot_weighted.jpg", RepGuild1_plot_weighted,  width = 13, height = 10, units = "in")
-
-
-# # Identify how many individuals have one of the trait factors for each Site_type
-# RepGuild1_counts <- table(Site_type_st$Site_type, row.names = Site_type_st$RepGuild1)
-# 
-# # Divide each count by the total number of rows to find the proportion
-# RepGuild1_props <- RepGuild1_counts/(rowSums(RepGuild1_counts))
-# RepGuild1_props
-# 
-# RepGuild1_props <- as.dSite_type_sta.frame(RepGuild1_props)
-# 
-# RepGuild1_props$Var1 <- factor(RepGuild1_props$Var1, levels = c("Reference", "Ocean", "Holomictic", "Meromictic"))
-# 
-# RepGuild1_plot <- ggplot(RepGuild1_props, mapping = aes(x= Var1, y= Freq, color = Var1, shape = row.names)) + 
-#   geom_point(position = "identity", size = 5, aes(group = Var1)) +
-#   scale_color_viridis(alpha = 0.5, end = 0.75, discrete = T, option = "G") +
-#   theme_bw() +
-#   theme(
-#     plot.background = element_blank(),
-#     panel.grid.major = element_blank(),
-#     panel.grid.minor = element_blank(),
-#     panel.border = element_blank(),
-#     axis.line = element_line(color = "black")) +
-#   ylab("Proportion") +
-#   xlab("Site type")
-# RepGuild1_plot
+ggsave("/Users/bailey/Documents/research/Fish_Biodiversity/figures/FD/trait_plots/RepGuild1_plot_weighted.jpg", RepGuild1_plot_weighted,  width = 13, height = 10, units = "in")
 ```
 
-```{r, Site_type abundance weighted mean trait plots session info}
+```{r, Location_type abundance weighted mean trait plots session info}
 sessionInfo()
 ```
