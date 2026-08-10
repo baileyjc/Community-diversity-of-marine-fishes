@@ -65,7 +65,7 @@ library(reticulate)
 - We are importing the tree we downloaded above using Emily Jane's GitHub tutorial. The species names on the Open Tree of Life differ slightly from the FishBase names so we need to validate the species names on the tree. There are a few species that FishBase does not recognize or fails to correct when validating. 
 ```{r,}
 # Read in your tree to R and check the details
-fish_tree <- read.tree("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/labelled_dated_tree.tre")
+fish_tree <- read.tree("/Users/bailey/Documents/research/fish_biodiversity/data/collection/fish/phylo/labeled_dated_tree.tre")
 fish_tree
 
 # Test if the tree is rooted, should come back as TRUE
